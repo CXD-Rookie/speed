@@ -1,15 +1,18 @@
 import React, { useState } from "react";
+import { useNavigate, useRoutes } from "react-router-dom";
 import {
   LaptopOutlined,
   NotificationOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
 import { Layout, Menu, theme } from "antd";
-import { useNavigate, useRoutes } from "react-router-dom";
+
+import type { MenuProps } from "antd";
+
 import routes from "./routes/index";
 import Count from "./containers/Count/index";
 import Tiger from "./containers/Tiger/index";
+
 const { Header, Content, Sider } = Layout;
 
 const titleMenu: MenuProps["items"] = ["1", "2", "3"].map((key) => ({
@@ -54,16 +57,20 @@ const App: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  // 获得路由表
-  const routeView = useRoutes(routes);
+
   const navigate = useNavigate();
-  // 面包屑名称
-  const [breadcrumbName, setBreadcrumbName] = useState("home");
+  const routeView = useRoutes(routes); // 获得路由表
+
+  const [breadcrumbName, setBreadcrumbName] = useState("home"); // 面包屑名称
+
   // 点击菜单
   const handleSiderClick: MenuProps["onClick"] = ({ key, keyPath }) => {
     const name = keyPath.reverse().join("/") || "";
+
     setBreadcrumbName(name);
+
     if (key !== "home" && key !== "about") return;
+
     // 路由跳转
     navigate(key, {
       replace: false,
