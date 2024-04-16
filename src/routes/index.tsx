@@ -1,22 +1,23 @@
-import { Navigate } from 'react-router-dom'
-import About from '@/pages/About'
-import Home from '@/pages/Home'
+import { Navigate } from "react-router-dom";
+
+import About from "@/pages/About";
+import Home from "@/pages/Home";
 
 export default [
   {
-    path: '/about',
+    path: "/about",
     element: <About />,
   },
   {
-    path: '/home',
+    path: "/home",
     element: <Home />,
   },
   {
     // 路由重定向
-    path: '/',
-    element: <Navigate to='/home' />,
+    path: "/",
+    element: <Navigate to="/home" />,
   },
 ] as {
-  path: string
-  element: JSX.Element
-}[]
+  path: string;
+  element: JSX.Element;
+}[];
