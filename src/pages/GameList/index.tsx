@@ -2,12 +2,12 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-17 16:18:28
+ * @LastEditTime: 2024-04-17 17:00:25
  * @FilePath: \speed\src\pages\GameList\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useState } from "react";
-import { post } from "@/api/api";
+import React, { useState, useRef, useEffect } from "react";
+// import { post } from "@/api/api";
 import { useNavigate } from "react-router-dom";
 
 import "./style.scss";
@@ -17,6 +17,11 @@ interface Game {
   name: string;
   image: string;
   tags: string[];
+}
+
+interface GamesTitleProps {
+  label: string;
+  key: string;
 }
 
 const games: Game[] = [
@@ -92,10 +97,33 @@ const games: Game[] = [
   },
 ];
 
+const gamesTitle: GamesTitleProps[] = [
+  {
+    key: "1",
+    label: "热门游戏",
+  },
+  {
+    key: "2",
+    label: "近期推荐",
+  },
+  {
+    key: "3",
+    label: "休闲娱乐",
+  },
+  {
+    key: "4",
+    label: "游戏平台",
+  },
+];
+
 const GameListPage: React.FC = () => {
   const navigate = useNavigate();
+  const targetDivRef = useRef(null);
 
+  const [divWidth, setDivWidth] = useState(0);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+  const game_gap = (divWidth % 200) / Math.floor(divWidth / 200);
 
   const handleMouseEnter = (gameId: number) => {
     setHoveredCard(gameId);
@@ -111,10 +139,40 @@ const GameListPage: React.FC = () => {
     navigate("/gameDetail");
   };
 
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        if (entry.target === targetDivRef.current) {
+          setDivWidth(entry.contentRect.width);
+        }
+      }
+    });
+
+    if (targetDivRef.current) {
+      resizeObserver.observe(targetDivRef?.current);
+    }
+
+    return () => {
+      if (targetDivRef?.current) {
+        resizeObserver.unobserve(targetDivRef?.current);
+      }
+    };
+  }, [targetDivRef]);
+
   return (
     <div className="game-list-module-container">
-      <h1>游戏列表</h1>
-      <div className="game-list">
+      <div className="game-title-box">
+        {gamesTitle.map((item) => (
+          <div key={item?.key} className="game-label">
+            {item?.label}
+          </div>
+        ))}
+      </div>
+      <div
+        className="game-list"
+        style={game_gap ? { columnGap: game_gap } : {}}
+        ref={targetDivRef}
+      >
         {games.map((game) => (
           <div
             key={game.id}
