@@ -24,12 +24,12 @@ const menuList: MenuProps[] = [
     key: "1",
     label: "首页",
     router: "home",
+    is_active: true,
   },
   {
     key: "2",
     label: "游戏库",
     router: "gamelist",
-    is_active: true,
   },
 ];
 
@@ -44,10 +44,10 @@ const App: React.FC = () => {
   // 点击菜单
   const handleChangeTabs = () => {
     // let localtion = item?.router || "home";
-    navigate("gamelist", {
+    navigate("home", {
       replace: false,
       state: {
-        id: "gamelist",
+        id: "home",
       },
     });
     // 路由跳转

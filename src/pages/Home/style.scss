@@ -1,0 +1,81 @@
+/* style.scss */
+
+body {
+    font-family: sans-serif;
+}
+
+.home-module {
+    width: calc(100vw - 64px);
+    height: calc(100vh - 204px);
+    padding: 20px 0;
+
+    h1 {
+        text-align: center;
+    }
+
+    .game-title-box {
+        display: flex;
+        justify-content: center;
+        column-gap: 40px;
+        padding: 16px 0;
+
+        .game-label {
+            font-size: 36px;
+            color: #999;
+        }
+    };
+
+    .game-list {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        // gap: 12px;
+
+        /* GameCard.css */
+        .game-card {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden; /* 用于隐藏按钮溢出部分 */
+        }
+        
+        .game-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-text-box {
+            text-align: center;
+            color: #999;
+        }
+        
+        .game-card:hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 透明黑色背景 */
+            z-index: 1; /* 浮动层位于按钮之下 */
+        }
+        
+        .accelerate-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 将按钮居中 */
+            background-color: #fff;
+            color: #000;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 2; /* 确保按钮位于浮动层之上 */
+        }
+    }
+}
