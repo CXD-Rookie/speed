@@ -8,6 +8,7 @@
  */
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+// import store from "@/redux/store";
 
 import "./style.scss";
 

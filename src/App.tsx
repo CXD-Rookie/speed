@@ -42,21 +42,15 @@ const App: React.FC = () => {
   const routeView = useRoutes(routes); // 获得路由表
 
   // 点击菜单
-  const handleChangeTabs = () => {
-    // let localtion = item?.router || "home";
-    navigate("home", {
+  const handleChangeTabs = (item: any) => {
+    let localtion = item?.router || "home";
+
+    navigate(localtion, {
       replace: false,
       state: {
-        id: "home",
+        id: item,
       },
     });
-    // 路由跳转
-    // navigate(key, {
-    //   replace: false,
-    //   state: {
-    //     id: key,
-    //   },
-    // });
   };
 
   return (
@@ -68,7 +62,7 @@ const App: React.FC = () => {
             {menuList.map((item) => (
               <div
                 className={`menu ${item?.is_active && "menu-active"}`}
-                onClick={() => handleChangeTabs()}
+                onClick={() => handleChangeTabs(item)}
               >
                 {item?.label}
               </div>
