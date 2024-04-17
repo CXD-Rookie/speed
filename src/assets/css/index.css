@@ -1,5 +1,6 @@
 :root {
-  --speed-dominant-color: red;
+  --speed-dominant-background-color: #1A1A22;
+  --speed-dominant-font-color: #F86C34;
 }
 
 body {
