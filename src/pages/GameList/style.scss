@@ -5,10 +5,9 @@ body {
 }
 
 .game-list-module-container {
-    width: 100%;
+    width: calc(100vw - 64px);
     height: calc(100vh - 204px);
-    margin: 0 auto;
-    padding: 20px;
+    padding: 20px 0;
 
     h1 {
         text-align: center;
@@ -18,7 +17,7 @@ body {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 12px;
 
         /* GameCard.css */
@@ -26,7 +25,6 @@ body {
             position: relative;
             width: 200px;
             height: 300px;
-            border: 1px solid #ccc;
             border-radius: 8px;
             overflow: hidden; /* 用于隐藏按钮溢出部分 */
         }

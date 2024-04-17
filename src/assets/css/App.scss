@@ -21,6 +21,22 @@
       align-items: center;
       justify-content: space-between;
 
+      .menu-list {
+        display: flex;
+        gap: 56px;
+
+        .menu {
+          height: 64px;
+          font-size: 36px;
+          color: #999;
+          cursor: pointer;
+        }
+
+        .menu-active {
+          color: #FFF;
+        }
+      };
+
       .search-input {
         width: 320px;
         height: 46px;
@@ -34,5 +50,10 @@
         color: #FFF;
       }
     }
+  }
+
+  .content {
+    background-color: var(--speed-dominant-background-color);
+    padding: 0 32px;
   }
 }

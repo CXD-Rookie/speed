@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
-import { NotificationOutlined, SlackOutlined } from "@ant-design/icons";
-import { Layout, theme, Tabs, Input } from "antd";
+import { SlackOutlined } from "@ant-design/icons";
+import { Layout, theme, Input } from "antd";
 
-import type { MenuProps } from "antd";
+// import type { MenuProps } from "antd";
 
 import routes from "./routes/index";
 import Login from "./containers/Login/index";
@@ -12,24 +12,24 @@ import "@/assets/css/App.scss";
 
 const { Header, Content } = Layout;
 
-// const items: TabsProps["items"] = [
-//   {
-//     key: "1",
-//     label: "首页",
-//     children: "",
-//   },
-//   {
-//     key: "2",
-//     label: "游戏库",
-//     children: "",
-//   },
-// ];
+interface MenuProps {
+  key: string;
+  label: string;
+  router: string;
+  is_active?: boolean;
+}
 
-const siderMenu: MenuProps["items"] = [
+const menuList: MenuProps[] = [
   {
-    key: "gameList",
-    icon: <NotificationOutlined />,
-    label: "gameList",
+    key: "1",
+    label: "首页",
+    router: "home",
+  },
+  {
+    key: "2",
+    label: "游戏库",
+    router: "gamelist",
+    is_active: true,
   },
 ];
 
@@ -41,10 +41,9 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
 
-  const [breadcrumbName, setBreadcrumbName] = useState("home"); // 面包屑名称
-
   // 点击菜单
   const handleChangeTabs = () => {
+    // let localtion = item?.router || "home";
     navigate("gamelist", {
       replace: false,
       state: {
@@ -65,32 +64,27 @@ const App: React.FC = () => {
       <Header className="header">
         <SlackOutlined className="header-icon" />
         <div className="header-functional-areas">
-          {/* <Tabs
-            defaultActiveKey="1"
-            items={items}
-            onChange={handleChangeTabs}
-          /> */}
-          <div onClick={handleChangeTabs}>游戏库</div>
+          <div className="menu-list">
+            {menuList.map((item) => (
+              <div
+                className={`menu ${item?.is_active && "menu-active"}`}
+                onClick={() => handleChangeTabs()}
+              >
+                {item?.label}
+              </div>
+            ))}
+          </div>
           <Input
             className="search-input"
             size="large"
             placeholder="搜索游戏"
             // prefix={<UserOutlined />}
           />
-          <div>设置</div>
+          <div>{/* <Login /> */}</div>
         </div>
       </Header>
       <Layout>
-        <Content
-          style={{
-            padding: 24,
-            margin: 0,
-            minHeight: 280,
-            background: colorBgContainer,
-          }}
-        >
-          {routeView}
-        </Content>
+        <Content className="content">{routeView}</Content>
       </Layout>
     </Layout>
   );
