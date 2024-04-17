@@ -109,18 +109,20 @@ const GameListPage: React.FC = () => {
 
   return (
     <div className="game-list-module-container">
-      <h1>游戏列表</h1>
-      <div
-        onClick={() => {
-          post("http://192.168.111.119:3001/login", {
-            id: 1,
-            username: "user1",
-            password: "password1",
-          });
-        }}
-      >
-        login
-      </div>
+      <h1>
+        游戏列表
+        <div
+          onClick={() => {
+            post("http://192.168.111.119:3001/login", {
+              id: 1,
+              username: "user1",
+              password: "password1",
+            });
+          }}
+        >
+          login
+        </div>
+      </h1>
       <div className="game-list">
         {games.map((game) => (
           <div
@@ -130,8 +132,10 @@ const GameListPage: React.FC = () => {
             onMouseLeave={handleMouseLeave} // 修改这里
           >
             <img src={game.image} alt={game.name} />
-            <h3>{game.name}</h3>
-            <p>{game.tags.join(", ")}</p>
+            <div className="card-text-box">
+              <h3>{game.name}</h3>
+              <p>{game.tags.join(", ")}</p>
+            </div>
             <button
               className="accelerate-button"
               style={{ display: hoveredCard === game.id ? "block" : "none" }}
