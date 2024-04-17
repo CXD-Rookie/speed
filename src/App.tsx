@@ -3,7 +3,8 @@ import { useNavigate, useRoutes } from "react-router-dom";
 import { SlackOutlined } from "@ant-design/icons";
 import { Layout, theme, Input } from "antd";
 
-// import type { MenuProps } from "antd";
+import { connect } from "react-redux";
+import { menuActive } from "./redux/actions/menu";
 
 import routes from "./routes/index";
 import Login from "./containers/Login/index";
@@ -33,7 +34,16 @@ const menuList: MenuProps[] = [
   },
 ];
 
-const App: React.FC = () => {
+const mapStateToProps = (state: any) => ({
+  // Map state to props if needed
+  state,
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  yourAction: (payload: any) => dispatch(menuActive(payload)),
+});
+
+const App: React.FC = (props) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -52,7 +62,7 @@ const App: React.FC = () => {
       },
     });
   };
-
+  console.log(props);
   return (
     <Layout className="app-module">
       <Header className="header">
@@ -84,4 +94,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
