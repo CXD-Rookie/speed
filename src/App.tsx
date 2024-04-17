@@ -10,6 +10,7 @@ import { useNavigate, useRoutes } from "react-router-dom";
 import routes from "./routes/index";
 import Count from "./containers/Count/index";
 import Tiger from "./containers/Tiger/index";
+import Login from "./containers/Login/index";
 const { Header, Content, Sider } = Layout;
 
 const titleMenu: MenuProps["items"] = ["1", "2", "3"].map((key) => ({
@@ -24,9 +25,9 @@ const siderMenu: MenuProps["items"] = [
     label: "人员管理",
   },
   {
-    key: "about",
+    key: "gameList",
     icon: <NotificationOutlined />,
-    label: "关于系统",
+    label: "gameList",
   },
   {
     key: "info",
@@ -63,7 +64,7 @@ const App: React.FC = () => {
   const handleSiderClick: MenuProps["onClick"] = ({ key, keyPath }) => {
     const name = keyPath.reverse().join("/") || "";
     setBreadcrumbName(name);
-    if (key !== "home" && key !== "about") return;
+    // if (key !== "home" && key !== "about") return;
     // 路由跳转
     navigate(key, {
       replace: false,
@@ -108,10 +109,11 @@ const App: React.FC = () => {
             {routeView}
             <hr />
             <div style={{ margin: "50px 0" }}></div>
-            <Count />
+            {/* <Count /> */}
+            <Login />
             <div style={{ margin: "50px 0" }}></div>
             <hr />
-            <Tiger />
+            {/* <Tiger /> */}
           </Content>
         </Layout>
       </Layout>

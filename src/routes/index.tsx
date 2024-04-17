@@ -1,12 +1,12 @@
 import { Navigate } from "react-router-dom";
 
-import About from "@/pages/About";
+import GameList from "@/pages/GameList";
 import Home from "@/pages/Home";
 import GameDetail from "@/pages/GameDetail";
 export default [
   {
-    path: "/about",
-    element: <About />,
+    path: "/gameList",
+    element: <GameList />,
   },
   {
     path: "/home",
