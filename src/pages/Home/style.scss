@@ -9,28 +9,14 @@ body {
     height: calc(100vh - 204px);
     padding: 20px 0;
 
-    h1 {
-        text-align: center;
-    }
-
-    .game-title-box {
-        display: flex;
-        justify-content: center;
-        column-gap: 40px;
-        padding: 16px 0;
-
-        .game-label {
-            font-size: 36px;
-            color: #999;
-        }
-    };
-
     .game-list {
         width: 100%;
+        max-width: 1300px;
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
-        // gap: 12px;
+        margin: 0 auto;
+        row-gap: 12px;
 
         /* GameCard.css */
         .game-card {
