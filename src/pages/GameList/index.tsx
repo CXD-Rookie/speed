@@ -7,6 +7,7 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from "react";
+import { post } from "@/api/api";
 
 import "./style.scss";
 
@@ -109,6 +110,17 @@ const GameListPage: React.FC = () => {
   return (
     <div className="game-list-module-container">
       <h1>游戏列表</h1>
+      <div
+        onClick={() => {
+          post("http://192.168.111.119:3001/login", {
+            id: 1,
+            username: "user1",
+            password: "password1",
+          });
+        }}
+      >
+        login
+      </div>
       <div className="game-list">
         {games.map((game) => (
           <div
