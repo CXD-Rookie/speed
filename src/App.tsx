@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { NotificationOutlined } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 
 import type { MenuProps } from "antd";
 
 import routes from "./routes/index";
-import Count from "./containers/Count/index";
-import Tiger from "./containers/Tiger/index";
 
 const { Header, Content, Sider } = Layout;
 
@@ -22,35 +16,25 @@ const titleMenu: MenuProps["items"] = ["1", "2", "3"].map((key) => ({
 
 const siderMenu: MenuProps["items"] = [
   {
-    key: "home",
-    icon: <UserOutlined />,
-    label: "人员管理",
-  },
-  {
     key: "about",
     icon: <NotificationOutlined />,
     label: "关于系统",
   },
-  {
-    key: "info",
-    icon: <LaptopOutlined />,
-    label: "信息管理",
-    children: [
-      {
-        key: "info-detail",
-        label: "信息详情",
-      },
-      {
-        key: "info-look",
-        label: "信息查询",
-      },
-    ],
-  },
-  {
-    key: "statistics",
-    icon: <NotificationOutlined />,
-    label: "数量统计",
-  },
+  // {
+  //   key: "info",
+  //   icon: <LaptopOutlined />,
+  //   label: "信息管理",
+  //   children: [
+  //     {
+  //       key: "info-detail",
+  //       label: "信息详情",
+  //     },
+  //     {
+  //       key: "info-look",
+  //       label: "信息查询",
+  //     },
+  //   ],
+  // },
 ];
 
 const App: React.FC = () => {
@@ -113,12 +97,6 @@ const App: React.FC = () => {
             }}
           >
             {routeView}
-            <hr />
-            <div style={{ margin: "50px 0" }}></div>
-            <Count />
-            <div style={{ margin: "50px 0" }}></div>
-            <hr />
-            <Tiger />
           </Content>
         </Layout>
       </Layout>
