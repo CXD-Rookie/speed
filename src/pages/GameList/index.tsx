@@ -2,12 +2,13 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-17 11:13:51
+ * @LastEditTime: 2024-04-17 11:48:10
  * @FilePath: \speed\src\pages\GameList\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from "react";
 import { post } from "@/api/api";
+import { useNavigate } from "react-router-dom";
 
 import "./style.scss";
 
@@ -92,6 +93,8 @@ const games: Game[] = [
 ];
 
 const GameListPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const handleMouseEnter = (gameId: number) => {
@@ -105,6 +108,7 @@ const GameListPage: React.FC = () => {
   const handleAccelerateClick = () => {
     // 处理立即加速按钮的点击事件
     console.log("立即加速");
+    navigate("/gameDetail");
   };
 
   return (
