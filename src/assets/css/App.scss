@@ -1,0 +1,59 @@
+.app-module {
+  width: 100vw;
+  height: 100vh;
+
+  .header {
+    height: 100px;
+    padding: 0 32px;
+    background-color: var(--speed-dominant-background-color);
+    display: flex;
+    align-items: center;
+
+    .header-icon {
+      width: 148px;
+      font-size: 38px;
+      color: var(--speed-dominant-font-color);
+    }
+
+    .header-functional-areas {
+      width: calc(100vw - 48px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .menu-list {
+        display: flex;
+        gap: 56px;
+
+        .menu {
+          height: 64px;
+          font-size: 36px;
+          color: #999;
+          cursor: pointer;
+        }
+
+        .menu-active {
+          color: #FFF;
+        }
+      };
+
+      .search-input {
+        width: 320px;
+        height: 46px;
+      }
+
+      .ant-tabs-tab {
+        color: #999;
+      }
+
+      .ant-tabs-tab-btn {
+        color: #FFF;
+      }
+    }
+  }
+
+  .content {
+    background-color: var(--speed-dominant-background-color);
+    padding: 0 32px;
+  }
+}

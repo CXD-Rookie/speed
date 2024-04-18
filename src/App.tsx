@@ -1,44 +1,49 @@
 import React, { useState } from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
-import { NotificationOutlined } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import { SlackOutlined } from "@ant-design/icons";
+import { Layout, theme, Input } from "antd";
 
-import type { MenuProps } from "antd";
+import { connect } from "react-redux";
+import { menuActive } from "./redux/actions/menu";
 
 import routes from "./routes/index";
 import Login from "./containers/Login/index";
 
-const { Header, Content, Sider } = Layout;
+import "@/assets/css/App.scss";
 
-const titleMenu: MenuProps["items"] = ["1", "2", "3"].map((key) => ({
-  key,
-  label: `标题 ${key}`,
-}));
+const { Header, Content } = Layout;
 
-const siderMenu: MenuProps["items"] = [
+interface MenuProps {
+  key: string;
+  label: string;
+  router: string;
+  is_active?: boolean;
+}
+
+const menuList: MenuProps[] = [
   {
-    key: "gameList",
-    icon: <NotificationOutlined />,
-    label: "gameList",
+    key: "1",
+    label: "首页",
+    router: "home",
+    is_active: true,
   },
-  // {
-  //   key: "info",
-  //   icon: <LaptopOutlined />,
-  //   label: "信息管理",
-  //   children: [
-  //     {
-  //       key: "info-detail",
-  //       label: "信息详情",
-  //     },
-  //     {
-  //       key: "info-look",
-  //       label: "信息查询",
-  //     },
-  //   ],
-  // },
+  {
+    key: "2",
+    label: "游戏库",
+    router: "gamelist",
+  },
 ];
 
-const App: React.FC = () => {
+const mapStateToProps = (state: any) => ({
+  // Map state to props if needed
+  state,
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  setMenuActive: (payload: any) => dispatch(menuActive(payload)),
+});
+
+const App: React.FC = (props) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -46,61 +51,47 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
 
-  const [breadcrumbName, setBreadcrumbName] = useState("home"); // 面包屑名称
-
   // 点击菜单
-  const handleSiderClick: MenuProps["onClick"] = ({ key, keyPath }) => {
-    const name = keyPath.reverse().join("/") || "";
+  const handleChangeTabs = (item: any) => {
+    let localtion = item?.router || "home";
 
-    setBreadcrumbName(name);
-    // if (key !== "home" && key !== "about") return;
-    // 路由跳转
-    navigate(key, {
+    navigate(localtion, {
       replace: false,
       state: {
-        id: key,
+        id: item,
       },
     });
   };
-
+  console.log(props);
   return (
-    <Layout>
+    <Layout className="app-module">
       <Header className="header">
-        <div className="logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={["1"]}
-          items={titleMenu}
-        />
+        <SlackOutlined className="header-icon" />
+        <div className="header-functional-areas">
+          <div className="menu-list">
+            {menuList.map((item) => (
+              <div
+                className={`menu ${item?.is_active && "menu-active"}`}
+                onClick={() => handleChangeTabs(item)}
+              >
+                {item?.label}
+              </div>
+            ))}
+          </div>
+          <Input
+            className="search-input"
+            size="large"
+            placeholder="搜索游戏"
+            // prefix={<UserOutlined />}
+          />
+          <div>{/* <Login /> */}</div>
+        </div>
       </Header>
       <Layout>
-        <Sider width={200} style={{ background: colorBgContainer }}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            style={{ height: "100%", borderRight: 0 }}
-            items={siderMenu}
-            onClick={handleSiderClick}
-          />
-        </Sider>
-        <Layout style={{ padding: "0 24px 24px" }}>
-          <div style={{ margin: "16px 0" }}>{breadcrumbName}</div>
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-              background: colorBgContainer,
-            }}
-          >
-            {routeView}
-          </Content>
-        </Layout>
+        <Content className="content">{routeView}</Content>
       </Layout>
     </Layout>
   );
 };
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
