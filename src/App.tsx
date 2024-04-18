@@ -40,7 +40,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  yourAction: (payload: any) => dispatch(menuActive(payload)),
+  setMenuActive: (payload: any) => dispatch(menuActive(payload)),
 });
 
 const App: React.FC = (props) => {
