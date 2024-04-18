@@ -2,11 +2,12 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-17 10:45:37
+ * @LastEditTime: 2024-04-18 18:58:53
  * @FilePath: \react-ts-antd\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useEffect } from 'react';
+import { post } from "@/api/api";
 import './index.scss';
 
 const Login: React.FC = () => {
@@ -47,6 +48,25 @@ const Login: React.FC = () => {
         // 处理登录逻辑
         console.log('手机号:', phoneNumber);
         console.log('验证码:', verificationCode);
+        // 在登录成功后处理回调
+        post("/login", {
+            id: 1,
+            username: "user1",
+            password: "password1",
+        }).then(response => {
+            // 从响应中获取 token
+            const token = response.token;
+            // 将 token 存储到 localStorage 中
+            localStorage.setItem('token', token);
+            // 进行其他操作，比如页面跳转等
+            // 例如，跳转到首页
+            window.location.href = '/home';
+        }).catch(error => {
+            // 处理登录失败的情况
+            console.error('登录失败：', error);
+            // 可以在这里进行错误提示等操作
+        });
+
     };
 
     return (

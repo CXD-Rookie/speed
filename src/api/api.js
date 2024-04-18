@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-17 10:57:35
+ * @LastEditTime: 2024-04-17 14:26:03
  * @FilePath: \react-ts-antd\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,7 +10,7 @@ import axios from 'axios';
 import { message } from 'antd';
 
 const instance = axios.create({
-  baseURL: 'http://api.example.com', // 根据实际情况设置基础 URL
+  baseURL: 'http://192.168.111.119:8002', // 根据实际情况设置基础 URL
   timeout: 10000, // 请求超时时间（毫秒）
 });
 
@@ -20,6 +20,9 @@ instance.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }else {
+      // 如果没有 token，则跳转到登录页
+      window.location.href = '/login';
     }
     return config;
   },

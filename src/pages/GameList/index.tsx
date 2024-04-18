@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-04-17 11:13:51
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-04-17 14:07:28
  * @FilePath: \speed\src\pages\GameList\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -112,7 +112,7 @@ const GameListPage: React.FC = () => {
       <h1>游戏列表</h1>
       <div
         onClick={() => {
-          post("http://192.168.111.119:3001/login", {
+          post("/login", {
             id: 1,
             username: "user1",
             password: "password1",
