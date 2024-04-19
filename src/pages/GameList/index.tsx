@@ -193,13 +193,6 @@ const GameListPage: React.FC = () => {
             <div className="card-text-box">
               <h3>{game.name}</h3>
             </div>
-            {/* <img
-              // className="accelerate-button"
-              src={addThemeIcon}
-              width={20}
-              height={20}
-              alt=""
-            /> */}
           </div>
         ))}
       </div>
