@@ -2,11 +2,11 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-19 14:41:27
+ * @LastEditTime: 2024-04-19 14:50:30
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./style.scss";
@@ -41,12 +41,8 @@ const games: Game[] = [
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const targetDivRef = useRef(null);
 
-  const [divWidth, setDivWidth] = useState(0);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-
-  const game_gap = (divWidth % 200) / Math.floor(divWidth / 200);
 
   const handleMouseEnter = (gameId: number) => {
     setHoveredCard(gameId);
@@ -62,29 +58,9 @@ const Home: React.FC = () => {
     navigate("/gameDetail");
   };
 
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        if (entry.target === targetDivRef.current) {
-          setDivWidth(entry.contentRect.width);
-        }
-      }
-    });
-
-    if (targetDivRef.current) {
-      resizeObserver.observe(targetDivRef?.current);
-    }
-
-    return () => {
-      if (targetDivRef?.current) {
-        resizeObserver.unobserve(targetDivRef?.current);
-      }
-    };
-  }, [targetDivRef]);
-
   return (
     <div className="home-module">
-      <div className="game-list" ref={targetDivRef}>
+      <div className="game-list">
         {games.map((game) => (
           <div
             key={game.id}
