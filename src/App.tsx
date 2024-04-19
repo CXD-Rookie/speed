@@ -66,7 +66,7 @@ const App: React.FC = (props: any) => {
 
   return (
     <Layout className="app-module">
-      <Header className="header">
+      {/* <Header className="header">
         <SlackOutlined className="header-icon" />
         <div className="header-functional-areas">
           <div className="menu-list">
@@ -86,9 +86,8 @@ const App: React.FC = (props: any) => {
             placeholder="搜索游戏"
             // prefix={<UserOutlined />}
           />
-          <div>{/* <Login /> */}</div>
         </div>
-      </Header>
+      </Header> */}
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
