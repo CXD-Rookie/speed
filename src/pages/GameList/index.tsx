@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-19 16:06:20
+ * @LastEditTime: 2024-04-19 16:13:07
  * @FilePath: \speed\src\pages\GameList\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -193,13 +193,13 @@ const GameListPage: React.FC = () => {
             <div className="card-text-box">
               <h3>{game.name}</h3>
             </div>
-            <img
+            {/* <img
               // className="accelerate-button"
               src={addThemeIcon}
               width={20}
               height={20}
               alt=""
-            />
+            /> */}
           </div>
         ))}
       </div>

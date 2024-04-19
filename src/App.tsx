@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate, useRoutes } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { SlackOutlined } from "@ant-design/icons";
 import { Layout, Input } from "antd";
 
@@ -24,12 +24,12 @@ const menuList: MenuProps[] = [
   {
     key: "home",
     label: "首页",
-    router: "home",
+    router: "/home",
   },
   {
     key: "gamelist",
     label: "游戏库",
-    router: "gamelist",
+    router: "/gamelist",
   },
 ];
 
@@ -44,6 +44,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const App: React.FC = (props: any) => {
   const { state, setMenuActive } = props;
+
+  const location = useLocation();
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
 
@@ -59,7 +61,11 @@ const App: React.FC = (props: any) => {
       },
     });
   };
-  console.log(state);
+
+  useEffect(() => {
+    setMenuActive(location?.pathname);
+  }, [location]);
+
   return (
     <Layout className="app-module">
       <Header className="header">
@@ -69,7 +75,9 @@ const App: React.FC = (props: any) => {
             {menuList.map((item) => (
               <div
                 key={item?.key}
-                className={`menu ${state?.menu === item?.key && "menu-active"}`}
+                className={`menu ${
+                  state?.menu === item?.router && "menu-active"
+                }`}
                 onClick={() => handleChangeTabs(item)}
               >
                 {item?.label}

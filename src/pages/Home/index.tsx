@@ -86,7 +86,11 @@ const Home: React.FC = () => {
             { length: 4 - games?.length },
             (_, index) => index + 1
           ).map((item) => (
-            <div key={item} className="null-data-card">
+            <div
+              key={item}
+              className="null-data-card"
+              onClick={() => navigate("/gamelist")}
+            >
               <img src={addIcon} width={120} height={120} alt="" />
               <div>加载更多游戏</div>
             </div>
