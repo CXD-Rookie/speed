@@ -13,6 +13,7 @@ body {
         width: 100%;
         max-width: 1300px;
         display: flex;
+        margin: 0 auto;
         column-gap: 12px;
 
         /* GameCard.css */
@@ -50,27 +51,43 @@ body {
                 z-index: 2; /* 确保按钮位于浮动层之上 */
             }
         }
-
-        .game-card:hover::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* 透明黑色背景 */
-            z-index: 1; /* 浮动层位于按钮之下 */
-        }
         
         .null-data-card {
             width: calc(25% - 9px);
             height: 300px;
-            background: rgba(255,255,255,0.10);;
+            background: var(--speed-dominant-module-color);
             border-radius: var(--speed-dominant-border-radius);
             text-align: center;
             padding-top: 50px;
             color: #999;
             font-size: 26px;
+        }
+    }
+
+    .functional-areas {
+        width: 100%;
+        max-width: 1300px;
+        display: flex;
+        margin: 0 auto;
+        column-gap: 12px;
+
+        .areas-list-box {
+            width: calc(50% - 6px);
+            height: 271px;
+            background: var(--speed-dominant-module-color);
+            border-radius: var(--speed-dominant-border-radius);
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            column-gap: 20px;
+        };
+
+        .membership-recharge {
+            
+        }
+
+        .may-games {
+
         }
     }
 }
