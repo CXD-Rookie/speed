@@ -5,9 +5,9 @@ body {
 }
 
 .home-module {
-    width: calc(100vw - 64px);
-    height: calc(100vh - 204px);
-    padding: 20px 0;
+    width: 100vw;
+    height: calc(100vh - 100px);
+    padding: 20px 32px;
 
     .game-list {
         width: 100%;

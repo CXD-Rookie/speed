@@ -1,6 +1,7 @@
 .my-games-module {
-  width: calc(100vw - 64px);
-  height: calc(100vh - 204px);
+  width: 100vw;
+  height: calc(100vh - 100px);
+  padding: 24px 32px;
 
   .back-box {
     display: flex;

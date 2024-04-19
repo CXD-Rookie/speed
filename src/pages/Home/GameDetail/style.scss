@@ -1,7 +1,7 @@
 /* style.scss */
 .home-module-detail {
     width: 100%;
-    height: calc(100vh - 204px);
+    height: calc(100vh - 100px);
     position: relative;
 
     .back-game-icon-box {
@@ -9,14 +9,15 @@
         z-index: 2;
 
         img {
-            width: 100%;
-            height: auto;
+            width: 100vw;
+            height: calc(100vh - 104px);
             object-fit: cover;
         }
     };
 
     .cantainer {
         width: 100%;
+        padding: 24px 32px;
         position: absolute;
         left: 0;
         top: 0;
@@ -71,7 +72,7 @@
 
                 .info-common-style {
                     color: #FFF;
-                    background-color: rgba(0, 0, 0, 0.2);
+                    background-color: rgba(0, 0, 0, 0.4);
                     border-radius: var(--speed-dominant-border-radius);
                 }
 
