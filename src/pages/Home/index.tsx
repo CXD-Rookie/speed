@@ -2,15 +2,16 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-17 17:10:34
+ * @LastEditTime: 2024-04-19 12:01:41
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import store from "@/redux/store";
 
 import "./style.scss";
+
+import addIcon from "@/assets/images/common/add.svg";
 
 interface Game {
   id: number;
@@ -33,62 +34,6 @@ const games: Game[] = [
     image:
       "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
     tags: ["MOBA", "竞技", "策略"],
-  },
-  {
-    id: 3,
-    name: "绝地求生",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["FPS", "射击", "生存"],
-  },
-  {
-    id: 4,
-    name: "我的世界",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["沙盒", "建造", "冒险"],
-  },
-  {
-    id: 5,
-    name: "王者荣耀",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["MOBA", "竞技", "手游"],
-  },
-  {
-    id: 6,
-    name: "Apex英雄",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["FPS", "射击", "Battle Royale"],
-  },
-  {
-    id: 7,
-    name: "糖豆人：终极淘汰赛",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["休闲", "多人", "竞技"],
-  },
-  {
-    id: 8,
-    name: "怪物猎人：崛起",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["休闲", "多人", "竞技"],
-  },
-  {
-    id: 9,
-    name: "暗黑破坏神4",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["休闲", "多人", "竞技"],
-  },
-  {
-    id: 10,
-    name: "艾尔登法环",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["休闲", "多人", "竞技"],
   },
 ];
 
@@ -137,11 +82,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-module">
-      <div
-        className="game-list"
-        style={game_gap ? { columnGap: game_gap } : {}}
-        ref={targetDivRef}
-      >
+      <div className="game-list" ref={targetDivRef}>
         {games.map((game) => (
           <div
             key={game.id}
@@ -152,7 +93,6 @@ const Home: React.FC = () => {
             <img src={game.image} alt={game.name} />
             <div className="card-text-box">
               <h3>{game.name}</h3>
-              <p>{game.tags.join(", ")}</p>
             </div>
             <button
               className="accelerate-button"
@@ -163,6 +103,16 @@ const Home: React.FC = () => {
             </button>
           </div>
         ))}
+        {games?.length < 4 &&
+          Array.from(
+            { length: 4 - games?.length },
+            (_, index) => index + 1
+          ).map((item) => (
+            <div key={item} className="null-data-card">
+              <img src={addIcon} width={120} height={120} alt="" />
+              <div>加载更多游戏</div>
+            </div>
+          ))}
       </div>
     </div>
   );

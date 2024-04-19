@@ -22,13 +22,13 @@ interface MenuProps {
 
 const menuList: MenuProps[] = [
   {
-    key: "1",
+    key: "home",
     label: "首页",
     router: "home",
     is_active: true,
   },
   {
-    key: "2",
+    key: "gamelist",
     label: "游戏库",
     router: "gamelist",
   },
@@ -43,11 +43,11 @@ const mapDispatchToProps = (dispatch: any) => ({
   setMenuActive: (payload: any) => dispatch(menuActive(payload)),
 });
 
-const App: React.FC = (props) => {
+const App: React.FC = (props: any) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
+  const { state, setMenuActive } = props;
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
 
@@ -55,6 +55,7 @@ const App: React.FC = (props) => {
   const handleChangeTabs = (item: any) => {
     let localtion = item?.router || "home";
 
+    setMenuActive(item?.key);
     navigate(localtion, {
       replace: false,
       state: {
@@ -62,7 +63,7 @@ const App: React.FC = (props) => {
       },
     });
   };
-  console.log(props);
+
   return (
     <Layout className="app-module">
       <Header className="header">
@@ -71,7 +72,8 @@ const App: React.FC = (props) => {
           <div className="menu-list">
             {menuList.map((item) => (
               <div
-                className={`menu ${item?.is_active && "menu-active"}`}
+                key={item?.key}
+                className={`menu ${state?.menu === item?.key && "menu-active"}`}
                 onClick={() => handleChangeTabs(item)}
               >
                 {item?.label}

@@ -13,31 +13,44 @@ body {
         width: 100%;
         max-width: 1300px;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        margin: 0 auto;
-        row-gap: 12px;
+        column-gap: 12px;
 
         /* GameCard.css */
         .game-card {
             position: relative;
-            width: 200px;
-            height: 300px;
-            border-radius: 8px;
+            width: calc(25% - 9px);
+            height: 360px;
+            border-radius: var(--speed-dominant-border-radius);
             overflow: hidden; /* 用于隐藏按钮溢出部分 */
-        }
-        
-        .game-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+
+            img {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+                border-radius: var(--speed-dominant-border-radius);
+            }
+
+            .card-text-box {
+                text-align: center;
+                color: #999;
+            }
+
+            .accelerate-button {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); /* 将按钮居中 */
+                background-color: #fff;
+                color: #000;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                font-size: 16px;
+                cursor: pointer;
+                z-index: 2; /* 确保按钮位于浮动层之上 */
+            }
         }
 
-        .card-text-box {
-            text-align: center;
-            color: #999;
-        }
-        
         .game-card:hover::before {
             content: '';
             position: absolute;
@@ -49,19 +62,15 @@ body {
             z-index: 1; /* 浮动层位于按钮之下 */
         }
         
-        .accelerate-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* 将按钮居中 */
-            background-color: #fff;
-            color: #000;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 2; /* 确保按钮位于浮动层之上 */
+        .null-data-card {
+            width: calc(25% - 9px);
+            height: 300px;
+            background: rgba(255,255,255,0.10);;
+            border-radius: var(--speed-dominant-border-radius);
+            text-align: center;
+            padding-top: 50px;
+            color: #999;
+            font-size: 26px;
         }
     }
 }

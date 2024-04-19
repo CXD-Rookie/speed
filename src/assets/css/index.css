@@ -1,6 +1,7 @@
 :root {
   --speed-dominant-background-color: #1A1A22;
   --speed-dominant-font-color: #F86C34;
+  --speed-dominant-border-radius: 20px;
 }
 
 body {
