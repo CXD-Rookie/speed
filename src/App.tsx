@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useRoutes } from "react-router-dom";
 import { SlackOutlined } from "@ant-design/icons";
-import { Layout, theme, Input } from "antd";
+import { Layout, Input } from "antd";
 
 import { connect } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
@@ -25,7 +25,6 @@ const menuList: MenuProps[] = [
     key: "home",
     label: "首页",
     router: "home",
-    is_active: true,
   },
   {
     key: "gamelist",
@@ -44,9 +43,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 const App: React.FC = (props: any) => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
   const { state, setMenuActive } = props;
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
@@ -63,7 +59,7 @@ const App: React.FC = (props: any) => {
       },
     });
   };
-
+  console.log(state);
   return (
     <Layout className="app-module">
       <Header className="header">

@@ -1,16 +1,17 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-18 19:01:27
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-04-19 16:06:20
  * @FilePath: \speed\src\pages\GameList\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useRef, useEffect } from "react";
-// import { post } from "@/api/api";
 import { useNavigate } from "react-router-dom";
 
 import "./style.scss";
+
+import addThemeIcon from "@/assets/images/common/add-theme.svg";
 
 interface Game {
   id: number;
@@ -121,6 +122,8 @@ const GameListPage: React.FC = () => {
   const targetDivRef = useRef(null);
 
   const [divWidth, setDivWidth] = useState(0);
+
+  const [gameActiveType, setGameActiveType] = useState<string>("1");
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const game_gap = (divWidth % 200) / Math.floor(divWidth / 200);
@@ -163,7 +166,13 @@ const GameListPage: React.FC = () => {
     <div className="game-list-module-container">
       <div className="game-title-box">
         {gamesTitle.map((item) => (
-          <div key={item?.key} className="game-label">
+          <div
+            key={item?.key}
+            className={`game-label ${
+              gameActiveType === item?.key && "game-label-active"
+            }`}
+            onClick={() => setGameActiveType(item?.key)}
+          >
             {item?.label}
           </div>
         ))}
@@ -183,15 +192,14 @@ const GameListPage: React.FC = () => {
             <img src={game.image} alt={game.name} />
             <div className="card-text-box">
               <h3>{game.name}</h3>
-              <p>{game.tags.join(", ")}</p>
             </div>
-            <button
-              className="accelerate-button"
-              style={{ display: hoveredCard === game.id ? "block" : "none" }}
-              onClick={handleAccelerateClick}
-            >
-              立即加速
-            </button>
+            <img
+              // className="accelerate-button"
+              src={addThemeIcon}
+              width={20}
+              height={20}
+              alt=""
+            />
           </div>
         ))}
       </div>
