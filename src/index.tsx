@@ -1,3 +1,12 @@
+/*
+ * @Author: zhangda
+ * @Date: 2024-04-16 14:11:44
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-04-19 14:05:58
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\src\index.tsx
+ */
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
@@ -24,7 +33,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={"/home"}>
       <ConfigProvider locale={zhCN}>
         <Provider store={store}>
           <App />
