@@ -9,17 +9,7 @@ body {
     height: calc(100vh - 204px);
     padding: 20px 0;
     overflow-y: scroll;
-
-    &::-webkit-scrollbar {
-        width: 6px;
-        background-color: var(--speed-dominant-background-color);
-    };
-
-    &::-webkit-scrollbar-thumb {
-        background-color: var(--speed-dominant-module-color);
-        border-radius: 6px;
-    };
-
+    
     h1 {
         text-align: center;
     }

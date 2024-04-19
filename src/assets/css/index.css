@@ -12,9 +12,20 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    background-color: var(--speed-dominant-background-color);
+  };
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--speed-dominant-module-color);
+    border-radius: 6px;
+  };
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+

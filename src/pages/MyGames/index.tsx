@@ -2,8 +2,8 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-19 14:50:30
- * @FilePath: \speed\src\pages\Home\index.tsx
+ * @LastEditTime: 2024-04-19 16:49:20
+ * @FilePath: \speed\src\pages\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from "react";
@@ -39,7 +39,7 @@ const games: Game[] = [
   },
 ];
 
-const Home: React.FC = () => {
+const MyGames: React.FC = () => {
   const navigate = useNavigate();
 
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -59,7 +59,13 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="home-module">
+    <div className="my-games-module">
+      <div className="back-box">
+        <div className="back" onClick={() => navigate("/home")}>
+          返回
+        </div>
+        <div className="games">我的游戏 (9)</div>
+      </div>
       <div className="game-list">
         {games.map((game) => (
           <div
@@ -81,36 +87,9 @@ const Home: React.FC = () => {
             </button>
           </div>
         ))}
-        {games?.length < 4 &&
-          Array.from(
-            { length: 4 - games?.length },
-            (_, index) => index + 1
-          ).map((item) => (
-            <div
-              key={item}
-              className="null-data-card"
-              onClick={() => navigate("/gamelist")}
-            >
-              <img src={addIcon} width={120} height={120} alt="" />
-              <div>加载更多游戏</div>
-            </div>
-          ))}
-      </div>
-      <div className="functional-areas">
-        <div className="membership-recharge areas-list-box">
-          <img src={rechargeIcon} width={120} height={120} alt="" />
-          会员充值
-        </div>
-        <div
-          className="may-games areas-list-box"
-          onClick={() => navigate("/myGames")}
-        >
-          <img src={gamesIcon} width={120} height={120} alt="" />
-          我的游戏 (9)
-        </div>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default MyGames;
