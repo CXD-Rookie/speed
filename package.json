@@ -13,6 +13,7 @@
     "antd": "^5.4.7",
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
+    "echarts": "^5.5.0",
     "nanoid": "^4.0.2",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
     "react": "^18.2.0",
