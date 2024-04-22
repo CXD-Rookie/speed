@@ -59,16 +59,39 @@
                 .game-btn {
                     width: 200px;
                     height: 52px;
+                    font-size: 22px;
                     border-radius: 52px;
                 }
 
                 .on-game {
+                    color: #FFF;
                     background-color: #F86C34;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin: 0 auto;
+
+                    img {
+                        width: 24px;
+                        height: 24px;
+                        margin-right: 4px;
+                    }
                 }
 
                 .down-game {
+                    color: #222;
                     background-color: #FFF;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin: 0 auto;
                     margin-top: 24px;
+
+                    img {
+                        width: 24px;
+                        height: 24px;
+                        margin-right: 4px;
+                    }
                 }
             }
 
@@ -86,6 +109,10 @@
                     padding: 24px 32px;
                     display: flex;
                     justify-content: space-between;
+
+                    & span:last-child {
+                        color: #F86C34;
+                    }
                 }
                 
                 .info-speed {
@@ -93,6 +120,20 @@
                     display: flex;
                     padding: 40px 0 32px 0;
                     align-items: center;
+
+                    .keep {
+                        color: #999999;
+                        font-size: 22px;
+
+                        div {
+                            color: #FFF;
+                            font-size: 50px;
+
+                            span {
+                                font-size: 18px
+                            }
+                        }
+                    };
 
                     .speed-common {
                         width: calc(50% - 1px);
@@ -108,10 +149,59 @@
 
                 .appliances {
                     margin-top: 12px;
+
+                    .title {
+                        width: 100%;
+                        color: #FFF;
+                        font-size: 22px;
+                        padding: 16px 0 20px 0;
+                        text-align: center;
+                    }
+
+                    .content-box {
+                        width: 100%;
+                        padding-bottom: 20px;
+                        display: flex;
+                        justify-content: center;
+                        
+                        .icon-box {
+                            text-align: center;
+                            font-size: 20px;
+                            color: #999999;
+
+                            img {
+                                width: 48px;
+                                height: 48px;
+                            }
+                        }
+
+                        .line-box {
+                            color: #F86C34;
+                            text-align: center;
+                            font-size: 20px;
+
+                            .line {
+                                width: 200px;
+                                height: 2px;
+                                border-radius: 50%;
+                                background-color: #F86C34;
+                                opacity: 0.4;
+                                margin: 4px 10px 0 10px;
+                            }
+                        }
+                    }
                 }
 
                 .tendencies {
                     margin-top: 12px;
+
+                    .title {
+                        width: 100%;
+                        color: #FFF;
+                        font-size: 22px;
+                        padding: 16px 0 20px 0;
+                        text-align: center;
+                    }
                 }
             }
         }
