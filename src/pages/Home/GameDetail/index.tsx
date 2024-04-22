@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-19 17:57:16
+ * @LastEditTime: 2024-04-22 17:30:35
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,6 +13,12 @@ import { useNavigate } from "react-router-dom";
 import "./style.scss";
 
 import backGameIcon from "@/assets/images/common/back-game.svg";
+import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
+import activateIcon from "@/assets/images/common/activate.svg";
+import cessationIcon from "@/assets/images/common/cessation.svg";
+import computerIcon from "@/assets/images/common/computer.svg";
+import computingIcon from "@/assets/images/common/computing.svg";
+import laptopsIcon from "@/assets/images/common/laptops.svg";
 
 interface Game {
   id: number;
@@ -36,9 +42,8 @@ const GameDetail: React.FC = () => {
 
   return (
     <div className="home-module-detail">
-      <div className="back-game-icon-box">
-        <img src={backGameIcon} alt="" />
-      </div>
+      <img className="back-icon" src={backGameIcon} alt="" />
+      <img className="mask-back-icon" src={accelerateIcon} alt="" />
       <div className="cantainer">
         <div className="back" onClick={() => navigate("/home")}>
           返回
@@ -48,9 +53,11 @@ const GameDetail: React.FC = () => {
             <img src={game.image} alt={game.name} />
             <h2>{game.name}</h2>
             <Button className="on-game game-btn" type="default">
+              <img src={activateIcon} alt="" width={20} height={20} />
               启动游戏
             </Button>
             <Button className="down-game game-btn" type="default">
+              <img src={activateIcon} alt="" width={20} height={20} />
               停止加速
             </Button>
           </div>
