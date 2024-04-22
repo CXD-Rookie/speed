@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-16 14:11:44
- * @LastEditors: zhangda
- * @LastEditTime: 2024-04-19 14:14:51
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-04-19 19:12:51
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\index.tsx
@@ -23,7 +23,7 @@ import "dayjs/locale/zh-cn";
 import store from "./redux/store";
 
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter ,HashRouter } from "react-router-dom";
 
 dayjs.locale("zh-cn");
 
@@ -33,12 +33,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    {/* <BrowserRouter basename="/"> */}
+    <HashRouter>
       <ConfigProvider locale={zhCN}>
         <Provider store={store}>
           <App />
         </Provider>
       </ConfigProvider>
-    </BrowserRouter>
+    </HashRouter>
+    {/* </BrowserRouter> */}
   </React.StrictMode>
 );
