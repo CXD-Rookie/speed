@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-04-22 17:30:35
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-04-22 18:29:16
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,6 +20,8 @@ import computerIcon from "@/assets/images/common/computer.svg";
 import computingIcon from "@/assets/images/common/computing.svg";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
 
+import BarChart from "@/containers/BarChart/index";
+
 interface Game {
   id: number;
   name: string;
@@ -36,6 +38,13 @@ const game: Game = {
   description:
     "《原神》是由中国大陆游戏开发商miHoYo制作并发行的一款开放世界动作角色扮演游戏。",
 };
+
+ // 柱形图数据示例
+ const data = [
+  { label: "A", value: 100 },
+  { label: "B", value: 200 },
+  { label: "C", value: 300 },
+];
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -88,6 +97,10 @@ const GameDetail: React.FC = () => {
           </div>
         </div>
       </div>
+      <div className="tt">
+        11111111111111
+      <BarChart data={data} />
+    </div>
     </div>
   );
 };
