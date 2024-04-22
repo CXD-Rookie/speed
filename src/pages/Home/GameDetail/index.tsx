@@ -53,11 +53,11 @@ const GameDetail: React.FC = () => {
             <img src={game.image} alt={game.name} />
             <h2>{game.name}</h2>
             <Button className="on-game game-btn" type="default">
-              <img src={activateIcon} alt="" width={20} height={20} />
+              {/* <img src={activateIcon} alt="" width={20} height={20} /> */}
               启动游戏
             </Button>
             <Button className="down-game game-btn" type="default">
-              <img src={activateIcon} alt="" width={20} height={20} />
+              {/* <img src={activateIcon} alt="" width={20} height={20} /> */}
               停止加速
             </Button>
           </div>
