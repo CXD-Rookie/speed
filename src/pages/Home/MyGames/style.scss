@@ -8,14 +8,12 @@
     align-items: center;
 
     .back {
-      width: 96px;
-      height: 48px;
-      font-size: 24px;
+      font-size: 22px;
       border-radius: 8px;
       color: #FFF;
       text-align: center;
-      line-height: 48px;
       background-color: var(--speed-dominant-module-color);
+      padding: 8px 13px;
     }
 
     .games {
@@ -30,6 +28,7 @@
     height: calc(100vh - 324px);
     margin-top: 24px;
     display: flex;
+    flex-wrap: wrap;
     overflow-y: scroll;
     column-gap: 12px;
   }

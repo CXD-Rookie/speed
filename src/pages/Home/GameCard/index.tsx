@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-22 14:43:34
+ * @LastEditTime: 2024-04-22 15:20:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -17,6 +17,7 @@ import "./style.scss";
 
 export interface GameCardProps {
   gameData?: any;
+  type?: string;
   size?: "middle" | "small" | "large"; // 输入框类型 默认 middle
   onChange?: ((value: object) => void) | undefined;
   style?: React.CSSProperties;
@@ -24,7 +25,7 @@ export interface GameCardProps {
 }
 
 const GameCard: React.FC<GameCardProps> = (props) => {
-  const { gameData = {} } = props;
+  const { gameData = {}, type = "home" } = props;
 
   const navigate = useNavigate();
 
@@ -34,9 +35,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   return (
     <div
-      className="home-module-game-card"
-      // onMouseEnter={() => handleMouseEnter(game.id)}
-      // onMouseLeave={handleMouseLeave} // 修改这里
+      className={`home-module-game-card ${
+        type === "home"
+          ? "home-module-game-card-home"
+          : "home-module-game-card-my-game"
+      }`}
     >
       <div className="content-box">
         <img src={gameData.image} alt={gameData.name} />
@@ -48,19 +51,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 <div className="speed">
                   98<span>ms</span>
                 </div>
-                <div className="go-deteils">进入详情</div>
+                <div className="go-deteils" onClick={handleAccelerateClick}>
+                  进入详情
+                </div>
                 <div className="down-accelerate">停止加速</div>
               </div>
               <img src={acceleratedIcon} alt="" />
             </Fragment>
           ) : (
             <Fragment>
-              <div
-                className="accelerate-button"
-                onClick={handleAccelerateClick}
-              >
-                立即加速
-              </div>
+              <div className="accelerate-button">立即加速</div>
               <img src={accelerateIcon} alt="" />
             </Fragment>
           )}

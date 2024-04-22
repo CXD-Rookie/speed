@@ -1,7 +1,5 @@
 .home-module-game-card {
   position: relative;
-  width: calc(25% - 9px);
-  height: 360px;
   border-radius: var(--speed-dominant-border-radius);
   overflow: hidden; /* 用于隐藏按钮溢出部分 */
 
@@ -106,4 +104,14 @@
     color: #999;
     padding: 16px;
   }
- }
+}
+
+.home-module-game-card-home {
+  width: calc(25% - 9px);
+  height: 360px;
+}
+
+.home-module-game-card-my-game {
+  width: 200px;
+  height: 360px;
+}
