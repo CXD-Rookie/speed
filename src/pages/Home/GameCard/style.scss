@@ -1,0 +1,109 @@
+.home-module-game-card {
+  position: relative;
+  width: calc(25% - 9px);
+  height: 360px;
+  border-radius: var(--speed-dominant-border-radius);
+  overflow: hidden; /* 用于隐藏按钮溢出部分 */
+
+  .content-box {
+    img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: var(--speed-dominant-border-radius);
+    }
+
+    .accelerate-content {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      /* 确保按钮位于浮动层之上 */
+      display: none;
+
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: var(--speed-dominant-border-radius);
+        z-index: 1;
+      }
+
+      .accelerated-content {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        z-index: 2;
+
+        .instant-delay {
+          width: 164px;
+          height: 40px;
+          background: rgba(255, 255, 255, 0.10);
+          border-radius: 36px;
+          font-size: 22px;
+          color: #ffffff;
+          text-align: center;
+          line-height: 40px;
+          margin: 30px 0 0 calc(50% - 82px);
+        }
+
+        .speed {
+          font-size: 36px;
+          color: #ffffff;
+          margin-top: 12px;
+
+          span {
+            font-size: 18px;
+          }
+        }
+
+        .go-deteils {
+          font-size: 22px;
+          color: #ffffff;
+          margin-top: 24px;
+          cursor: pointer;
+        }
+
+        .down-accelerate {
+          width: 200px;
+          height: 52px;
+          font-size: 26px;
+          background: #ffffff;
+          border-radius: 26px;
+          margin-left: calc(50% - 100px);
+          text-align: center;
+          line-height: 52px;
+          cursor: pointer;
+          margin-top: 40px;
+        }
+      }
+
+      ;
+
+      .accelerate-button {
+        position: absolute;
+        color: #F86C34;
+        font-size: 26px;
+        cursor: pointer;
+        margin: 226px 0 0 calc(50% - 50px);
+        z-index: 2;
+      }
+    }
+  }
+
+  .content-box:hover .accelerate-content {
+    display: block;
+  };
+
+  .card-text-box {
+    text-align: center;
+    font-size: 26px;
+    color: #999;
+    padding: 16px;
+  }
+ }

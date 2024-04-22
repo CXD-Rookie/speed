@@ -12,7 +12,7 @@ import { Navigate } from "react-router-dom";
 import GameList from "@/pages/GameList";
 import Home from "@/pages/Home";
 import GameDetail from "@/pages/Home/GameDetail";
-import MyGames from "@/pages/MyGames";
+import MyGames from "@/pages/Home/MyGames";
 
 export default [
   {

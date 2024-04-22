@@ -6,14 +6,11 @@
  * @FilePath: \speed\src\pages\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./style.scss";
-
-import addIcon from "@/assets/images/common/add.svg";
-import gamesIcon from "@/assets/images/home/games.svg";
-import rechargeIcon from "@/assets/images/home/recharge.svg";
+import GameCard from "../GameCard";
 
 interface Game {
   id: number;
@@ -42,22 +39,6 @@ const games: Game[] = [
 const MyGames: React.FC = () => {
   const navigate = useNavigate();
 
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-
-  const handleMouseEnter = (gameId: number) => {
-    setHoveredCard(gameId);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredCard(null); // 隐藏所有浮动层
-  };
-
-  const handleAccelerateClick = () => {
-    // 处理立即加速按钮的点击事件
-    console.log("立即加速");
-    navigate("/gameDetail");
-  };
-
   return (
     <div className="my-games-module">
       <div className="back-box">
@@ -68,24 +49,7 @@ const MyGames: React.FC = () => {
       </div>
       <div className="game-list">
         {games.map((game) => (
-          <div
-            key={game.id}
-            className="game-card"
-            onMouseEnter={() => handleMouseEnter(game.id)}
-            onMouseLeave={handleMouseLeave} // 修改这里
-          >
-            <img src={game.image} alt={game.name} />
-            <div className="card-text-box">
-              <h3>{game.name}</h3>
-            </div>
-            <button
-              className="accelerate-button"
-              style={{ display: hoveredCard === game.id ? "block" : "none" }}
-              onClick={handleAccelerateClick}
-            >
-              立即加速
-            </button>
-          </div>
+          <GameCard gameData={game} />
         ))}
       </div>
     </div>
