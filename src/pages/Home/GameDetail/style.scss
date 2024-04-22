@@ -8,7 +8,7 @@
         position: absolute;
         z-index: 2;
         width: 100vw;
-        height: calc(100vh - 116px);
+        height: calc(100vh - 122px);
         object-fit: cover;
     }
 
@@ -27,6 +27,7 @@
         left: 0;
         top: 0;
         z-index: 4;
+        overflow-y: scroll;
     
         .back {
             width: 96px;
@@ -193,6 +194,7 @@
                 }
 
                 .tendencies {
+                    width: 100%;
                     margin-top: 12px;
 
                     .title {

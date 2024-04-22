@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-22 18:29:16
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-04-22 19:07:12
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -120,9 +120,7 @@ const GameDetail: React.FC = () => {
             </div>
             <div className="tendencies info-common-style">
               <div className="title">加速趋势</div>
-              <div className="tt">
-                <BarChart data={data} />
-              </div>
+              <BarChart data={data} />
             </div>
           </div>
         </div>

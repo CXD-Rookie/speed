@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import * as echarts from 'echarts';
+import * as echarts from "echarts";
 interface BarChartDataItem {
   label: string;
   value: number;
@@ -20,7 +20,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     const options = {
       xAxis: {
         type: "category",
-        data: data.map(item => item.label),
+        data: data.map((item) => item.label),
       },
       yAxis: {
         type: "value",
@@ -28,7 +28,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
       series: [
         {
           type: "bar",
-          data: data.map(item => item.value),
+          data: data.map((item) => item.value),
         },
       ],
     };
@@ -40,8 +40,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     };
   }, [data]);
 
-  return <div ref={chartRef} style={{ width: "100%", height: "400px" }} />;
+  return <div ref={chartRef} style={{ width: "100%", height: "100px" }} />;
 };
 
 export default BarChart;
-
