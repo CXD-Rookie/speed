@@ -2,11 +2,12 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-22 15:07:14
+ * @LastEditTime: 2024-04-22 16:23:39
  * @FilePath: \speed\src\pages\Home\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React from "react";
+import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 import "./style.scss";
@@ -17,6 +18,7 @@ interface Game {
   name: string;
   image: string;
   tags: string[];
+  is_accelerate?: boolean;
 }
 
 const games: Game[] = [
@@ -26,6 +28,7 @@ const games: Game[] = [
     image:
       "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
     tags: ["二次元", "开放世界", "RPG"],
+    is_accelerate: true,
   },
   {
     id: 2,
@@ -78,7 +81,7 @@ const MyGames: React.FC = () => {
     <div className="my-games-module">
       <div className="back-box">
         <div className="back" onClick={() => navigate("/home")}>
-          返回
+          <LeftOutlined /> 返回
         </div>
         <div className="games">我的游戏 (9)</div>
       </div>

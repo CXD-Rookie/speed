@@ -37,41 +37,48 @@
         .game-card {
             position: relative;
             width: 200px;
-            height: 300px;
+            // height: 360px;
             border-radius: 8px;
             overflow: hidden; /* 用于隐藏按钮溢出部分 */
-        }
-        
-        .game-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+
+            .content-box {
+                img {
+                    width: 100%;
+                    height: 300px;
+                    object-fit: cover;
+                    border-radius: 8px;
+                }
+
+                .game-card-content {
+                    display: none;
+                }
+                .game-card-active-icon {
+                    position: absolute;
+                    width: 100%;
+                    height: 300px;
+                    left: 0;
+                    top: 0;
+                    z-index: 1;
+                };
+
+                .add-icon {
+                    position: absolute;
+                    width: 80px;
+                    height: 80px;
+                    top: 110px;
+                    left: calc(50% - 40px);
+                    z-index: 2;
+                }
+            }
+
+            .content-box:hover .game-card-content {
+                display: block;
+            }
         }
 
         .card-text-box {
             text-align: center;
             color: #999;
-        }
-        
-        .game-card:hover::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 200px;
-            background-color: rgba(0, 0, 0, 0.5); /* 透明黑色背景 */
-            z-index: 1; /* 浮动层位于按钮之下 */
-        }
-        
-        .accelerate-button {
-            // position: absolute;
-            width: 20px;
-            height: 20px;
-            // top: calc(50% - 60px);
-            // left: calc(50% - 100px);
-            cursor: pointer;
-            z-index: 2; /* 确保按钮位于浮动层之上 */
         }
     }
 }

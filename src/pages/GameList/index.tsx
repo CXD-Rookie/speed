@@ -2,16 +2,17 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-19 16:13:07
+ * @LastEditTime: 2024-04-22 17:10:50
  * @FilePath: \speed\src\pages\GameList\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import "./style.scss";
 
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
+import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 
 interface Game {
   id: number;
@@ -118,29 +119,16 @@ const gamesTitle: GamesTitleProps[] = [
 ];
 
 const GameListPage: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const targetDivRef = useRef(null);
 
   const [divWidth, setDivWidth] = useState(0);
 
   const [gameActiveType, setGameActiveType] = useState<string>("1");
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const game_gap = (divWidth % 200) / Math.floor(divWidth / 200);
 
-  const handleMouseEnter = (gameId: number) => {
-    setHoveredCard(gameId);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredCard(null); // 隐藏所有浮动层
-  };
-
-  const handleAccelerateClick = () => {
-    // 处理立即加速按钮的点击事件
-    console.log("立即加速");
-    navigate("/gameDetail");
-  };
+  const clickAddGame = () => {};
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
@@ -183,13 +171,24 @@ const GameListPage: React.FC = () => {
         ref={targetDivRef}
       >
         {games.map((game) => (
-          <div
-            key={game.id}
-            className="game-card"
-            onMouseEnter={() => handleMouseEnter(game.id)}
-            onMouseLeave={handleMouseLeave} // 修改这里
-          >
-            <img src={game.image} alt={game.name} />
+          <div key={game.id} className="game-card">
+            <div className="content-box">
+              <img className="back-icon" src={game.image} alt={game.name} />
+              <div className="game-card-content">
+                <img
+                  className="add-icon"
+                  src={addThemeIcon}
+                  alt=""
+                  onClick={() => clickAddGame()}
+                />
+                <img
+                  className="game-card-active-icon"
+                  src={acceleratedIcon}
+                  alt=""
+                />
+              </div>
+            </div>
+
             <div className="card-text-box">
               <h3>{game.name}</h3>
             </div>

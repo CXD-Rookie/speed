@@ -5,8 +5,6 @@
 
   .content-box {
     img {
-      width: 100%;
-      height: 300px;
       object-fit: cover;
       border-radius: var(--speed-dominant-border-radius);
     }
@@ -61,10 +59,21 @@
         }
 
         .go-deteils {
+          width: fit-content;
           font-size: 22px;
           color: #ffffff;
           margin-top: 24px;
           cursor: pointer;
+          position: relative;
+          margin-left: calc(50% - 50px);
+
+          img {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            left: 94px;
+            top: 7px;
+          }
         }
 
         .down-accelerate {
@@ -77,11 +86,9 @@
           text-align: center;
           line-height: 52px;
           cursor: pointer;
-          margin-top: 40px;
+          margin-top: 55px;
         }
-      }
-
-      ;
+      };
 
       .accelerate-button {
         position: absolute;
@@ -108,10 +115,35 @@
 
 .home-module-game-card-home {
   width: calc(25% - 9px);
-  height: 360px;
+  // height: 360px;
+
+  .content-box {
+    img {
+      width: 100%;
+      height: 327px;
+      object-fit: cover;
+      border-radius: var(--speed-dominant-border-radius);
+    }
+
+    .accelerate-content {
+      img {
+        width: 100%;
+        height: 327px;
+      }
+    }
+  }
 }
 
 .home-module-game-card-my-game {
   width: 200px;
   height: 360px;
+
+  .content-box {
+    img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: var(--speed-dominant-border-radius);
+    }
+  }
 }

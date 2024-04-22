@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-22 15:20:04
+ * @LastEditTime: 2024-04-22 16:22:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -10,6 +10,7 @@
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 
+import rightArrow from "@/assets/images/common/right-arrow.svg";
 import accelerateIcon from "@/assets/images/common/accelerate.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 
@@ -47,14 +48,44 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           {gameData?.is_accelerate ? (
             <Fragment>
               <div className="accelerated-content">
-                <div className="instant-delay">即时延迟</div>
-                <div className="speed">
-                  98<span>ms</span>
-                </div>
-                <div className="go-deteils" onClick={handleAccelerateClick}>
+                {type === "home" && (
+                  <>
+                    <div className="instant-delay">即时延迟</div>
+                    <div className="speed">
+                      98<span>ms</span>
+                    </div>
+                  </>
+                )}
+                <div
+                  className="go-deteils"
+                  style={
+                    type === "home"
+                      ? {}
+                      : {
+                          marginTop: 130,
+                        }
+                  }
+                  onClick={handleAccelerateClick}
+                >
                   进入详情
+                  <img src={rightArrow} alt="" />
                 </div>
-                <div className="down-accelerate">停止加速</div>
+                <div
+                  className="down-accelerate"
+                  style={
+                    type === "home"
+                      ? {}
+                      : {
+                          width: 160,
+                          height: 40,
+                          lineHeight: "40px",
+                          fontSize: 20,
+                          marginLeft: "calc(50% - 80px)",
+                        }
+                  }
+                >
+                  停止加速
+                </div>
               </div>
               <img src={acceleratedIcon} alt="" />
             </Fragment>
