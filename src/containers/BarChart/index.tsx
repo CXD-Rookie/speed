@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as echarts from "echarts";
+
 interface BarChartDataItem {
   label: string;
   value: number;
@@ -20,15 +21,21 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     const options = {
       xAxis: {
         type: "category",
+        show: false,
         data: data.map((item) => item.label),
       },
       yAxis: {
+        show: false,
         type: "value",
       },
       series: [
         {
           type: "bar",
           data: data.map((item) => item.value),
+          itemStyle: {
+            // 柱子的颜色设置
+            color: "#F86C34", // 修改为蓝色
+          },
         },
       ],
     };
