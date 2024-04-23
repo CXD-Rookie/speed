@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { SlackOutlined } from "@ant-design/icons";
-import { Layout, Input } from "antd";
+import { Layout, Input, Modal } from "antd";
 
 import { connect } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
@@ -48,6 +48,8 @@ const App: React.FC = (props: any) => {
   const location = useLocation();
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
+
+  const [isLoginModal, setIsLoginModal] = useState(true);
 
   // 点击菜单
   const handleChangeTabs = (item: any) => {
@@ -96,11 +98,14 @@ const App: React.FC = (props: any) => {
         </div>
       </Header>
       <Layout>
-        <Content className="content">
-          {routeView}
-          <Login />
-        </Content>
+        <Content className="content">{routeView}</Content>
       </Layout>
+      <div
+        className="login-mask"
+        style={{ display: isLoginModal ? "block" : "none" }}
+      >
+        <Login setIsLoginModal={setIsLoginModal} />
+      </div>
     </Layout>
   );
 };
