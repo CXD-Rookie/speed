@@ -90,10 +90,16 @@ const App: React.FC = (props: any) => {
             placeholder="搜索游戏"
             // prefix={<UserOutlined />}
           />
+          <div className="personal-information">
+            <div>登录/注册</div>
+          </div>
         </div>
       </Header>
       <Layout>
-        <Content className="content">{routeView}</Content>
+        <Content className="content">
+          {routeView}
+          <Login />
+        </Content>
       </Layout>
     </Layout>
   );
