@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-24 20:13:17
+ * @LastEditTime: 2024-04-24 20:44:25
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -47,23 +47,32 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const [showT2, setShowT2] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [accelOpen, setAccelOpen] = useState(false);
+
   const handleAccelerateClick = () => {
-    let arr = [...gameAccelerateList];
-
-    if (arr.length > 0) {
-      let result = arr.includes(gameData.id)
-        ? (arr = arr.filter((item) => item !== gameData.id))
-        : [...arr, gameData.id];
-
-      setGameAccelerateList(result);
-      localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify(result));
-    } else {
+    if (gameAccelerateList?.length < 1) {
       setGameAccelerateList([gameData.id]);
       localStorage.setItem(
         "speed-1.0.0.1-accelerate",
         JSON.stringify([gameData.id])
       );
+    } else {
+      setAccelOpen(true);
     }
+    // if (arr.length > 0) {
+    //   let result = arr.includes(gameData.id)
+    //     ? (arr = arr.filter((item) => item !== gameData.id))
+    //     : [...arr, gameData.id];
+
+    //   setGameAccelerateList(result);
+    //   localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify(result));
+    // } else {
+    //   setGameAccelerateList([gameData.id]);
+    //   localStorage.setItem(
+    //     "speed-1.0.0.1-accelerate",
+    //     JSON.stringify([gameData.id])
+    //   );
+    // }
 
     setShowT1(false);
     setShowT2(true);
@@ -82,11 +91,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   const handleStopClick = () => {
-    let arr = [...gameAccelerateList].filter((item) => item !== gameData.id);
-    console.log(arr);
+    // let arr = [...gameAccelerateList].filter((item) => item !== gameData.id);
 
-    setGameAccelerateList(arr);
-    localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify(arr));
+    setGameAccelerateList([]);
+    localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify([]));
 
     // CefWebInstance.call(
     //   "jsCallStopSpeed",
@@ -188,6 +196,54 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         </div>
       </div>
       <div className="card-text-box">{gameData.name}</div>
+      <div
+        style={{
+          width: "400px",
+          display: accelOpen ? "block" : "none",
+          position: "fixed",
+          top: "200px",
+          left: "calc(50% - 200px)",
+          background: "rgba(0,0,0, 0.7)",
+          borderRadius: "20px",
+          padding: "53px",
+          zIndex: 10,
+          color: "#FFF",
+        }}
+      >
+        其他游戏正在加速，你确定要加速此游戏吗？
+        <div style={{ display: "flex", marginTop: "20px" }}>
+          <div
+            style={{
+              padding: "8px 16px",
+              background: "#F86C34",
+              borderRadius: "8px",
+            }}
+            onClick={() => {
+              setGameAccelerateList([gameData.id]);
+              localStorage.setItem(
+                "speed-1.0.0.1-accelerate",
+                JSON.stringify([gameData.id])
+              );
+              setAccelOpen(false);
+            }}
+          >
+            确定
+          </div>
+          <div
+            style={{
+              padding: "8px 16px",
+              background: "rgba(255,255,255,0.1)",
+              borderRadius: "8px",
+              marginLeft: "20px",
+            }}
+            onClick={() => {
+              setAccelOpen(false);
+            }}
+          >
+            取消
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
