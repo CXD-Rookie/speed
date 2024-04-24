@@ -1,12 +1,12 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-24 17:00:37
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-04-24 18:55:18
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./style.scss";
@@ -31,7 +31,7 @@ const games: Game[] = [
     image:
       "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
     tags: ["二次元", "开放世界", "RPG"],
-    is_accelerate: true,
+    // is_accelerate: true,
   },
   {
     id: 2,
@@ -46,11 +46,29 @@ const games: Game[] = [
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
+  const [gameAccelerateList, setGameAccelerateList] = useState<any>([]);
+
+  useEffect(() => {
+    let arr =
+      localStorage.getItem("speed-1.0.0.1-accelerate") || JSON.stringify([]);
+    let game_arr = localStorage.getItem("speed-1.0.0.1-accelerate")
+      ? JSON.parse(arr)
+      : [];
+
+    setGameAccelerateList(game_arr);
+  }, []);
+
   return (
     <div className="home-module">
       <div className="game-list">
         {games.map((game) => (
-          <GameCard key={game?.id} gameData={game} />
+          <GameCard
+            key={game?.id}
+            gameData={game}
+            isAccelerate={gameAccelerateList.includes(game.id)}
+            gameAccelerateList={gameAccelerateList}
+            setGameAccelerateList={setGameAccelerateList}
+          />
         ))}
         {games?.length < 4 &&
           Array.from(
