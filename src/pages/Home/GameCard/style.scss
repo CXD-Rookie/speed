@@ -10,10 +10,10 @@
     }
 
     .accelerate-content {
-      width: 100%;
+      width: 92.2%;
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 12px;
+      left: 12px;
       z-index: 2;
       /* 确保按钮位于浮动层之上 */
       display: none;
@@ -22,8 +22,8 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 300px;
+        height: 327px;
+        width: 92.5%;
         object-fit: cover;
         border-radius: var(--speed-dominant-border-radius);
         z-index: 1;
@@ -104,6 +104,18 @@
   .content-box:hover .accelerate-content {
     display: block;
   };
+  .no-hover .content-box:hover .accelerate-content {
+    display: none !important;
+  }
+  
+  // .t2 {
+  //   display: none; /* 默认隐藏 T2 */
+  // }
+  
+  // .home-module-game-card:hover .t1 .accelerate-content {
+  //   display: block; /* 鼠标悬停在 T1 时显示 T2 */
+  // }
+  
 
   .card-text-box {
     text-align: center;
@@ -114,7 +126,7 @@
 }
 
 .home-module-game-card-home {
-  width: calc(25% - 9px);
+  width: calc(25% - 24px);
   // height: 360px;
 
   .content-box {
@@ -147,3 +159,29 @@
     }
   }
 }
+
+.content-box {
+  padding: 12px;
+}
+
+
+
+
+
+
+// .t2 {
+//   display: none; /* 默认隐藏 T2 */
+//   position: absolute;
+//   top: 12px;
+//   left: 12px;
+//   z-index: 2; /* 确保 T2 在浮动层之上 */
+// }
+
+// /* 鼠标移入 T1 时显示 T2 */
+// .t1:hover .accelerate-button {
+//   display: none;
+// }
+
+// .t2:hover {
+//   display: block;
+// }

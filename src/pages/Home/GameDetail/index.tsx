@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-04-22 19:07:12
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-04-24 11:42:52
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,7 +10,6 @@ import React from "react";
 import { Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-
 import "./style.scss";
 
 import backGameIcon from "@/assets/images/common/back-game.svg";
@@ -22,7 +21,7 @@ import computingIcon from "@/assets/images/common/computing.svg";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
 
 import BarChart from "@/containers/BarChart/index";
-
+declare const CefWebInstance: any;
 interface Game {
   id: number;
   name: string;
@@ -30,6 +29,8 @@ interface Game {
   tags: string[];
   description: string;
 }
+
+
 const game: Game = {
   id: 1,
   name: "原神",
@@ -143,8 +144,33 @@ const data = [
   { label: "C", value: 300 },
 ];
 
+
+
 const GameDetail: React.FC = () => {
-  const navigate = useNavigate();
+  
+const navigate = useNavigate();
+
+const stopSpeed = () => {
+  console.log("stop speed ----------------");
+  CefWebInstance.call('jsCallStopSpeed', { message:'jsCallStopSpeed' }, (error: any, result1: any) => {
+  console.log("stop111111111111111")
+  console.log(error)
+  console.log(result1)
+  navigate("/gameList");
+  localStorage.setItem("stopSpeed","1")
+  })
+
+};
+
+const openGame = () => {
+  console.log("opengame--------------------------");
+  CefWebInstance.call('jsCallStartGame', { message:'jsCallStartGame' }, (error: any, result1: any) => {
+  console.log("stop111111111111111")
+  console.log(error)
+  console.log(result1)
+  })
+
+};
 
   return (
     <div className="home-module-detail">
@@ -158,11 +184,11 @@ const GameDetail: React.FC = () => {
           <div className="game-left">
             <img src={game.image} alt={game.name} />
             <h2>{game.name}</h2>
-            <Button className="on-game game-btn" type="default">
+            <Button className="on-game game-btn" type="default" onClick={openGame}>
               <img src={activateIcon} alt="" />
               启动游戏
             </Button>
-            <Button className="down-game game-btn" type="default">
+            <Button className="down-game game-btn" type="default" onClick={stopSpeed}>
               <img src={cessationIcon} alt="" />
               停止加速
             </Button>

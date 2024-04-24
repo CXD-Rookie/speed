@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-04-22 16:08:10
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-04-24 17:00:37
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -39,6 +39,7 @@ const games: Game[] = [
     image:
       "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
     tags: ["MOBA", "竞技", "策略"],
+    is_accelerate: true,
   },
 ];
 

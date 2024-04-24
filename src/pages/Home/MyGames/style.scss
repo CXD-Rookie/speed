@@ -31,8 +31,11 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
-    flex-direction: column;
+    flex-direction: row;
     overflow-y: scroll;
     column-gap: 12px;
+    align-content: flex-start;
+    
+    
   }
 }
