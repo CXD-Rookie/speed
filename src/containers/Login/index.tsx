@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-23 14:18:31
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-04-23 11:01:04
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,7 +10,13 @@ import React, { useState } from "react";
 import { post } from "@/api/api";
 import "./index.scss";
 
-const Login: React.FC = () => {
+export interface LoginProps {
+  setIsLoginModal?: (value: any) => void;
+}
+
+const Login: React.FC<LoginProps> = (props) => {
+  const { setIsLoginModal = () => {} } = props;
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [countdown, setCountdown] = useState(0);
@@ -76,6 +82,29 @@ const Login: React.FC = () => {
     //     console.error("登录失败：", error);
     //     // 可以在这里进行错误提示等操作
     //   });
+
+    // setIsLoginModal(false);
+    // 在登录成功后处理回调
+    // post("/login", {
+    //   id: 1,
+    //   username: "user1",
+    //   password: "password1",
+    // })
+    //   .then((response) => {
+    //     // 从响应中获取 token
+    //     const token = response.token;
+    //     // 将 token 存储到 localStorage 中
+    //     localStorage.setItem("token", token);
+    //     // 进行其他操作，比如页面跳转等
+    //     // 例如，跳转到首页
+    //     // window.location.href = "/home";
+    //   })
+    //   .catch((error) => {
+    //     // 处理登录失败的情况
+    //     console.error("登录失败：", error);
+    //     // 可以在这里进行错误提示等操作
+    //   });
+
   };
 
   return (
