@@ -2,11 +2,11 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-22 16:23:39
+ * @LastEditTime: 2024-04-24 19:24:02
  * @FilePath: \speed\src\pages\Home\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +23,7 @@ interface Game {
 
 const games: Game[] = [
   {
-    id: 1,
+    id: 10,
     name: "原神",
     image:
       "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
@@ -31,7 +31,7 @@ const games: Game[] = [
     is_accelerate: true,
   },
   {
-    id: 2,
+    id: 12,
     name: "英雄联盟",
     image:
       "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
@@ -77,6 +77,18 @@ const games: Game[] = [
 const MyGames: React.FC = () => {
   const navigate = useNavigate();
 
+  const [gameAccelerateList, setGameAccelerateList] = useState<any>([]);
+
+  useEffect(() => {
+    let arr =
+      localStorage.getItem("speed-1.0.0.1-accelerate") || JSON.stringify([]);
+    let game_arr = localStorage.getItem("speed-1.0.0.1-accelerate")
+      ? JSON.parse(arr)
+      : [];
+
+    setGameAccelerateList(game_arr);
+  }, []);
+
   return (
     <div className="my-games-module">
       <div className="back-box">
@@ -87,7 +99,14 @@ const MyGames: React.FC = () => {
       </div>
       <div className="game-list">
         {games.map((game) => (
-          <GameCard key={game?.id} gameData={game} type={"my-game"} />
+          <GameCard
+            key={game?.id}
+            gameData={game}
+            type={"my-game"}
+            isAccelerate={gameAccelerateList.includes(game.id)}
+            gameAccelerateList={gameAccelerateList}
+            setGameAccelerateList={setGameAccelerateList}
+          />
         ))}
       </div>
     </div>
