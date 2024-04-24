@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-24 19:05:49
+ * @LastEditTime: 2024-04-24 19:16:05
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -68,13 +68,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setShowT1(false);
     setShowT2(true);
 
-    // CefWebInstance.call('jsCallStartSpeed', { message:'jsCallStartSpeed' }, (error: any, result1: any) => {
-    //   console.log("zbc123")
-    //   console.log(error)
-    //   console.log(result1)
-    //   localStorage.setItem("startSpeed","1")
-    //   navigate("/gameDetail");
-    // })
+    // CefWebInstance.call(
+    //   "jsCallStartSpeed",
+    //   { message: "jsCallStartSpeed" },
+    //   (error: any, result1: any) => {
+    //     console.log("zbc123");
+    //     console.log(error);
+    //     console.log(result1);
+    //     localStorage.setItem("startSpeed", "1");
+    //     navigate("/gameDetail");
+    //   }
+    // );
   };
 
   const handleStopClick = () => {
@@ -105,7 +109,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     >
       <div className="content-box">
         <img src={gameData.image} alt={gameData.name} />
-        <div className="accelerate-content">
+        <div
+          className="accelerate-content"
+          style={isAccelerate ? { display: "block" } : {}}
+        >
           {isAccelerate ? (
             <Fragment>
               {/* {showT1 && (
