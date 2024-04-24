@@ -148,7 +148,7 @@
 
 .home-module-game-card-my-game {
   width: 200px;
-  height: 360px;
+  height: auto;
 
   .content-box {
     img {
@@ -157,31 +157,28 @@
       object-fit: cover;
       border-radius: var(--speed-dominant-border-radius);
     }
+
+    .accelerate-content {
+      img {
+        width: 95.5%;
+        height: 290px;
+      }
+
+      .down-accelerate {
+        margin-left: calc(48% - 100px)
+      }
+
+      .down-accelerate {
+        margin-left: calc(48% - 50px)
+      }
+    }
+  }
+
+  .card-text-box {
+    font-size: 20px;
   }
 }
 
 .content-box {
   padding: 12px;
 }
-
-
-
-
-
-
-// .t2 {
-//   display: none; /* 默认隐藏 T2 */
-//   position: absolute;
-//   top: 12px;
-//   left: 12px;
-//   z-index: 2; /* 确保 T2 在浮动层之上 */
-// }
-
-// /* 鼠标移入 T1 时显示 T2 */
-// .t1:hover .accelerate-button {
-//   display: none;
-// }
-
-// .t2:hover {
-//   display: block;
-// }

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-24 19:16:05
+ * @LastEditTime: 2024-04-24 20:13:17
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -182,7 +182,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               >
                 立即加速
               </div>
-              <img src={accelerateIcon} alt="" />
+              <img className="on-accel-img" src={accelerateIcon} alt="" />
             </Fragment>
           )}
         </div>
