@@ -1,72 +1,176 @@
+/* 全局样式重置，防止浏览器默认样式影响 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f0f0; /* 背景颜色，和登录框背景对比 */
+}
+.login-mask {
+  width: 100vw;
+  height: 100vh;
+  /* position: absolute; */
+  display: flex !important; 
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+
 .login-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    width: 300px;
-    text-align: center;
-  
-    h2 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-  
-    .input-group {
-      position: relative;
-      margin-bottom: 20px;
-  
-      input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-      }
-  
-      button {
-        position: absolute;
-        top: 50%;
-        right: 5px;
-        transform: translateY(-50%);
-        padding: 8px 12px;
-        border: none;
-        background-color: #007bff;
-        color: #fff;
-        font-size: 14px;
-        border-radius: 5px;
-        cursor: pointer;
-        width: 135px;
-  
-        &:disabled {
-          width: 135px;
-          background-color: #ccc;
-          cursor: not-allowed;
-        }
-      }
-    }
-  
-    button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background-color: #007bff;
-      color: #fff;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease-in-out;
-  
-      &:hover {
-        background-color: #0056b3;
-      }
-  
-      & + button {
-        margin-top: 10px;
-      }
-    }
-  }
-  
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  margin: 50px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 320px;
+  height: 376px;
+  background: #3e3e4a;
+  border-radius: 10px;
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.50)
+}
+
+.login-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-text {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.input-group,
+.computing-input-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.custom-prefix-box {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.custom-prefix-box img {
+  margin-right: 5px;
+}
+
+.custom-prefix-box span {
+  margin-left: 5px;
+  position: absolute;
+  bottom: 18px;
+  left: 24px;
+}
+
+.ercode {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.old-verification-code {
+  cursor: pointer;
+  position: relative;
+  top: 13px;
+  left: 5px;
+  font-size: 14px;
+  font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+  font-weight: Regular;
+  text-align: right;
+  color: #f86c34;
+  width: 100px;
+  /* right: 0px; */
+  float: right;
+}
+
+.send-verification-code {
+  color: #ff4500;
+  cursor: not-allowed;
+}
+
+.login-btn-box {
+  text-align: center;
+}
+
+.login-btn-box button {
+    padding: 10px;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 256px;
+    height: 44px;
+    background: #f86c34;
+    border-radius: 22px;
+}
+
+.login-btn-box button:hover {
+  background-color: #e03e00;
+}
+
+/* 自定义输入框样式 */
+.custom-input {
+  width: 193px;
+  height: 44px;
+  /* height: 48px; */
+  border: none;
+  outline: none;
+  font-size: 18px;
+  color: #fff;
+  background: #1A1A22;
+  /* float: left; */
+  line-height: 52px;
+  margin-top: 1px;
+  position: fixed;
+}
+
+.custom-input::placeholder {
+  color: #bbbcc4;
+}
+
+/* 自定义输入框外层样式 */
+.public-input-group {
+  display: flex;
+  align-items: center;
+  background-color: #3a3f51;
+  border-radius: 5px;
+  padding: 10px;
+  position: relative;
+}
+
+.public-input-group img {
+  margin-right: 8px;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.custom-input-module .input-com {
+  width: 185px !important;
+  height: 48px;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  color: #fff;
+  background: #1A1A22;
+  float: left;
+  line-height: 52px;
+  margin-top: 1px;
+  position: absolute;
+  /* bottom: 51px; */
+  left: 60px;
+}
