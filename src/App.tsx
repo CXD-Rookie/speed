@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { SlackOutlined } from "@ant-design/icons";
-import { Layout, Input, Modal } from "antd";
+import { Layout, Input } from "antd";
 
 import { connect } from "react-redux";
 import { menuActive } from "./redux/actions/menu";

@@ -1,14 +1,14 @@
 .my-games-module {
   width: 100vw;
   height: calc(100vh - 100px);
-  padding: 24px 32px;
+  padding: 24px 40px 18px 40px;
 
   .back-box {
     display: flex;
     align-items: center;
 
     .back {
-      font-size: 20px;
+      font-size: var(--speed-dominant-font-sizes);
       border-radius: 8px;
       color: #FFF;
       text-align: center;
@@ -25,7 +25,7 @@
 
   .game-list {
     width: 100%;
-    height: calc(100vh - 324px);
+    height: calc(100vh - 144px);
     margin-top: 24px;
     display: flex;
     flex-wrap: wrap;
@@ -35,7 +35,5 @@
     overflow-y: scroll;
     column-gap: 12px;
     align-content: flex-start;
-    
-    
   }
 }

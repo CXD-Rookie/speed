@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-24 18:55:18
+ * @LastEditTime: 2024-05-21 21:35:12
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -31,7 +31,6 @@ const games: Game[] = [
     image:
       "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
     tags: ["二次元", "开放世界", "RPG"],
-    // is_accelerate: true,
   },
   {
     id: 2,
