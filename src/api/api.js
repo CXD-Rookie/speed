@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-21 21:14:33
+ * @LastEditTime: 2024-05-21 22:22:17
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -23,15 +23,18 @@ instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token');
 
-    config.headers.client_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnQtYWRmYWRmZy1nZGZzZ2YiLCJjbGllbnRfaXAiOiIxOTIuMTY4LjExMS4xMTQiLCJleHAiOjE3MTc5MjQ3NTB9.XeRdPymxRETvPHZO8AzLt2zdqlXP_E18mZZTxU5Kk3U"
-    config.headers.client_id = "rdfgsdf-amfhft-mfmert-adfadfg-gdfsgf"
+    // config.headers.client_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnQtYWRmYWRmZy1nZGZzZ2YiLCJjbGllbnRfaXAiOiIxOTIuMTY4LjExMS4xMTQiLCJleHAiOjE3MTc5MjQ3NTB9.XeRdPymxRETvPHZO8AzLt2zdqlXP_E18mZZTxU5Kk3U"
+    // config.headers.client_id = "rdfgsdf-amfhft-mfmert-adfadfg-gdfsgf"
 
-    if (token) {
-      config.headers.user_token = `Bearer ${token}`;
-    } else {
-      // 如果没有 token，则跳转到登录页
-      window.location.href = '/login';
-    }
+    config.headers.client_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY2xpZW50X2lwIjoiMTI3LjAuMC4xIiwiZXhwIjoxNzE4NDQzMjE1fQ.Ww-OhE8HAxjrMIjPmwA5UEXBt_wjEARwA1aNQ0UEG58';
+    config.headers.client_id = 'rdfgsdf-amfhft-mfmertaa-adfadfgds-gdfsgf';
+    config.headers.user_token= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXIiOiIiLCJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY3JlYXRlX3RpbWUiOjE3MTU1ODg2NTUsImV4cCI6MTcxODQ0MzQzNywiaWQiOiI2NjQxY2UyZjFkY2EyOGExNjdmN2U5M2YiLCJsb2dpbl9pcCI6IjEyNy4wLjAuMSIsIm5pY2tuYW1lIjoi5bm75oOz5bel56iL5aWH5omNIiwicGhvbmUiOiI4ZjBmM2M1YTdmMTJmYmE2MTMxMWE4ZDBmNDBjNjY3NSIsInBsYXRmb3JtIjoiV2luZG93cyIsInVwZGF0ZV90aW1lIjoxNzE1ODUxNDM3fQ.OMLHSklc9NVwW0FdM9LfR4yMACn_6oGvRWSdTHLT4hc"
+    // if (token) {
+    //   config.headers.user_token = `Bearer ${token}`;
+    // } else {
+    //   // 如果没有 token，则跳转到登录页
+    //   window.location.href = '/login';
+    // }
     return config;
   },
   error => {

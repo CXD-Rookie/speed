@@ -1,202 +1,93 @@
-/*
- * @Author: steven libo@rongma.com
- * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-04-22 17:10:50
- * @FilePath: \speed\src\pages\GameList\index.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
-import React, { useState, useRef, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-
+// src/pages/GameLibrary.tsx
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import gameApi from "@/api/gamelist";
 import "./style.scss";
-
-import addThemeIcon from "@/assets/images/common/add-theme.svg";
-import acceleratedIcon from "@/assets/images/common/accelerated.svg";
-
+import { useNavigate } from "react-router-dom";
 interface Game {
-  id: number;
+  id: string;
   name: string;
-  image: string;
+  name_en: string;
+  cover_img: string;
+  note: string;
+  screen_shot: string[];
+  system_id: number[];
+  platform: number[];
+  download: {
+    android: string;
+  };
+  game: any;
+  site: string;
   tags: string[];
+  game_more: {
+    news: string;
+    guide: string;
+    store: string;
+    bbs: string;
+    mod: string;
+    modifier: string;
+  };
+  create_time: number;
+  update_time: number;
 }
 
-interface GamesTitleProps {
-  label: string;
-  key: string;
-}
-
-const games: Game[] = [
-  {
-    id: 1,
-    name: "原神",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["二次元", "开放世界", "RPG"],
-  },
-  {
-    id: 2,
-    name: "英雄联盟",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["MOBA", "竞技", "策略"],
-  },
-  {
-    id: 3,
-    name: "绝地求生",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["FPS", "射击", "生存"],
-  },
-  {
-    id: 4,
-    name: "我的世界",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["沙盒", "建造", "冒险"],
-  },
-  {
-    id: 5,
-    name: "王者荣耀",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["MOBA", "竞技", "手游"],
-  },
-  {
-    id: 6,
-    name: "Apex英雄",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["FPS", "射击", "Battle Royale"],
-  },
-  {
-    id: 7,
-    name: "糖豆人：终极淘汰赛",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["休闲", "多人", "竞技"],
-  },
-  {
-    id: 8,
-    name: "怪物猎人：崛起",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["休闲", "多人", "竞技"],
-  },
-  {
-    id: 9,
-    name: "暗黑破坏神4",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["休闲", "多人", "竞技"],
-  },
-  {
-    id: 10,
-    name: "艾尔登法环",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["休闲", "多人", "竞技"],
-  },
-];
-
-const gamesTitle: GamesTitleProps[] = [
-  {
-    key: "1",
-    label: "热门游戏",
-  },
-  {
-    key: "2",
-    label: "近期推荐",
-  },
-  {
-    key: "3",
-    label: "休闲娱乐",
-  },
-  {
-    key: "4",
-    label: "游戏平台",
-  },
-];
-
-const GameListPage: React.FC = () => {
-  // const navigate = useNavigate();
-  const targetDivRef = useRef(null);
-
-  const [divWidth, setDivWidth] = useState(0);
-
-  const [gameActiveType, setGameActiveType] = useState<string>("1");
-
-  const game_gap = (divWidth % 200) / Math.floor(divWidth / 200);
-
-  const clickAddGame = () => {};
+const GameLibrary: React.FC = () => {
+  const [games, setGames] = useState<Game[]>([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [search, setSearch] = useState('');
+  const [tag, setTag] = useState('');
 
   useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        if (entry.target === targetDivRef.current) {
-          setDivWidth(entry.contentRect.width);
-        }
-      }
-    });
+    fetchGames();
+  }, [page, pageSize, search, tag]);
 
-    if (targetDivRef.current) {
-      resizeObserver.observe(targetDivRef?.current);
+  const fetchGames = async () => {
+    try {
+      let res = await gameApi.gameList({
+        params: {
+          s: search,
+          t: tag,
+          page: page,
+          pagesize: pageSize,
+        },
+      });
+      const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
+        ...game,
+        cover_img: `https://jsq-cdn.yuwenlong.cn/${game.cover_img}`,
+      }));
+      setGames(gamesWithFullImgUrl);
+    } catch (error) {
+      console.error('Error fetching games:', error);
     }
-
-    return () => {
-      if (targetDivRef?.current) {
-        resizeObserver.unobserve(targetDivRef?.current);
-      }
-    };
-  }, [targetDivRef]);
+  };
 
   return (
-    <div className="game-list-module-container">
-      <div className="game-title-box">
-        {gamesTitle.map((item) => (
-          <div
-            key={item?.key}
-            className={`game-label ${
-              gameActiveType === item?.key && "game-label-active"
-            }`}
-            onClick={() => setGameActiveType(item?.key)}
-          >
-            {item?.label}
-          </div>
-        ))}
-      </div>
-      <div
-        className="game-list"
-        style={game_gap ? { columnGap: game_gap } : {}}
-        ref={targetDivRef}
-      >
-        {games.map((game) => (
-          <div key={game.id} className="game-card">
-            <div className="content-box">
-              <img className="back-icon" src={game.image} alt={game.name} />
-              <div className="game-card-content">
-                <img
-                  className="add-icon"
-                  src={addThemeIcon}
-                  alt=""
-                  onClick={() => clickAddGame()}
-                />
-                <img
-                  className="game-card-active-icon"
-                  src={acceleratedIcon}
-                  alt=""
-                />
-              </div>
-            </div>
-
-            <div className="card-text-box">
-              <h3>{game.name}</h3>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="game-library">
+    <header className="header">
+      <h1>游戏库</h1>
+      <input
+        type="text"
+        placeholder="搜索游戏"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+    </header>
+    <div className="game-list">
+      {games.map((game) => (
+        <div key={game.id} className="game-card">
+          <img src={game.cover_img} alt={game.name} />
+          <h2>{game.name}</h2>
+          <p>{game.name_en}</p>
+        </div>
+      ))}
     </div>
+    <footer className="footer">
+      <button onClick={() => setPage(page - 1)} disabled={page === 1}>上一页</button>
+      <button onClick={() => setPage(page + 1)}>下一页</button>
+    </footer>
+  </div>
   );
 };
 
-export default GameListPage;
+export default GameLibrary;

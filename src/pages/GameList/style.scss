@@ -1,84 +1,50 @@
-/* style.scss */
-.game-list-module-container {
-    width: 100vw;
-    height: calc(100vh - 100px);
-    padding: 20px 32px;
-    overflow-y: scroll;
-    
-    h1 {
-        text-align: center;
-    }
-
-    .game-title-box {
-        display: flex;
-        justify-content: center;
-        column-gap: 40px;
-        padding: 16px 0;
-
-        .game-label {
-            font-size: 26px;
-            color: #999;
-            cursor: pointer;
-        }
-
-        .game-label-active {
-            color: #FFF;
-        }
-    };
-
-    .game-list {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        margin-top: 20px;
-
-        /* GameCard.css */
-        .game-card {
-            position: relative;
-            width: 200px;
-            // height: 360px;
-            border-radius: 8px;
-            overflow: hidden; /* 用于隐藏按钮溢出部分 */
-
-            .content-box {
-                img {
-                    width: 100%;
-                    height: 300px;
-                    object-fit: cover;
-                    border-radius: 8px;
-                }
-
-                .game-card-content {
-                    display: none;
-                }
-                .game-card-active-icon {
-                    position: absolute;
-                    width: 100%;
-                    height: 300px;
-                    left: 0;
-                    top: 0;
-                    z-index: 1;
-                };
-
-                .add-icon {
-                    position: absolute;
-                    width: 80px;
-                    height: 80px;
-                    top: 110px;
-                    left: calc(50% - 40px);
-                    z-index: 2;
-                }
-            }
-
-            .content-box:hover .game-card-content {
-                display: block;
-            }
-        }
-
-        .card-text-box {
-            text-align: center;
-            color: #999;
-        }
-    }
-}
+/* src/pages/GameLibrary.css */
+.game-library {
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header input {
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  .game-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    overflow: scroll;
+    height: 400px;
+  }
+  
+  .game-card {
+    background: #222;
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 328px;
+    text-align: center;
+  }
+  
+  .game-card img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+  
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .footer button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
