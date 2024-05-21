@@ -9,15 +9,14 @@
   };
 
   .header {
-    height: 100px;
+    height: 58px;
     padding: 0 32px;
     background-color: var(--speed-dominant-background-color);
     display: flex;
-    align-items: center;
 
     .header-icon {
       width: 148px;
-      font-size: 38px;
+      font-size: 40px;
       color: var(--speed-dominant-font-color);
     }
 
@@ -33,7 +32,7 @@
 
         .menu {
           height: 64px;
-          font-size: 36px;
+          font-size: 18px;
           color: #999;
           cursor: pointer;
         }
@@ -44,13 +43,13 @@
       };
 
       .search-input {
-        width: 320px;
-        height: 46px;
+        width: 200px;
+        height: 32px;
       }
 
       .personal-information {
         color: #FFF;
-        font-size: 22px;
+        font-size: 14px;
       }
 
       .ant-tabs-tab {

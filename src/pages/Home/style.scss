@@ -2,7 +2,7 @@
 .home-module {
     width: 100vw;
     height: calc(100vh - 100px);
-    padding: 20px 32px;
+    padding: 24px 40px 40px 40px;
 
     .game-list {
         width: 100%;
@@ -16,8 +16,8 @@
             height: 327px;
             color: #999;
             background: rgba(255, 255, 255, 0.10);
-            border-radius:20px;
-            font-size: 26px;
+            border-radius: var(--speed-dominant-border-radius);
+            font-size: var(--speed-dominant-font-size);
             position: relative;
             padding-top: 87px;
             text-align: center;
@@ -35,12 +35,12 @@
             width: 50%;
             height: 136px;
             background: rgba(255, 255, 255, 0.10);
-            border-radius: 20px;
+            border-radius: var(--speed-dominant-border-radius);
             justify-content: center;
             align-items: center;
             display: flex;
             column-gap: 20px;
-            font-size: 26px;
+            font-size: 20px;
         };
 
         .membership-recharge {
