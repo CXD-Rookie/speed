@@ -1,8 +1,8 @@
 /* style.scss */
 .game-list-module-container {
     width: 100vw;
-    height: calc(100vh - 100px);
-    padding: 20px 32px;
+    height: calc(100vh - 58px);
+    padding: 24px 40px 12px 40px;
     overflow-y: scroll;
     
     h1 {
@@ -12,11 +12,10 @@
     .game-title-box {
         display: flex;
         justify-content: center;
-        column-gap: 40px;
-        padding: 16px 0;
+        column-gap: 20px;
 
         .game-label {
-            font-size: 26px;
+            font-size: 20px;
             color: #999;
             cursor: pointer;
         }
@@ -31,20 +30,20 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
-        margin-top: 20px;
+        margin-top: 16px;
 
         /* GameCard.css */
         .game-card {
             position: relative;
-            width: 200px;
-            // height: 360px;
-            border-radius: 8px;
+            width: 140px;
+            height: 210px;
+            border-radius: var(--speed-dominant-border-radius);
             overflow: hidden; /* 用于隐藏按钮溢出部分 */
 
             .content-box {
                 img {
                     width: 100%;
-                    height: 300px;
+                    height: 210px;
                     object-fit: cover;
                     border-radius: 8px;
                 }
@@ -55,7 +54,7 @@
                 .game-card-active-icon {
                     position: absolute;
                     width: 100%;
-                    height: 300px;
+                    height: 210px;
                     left: 0;
                     top: 0;
                     z-index: 1;
@@ -63,8 +62,8 @@
 
                 .add-icon {
                     position: absolute;
-                    width: 80px;
-                    height: 80px;
+                    width: 48px;
+                    height: 48px;
                     top: 110px;
                     left: calc(50% - 40px);
                     z-index: 2;
