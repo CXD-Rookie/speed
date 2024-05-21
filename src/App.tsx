@@ -95,12 +95,12 @@ const App: React.FC = (props: any) => {
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
-      <div
+      {/* <div
         className="login-mask"
-        style={{ display: isLoginModal ? "block" : "none" }}
+        style={{ display: isLoginModal ? "none" : "none" }}
       >
         <Login setIsLoginModal={setIsLoginModal} />
-      </div>
+      </div> */}
     </Layout>
   );
 };
