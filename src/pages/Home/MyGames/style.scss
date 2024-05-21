@@ -12,7 +12,7 @@
       border-radius: 8px;
       color: #FFF;
       text-align: center;
-      background-color: rgba(255, 255, 255, 0.10);
+      background-color: var(--speed-dominant-module-color);
       padding: 8px 10px;
     }
 
@@ -25,16 +25,17 @@
 
   .game-list {
     width: 100%;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 324px);
     margin-top: 24px;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: row;
-    column-gap: 12px;
-    row-gap: 16px;
-    align-content: flex-start;
     overflow-y: scroll;
+    column-gap: 12px;
+    align-content: flex-start;
+    
+    
   }
 }
