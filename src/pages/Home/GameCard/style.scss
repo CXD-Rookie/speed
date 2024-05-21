@@ -10,10 +10,10 @@
     }
 
     .accelerate-content {
-      width: 92.2%;
+      width: 100%;
       position: absolute;
-      top: 12px;
-      left: 12px;
+      top: 0;
+      left: 0;
       z-index: 2;
       /* 确保按钮位于浮动层之上 */
       display: none;
@@ -23,7 +23,7 @@
         top: 0;
         left: 0;
         height: 327px;
-        width: 92.5%;
+        width: 100%;
         object-fit: cover;
         border-radius: var(--speed-dominant-border-radius);
         z-index: 1;
@@ -104,18 +104,10 @@
   .content-box:hover .accelerate-content {
     display: block;
   };
+  
   .no-hover .content-box:hover .accelerate-content {
     display: none !important;
   }
-  
-  // .t2 {
-  //   display: none; /* 默认隐藏 T2 */
-  // }
-  
-  // .home-module-game-card:hover .t1 .accelerate-content {
-  //   display: block; /* 鼠标悬停在 T1 时显示 T2 */
-  // }
-  
 
   .card-text-box {
     text-align: center;
@@ -126,8 +118,7 @@
 }
 
 .home-module-game-card-home {
-  width: calc(25% - 24px);
-  // height: 360px;
+  width: 25%;
 
   .content-box {
     img {
@@ -177,8 +168,4 @@
   .card-text-box {
     font-size: 20px;
   }
-}
-
-.content-box {
-  padding: 12px;
 }

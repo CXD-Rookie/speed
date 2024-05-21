@@ -70,7 +70,7 @@ const App: React.FC = (props: any) => {
 
   return (
     <Layout className="app-module">
-      {/* <Header className="header">
+      <Header className="header">
         <SlackOutlined className="header-icon" />
         <div className="header-functional-areas">
           <div className="menu-list">
@@ -86,22 +86,18 @@ const App: React.FC = (props: any) => {
               </div>
             ))}
           </div>
-          <Input
-            className="search-input"
-            size="large"
-            placeholder="搜索游戏"
-          />
+          <Input className="search-input" size="large" placeholder="搜索游戏" />
           <div className="personal-information">
             <div>登录/注册</div>
           </div>
         </div>
-      </Header> */}
+      </Header>
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
       {/* <div
         className="login-mask"
-        style={{ display: isLoginModal ? "block" : "none" }}
+        style={{ display: isLoginModal ? "none" : "none" }}
       >
         <Login setIsLoginModal={setIsLoginModal} />
       </div> */}

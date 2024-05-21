@@ -2,14 +2,13 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-24 20:59:46
+ * @LastEditTime: 2024-05-21 21:11:18
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Fragment } from "react";
-import { Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import rightArrow from "@/assets/images/common/right-arrow.svg";
@@ -41,11 +40,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   } = props;
 
   const navigate = useNavigate();
-  const _start = localStorage.getItem("startSpeed");
-
-  const [showT1, setShowT1] = useState(true);
-  const [showT2, setShowT2] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const [accelOpen, setAccelOpen] = useState(false);
 
@@ -59,52 +53,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     } else {
       setAccelOpen(true);
     }
-    // if (arr.length > 0) {
-    //   let result = arr.includes(gameData.id)
-    //     ? (arr = arr.filter((item) => item !== gameData.id))
-    //     : [...arr, gameData.id];
-
-    //   setGameAccelerateList(result);
-    //   localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify(result));
-    // } else {
-    //   setGameAccelerateList([gameData.id]);
-    //   localStorage.setItem(
-    //     "speed-1.0.0.1-accelerate",
-    //     JSON.stringify([gameData.id])
-    //   );
-    // }
-
-    setShowT1(false);
-    setShowT2(true);
-
-    // CefWebInstance.call(
-    //   "jsCallStartSpeed",
-    //   { message: "jsCallStartSpeed" },
-    //   (error: any, result1: any) => {
-    //     console.log("zbc123");
-    //     console.log(error);
-    //     console.log(result1);
-    //     localStorage.setItem("startSpeed", "1");
-    //     navigate("/gameDetail");
-    //   }
-    // );
   };
 
   const handleStopClick = () => {
-    // let arr = [...gameAccelerateList].filter((item) => item !== gameData.id);
-
     setGameAccelerateList([]);
-    localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify([]));
 
-    // CefWebInstance.call(
-    //   "jsCallStopSpeed",
-    //   { message: "jsCallStopSpeed" },
-    //   (error: any, result1: any) => {
-    //     console.log("stop111111111111111");
-    //     console.log(error);
-    //     console.log(result1);
-    //   }
-    // );
+    localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify([]));
   };
 
   return (
@@ -123,17 +77,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         >
           {isAccelerate ? (
             <Fragment>
-              {/* {showT1 && (
-                <div className="t1">
-                  <div
-                    className="accelerate-button"
-                    onClick={handleAccelerateClick}
-                  >
-                    立即加速
-                  </div>
-                  <img src={accelerateIcon} alt="" />
-                </div>
-              )} */}
               <div className="t2">
                 <div className="accelerated-content">
                   {type === "home" && (
@@ -178,9 +121,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 </div>
                 <img src={acceleratedIcon} alt="" />
               </div>
-              {/* {showT2 && (
-                
-              )} */}
             </Fragment>
           ) : (
             <Fragment>
