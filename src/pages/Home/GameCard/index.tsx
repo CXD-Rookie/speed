@@ -2,14 +2,13 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-24 20:59:46
+ * @LastEditTime: 2024-05-21 20:09:49
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
 import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
-import { Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import rightArrow from "@/assets/images/common/right-arrow.svg";
@@ -56,6 +55,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         "speed-1.0.0.1-accelerate",
         JSON.stringify([gameData.id])
       );
+      CefWebInstance.call(
+        "jsCallStartSpeed",
+        { message: "jsCallStartSpeed" },
+        (error: any, result1: any) => {
+          console.log("zbc123");
+          console.log(error);
+          console.log(result1);
+          localStorage.setItem("startSpeed", "1");
+          navigate("/gameDetail");
+        }
+      );
     } else {
       setAccelOpen(true);
     }
@@ -74,20 +84,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     //   );
     // }
 
-    setShowT1(false);
-    setShowT2(true);
-
-    // CefWebInstance.call(
-    //   "jsCallStartSpeed",
-    //   { message: "jsCallStartSpeed" },
-    //   (error: any, result1: any) => {
-    //     console.log("zbc123");
-    //     console.log(error);
-    //     console.log(result1);
-    //     localStorage.setItem("startSpeed", "1");
-    //     navigate("/gameDetail");
-    //   }
-    // );
+    // setShowT1(false);
+    // setShowT2(true);
   };
 
   const handleStopClick = () => {
@@ -96,15 +94,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setGameAccelerateList([]);
     localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify([]));
 
-    // CefWebInstance.call(
-    //   "jsCallStopSpeed",
-    //   { message: "jsCallStopSpeed" },
-    //   (error: any, result1: any) => {
-    //     console.log("stop111111111111111");
-    //     console.log(error);
-    //     console.log(result1);
-    //   }
-    // );
+    CefWebInstance.call(
+      "jsCallStopSpeed",
+      { message: "jsCallStopSpeed" },
+      (error: any, result1: any) => {
+        console.log("stop111111111111111");
+        console.log(error);
+        console.log(result1);
+      }
+    );
   };
 
   return (
@@ -224,6 +222,28 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 "speed-1.0.0.1-accelerate",
                 JSON.stringify([gameData.id])
               );
+              CefWebInstance.call(
+                "jsCallStopSpeed",
+                { message: "jsCallStopSpeed" },
+                (error: any, result1: any) => {
+                  console.log("stop111111111111111");
+                  console.log(error);
+                  console.log(result1);
+                }
+              );
+              setTimeout(() => {
+                CefWebInstance.call(
+                  "jsCallStartSpeed",
+                  { message: "jsCallStartSpeed" },
+                  (error: any, result1: any) => {
+                    console.log("zbc123");
+                    console.log(error);
+                    console.log(result1);
+                    localStorage.setItem("startSpeed", "1");
+                    navigate("/gameDetail");
+                  }
+                );
+              }, 1500);
               setAccelOpen(false);
             }}
           >

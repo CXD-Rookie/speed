@@ -1,16 +1,16 @@
 .home-module-game-card {
   position: relative;
-  border-radius: var(--speed-dominant-border-radius);
+  border-radius: 20px;
   overflow: hidden; /* 用于隐藏按钮溢出部分 */
 
   .content-box {
     img {
       object-fit: cover;
-      border-radius: var(--speed-dominant-border-radius);
+      border-radius: 20px;
     }
 
     .accelerate-content {
-      width: 92.2%;
+      // width: 92.2%;
       position: absolute;
       top: 12px;
       left: 12px;
@@ -23,9 +23,9 @@
         top: 0;
         left: 0;
         height: 327px;
-        width: 92.5%;
+        width: 93%;
         object-fit: cover;
-        border-radius: var(--speed-dominant-border-radius);
+        border-radius: 20px;
         z-index: 1;
       }
 
@@ -126,15 +126,14 @@
 }
 
 .home-module-game-card-home {
-  width: calc(25% - 24px);
-  // height: 360px;
+  width: 25%;
 
   .content-box {
     img {
       width: 100%;
       height: 327px;
       object-fit: cover;
-      border-radius: var(--speed-dominant-border-radius);
+      border-radius: 20px;
     }
 
     .accelerate-content {
@@ -147,38 +146,27 @@
 }
 
 .home-module-game-card-my-game {
-  width: 200px;
-  height: auto;
+  width: 16.6%;
+  border-radius: 10px;
 
   .content-box {
     img {
       width: 100%;
-      height: 300px;
+      height: 210px;
       object-fit: cover;
-      border-radius: var(--speed-dominant-border-radius);
+      border-radius: 10px;
     }
 
     .accelerate-content {
       img {
-        width: 95.5%;
-        height: 300px;
-      }
-
-      .down-accelerate {
-        margin-left: calc(48% - 100px)
-      }
-
-      .down-accelerate {
-        margin-left: calc(48% - 50px)
+        width: 100%;
+        height: 210px;
       }
     }
   }
 
   .card-text-box {
-    font-size: 20px;
+    font-size: 18px;
+    padding: 8px auto;
   }
-}
-
-.content-box {
-  padding: 12px;
 }

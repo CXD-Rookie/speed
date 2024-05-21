@@ -37,7 +37,7 @@
             color: #FFF;
             text-align: center;
             line-height: 48px;
-            background-color: var(--speed-dominant-module-color);
+            background-color: rgba(255, 255, 255, 0.10);
         }
 
         .game-detail {
@@ -103,7 +103,7 @@
                 .info-common-style {
                     color: #FFF;
                     background-color: rgba(0, 0, 0, 0.4);
-                    border-radius: var(--speed-dominant-border-radius);
+                    border-radius: 20px;
                 }
 
                 .info-switch {
@@ -209,4 +209,8 @@
             }
         }
     }
+}
+
+body{
+    overflow: hidden;
 }

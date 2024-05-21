@@ -23,7 +23,7 @@ import "dayjs/locale/zh-cn";
 import store from "./redux/store";
 
 import { Provider } from "react-redux";
-import { BrowserRouter ,HashRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
 dayjs.locale("zh-cn");
 
@@ -33,7 +33,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    {/* <BrowserRouter basename="/"> */}
     <HashRouter>
       <ConfigProvider locale={zhCN}>
         <Provider store={store}>
@@ -41,6 +40,5 @@ root.render(
         </Provider>
       </ConfigProvider>
     </HashRouter>
-    {/* </BrowserRouter> */}
   </React.StrictMode>
 );

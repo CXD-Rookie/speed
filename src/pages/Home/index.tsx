@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-04-24 18:55:18
+ * @LastEditTime: 2024-05-21 20:49:57
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -85,14 +85,22 @@ const Home: React.FC = () => {
             </div>
           ))}
       </div>
-      <div className="functional-areas">
+      <div
+        className="functional-areas"
+        onClick={() => {
+          console.log(222);
+        }}
+      >
         <div className="membership-recharge areas-list-box">
           <img src={rechargeIcon} width={100} height={100} alt="" />
           会员充值
         </div>
         <div
           className="may-games areas-list-box"
-          onClick={() => navigate("/myGames")}
+          onClick={() => {
+            console.log(111);
+            navigate("/myGames");
+          }}
         >
           <img src={gamesIcon} width={100} height={100} alt="" />
           我的游戏 (9)
