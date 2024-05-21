@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-16 14:11:44
- * @LastEditors: zhangda
- * @LastEditTime: 2024-04-19 14:19:55
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-21 20:59:42
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\routes\index.tsx
@@ -13,7 +13,7 @@ import GameList from "@/pages/GameList";
 import Home from "@/pages/Home";
 import GameDetail from "@/pages/Home/GameDetail";
 import MyGames from "@/pages/Home/MyGames";
-
+import Login from "@/containers/Login";
 export default [
   {
     path: "/gameList",
@@ -34,7 +34,7 @@ export default [
   {
     // 路由重定向
     path: "/",
-    element: <Navigate to="/home" />,
+    element: <Navigate to="/Login" />,
   },
 ] as {
   path: string;
