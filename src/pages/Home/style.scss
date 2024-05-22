@@ -1,106 +1,114 @@
 /* style.scss */
 .home-module {
-    width: 100vw;
-    height: calc(100vh - 100px);
-    padding: 24px 40px 40px 40px;
+  width: 100vw;
+  height: calc(100vh - 100px);
+  padding: 24px 40px 40px 40px;
 
-    .game-list {
-        width: 100%;
-        max-width: 1300px;
-        display: flex;
-        margin: 0 auto;
-        column-gap: 12px;
-        
-        .null-data-card {
-            width: 24%;
-            height: 327px;
-            color: #999;
-            background: rgba(255, 255, 255, 0.10);
-            border-radius: var(--speed-dominant-border-radius);
-            font-size: var(--speed-dominant-font-size);
-            position: relative;
-            padding-top: 87px;
-            text-align: center;
-        }
+  .game-list {
+    width: 100%;
+    max-width: 1300px;
+    display: flex;
+    margin: 0 auto;
+    column-gap: 12px;
+
+    .null-data-card {
+      width: 24%;
+      height: 327px;
+      color: #999;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--speed-dominant-border-radius);
+      font-size: var(--speed-dominant-font-size);
+      position: relative;
+      padding-top: 87px;
+      text-align: center;
     }
 
-    .functional-areas {
+    .empty-card {
         width: 100%;
-        max-width: 1300px;
-        display: flex;
-        margin: 0 auto;
-        column-gap: 16px;
-
-        .areas-list-box {
-            width: 50%;
-            height: 136px;
-            background: rgba(255, 255, 255, 0.10);
-            border-radius: var(--speed-dominant-border-radius);
-            justify-content: center;
-            align-items: center;
-            display: flex;
-            column-gap: 20px;
-            font-size: 20px;
-        };
-
-        .membership-recharge {
-            color: #FFBFA6;
-        }
-
-        .may-games {
-            color: #FFF;
-        }
+        height: 385px;
+        background: rgba(255,255,255,0.10);
+border-radius: var(--speed-dominant-border-radius);
+margin-bottom: 16px;
     }
+  }
+
+  .functional-areas {
+    width: 100%;
+    max-width: 1300px;
+    display: flex;
+    margin: 0 auto;
+    column-gap: 16px;
+
+    .areas-list-box {
+      width: 50%;
+      height: 136px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--speed-dominant-border-radius);
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      column-gap: 20px;
+      font-size: 20px;
+    }
+
+    .membership-recharge {
+      color: #ffbfa6;
+    }
+
+    .may-games {
+      color: #fff;
+    }
+  }
 }
 
-body{
-    overflow: hidden;
+body {
+  overflow: hidden;
 }
 
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); // 半透明背景
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000; // 确保在最前面
-  }
-  
-  .modal {
-    position: relative;
-    z-index: 1001;
-    max-width: 80%;
-    height: 460px;
-    background: #3e3e4a;
-    border-radius: 10px;
-    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.50);
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    opacity: 0.5;
-    /* font-size: 12px; */
-    font-family: Source Han Sans SC, Source Han Sans SC-Regular;
-    font-weight: Regular;
-    text-align: left;
-    color: #ffffff;
-    line-height: 16px;
-  }
-  iframe {
-    width: 677px;
-    height: 460px;
-    background: #3e3e4a;
-    border-radius: 10px;
-    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.50);
-    border: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); // 半透明背景
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; // 确保在最前面
+}
+
+.modal {
+  position: relative;
+  z-index: 1001;
+  max-width: 80%;
+  height: 460px;
+  background: #3e3e4a;
+  border-radius: 10px;
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.5);
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.5;
+  /* font-size: 12px; */
+  font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+  font-weight: Regular;
+  text-align: left;
+  color: #ffffff;
+  line-height: 16px;
+}
+iframe {
+  width: 677px;
+  height: 460px;
+  background: #3e3e4a;
+  border-radius: 10px;
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.5);
+  border: none;
 }
