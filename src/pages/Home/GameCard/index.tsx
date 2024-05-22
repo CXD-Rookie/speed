@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 14:00:36
+ * @LastEditTime: 2024-05-22 14:12:30
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -46,14 +46,21 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 立即加速
   const handleAccelerateClick = () => {
     if (gameAccelerateList?.length < 1) {
-      setGameAccelerateList([gameData.id]);
-      localStorage.setItem(
-        "speed-1.0.0.1-accelerate",
-        JSON.stringify([gameData.id])
-      );
+      handleExpedite();
     } else {
       setAccelOpen(true);
     }
+  };
+
+  // 加速逻辑
+  const handleExpedite = () => {
+    setGameAccelerateList([gameData.id]);
+    localStorage.setItem(
+      "speed-1.0.0.1-accelerate",
+      JSON.stringify([gameData.id])
+    );
+    setAccelOpen(false);
+    handleDetails();
   };
 
   // 进入详情
@@ -165,14 +172,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               background: "#F86C34",
               borderRadius: "8px",
             }}
-            onClick={() => {
-              setGameAccelerateList([gameData.id]);
-              localStorage.setItem(
-                "speed-1.0.0.1-accelerate",
-                JSON.stringify([gameData.id])
-              );
-              setAccelOpen(false);
-            }}
+            onClick={handleExpedite}
           >
             确定
           </div>
