@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 15:14:33
+ * @LastEditTime: 2024-05-22 16:16:52
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -10,6 +10,7 @@
 import React, { useState } from "react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
+import { getMyGames } from "@/common/utils";
 
 import rightArrow from "@/assets/images/common/right-arrow.svg";
 import accelerateIcon from "@/assets/images/common/accelerate.svg";
@@ -31,34 +32,34 @@ export interface GameCardProps {
 }
 
 const GameCard: React.FC<GameCardProps> = (props) => {
-  const {
-    gameData = {},
-    type = "home",
-    isAccelerate = false,
-    gameAccelerateList = [],
-    setGameAccelerateList = () => {},
-  } = props;
+  const { gameData = {}, type = "home" } = props;
 
   const navigate = useNavigate();
 
   const [accelOpen, setAccelOpen] = useState(false);
 
   // 立即加速
-  const handleAccelerateClick = () => {
-    if (gameAccelerateList?.length < 1) {
-      handleExpedite();
-    } else {
+  const handleAccelerateClick = (option: any) => {
+    let is_true = getMyGames().some((item: any) => item?.is_accelerate);
+
+    if (is_true) {
       setAccelOpen(true);
+    } else {
+      handleExpedite(option);
     }
   };
 
   // 加速逻辑
-  const handleExpedite = () => {
-    setGameAccelerateList([gameData.id]);
-    localStorage.setItem(
-      "speed-1.0.0.1-accelerate",
-      JSON.stringify([gameData.id])
-    );
+  const handleExpedite = (option: any) => {
+    let game_arr = getMyGames();
+
+    game_arr = game_arr.map((item: any) => ({
+      ...item,
+      is_accelerate: option?.id === item?.id,
+    }));
+
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
+
     setAccelOpen(false);
     handleDetails();
   };
@@ -69,10 +70,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 停止加速
-  const handleStopClick = () => {
-    setGameAccelerateList([]);
-
-    localStorage.setItem("speed-1.0.0.1-accelerate", JSON.stringify([]));
+  const handleStopClick = (option: any) => {
+    handleExpedite(option);
   };
 
   return (
@@ -87,9 +86,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         <img src={gameData?.cover_img} alt={gameData.name} />
         <div
           className="accelerate-content"
-          style={isAccelerate ? { display: "block" } : {}}
+          style={gameData?.is_accelerate ? { display: "block" } : {}}
         >
-          {isAccelerate ? (
+          {gameData?.is_accelerate ? (
             <Fragment>
               <div className="t2">
                 <div className="accelerated-content">
@@ -128,7 +127,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                             marginLeft: "calc(50% - 80px)",
                           }
                     }
-                    onClick={handleStopClick}
+                    onClick={() => handleStopClick(gameData)}
                   >
                     停止加速
                   </div>
@@ -140,7 +139,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             <Fragment>
               <div
                 className="accelerate-button"
-                onClick={handleAccelerateClick}
+                onClick={() => handleAccelerateClick(gameData)}
               >
                 立即加速
               </div>
@@ -151,42 +150,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       </div>
       <div className="card-text-box">{gameData.name}</div>
       <div
+        className="accelerate-modal"
         style={{
-          width: "400px",
           display: accelOpen ? "block" : "none",
-          position: "fixed",
-          top: "200px",
-          left: "calc(50% - 200px)",
-          background: "rgba(0,0,0, 0.7)",
-          borderRadius: "20px",
-          padding: "53px",
-          zIndex: 10,
-          color: "#FFF",
         }}
       >
         其他游戏正在加速，你确定要加速此游戏吗？
-        <div style={{ display: "flex", marginTop: "20px" }}>
-          <div
-            style={{
-              padding: "8px 16px",
-              background: "#F86C34",
-              borderRadius: "8px",
-            }}
-            onClick={handleExpedite}
-          >
+        <div className="accelerate-modal-footer">
+          <div className="footer-ok" onClick={() => handleExpedite(gameData)}>
             确定
           </div>
-          <div
-            style={{
-              padding: "8px 16px",
-              background: "rgba(255,255,255,0.1)",
-              borderRadius: "8px",
-              marginLeft: "20px",
-            }}
-            onClick={() => {
-              setAccelOpen(false);
-            }}
-          >
+          <div className="footer-cancel" onClick={() => setAccelOpen(false)}>
             取消
           </div>
         </div>

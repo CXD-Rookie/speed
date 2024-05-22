@@ -116,6 +116,36 @@
     color: #999;
     padding: 16px;
   }
+
+  .accelerate-modal {
+    width: 400px;
+    position: fixed;
+    top: 200px;
+    left: calc(50% - 200px);
+    color: #fff;
+    background: rgba(0,0,0, 0.7);
+    border-radius: 20px;
+    padding: 53px;
+    z-index: 10;
+
+    .accelerate-modal-footer {
+      display: flex;
+      margin-top: 20px;
+
+      .footer-ok {
+        padding: 8px 16px;
+        background: #F86C34;
+        border-radius: var(--speed-dominant-border-radius);
+      }
+
+      .footer-cancel {
+        background: rgba(255,255,255,0.1);
+        padding: 8px 16px;
+        margin-left: 20px;
+        border-radius: var(--speed-dominant-border-radius);
+      }
+    }
+  }
 }
 
 .home-module-game-card-home {
@@ -156,26 +186,39 @@
         height: 210px;
       }
 
-      .down-accelerate {
-        margin-left: calc(48% - 100px)
-      }
+      .accelerated-content {
+        .go-deteils {
+          font-size: 14px !important;
+          margin-top: 80px !important;
+          margin-left: calc(50% - 30px) !important;
 
-      .down-accelerate {
-        margin-left: calc(48% - 50px)
+          img {
+            left: 60px;
+            top: 5px;
+          }
+        }
+
+        .down-accelerate {
+          width: 120px !important;
+          height: 32px !important;
+          font-size: 16px !important;
+          background: #ffffff;
+          border-radius: 16px !important;
+          margin-left: calc(50% - 60px) !important;
+          line-height: 32px !important;
+          margin-top: 58px !important;
+        }
+      };
+
+      .accelerate-button {
+        margin: 162px 0 0 calc(50% - 36px) !important;
+        font-size: var(--speed-dominant-font-size);
       }
     }
   }
 
   .card-text-box {
-    font-size: 20px;
-  }
-
-  .accelerate-button {
-    position: absolute;
-    color: #F86C34;
-    font-size: 22px;
-    cursor: pointer;
-    margin: 146px 0 0 calc(50% - 50px) !important;
-    z-index: 2;
+    font-size: var(--speed-dominant-font-size) !important;
+    padding-top: 8px !important;
   }
 }

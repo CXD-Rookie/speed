@@ -35,16 +35,6 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    let arr =
-      localStorage.getItem("speed-1.0.0.1-accelerate") || JSON.stringify([]);
-    let game_arr = localStorage.getItem("speed-1.0.0.1-accelerate")
-      ? JSON.parse(arr)
-      : [];
-
-    setGameAccelerateList(game_arr);
-  }, []);
-
-  useEffect(() => {
     let arr = getMyGames();
 
     setMyGamesNum(arr?.length);
@@ -58,7 +48,6 @@ const Home: React.FC = () => {
           <GameCard
             key={index}
             gameData={game}
-            // isAccelerate={gameAccelerateList.includes(game?.id)}
             gameAccelerateList={gameAccelerateList}
             setGameAccelerateList={setGameAccelerateList}
           />
