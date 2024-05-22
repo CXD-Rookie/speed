@@ -8,6 +8,7 @@ import { menuActive } from "./redux/actions/menu";
 
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
+import Login from "./containers/Login/index";
 import "@/assets/css/App.scss";
 
 const { Header, Content } = Layout;
@@ -47,7 +48,10 @@ const App: React.FC = (props: any) => {
   const location = useLocation();
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
-
+  const isLogin = localStorage.getItem("isLogin");
+  if (isLogin === "" ||   isLogin === null || isLogin === undefined || isLogin === "undefined") {
+      localStorage.setItem("isLogin","false");
+  } 
   const [isLoginModal, setIsLoginModal] = useState(true);
 
   // 点击菜单
@@ -64,6 +68,7 @@ const App: React.FC = (props: any) => {
   };
 
   useEffect(() => {
+
     setMenuActive(location?.pathname);
   }, [location]);
 
@@ -96,12 +101,13 @@ const App: React.FC = (props: any) => {
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
-      {/* <div
+      {isLogin === "false" &&<div
         className="login-mask"
         style={{ display: isLoginModal ? "none" : "none" }}
       >
         <Login setIsLoginModal={setIsLoginModal} />
-      </div> */}
+      </div>
+      }
     </Layout>
   );
 };
