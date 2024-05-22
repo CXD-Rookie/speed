@@ -48,7 +48,6 @@
 
       .game-left {
         width: 262px;
-        text-align: center;
 
         .game-text {
           height: 46px;
@@ -59,24 +58,35 @@
           margin-top: 80px;
           display: flex;
           justify-content: center;
-          align-items: center;
         }
 
         .game-btn {
           width: 160px;
-            height: 44px;
+          height: 44px;
           border-radius: 22px;
           border: none;
           margin-top: 40px;
+          margin-left: 38px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .on-game {
           color: #fff;
           background-color: #f86c34;
 
+          .line {
+            width: 0.5px;
+            height: 20px;
+            opacity: 0.4;
+            border: 0.5px solid #ffffff;
+            margin: 0 8px 0 14px;
+          }
+
           img {
-            width: 24px;
-            height: 24px;
+            width: 18px;
+            height: 18px;
             margin-right: 4px;
           }
         }
@@ -86,8 +96,8 @@
           background-color: #fff;
 
           img {
-            width: 24px;
-            height: 24px;
+            width: 18px;
+            height: 18px;
             margin-right: 4px;
           }
         }
@@ -147,7 +157,7 @@
 
         .appliances {
           margin-top: 12px;
-        padding: 16px 0;
+          padding: 16px 0;
 
           .title {
             width: 100%;

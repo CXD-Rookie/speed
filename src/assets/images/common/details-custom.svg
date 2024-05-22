@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>自定义</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="游戏详情，无资讯" transform="translate(-416, -585)">
+            <g id="启动游戏" transform="translate(164, 560)">
+                <g id="闪电备份-3" transform="translate(252, 25)">
+                    <rect id="_mockplus_fix_" x="0" y="0" width="36" height="36"></rect>
+                    <g id="箭头" transform="translate(4.5, 6)">
+                        <g id="编组" transform="translate(3, 15)" fill="#FFFFFF">
+                            <circle id="椭圆形备份" cx="4.5" cy="4.5" r="4.5"></circle>
+                        </g>
+                        <g id="编组备份-2" transform="translate(15, 0)" fill="#FFFFFF">
+                            <circle id="椭圆形备份" cx="4.5" cy="4.5" r="4.5"></circle>
+                        </g>
+                        <g id="编组备份" transform="translate(13.5, 19.5) scale(-1, -1) translate(-13.5, -19.5)translate(0, 18.75)" stroke="#FFFFFF" stroke-width="3">
+                            <line x1="13.5" y1="-12.75" x2="13.5" y2="14.25" id="路径-5" transform="translate(13.5, 0.75) rotate(-90) translate(-13.5, -0.75)"></line>
+                        </g>
+                        <g id="编组备份-3" transform="translate(13.5, 4.5) scale(-1, -1) translate(-13.5, -4.5)translate(0, 3.75)" stroke="#FFFFFF" stroke-width="3">
+                            <line x1="13.5" y1="-12.75" x2="13.5" y2="14.25" id="路径-5" transform="translate(13.5, 0.75) rotate(-90) translate(-13.5, -0.75)"></line>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

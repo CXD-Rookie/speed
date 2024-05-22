@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 17:48:51
+ * @LastEditTime: 2024-05-22 18:21:38
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -19,9 +19,12 @@ import cessationIcon from "@/assets/images/common/cessation.svg";
 import computerIcon from "@/assets/images/common/computer.svg";
 import computingIcon from "@/assets/images/common/computing.svg";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
+import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 
 import BarChart from "@/containers/BarChart/index";
+
 declare const CefWebInstance: any;
+
 interface Game {
   id: number;
   name: string;
@@ -190,15 +193,17 @@ const GameDetail: React.FC = () => {
               type="default"
               onClick={openGame}
             >
-              <img src={activateIcon} alt="" />
+              <img src={activateIcon} width={18} height={18} alt="" />
               启动游戏
+              <div className="line" />
+              <img src={detailsCustomIcon} width={18} height={18} alt="" />
             </Button>
             <Button
               className="down-game game-btn"
               type="default"
               onClick={stopSpeed}
             >
-              <img src={cessationIcon} alt="" />
+              <img src={cessationIcon} width={18} height={18} alt="" />
               00:21:22
             </Button>
           </div>
