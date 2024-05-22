@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 18:21:38
+ * @LastEditTime: 2024-05-22 18:30:24
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -150,7 +150,6 @@ const GameDetail: React.FC = () => {
   const navigate = useNavigate();
 
   const stopSpeed = () => {
-    console.log("stop speed ----------------");
     CefWebInstance.call(
       "jsCallStopSpeed",
       { message: "jsCallStopSpeed" },
@@ -165,7 +164,6 @@ const GameDetail: React.FC = () => {
   };
 
   const openGame = () => {
-    console.log("opengame--------------------------");
     CefWebInstance.call(
       "jsCallStartGame",
       { message: "jsCallStartGame" },
