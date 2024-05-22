@@ -1,50 +1,26 @@
 /* src/pages/GameLibrary.css */
 .game-library {
-    padding: 20px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .header input {
-    padding: 5px;
-    font-size: 14px;
-  }
-  
-  .game-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    overflow: scroll;
-    height: 400px;
-  }
-  
-  .game-card {
-    background: #222;
-    color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 328px;
-    text-align: center;
-  }
-  
-  .game-card img {
-    max-width: 100%;
-    border-radius: 10px;
-  }
-  
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  .footer button {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-  
+  padding: 24px 40px;
+}
+
+.game-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  // overflow: scroll;
+  height: 400px;
+}
+
+.game-card {
+  background: #222;
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 328px;
+  text-align: center;
+}
+
+.game-card img {
+  max-width: 100%;
+  border-radius: 10px;
+}

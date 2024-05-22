@@ -1,9 +1,9 @@
 // src/pages/GameLibrary.tsx
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
 import gameApi from "@/api/gamelist";
+
 import "./style.scss";
-import { useNavigate } from "react-router-dom";
+
 interface Game {
   id: string;
   name: string;
@@ -31,25 +31,45 @@ interface Game {
   update_time: number;
 }
 
+interface GamesTitleProps {
+  label: string;
+  key: string;
+}
+
+const gamesTitle: GamesTitleProps[] = [
+  {
+    key: "1",
+    label: "热门游戏",
+  },
+  {
+    key: "2",
+    label: "近期推荐",
+  },
+  {
+    key: "3",
+    label: "休闲娱乐",
+  },
+  {
+    key: "4",
+    label: "游戏平台",
+  },
+];
+
 const GameLibrary: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState('');
-  const [tag, setTag] = useState('');
 
   useEffect(() => {
     fetchGames();
-  }, [page, pageSize, search, tag]);
+  }, []);
 
   const fetchGames = async () => {
     try {
       let res = await gameApi.gameList({
         params: {
-          s: search,
-          t: tag,
-          page: page,
-          pagesize: pageSize,
+          s: "",
+          t: "",
+          page: 1,
+          pagesize: 10,
         },
       });
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
@@ -58,35 +78,35 @@ const GameLibrary: React.FC = () => {
       }));
       setGames(gamesWithFullImgUrl);
     } catch (error) {
-      console.error('Error fetching games:', error);
+      console.error("Error fetching games:", error);
     }
   };
 
   return (
     <div className="game-library">
-    <header className="header">
-      <h1>游戏库</h1>
-      <input
-        type="text"
-        placeholder="搜索游戏"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-    </header>
-    <div className="game-list">
-      {games.map((game) => (
-        <div key={game.id} className="game-card">
-          <img src={game.cover_img} alt={game.name} />
-          <h2>{game.name}</h2>
-          <p>{game.name_en}</p>
-        </div>
-      ))}
+      <div className="game-title-box">
+        {gamesTitle.map((item) => (
+          <div
+            key={item?.key}
+            // className={`game-label ${
+            //   gameActiveType === item?.key && "game-label-active"
+            // }`}
+            // onClick={() => setGameActiveType(item?.key)}
+          >
+            {item?.label}
+          </div>
+        ))}
+      </div>
+      <div className="game-list">
+        {games.map((game) => (
+          <div key={game.id} className="game-card">
+            <img src={game.cover_img} alt={game.name} />
+            <h2>{game.name}</h2>
+            <p>{game.name_en}</p>
+          </div>
+        ))}
+      </div>
     </div>
-    <footer className="footer">
-      <button onClick={() => setPage(page - 1)} disabled={page === 1}>上一页</button>
-      <button onClick={() => setPage(page + 1)}>下一页</button>
-    </footer>
-  </div>
   );
 };
 
