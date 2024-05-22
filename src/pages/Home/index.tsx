@@ -2,12 +2,13 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 11:45:50
+ * @LastEditTime: 2024-05-22 15:05:24
  * @FilePath: \speed\src\pages\Home\index.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getMyGames } from "@/common/utils";
 
 import "./style.scss";
 import GameCard from "./GameCard";
@@ -24,32 +25,15 @@ interface Game {
   is_accelerate?: boolean;
 }
 
-const games: Game[] = [
-  {
-    id: 1,
-    name: "原神",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["二次元", "开放世界", "RPG"],
-  },
-  {
-    id: 2,
-    name: "英雄联盟",
-    image:
-      "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-    tags: ["MOBA", "竞技", "策略"],
-    is_accelerate: true,
-  },
-];
-
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const [gameAccelerateList, setGameAccelerateList] = useState<any>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [homeList, setHomeList] = useState([]);
+
   const openModal = () => {
-    console.log(11111111111);
     setIsModalOpen(true);
   };
 
@@ -67,21 +51,25 @@ const Home: React.FC = () => {
     setGameAccelerateList(game_arr);
   }, []);
 
+  useEffect(() => {
+    setHomeList(getMyGames());
+  }, []);
+
   return (
     <div className="home-module">
       <div className="game-list">
-        {games.map((game) => (
+        {homeList.map((game, index) => (
           <GameCard
-            key={game?.id}
+            key={index}
             gameData={game}
-            isAccelerate={gameAccelerateList.includes(game.id)}
+            // isAccelerate={gameAccelerateList.includes(game?.id)}
             gameAccelerateList={gameAccelerateList}
             setGameAccelerateList={setGameAccelerateList}
           />
         ))}
-        {games?.length < 4 &&
+        {homeList?.length < 4 &&
           Array.from(
-            { length: 4 - games?.length },
+            { length: 4 - homeList?.length },
             (_, index) => index + 1
           ).map((item) => (
             <div

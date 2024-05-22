@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 14:12:30
+ * @LastEditTime: 2024-05-22 15:14:33
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -84,7 +84,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       }`}
     >
       <div className="content-box">
-        <img src={gameData.image} alt={gameData.name} />
+        <img src={gameData?.cover_img} alt={gameData.name} />
         <div
           className="accelerate-content"
           style={isAccelerate ? { display: "block" } : {}}

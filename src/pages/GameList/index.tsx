@@ -1,6 +1,7 @@
 // src/pages/GameLibrary.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getMyGames } from "@/common/utils";
 
 import gameApi from "@/api/gamelist";
 
@@ -65,7 +66,20 @@ const GameLibrary: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [gameActiveType, setGameActiveType] = useState<string>("1");
 
-  const clickAddGame = () => {
+  const clickAddGame = (option: any) => {
+    let arr = getMyGames();
+    let is_true =
+      arr.filter((item: any) => item?.id === option?.id)?.length > 0;
+
+    if (!is_true) {
+      if (arr?.length >= 4) {
+        arr = [option, ...arr];
+      } else {
+        arr.push(option);
+      }
+    }
+
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
     navigate("/home");
   };
 
@@ -118,7 +132,7 @@ const GameLibrary: React.FC = () => {
                   className="add-icon"
                   src={addThemeIcon}
                   alt=""
-                  onClick={() => clickAddGame()}
+                  onClick={() => clickAddGame(game)}
                 />
                 <img
                   className="game-card-active-icon"
