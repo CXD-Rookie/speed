@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 18:30:24
+ * @LastEditTime: 2024-05-22 18:53:25
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -22,6 +22,7 @@ import laptopsIcon from "@/assets/images/common/laptops.svg";
 import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 
 import BarChart from "@/containers/BarChart/index";
+import SwitchDom from "@/containers/switch-dom";
 
 declare const CefWebInstance: any;
 
@@ -206,10 +207,7 @@ const GameDetail: React.FC = () => {
             </Button>
           </div>
           <div className="game-right">
-            <div className="info-switch info-common-style">
-              <span>00:50:21 亚服-北京-A508376（电信）</span>
-              <span>切换</span>
-            </div>
+            <SwitchDom />
             <div className="info-speed info-common-style">
               <div className="keep speed-common">
                 实时延迟
