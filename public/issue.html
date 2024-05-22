@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- 引入 layui.css -->
+    <link href="//unpkg.com/layui@2.9.9/dist/css/layui.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <style>
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .feedback-popup {
+            background-color: #3E3E4A;
+            width: 676px;
+            padding: 10px 18px 20px 18px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-header span {
+            opacity: 0.5;
+            font-size: 12px;
+            font-weight: Regular;
+            text-align: left;
+            color: #ffffff;
+            line-height: 16px;
+        }
+
+        .type-buttons {
+            margin: 28px 9px;
+            padding-left: 7px;
+        }
+
+        .matter-description {
+            margin: 0 9px;
+        }
+
+        .matter-description .matter-text,
+        .type-buttons .matter-type {
+            font-size: 14px;
+            font-weight: Regular;
+            text-align: left;
+            color: #999999;
+            line-height: 20px;
+        }
+
+        .matter-description .matter-text span,
+        .type-buttons .matter-type span {
+            color: #F86C34;
+        }
+
+        .type-btn {
+            width: 84px;
+            height: 32px;
+            font-size: 12px;
+            font-weight: Regular;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.10);
+            text-align: center;
+            line-height: 32px;
+            border-radius: 5px;
+            border: 1px solid transparent;
+            margin: 8px 10px 0 0;
+            cursor: pointer;
+            position: relative;
+            /* 添加默认边框 */
+        }
+
+        .type-btn:nth-child(3) {
+            width: 95px;
+        }
+
+        .type-btn.selected {
+            border-color: #F86C34;
+            /* 选中状态下边框颜色 */
+            color: #F86C34;
+            /* 选中状态下文字颜色 */
+        }
+
+        .type-btn.selected::before {
+            content: "\2713";
+            /* 对号的 Unicode */
+            display: inline-block;
+            position: absolute;
+            top: -3px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            color: #fff;
+            line-height: 20px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .type-btn.selected::after {
+            content: "";
+            display: inline-block;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            border-left: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-right: 12px solid #F86C34;
+            border-top: 12px solid #F86C34;
+        }
+
+        .description-input-box {
+            color: #fff;
+            margin: 8px 7px;
+        }
+
+        .description {
+            width: 610px;
+            /* height: auto; */
+            min-height: 88px;
+            font-size: 12px;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.10);
+            border: none;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            padding: 8px 12px;
+            resize: none;
+        }
+
+        .description::-webkit-scrollbar {
+            width: 0px;
+        }
+
+        ;
+
+        .description::placeholder {
+            font-weight: Regular;
+            font-size: 12px;
+            color: #999999;
+            margin: 8px 12px;
+        }
+
+        .description-input-num {
+            width: 624px;
+            height: 24px;
+            font-size: 12px;
+            color: #999;
+            background: transparent;
+            padding-right: 10px;
+            position: relative;
+            text-align: right;
+            bottom: 23px;
+        }
+
+        .layui-upload {
+            display: flex;
+        }
+
+        ;
+
+        .layui-elem-quote {
+            width: 50px;
+            height: 50px;
+            margin-top: 8px;
+            border: none;
+        }
+
+        .fa-plus {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            color: #fff;
+            background-color: #52525c;
+            border: 0.5px dashed #fff;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+        }
+
+        .img-container {
+            position: relative;
+            margin-right: 10px;
+        }
+
+        .fa-times-circle:before {
+            content: "\00D7";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            font-size: 10px;
+            top: -6px;
+            right: -6px;
+            text-align: center;
+            line-height: 12px;
+            background-color: #F86C34;
+            border-radius: 50%;
+            color: #fff;
+        }
+
+        .image-upload {
+            position: relative;
+        }
+
+        .layui-elem-quote {
+            width: auto;
+            border: none;
+            padding: 0;
+            margin-left: 16px;
+        }
+
+        .layui-upload-list {
+            display: flex;
+            margin: 0;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        #file-input+label {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 30px;
+            height: 30px;
+            background-color: #ccc;
+            cursor: pointer;
+        }
+
+        .preview {
+            margin-top: 10px;
+        }
+
+        .preview img {
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .contact {
+            font-size: 14px;
+            color: #999;
+            margin: 28px 9px;
+            padding-left: 7px;
+        }
+
+        .contact-input-box {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .contact .contact-input {
+            width: 368px;
+            height: 16px;
+            font-size: 12px;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            border: none;
+            padding: 8px 4px 8px 12px;
+            margin-top: 8px;
+        }
+
+        .contact .contact-input::placeholder {
+            font-weight: Regular;
+            font-size: 12px;
+        }
+
+        .contact-input-num {
+            display: inline-block;
+            width: 50px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.10);
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            text-align: center;
+            line-height: 32px;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 185px;
+            height: 44px;
+            color: #999;
+            background-color: #52525c;
+            border: none;
+            outline: none;
+            border-radius: 22px;
+            text-align: center;
+            line-height: 44px;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            color: #fff;
+            background-color: #F86C34;
+        }
+
+        .popup-success {
+            width: 320px;
+            height: 130px;
+            font-size: 13px;
+            color: #fff;
+            background: #3e3e4a;
+            border-radius: 10px;
+            box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.50);
+            padding: 10px 12px;
+            text-align: center;
+            position: fixed;
+            margin: auto;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .popup-success img {
+            margin-left: 308px;
+        }
+
+        .sucess-text {
+            margin: 32px 0 28px 0;
+        }
+
+        .sucess-btn {
+            width: 96px;
+            height: 32px;
+            font-size: 14px;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.10);
+            border-radius: 16px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            /* margin-bottom: 20px */
+        }
+    </style>
+    <title>问题反馈</title>
+</head>
+
+<body>
+
+    <div class="overlay">
+        <div class="feedback-popup">
+            <div class="popup-header">
+                <span>问题反馈</span>
+                <img src="assets/cloture_write.svg" width="12" height="12" alt="" />
+            </div>
+            <div class="type-buttons" id="btnAll">
+                <div class="matter-type">
+                    <span>*</span>
+                    问题类型
+                </div>
+            </div>
+            <div class="matter-description">
+                <div class="matter-text">
+                    <span>*</span>
+                    问题描述
+                </div>
+                <div class="description-input-box">
+                    <textarea id="description" class="description"
+                        placeholder="请描述您所遇到的问题，上传图片格式支持JPG/PNG/JPEG，大小<5MB"></textarea>
+                    <div id="description-input-num" class="description-input-num">
+                        0/500
+                    </div>
+                </div>
+            </div>
+            <div class="layui-upload">
+                <blockquote class="layui-elem-quote layui-quote-nm">
+                    <div class="layui-upload-list" id="upload-demo-preview"></div>
+                </blockquote>
+                <label for="file-input" id="ID-upload-demo-btn-2"><i class="fas fa-plus"></i></label>
+            </div>
+            <div class="contact">
+                <div>联系方式（选填）</div>
+                <div class="contact-input-box">
+                    <input id="contact-input" class="contact-input" type="text" placeholder="手机/邮箱/微信"></input>
+                    <div id="contact-input-num" class="contact-input-num">
+                        0/50
+                    </div>
+                </div>
+            </div>
+            <button class="submit-btn">提交</button>
+            <div id="popup-success" class="popup-success" style="display: none;">
+                <img class="popup-success-img" src="assets/cloture_write.svg" width="12" height="12" alt="" />
+                <div class="sucess-text">您的问题已反馈</div>
+                <button class="sucess-btn">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//unpkg.com/layui@2.9.9/dist/layui.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // 在页面加载时设置全局的 AJAX 默认选项
+            $.ajaxSetup({
+                headers: {
+                    'client_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY2xpZW50X2lwIjoiMTI3LjAuMC4xIiwiZXhwIjoxNzE4NDQzMjE1fQ.Ww-OhE8HAxjrMIjPmwA5UEXBt_wjEARwA1aNQ0UEG58',
+                    'client_id': 'rdfgsdf-amfhft-mfmertaa-adfadfgds-gdfsgf',
+                    'user_token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXIiOiIiLCJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY3JlYXRlX3RpbWUiOjE3MTU1ODg2NTUsImV4cCI6MTcxODQ0MzQzNywiaWQiOiI2NjQxY2UyZjFkY2EyOGExNjdmN2U5M2YiLCJsb2dpbl9pcCI6IjEyNy4wLjAuMSIsIm5pY2tuYW1lIjoi5bm75oOz5bel56iL5aWH5omNIiwicGhvbmUiOiI4ZjBmM2M1YTdmMTJmYmE2MTMxMWE4ZDBmNDBjNjY3NSIsInBsYXRmb3JtIjoiV2luZG93cyIsInVwZGF0ZV90aW1lIjoxNzE1ODUxNDM3fQ.OMLHSklc9NVwW0FdM9LfR4yMACn_6oGvRWSdTHLT4hc"
+                }
+            });
+
+            init()
+            // 打开反馈弹窗
+            $('.open-popup-btn').click(function () {
+                $('.overlay').fadeIn();
+            });
+
+            // 关闭反馈弹窗
+            $('.close-popup-btn').click(function () {
+                $('.overlay').fadeOut();
+            });
+
+            $('#description').on('input', function () {
+                var maxLength = 500;
+                var currentLength = $(this).val().length;
+                var wordsRemaining = maxLength - currentLength;
+
+                // 如果输入超过500字，截取字符串至500字
+                if (currentLength > maxLength) {
+                    $(this).val($(this).val().substring(0, maxLength));
+                }
+            });
+            $('#contact-input').on('input', function () {
+                var maxLength = 50;
+                var currentLength = $(this).val().length;
+                var wordsRemaining = maxLength - currentLength;
+
+                // 如果输入超过500字，截取字符串至500字
+                if (currentLength > maxLength) {
+                    $(this).val($(this).val().substring(0, maxLength));
+                }
+            });
+
+            // 图片预览
+            $('#file-input').change(function () {
+                $('.preview').empty();
+                var files = this.files;
+                for (var i = 0; i < files.length; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.preview').append('<img src="' + e.target.result +
+                            '"><i class="fas fa-times"></i>');
+                    }
+                    reader.readAsDataURL(files[i]);
+                }
+            });
+
+            // 关闭预览图片
+            $('.preview').on('click', 'i.fa-times', function () {
+                $(this).prev('img').remove();
+                $(this).remove();
+            });
+
+            //图片上传
+            layui.use(function () {
+                var upload = layui.upload;
+                var layer = layui.layer;
+                var element = layui.element;
+                var $ = layui.$;
+
+                // 定义最大上传数量
+                var maxImages = 3;
+                // 多图片上传
+                upload.render({
+                    elem: '#ID-upload-demo-btn-2',
+                    url: 'https://tc-js.yuwenlong.cn/api/v1/feedback_upload_image?platform=3', // 实际使用时改成您自己的上传接口即可。
+                    multiple: false,
+                    number: 1,
+                    acceptMime: 'image/jpeg, image/png',
+                    before: function (obj) {
+                        var $previewImages = $('#upload-demo-preview .img-container');
+                        if ($previewImages.length >= maxImages) {
+                            layer.msg('最多只能上传 ' + maxImages + ' 张图片');
+                            return false; // 阻止上传
+                        }
+                        // 预读本地文件示例，不支持ie8
+                        obj.preview(function (index, file, result) {
+                            var $imgContainer = $(
+                                '<div class="img-container"></div>');
+                            var $img = $('<img src="' + result + '" alt="' + file
+                                .name +
+                                '" style="width: 50px; height: 50px;border-radius: 5px;">'
+                                );
+                            var $deleteIcon = $(
+                                '<i class="fas fa-times-circle delete-icon"></i>'
+                                );
+                            $imgContainer.append($img).append($deleteIcon);
+                            $('#upload-demo-preview').append($imgContainer);
+                        });
+                    },
+                    done: function (res) {
+                        // 上传完毕
+                        if (res.error === 0) {
+                            var imageUrl = res.data.url;
+                            var $previewImages = $('#upload-demo-preview img');
+                            var index = $previewImages.length - 1; // 获取最后一张图片的索引
+                            var $lastPreviewImage = $previewImages.eq(index); // 获取最后一张预览图片
+                            $lastPreviewImage.attr('src', imageUrl); // 替换最后一张预览图片的 src 属性
+                            console.log('Upload successful:', imageUrl);
+                        } else {
+                            console.error('Upload failed:', res.message);
+                        }
+                    }
+                });
+                // 点击删除图标删除预览图片
+                $('#upload-demo-preview').on('click', '.delete-icon', function () {
+                    $(this).parent('.img-container').remove();
+                });
+            });
+
+            $("#contact-input").on("input", function (e) {
+                var inputValue = $(this).val();
+
+                inputValue = inputValue.slice(0, 50);
+
+                var value_len = inputValue.length;
+
+                $('#contact-input-num').text(value_len + "/50");
+            })
+
+            $("#description").on("input", function (e) {
+                var inputValue = $(this).val();
+
+                inputValue = inputValue.slice(0, 500);
+
+                var value_len = inputValue.length;
+
+                $('#description-input-num').text(value_len + "/500");
+            })
+
+            // 提交表单
+            $('.submit-btn').click(function () {
+                var moda1Type = $('#popup-success');
+
+                var type = $('.type-btn.selected').data('type');
+                var description = $('.description').val();
+                var images = [];
+                if (type == undefined || type == '' || type == null || description == 'undefined' ||
+                    description == '' || description == null) {
+                    layer.msg('请选择问题类型或者填写问题描述');
+                    return
+                }
+                // 获取图片 URL
+                $('#upload-demo-preview img').each(function () {
+                    images.push($(this).attr('src'));
+                });
+
+                // 调用提交反馈的接口
+                $.ajax({
+                    url: 'https://tc-js.yuwenlong.cn/api/v1/feedback?platform=3',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        feedback_type: type,
+                        content: description,
+                        image_url: images,
+                        contact_way: '' // 你的联系方式
+                    }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        // 处理提交成功后的逻辑
+                        console.log('Feedback submitted successfully.');
+
+                        $('#popup-success').show();
+                        $('.sucess-btn').click(function () {
+                            $('#popup-success').hide();
+                            // 清空表单，关闭弹窗等
+                            $('.description').val('');
+                            $('#upload-demo-preview').empty();
+                            $('.type-btn').removeClass('selected');
+                            $('.overlay').fadeOut();
+                        })
+                        $('.popup-success-img').click(function () {
+                            $('#popup-success').hide();
+                            // 清空表单，关闭弹窗等
+                            $('.description').val('');
+                            $('#upload-demo-preview').empty();
+                            $('.type-btn').removeClass('selected');
+                            $('.overlay').fadeOut();
+                        })
+
+                    },
+                    error: function (error) {
+                        // 处理提交失败后的逻辑
+                        console.error('Failed to submit feedback:', error);
+                    }
+                });
+            });
+
+            function init() {
+                // 调用提交反馈的接口
+                $.ajax({
+                    url: 'https://rm-mga-dev.yuwenlong.cn/api/v1/feedback_type?platform=3',
+                    type: 'get',
+                    contentType: 'application/json',
+                    success: function (response) {
+
+                        var jsonData = response.data.types;
+                        // 遍历JSON数据
+                        $.each(jsonData, function (index, item) {
+
+                            var $tab = $('#btnAll');
+
+                            $tab.append('<button class="type-btn" data-type="' + item.id +
+                                '">' + item.value + '</button>');
+
+
+                        });
+                        $('.type-btn').click(function () {
+                            $('.type-btn').removeClass('selected');
+                            $(this).addClass('selected');
+
+                            var selectedType = $(this).data('type');
+                            console.log(selectedType);
+                        });
+                    },
+                    error: function (error) {
+                        // 处理提交失败后的逻辑
+                        console.error('Failed to submit feedback:', error);
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

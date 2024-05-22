@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 11:35:00
+ * @LastEditTime: 2024-05-22 11:45:50
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -46,7 +46,16 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const [gameAccelerateList, setGameAccelerateList] = useState<any>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const openModal = () => {
+    console.log(11111111111);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   useEffect(() => {
     let arr =
       localStorage.getItem("speed-1.0.0.1-accelerate") || JSON.stringify([]);
@@ -86,8 +95,29 @@ const Home: React.FC = () => {
       </div>
       <div className="functional-areas">
         <div className="membership-recharge areas-list-box">
-          <img src={rechargeIcon} width={100} height={100} alt="" />
+          <img
+            onClick={openModal}
+            src={rechargeIcon}
+            width={100}
+            height={100}
+            alt=""
+          />
           会员充值
+          {isModalOpen && (
+            <div className="modal-overlay">
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <button className="close-button" onClick={closeModal}>
+                  x
+                </button>
+                <iframe
+                  src="https://jsq-cdn.yuwenlong.cn/web/pay.html"
+                  width="100%"
+                  height="400px"
+                  title="Payment"
+                ></iframe>
+              </div>
+            </div>
+          )}
         </div>
         <div
           className="may-games areas-list-box"
