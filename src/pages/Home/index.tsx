@@ -2,13 +2,14 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 19:22:32
+ * @LastEditTime: 2024-05-22 19:35:30
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
+import { Button } from "antd";
 
 import "./style.scss";
 import GameCard from "./GameCard";
@@ -16,6 +17,7 @@ import GameCard from "./GameCard";
 import addIcon from "@/assets/images/common/add.svg";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
+import emptyIcon from "@/assets/images/home/empty.svg";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -67,7 +69,14 @@ const Home: React.FC = () => {
             </div>
           ))
         ) : (
-          <div className="empty-card"></div>
+          <div className="empty-card">
+            <img src={emptyIcon} width={68} height={69} alt="" />
+            <div className="title">未发现本地游戏</div>
+            <div className="text">去游戏库添加或者试试搜索游戏吧～</div>
+            <Button type="primary" onClick={() => navigate("/gameLibrary")}>
+              去游戏库看看
+            </Button>
+          </div>
         )}
       </div>
       <div className="functional-areas">
