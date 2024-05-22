@@ -26,9 +26,9 @@ const menuList: MenuProps[] = [
     router: "/home",
   },
   {
-    key: "gamelist",
+    key: "gameLibrary",
     label: "游戏库",
-    router: "/gamelist",
+    router: "/gameLibrary",
   },
 ];
 

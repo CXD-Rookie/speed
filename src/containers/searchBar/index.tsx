@@ -1,7 +1,6 @@
-// src/components/SearchBar/SearchBar.tsx
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; // 导入 useHistory
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { fetchSearchResults } from '../../redux/actions/search';
@@ -16,13 +15,25 @@ type RootState = {
 
 const SearchBar: React.FC = () => {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+  const navigate = useNavigate(); // 获取 history 对象
   const query = useSelector((state: RootState) => state.search.query);
-  const results = useSelector((state: RootState) => state.search.results) || []; // 确保 results 为数组
+  const results = useSelector((state: RootState) => state.search.results) || [];
   const [showDropdown, setShowDropdown] = useState(false);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
     dispatch(fetchSearchResults(searchQuery));
     setShowDropdown(!!searchQuery);
+  };
+
+  const handleSearchResultClick = () => {
+    navigate('/gamelist'); // 点击搜索结果后跳转到搜索结果页面
+  };
+
+  const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      navigate('/gamelist'); // 在输入框按下回车键时跳转到搜索结果页面
+    }
   };
 
   return (
@@ -33,12 +44,13 @@ const SearchBar: React.FC = () => {
         value={query}
         onChange={handleSearch}
         onFocus={() => setShowDropdown(true)}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 200)} // 延时关闭下拉菜单，确保点击
+        onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+        onKeyDown={handleEnterKeyPress} // 监听键盘事件
       />
       {showDropdown && results.length > 0 && (
         <div className="search-dropdown">
           {results.map((result, index) => (
-            <div key={index} className="search-item">
+            <div key={index} className="search-item" onClick={handleSearchResultClick}>
               {result.name} ({result.name_en})
             </div>
           ))}

@@ -102,11 +102,11 @@ const GameLibrary: React.FC = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchGames(); // 在组件加载时调用一次，用于初始化
+  useEffect(() => {
+    fetchGames(); // 在组件加载时调用一次，用于初始化
 
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (searchResults.length === 0) {
