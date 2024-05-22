@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 16:16:52
+ * @LastEditTime: 2024-05-22 20:54:54
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -15,24 +15,25 @@ import { getMyGames } from "@/common/utils";
 import rightArrow from "@/assets/images/common/right-arrow.svg";
 import accelerateIcon from "@/assets/images/common/accelerate.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
+import cessationIcon from "@/assets/images/common/cessation.svg";
+import arrowIcon from "@/assets/images/common/accel-arrow.svg";
+import closeIcon from "@/assets/images/common/close.svg";
+
 import "./style.scss";
 
 declare const CefWebInstance: any;
 
 export interface GameCardProps {
   gameData?: any;
-  isAccelerate?: boolean;
-  gameAccelerateList?: any;
-  setGameAccelerateList?: ((value: any) => void) | undefined;
   type?: string;
   size?: "middle" | "small" | "large"; // 输入框类型 默认 middle
-  onChange?: ((value: object) => void) | undefined;
+  onClear?: ((value: any) => void) | undefined;
   style?: React.CSSProperties;
   className?: string;
 }
 
 const GameCard: React.FC<GameCardProps> = (props) => {
-  const { gameData = {}, type = "home" } = props;
+  const { gameData = {}, type = "home", onClear = () => {} } = props;
 
   const navigate = useNavigate();
 
@@ -74,6 +75,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     handleExpedite(option);
   };
 
+  const handleClearGame = (options: any) => {
+    let result: any = [];
+
+    getMyGames()?.forEach((item: any) => {
+      if (item?.id !== options?.id) {
+        result.push(item);
+      }
+    });
+
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(result));
+    onClear(result);
+  };
+
   return (
     <div
       className={`home-module-game-card ${
@@ -90,58 +104,70 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         >
           {gameData?.is_accelerate ? (
             <Fragment>
-              <div className="t2">
-                <div className="accelerated-content">
-                  {type === "home" && (
-                    <>
-                      <div className="instant-delay">即时延迟</div>
-                      <div className="speed">
-                        98<span>ms</span>
-                      </div>
-                    </>
-                  )}
-                  <div
-                    className="go-deteils"
-                    style={
-                      type === "home"
-                        ? {}
-                        : {
-                            marginTop: 130,
-                          }
-                    }
-                    onClick={handleDetails}
-                  >
-                    进入详情
-                    <img src={rightArrow} alt="" />
-                  </div>
-                  <div
-                    className="down-accelerate"
-                    style={
-                      type === "home"
-                        ? {}
-                        : {
-                            width: 160,
-                            height: 40,
-                            lineHeight: "40px",
-                            fontSize: 20,
-                            marginLeft: "calc(50% - 80px)",
-                          }
-                    }
-                    onClick={() => handleStopClick(gameData)}
-                  >
-                    停止加速
-                  </div>
+              <div className="accelerated-content">
+                {type === "home" && (
+                  <>
+                    <div className="instant-delay">即时延迟</div>
+                    <div className="speed">
+                      98<span>ms</span>
+                    </div>
+                  </>
+                )}
+                <div
+                  className="go-deteils"
+                  style={
+                    type === "home"
+                      ? {}
+                      : {
+                          marginTop: 130,
+                        }
+                  }
+                  onClick={handleDetails}
+                >
+                  进入详情
+                  <img src={rightArrow} alt="" />
                 </div>
-                <img src={acceleratedIcon} alt="" />
+                <div
+                  className="down-accelerate"
+                  style={
+                    type === "home"
+                      ? {}
+                      : {
+                          width: 160,
+                          height: 40,
+                          lineHeight: "40px",
+                          fontSize: 20,
+                          marginLeft: "calc(50% - 80px)",
+                        }
+                  }
+                  onClick={() => handleStopClick(gameData)}
+                >
+                  <img
+                    style={{ width: 18, height: 18 }}
+                    src={cessationIcon}
+                    width={18}
+                    height={18}
+                    alt=""
+                  />
+                  停止加速
+                </div>
               </div>
+              <img src={acceleratedIcon} alt="" />
             </Fragment>
           ) : (
             <Fragment>
+              <img
+                className="clear-game"
+                src={closeIcon}
+                alt=""
+                onClick={() => handleClearGame(gameData)}
+              />
               <div
                 className="accelerate-button"
                 onClick={() => handleAccelerateClick(gameData)}
               >
                 立即加速
+                <img src={arrowIcon} width={18} height={18} alt="" />
               </div>
               <img className="on-accel-img" src={accelerateIcon} alt="" />
             </Fragment>

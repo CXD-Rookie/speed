@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 19:35:30
+ * @LastEditTime: 2024-05-22 20:29:35
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -22,7 +22,7 @@ import emptyIcon from "@/assets/images/home/empty.svg";
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
-  const [gameAccelerateList, setGameAccelerateList] = useState<any>([]);
+  const [status, setStatus] = useState<any>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [homeList, setHomeList] = useState([]);
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
 
     setMyGamesNum(arr?.length);
     setHomeList(arr?.slice(0, 4));
-  }, []);
+  }, [status]);
 
   return (
     <div className="home-module">
@@ -50,8 +50,7 @@ const Home: React.FC = () => {
           <GameCard
             key={index}
             gameData={game}
-            gameAccelerateList={gameAccelerateList}
-            setGameAccelerateList={setGameAccelerateList}
+            onClear={() => setStatus(status + 1)}
           />
         ))}
         {homeList?.length < 4 && homeList?.length > 0 ? (

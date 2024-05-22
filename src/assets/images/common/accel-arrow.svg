@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>加速箭头</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="我的游戏" transform="translate(-602, -606)">
+            <g id="编组-2备份-2" transform="translate(392, 268)">
+                <g id="编组-3" transform="translate(42, 324)">
+                    <g id="闪电备份-2" transform="translate(168, 14)">
+                        <rect id="_mockplus_fix_" x="0" y="0" width="36" height="36"></rect>
+                        <circle id="椭圆形" fill="#F86C34" cx="18" cy="18" r="18"></circle>
+                        <g id="编组" transform="translate(17.642, 17.9352) rotate(90) translate(-17.642, -17.9352)translate(10.1495, 10.8526)" stroke="#000000" stroke-width="4">
+                            <line x1="7.49253955" y1="0.165227219" x2="7.49253955" y2="14.1652272" id="路径-5"></line>
+                            <line x1="4.29009774" y1="-1.25706265" x2="3.69498136" y2="8.58751709" id="路径-5备份-2" transform="translate(3.9925, 3.6652) scale(1, -1) rotate(-48) translate(-3.9925, -3.6652)"></line>
+                            <line x1="11.2900977" y1="-1.25706265" x2="10.6949814" y2="8.58751709" id="路径-5备份-3" transform="translate(10.9925, 3.6652) scale(-1, -1) rotate(-48) translate(-10.9925, -3.6652)"></line>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -27,22 +27,12 @@ const games: Game[] = [];
 const MyGames: React.FC = () => {
   const navigate = useNavigate();
 
-  const [gameAccelerateList, setGameAccelerateList] = useState<any>([]);
+  const [status, setStatus] = useState<any>(0);
   const [gamesList, setGamesList] = useState([]);
 
   useEffect(() => {
-    let arr =
-      localStorage.getItem("speed-1.0.0.1-accelerate") || JSON.stringify([]);
-    let game_arr = localStorage.getItem("speed-1.0.0.1-accelerate")
-      ? JSON.parse(arr)
-      : [];
-
-    setGameAccelerateList(game_arr);
-  }, []);
-
-  useEffect(() => {
     setGamesList(getMyGames());
-  }, []);
+  }, [status]);
 
   return (
     <div className="my-games-module">
@@ -59,8 +49,7 @@ const MyGames: React.FC = () => {
               key={index}
               gameData={game}
               type={"my-game"}
-              gameAccelerateList={gameAccelerateList}
-              setGameAccelerateList={setGameAccelerateList}
+              onClear={() => setStatus(status + 1)}
             />
           ))}
       </div>

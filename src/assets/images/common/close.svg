@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>关闭1</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页，已加速" transform="translate(-924, -196)">
+            <g id="编组-14" transform="translate(64, 40)">
+                <g id="编组-2备份-2" transform="translate(484, 132)">
+                    <g id="关闭1" transform="translate(376, 24)">
+                        <rect id="_mockplus_fix_" x="0" y="0" width="36" height="36"></rect>
+                        <g transform="translate(3, 3)" stroke="#FFFFFF" stroke-width="3">
+                            <circle id="椭圆形" cx="15" cy="15" r="15"></circle>
+                            <line x1="9.5" y1="9" x2="21.5" y2="21" id="路径-5"></line>
+                            <line x1="21.5" y1="9" x2="9.5" y2="21" id="路径-5"></line>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
