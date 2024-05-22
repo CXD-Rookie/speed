@@ -1,0 +1,15 @@
+.switch-dom-module {
+  .info-switch {
+    width: 100%;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: var(--speed-dominant-border-radius);
+
+    & span:last-child {
+      color: #f86c34;
+    }
+  }
+}

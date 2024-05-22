@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 17:09:46
+ * @LastEditTime: 2024-05-22 18:53:25
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -19,9 +19,13 @@ import cessationIcon from "@/assets/images/common/cessation.svg";
 import computerIcon from "@/assets/images/common/computer.svg";
 import computingIcon from "@/assets/images/common/computing.svg";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
+import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 
 import BarChart from "@/containers/BarChart/index";
+import SwitchDom from "@/containers/switch-dom";
+
 declare const CefWebInstance: any;
+
 interface Game {
   id: number;
   name: string;
@@ -147,7 +151,6 @@ const GameDetail: React.FC = () => {
   const navigate = useNavigate();
 
   const stopSpeed = () => {
-    console.log("stop speed ----------------");
     CefWebInstance.call(
       "jsCallStopSpeed",
       { message: "jsCallStopSpeed" },
@@ -162,7 +165,6 @@ const GameDetail: React.FC = () => {
   };
 
   const openGame = () => {
-    console.log("opengame--------------------------");
     CefWebInstance.call(
       "jsCallStartGame",
       { message: "jsCallStartGame" },
@@ -185,28 +187,27 @@ const GameDetail: React.FC = () => {
         <div className="game-detail">
           <div className="game-left">
             <div className="game-text">{game.name}</div>
-            <div className="info-switch">
-              <span>00:50:21 亚服-北京-A508376（电信）</span>
-              <span>切换</span>
-            </div>
             <Button
               className="on-game game-btn"
               type="default"
               onClick={openGame}
             >
-              <img src={activateIcon} alt="" />
+              <img src={activateIcon} width={18} height={18} alt="" />
               启动游戏
+              <div className="line" />
+              <img src={detailsCustomIcon} width={18} height={18} alt="" />
             </Button>
             <Button
               className="down-game game-btn"
               type="default"
               onClick={stopSpeed}
             >
-              <img src={cessationIcon} alt="" />
-              停止加速
+              <img src={cessationIcon} width={18} height={18} alt="" />
+              00:21:22
             </Button>
           </div>
           <div className="game-right">
+            <SwitchDom />
             <div className="info-speed info-common-style">
               <div className="keep speed-common">
                 实时延迟
@@ -219,6 +220,33 @@ const GameDetail: React.FC = () => {
                 丢包率
                 <div>
                   0<span> %</span>
+                </div>
+              </div>
+            </div>
+            <div className="appliances info-common-style">
+              <div className="title">设备连接</div>
+              <div className="content-box">
+                <div className="icon-box">
+                  <img src={laptopsIcon} alt="" />
+                  <div>电脑</div>
+                </div>
+
+                <div className="line-box">
+                  2ms
+                  <div className="line" />
+                </div>
+                <div className="icon-box">
+                  <img src={computingIcon} alt="" />
+                  <div>路由器</div>
+                </div>
+
+                <div className="line-box">
+                  2ms
+                  <div className="line" />
+                </div>
+                <div className="icon-box">
+                  <img src={computerIcon} alt="" />
+                  <div>服务器</div>
                 </div>
               </div>
             </div>
