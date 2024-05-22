@@ -47,38 +47,32 @@
       justify-content: space-between;
 
       .game-left {
-        width: 256px;
+        width: 262px;
         text-align: center;
 
         .game-text {
-          width: 160px;
           height: 46px;
           font-size: 32px;
           font-weight: Bold;
-          text-align: left;
           color: #ffffff;
           line-height: 46px;
-        }
-
-        .info-switch {
-            
+          margin-top: 80px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .game-btn {
-          width: 200px;
-          height: 52px;
-          font-size: 22px;
-          border-radius: 52px;
+          width: 160px;
+            height: 44px;
+          border-radius: 22px;
           border: none;
+          margin-top: 40px;
         }
 
         .on-game {
           color: #fff;
           background-color: #f86c34;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin: 0 auto;
 
           img {
             width: 24px;
@@ -90,11 +84,6 @@
         .down-game {
           color: #222;
           background-color: #fff;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin: 0 auto;
-          margin-top: 24px;
 
           img {
             width: 24px;
@@ -105,7 +94,7 @@
       }
 
       .game-right {
-        width: 66%;
+        width: 654px;
 
         .info-common-style {
           color: #fff;
@@ -115,7 +104,7 @@
 
         .info-switch {
           width: 100%;
-          padding: 24px 32px;
+          padding: 10px 16px;
           display: flex;
           justify-content: space-between;
 
@@ -125,21 +114,21 @@
         }
 
         .info-speed {
+          padding: 16px 0;
           margin-top: 12px;
           display: flex;
-          padding: 40px 0 32px 0;
           align-items: center;
 
           .keep {
             color: #999999;
-            font-size: 22px;
+            font-size: 14px;
 
             div {
               color: #fff;
               font-size: 50px;
 
               span {
-                font-size: 18px;
+                font-size: var(--speed-dominant-font-size);
               }
             }
           }
@@ -150,22 +139,68 @@
           }
 
           .speed-line {
-            width: 2px;
-            height: 120px;
+            width: 1px;
+            height: 54px;
             background: rgba(255, 255, 255, 0.1);
+          }
+        }
+
+        .appliances {
+          margin-top: 12px;
+        padding: 16px 0;
+
+          .title {
+            width: 100%;
+            color: #fff;
+            font-size: 14px;
+            padding-bottom: 20px;
+            text-align: center;
+          }
+
+          .content-box {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
+            .icon-box {
+              text-align: center;
+              font-size: 14px;
+              color: #999999;
+
+              img {
+                width: 32px;
+                height: 32px;
+              }
+            }
+
+            .line-box {
+              color: #f86c34;
+              text-align: center;
+              font-size: 14px;
+
+              .line {
+                width: 180px;
+                height: 2px;
+                border-radius: 50%;
+                background-color: #f86c34;
+                opacity: 0.4;
+                margin: 4px 10px 0 10px;
+              }
+            }
           }
         }
 
         .tendencies {
           width: 100%;
           margin-top: 12px;
+          padding: 16px 0;
 
           .title {
             width: 100%;
+            font-size: 14px;
             color: #fff;
-            font-size: 22px;
-            padding: 16px 0 20px 0;
             text-align: center;
+            padding-bottom: 20px;
           }
         }
       }

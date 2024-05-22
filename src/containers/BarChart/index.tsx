@@ -1,3 +1,12 @@
+/*
+ * @Author: zhangda
+ * @Date: 2024-04-23 10:37:30
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-22 18:03:27
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\src\containers\BarChart\index.tsx
+ */
 import React, { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
@@ -47,7 +56,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     };
   }, [data]);
 
-  return <div ref={chartRef} style={{ width: "100%", height: "100px" }} />;
+  return <div ref={chartRef} style={{ width: "100%", height: "90px" }} />;
 };
 
 export default BarChart;
