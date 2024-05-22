@@ -1,0 +1,46 @@
+/*
+ * @Author: steven libo@rongma.com
+ * @Date: 2024-05-22 14:58:00
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-22 18:39:47
+ * @FilePath: \speed\src\containers\searchBar\index.scss
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+/* src/components/SearchBar/SearchBar.scss */
+.search-bar {
+    position: relative;
+  }
+  
+  .search-bar input {
+    width: 200px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    text-align: center;
+    border: none;
+    color: #fff;
+    outline: none;
+  }
+  
+  .search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    z-index: 1000;
+  }
+  
+  .search-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .search-item:hover {
+    background: #f0f0f0;
+  }
+  

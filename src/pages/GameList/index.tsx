@@ -1,10 +1,8 @@
-// src/pages/GameLibrary.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { getMyGames } from "@/common/utils";
-
 import gameApi from "@/api/gamelist";
-
 import "./style.scss";
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
@@ -62,9 +60,10 @@ const gamesTitle: GamesTitleProps[] = [
 
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
-
   const [games, setGames] = useState<Game[]>([]);
   const [gameActiveType, setGameActiveType] = useState<string>("1");
+  const searchBarValue = useSelector((state: any) => state.search.query);
+  const searchResults = useSelector((state: any) => state.search.results);
 
   const clickAddGame = (option: any) => {
     let arr = getMyGames();
@@ -104,8 +103,22 @@ const GameLibrary: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchGames();
+    fetchGames(); // 在组件加载时调用一次，用于初始化
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (searchResults.length === 0) {
+      setGames([]); // 清空游戏列表
+    } else {
+      const gamesWithFullImgUrl = searchResults.map((game: Game) => ({
+        ...game,
+        cover_img: `https://jsq-cdn.yuwenlong.cn/${game.cover_img}`,
+      }));
+      setGames(gamesWithFullImgUrl);
+    }
+  }, [searchResults]);
 
   return (
     <div className="game-list-module-container">
@@ -122,32 +135,48 @@ const GameLibrary: React.FC = () => {
           </div>
         ))}
       </div>
-      <div className="game-list">
-        {games.map((game) => (
-          <div key={game.id} className="game-card">
-            <div className="content-box">
-              <img className="back-icon" src={game.cover_img} alt={game.name} />
-              <div className="game-card-content">
-                <img
-                  className="add-icon"
-                  src={addThemeIcon}
-                  alt=""
-                  onClick={() => clickAddGame(game)}
-                />
-                <img
-                  className="game-card-active-icon"
-                  src={acceleratedIcon}
-                  alt=""
-                />
+      {games.length > 0 ? (
+        <div className="game-list">
+          {games.map((game) => (
+            <div key={game.id} className="game-card">
+              <div className="content-box">
+                <img className="back-icon" src={game.cover_img} alt={game.name} />
+                <div className="game-card-content">
+                  <img
+                    className="add-icon"
+                    src={addThemeIcon}
+                    alt=""
+                    onClick={() => clickAddGame(game)}
+                  />
+                  <img
+                    className="game-card-active-icon"
+                    src={acceleratedIcon}
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div className="card-text-box">
+                <div className="game-name">{game.name}</div>
+                <div className="game-name-en">{game.name_en}</div>
               </div>
             </div>
-            <div className="card-text-box">
-              <div className="game-name">{game.name}</div>
-              <div className="game-name-en">{game.name_en}</div>
-            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="empty-page">
+          <div className="empty-page-content">
+            抱歉，没有找到"{searchBarValue}"的相关游戏
           </div>
-        ))}
-      </div>
+          <div className="button-container">
+            {/* <button className="back-button" onClick={() => navigate(-1)}>
+              返回
+            </button> */}
+            <button className="browse-button" onClick={() => fetchGames()}>
+              浏览其他游戏
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

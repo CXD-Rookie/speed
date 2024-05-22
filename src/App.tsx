@@ -7,8 +7,7 @@ import { connect } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 
 import routes from "./routes/index";
-import Login from "./containers/Login/index";
-
+import SearchBar from "./containers/searchBar/index";
 import "@/assets/css/App.scss";
 
 const { Header, Content } = Layout;
@@ -86,7 +85,9 @@ const App: React.FC = (props: any) => {
               </div>
             ))}
           </div>
-          <Input className="search-input" size="large" placeholder="搜索游戏" />
+          
+          <SearchBar />
+          {/* <Input className="search-input" size="large" placeholder="搜索游戏" /> */}
           <div className="personal-information">
             <div>登录/注册</div>
           </div>
