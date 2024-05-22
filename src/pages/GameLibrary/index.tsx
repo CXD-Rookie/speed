@@ -108,17 +108,17 @@ const GameLibrary: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (searchResults.length === 0) {
-      setGames([]); // 清空游戏列表
-    } else {
-      const gamesWithFullImgUrl = searchResults.map((game: Game) => ({
-        ...game,
-        cover_img: `https://jsq-cdn.yuwenlong.cn/${game.cover_img}`,
-      }));
-      setGames(gamesWithFullImgUrl);
-    }
-  }, [searchResults]);
+  // useEffect(() => {
+  //   if (searchResults.length === 0) {
+  //     setGames([]); // 清空游戏列表
+  //   } else {
+  //     const gamesWithFullImgUrl = searchResults.map((game: Game) => ({
+  //       ...game,
+  //       cover_img: `https://jsq-cdn.yuwenlong.cn/${game.cover_img}`,
+  //     }));
+  //     setGames(gamesWithFullImgUrl);
+  //   }
+  // }, [searchResults]);
 
   return (
     <div className="game-list-module-container">
@@ -135,7 +135,7 @@ const GameLibrary: React.FC = () => {
           </div>
         ))}
       </div>
-      {games.length > 0 ? (
+      {
         <div className="game-list">
           {games.map((game) => (
             <div key={game.id} className="game-card">
@@ -162,21 +162,7 @@ const GameLibrary: React.FC = () => {
             </div>
           ))}
         </div>
-      ) : (
-        <div className="empty-page">
-          <div className="empty-page-content">
-            抱歉，没有找到"{searchBarValue}"的相关游戏
-          </div>
-          <div className="button-container">
-            {/* <button className="back-button" onClick={() => navigate(-1)}>
-              返回
-            </button> */}
-            <button className="browse-button" onClick={() => fetchGames()}>
-              浏览其他游戏
-            </button>
-          </div>
-        </div>
-      )}
+      }
     </div>
   );
 };

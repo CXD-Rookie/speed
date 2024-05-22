@@ -122,7 +122,7 @@ const GameLibrary: React.FC = () => {
 
   return (
     <div className="game-list-module-container">
-      <div className="game-title-box">
+      {/* <div className="game-title-box">
         {gamesTitle.map((item) => (
           <div
             key={item?.key}
@@ -134,7 +134,7 @@ const GameLibrary: React.FC = () => {
             {item?.label}
           </div>
         ))}
-      </div>
+      </div> */}
       {games.length > 0 ? (
         <div className="game-list">
           {games.map((game) => (
