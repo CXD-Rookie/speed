@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>充值</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link href="//unpkg.com/layui@2.9.10/dist/css/layui.css" rel="stylesheet">
+  <style>
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      width: 636px;
+      height: 460px;
+      background: #3e3e4a;
+      border-radius: 10px;
+      box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.50);
+    }
+
+    .popup-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      top: 12px;
+    }
+
+    .popup-header span {
+      opacity: 0.5;
+      font-size: 12px;
+      font-weight: Regular;
+      text-align: left;
+      color: #ffffff;
+      line-height: 16px;
+    }
+
+    .header {
+      /* text-align: center; */
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-content: stretch;
+      align-items: center;
+      margin: 30px 0px;
+    }
+
+    .title {
+      width: 140px;
+      height: 32px;
+      font-size: 20px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: center;
+      color: #ffffff;
+      line-height: 32px;
+      padding-bottom: 5px;
+    }
+
+    .description {
+      /* width: 378px; */
+      /* height: 20px; */
+      font-size: 14px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: center;
+      color: #999999;
+      line-height: 20px;
+    }
+
+    /* Tabs container styles */
+    .tabs-container {
+      overflow-x: hidden;
+      position: relative;
+      width: 596px !important;
+      margin: 0 auto;
+    }
+
+    /* Tabs styles */
+    .tabs {
+      display: flex;
+      /* justify-content: center; */
+      /* position: relative; */
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      /* border: 1px solid #ccc; */
+      margin-right: 10px;
+      cursor: pointer;
+      width: 120px;
+      height: 66px;
+      background: rgba(153, 153, 153, 0.10);
+      border-radius: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: left;
+      padding-left: 20px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    .tab.active {
+      background-color: #f97d4c;
+      color: #fff;
+    }
+
+    .tab ul li:first-child,
+    .tab ul li:nth-child(2) {
+      font-weight: bold;
+    }
+
+    .tab ul li:nth-child(1) {
+      height: 16px;
+      font-size: 12px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Bold;
+      font-weight: Bold;
+      text-align: left;
+      color: #ffffff;
+      line-height: 16px;
+    }
+
+    .tab ul li:nth-child(2) {
+      font-size: 12px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Bold;
+      font-weight: Bold;
+      text-align: left;
+      color: #ffffff;
+      line-height: 17.5px;
+    }
+
+    .tab ul li:nth-child(3) {
+      height: 17.5px;
+      font-size: 12px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: rgba(255, 255, 255, 0.40);
+      line-height: 17.5px;
+    }
+
+    span.price {
+      font-size: 30px;
+      font-family: Roboto, Roboto-Bold;
+      font-weight: Bold;
+      text-align: left;
+      color: #ffffff;
+      line-height: 35.5px;
+    }
+
+    /* Left and right arrow styles */
+    .arrow {
+      width: 8px;
+      height: 8px;
+      font-size: 12px;
+      color: #999;
+      position: fixed;
+      top: 38%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      padding: 10px;
+      border: 0.5px dashed #fff;
+    }
+
+    .arrow.left {
+      left: 6px;
+    }
+
+    .arrow.right {
+      right: 6px;
+    }
+
+    /* Carousel container */
+    .carousel {
+      overflow: hidden;
+      white-space: nowrap;
+      width: 70%;
+      display: inline-block;
+      line-height: 60px;
+    }
+
+    /* Carousel item */
+    .carousel-item {
+      display: inline-block;
+      width: 100%;
+      text-align: left;
+      padding-left: 36px;
+    }
+
+    /* QR Code styles */
+    .qrcode {
+      text-align: left;
+    }
+
+    .qrcode canvas {
+      width: 120px;
+      height: 120px;
+      display: block;
+    }
+
+    .priceAll ul li:nth-child(1) {
+      font-size: 10px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 16px;
+      padding-bottom: 8px;
+    }
+
+    .priceAll ul li:nth-child(2) {
+      font-size: 10px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 16px;
+      padding-bottom: 8px;
+    }
+
+    .priceAll ul li:nth-child(3) {
+      font-size: 10px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 16px;
+    }
+    .priceBig{
+      width: 69px;
+      height: 46px;
+      font-size: 40px;
+      font-family: Roboto, Roboto-Bold;
+      font-weight: Bold;
+      text-align: left;
+      color: #f86c34 !important;
+      line-height: 46px;
+    }
+
+    a {
+        text-decoration: none;
+        color: #f97d4c;
+    }
+
+    span.txt {
+        width: 140px;
+        height: 20px;
+        font-size: 14px;
+        font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+        font-weight: Regular;
+        text-align: left;
+        color: #999999;
+        line-height: 20px;
+    }
+    .arrow.right::after {
+        width: 8px;
+        height: 8px;
+        border-top: 1.5px solid;
+        border-right: 1.5px solid;
+        border-color: #ffffff;
+        content: '';
+        position: absolute;
+        right: 11px;
+        top: 11px;
+        transform: rotate(45deg);
+    }
+    .arrow.left::after {
+        width: 8px;
+        height: 8px;
+        border-top: 1.5px solid;
+        border-right: 1.5px solid;
+        border-color: #ffffff;
+        content: '';
+        position: absolute;
+        left: 11px;
+        top: 11px;
+        transform: rotate(-135deg); /* This is the main difference */
+    }
+    .tips {
+        width: 10px !important;
+        height: 10px !important;
+        border: 1px solid #999999;
+        border-radius: 50%;
+        line-height: 10px;
+        display: inline-block;
+        text-align: center;
+        font-size: 10px;
+    }
+    .title_tips{
+      width: 96px;
+      height: 16px;
+      font-size: 12px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 16px;
+      margin-bottom: 12px;
+    }
+    .qrcode {
+        text-align: left;
+        width: 120px;
+        border: 6px solid #fff;
+        border-radius: 6px;
+        display: inline-block;
+        margin-left: 15px;
+    }
+    .line {
+        margin-top: 80px;
+    }
+    .layui-layer-content {
+      width: 210px;
+      height: 140px;
+      right: 103px;
+      background: #3e3e4a;
+      box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.50) !important; 
+    }
+    .layui-layer-tips i.layui-layer-TipsB, .layui-layer-tips i.layui-layer-TipsT {
+        left: 100px;
+        border-right-style: solid;
+        border-right-color: #000;
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 9px 9px 0 9px;
+        border-color: rgb(62, 62, 74) transparent transparent transparent;
+        border-right-color: transparent !important;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <!-- <button id="openModalBtn">Open Modal</button> -->
+  <div id="myModal" class="modal">
+    <!-- <div class="popup-header">
+      <span>系统设置</span>
+      <img id="closeButton" src="assets/cloture_write.svg" width="12" height="12" alt="" />
+    </div> -->
+    <div class="header">
+      <div class="title">
+        全平台会员特权
+      </div>
+      <div class="description">
+        电竞专线/海外专线/超低延迟/动态多包/智能加速/多平台加速
+      </div>
+    </div>
+    <div class="tabs-container">
+      <div class="arrow left"></div>
+      <div class="tabs">
+
+      </div>
+      <div class="arrow left"></div>
+      <div class="arrow right"></div>
+    </div>
+    <div class="line"></div>
+    <div class="qrcode" id="qrcode" width="120px" height="120px"></div>
+    <div class="carousel">
+    </div>
+    
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+  <script src="//unpkg.com/layui@2.9.10/dist/layui.js"></script>
+  <script>
+    $(document).ready(function () {
+
+      // 模拟的JSON数据
+      var jsonData = [{
+          "price": 10,
+          "title": "包年",
+          "pricePerMonth": 28,
+          "totalPrice": 298
+        },
+        {
+          "price": 20,
+          "title": "包年",
+          "pricePerMonth": 30,
+          "totalPrice": 320
+        },
+        {
+          "price": 30,
+          "title": "包年",
+          "pricePerMonth": 32,
+          "totalPrice": 340
+        },
+        {
+          "price": 40,
+          "title": "包年",
+          "pricePerMonth": 34,
+          "totalPrice": 360
+        },
+        {
+          "price": 50,
+          "title": "包年",
+          "pricePerMonth": 36,
+          "totalPrice": 380
+        },
+        {
+          "price": 60,
+          "title": "包年",
+          "pricePerMonth": 38,
+          "totalPrice": 400
+        }
+      ];
+
+
+      // 遍历JSON数据
+      $.each(jsonData, function (index, item) {
+        // 创建HTML元素并填充数据
+        var $tab = $('<div class="tab" data-price="' + item.price + '">');
+        var $ul = $('<ul>');
+        $ul.append('<li>' + item.title + '</li>');
+        $ul.append('<li>¥<span class="price">' + item.pricePerMonth + '</span>/月</li>');
+        $ul.append('<li>总价：¥<span>' + item.totalPrice + '</span></li>');
+        $tab.append($ul);
+
+
+        // 创建 HTML 元素并填充数据
+        var $carouselItem = $('<div class="carousel-item" data-price="' + item.price + '">');
+        var $priceAll = $('<div class="priceAll" data-price="' + item.price + '">');
+        var $ul = $('<ul>');
+        $ul.append('<li><span class="txt">' + '支付宝或微信扫码支付' + '</span></li>');
+        $ul.append('<li><span class="priceBig">' + item.totalPrice + '</span></li>');
+        $ul.append('<li>我已同意《<a href="#">用户协议</a>》及《<a href="#">自动续费协议</a>》到期按每月29元自动续费，可随时取消 <i class="tips" lay-on="test-tips-color">?</i></label></li>');
+        $priceAll.append($ul);
+        $carouselItem.append($priceAll);
+
+        // 将 HTML 元素添加到 DOM 中
+        $('.carousel').append($carouselItem);
+
+        // 将HTML元素添加到DOM中
+        $('.tabs').append($tab);
+        // 给第一个.tab元素添加.active类
+        if (index === 0) {
+          $tab.addClass('active');
+        }
+      });
+
+      const $openModalBtn = $('#openModalBtn');
+      const $modal = $('#myModal');
+      const $tabsContainer = $modal.find('.tabs-container');
+      const $tabs = $modal.find('.tab');
+      const $carousel = $modal.find('.carousel');
+      const $carouselItem = $modal.find('.carousel-item');
+      const $arrowLeft = $modal.find('.arrow.left');
+      const $arrowRight = $modal.find('.arrow.right');
+      const $qrcode = $('#qrcode');
+
+      // Calculate total width of tabs
+      let tabsWidth = 0;
+      $tabs.each(function () {
+        tabsWidth += $(this).outerWidth(true);
+      });
+      $tabsContainer.width(tabsWidth);
+
+      // Open modal
+      function btnShow () {
+        $modal.css('display', 'block');
+        updateQrcode(); // Generate QR code when modal opens
+      }
+      
+      btnShow();
+
+
+
+      // Switch tabs
+      // $tabs.on('click', function () {
+      //     // Remove active class from all tabs
+      //     $tabs.removeClass('active');
+      //     // Add active class to the clicked tab
+      //     $(this).addClass('active');
+
+      //     // Move the carousel to the selected tab's content
+      //     const price = $(this).data('price');
+      //     const $targetCarouselItem = $modal.find(`.carousel-item[data-price="${price}"]`);
+      //     const targetPosition = $targetCarouselItem.position().left;
+      //     $carousel.stop().animate({
+      //         scrollLeft: targetPosition
+      //     }, 500);
+      //     updateQrcode(); // Generate QR code when tab is clicked
+      // });
+      $tabs.on('click', function () {
+        // Remove active class from all tabs
+        $tabs.removeClass('active');
+        // Add active class to the clicked tab
+        $(this).addClass('active');
+
+        // Hide all carousel items
+        $carouselItem.hide();
+
+        // Show the carousel item corresponding to the selected tab's content
+        const price = $(this).data('price');
+        const $targetCarouselItem = $modal.find(`.carousel-item[data-price="${price}"]`);
+        $targetCarouselItem.show();
+
+        updateQrcode(); // Generate QR code when tab is clicked
+      });
+
+
+      // Left arrow click event
+      $arrowLeft.on('click', function () {
+        const scrollAmount = $tabsContainer.scrollLeft() - $tabsContainer.width();
+        $tabsContainer.stop().animate({
+          scrollLeft: scrollAmount
+        }, 500);
+      });
+
+      // Right arrow click event
+      $arrowRight.on('click', function () {
+        const scrollAmount = $tabsContainer.scrollLeft() + $tabsContainer.width();
+        $tabsContainer.stop().animate({
+          scrollLeft: scrollAmount
+        }, 500);
+      });
+
+      // Generate QR code function
+      function updateQrcode() {
+        const activeTabPrice = $modal.find('.tab.active').data('price');
+        const qrUrl = `http://www.baidu.com?price=${activeTabPrice}`;
+        $qrcode.empty().qrcode(qrUrl);
+      }
+      function closeModal() {
+        console.log("close modal");
+      }
+
+      $('#closeButton').on('click', closeModal);
+
+    });
+  </script>
+  <script>
+    layui.use(['layer', 'util'], function(){
+  var layer = layui.layer;
+  var util = layui.util;
+
+  // 绑定鼠标移入事件
+  $('[lay-on]').on('mouseover', function() {
+    var eventName = $(this).attr('lay-on');
+
+    switch(eventName) {
+      case 'test-tips-top':
+        layer.tips('向上', this, {
+          tips: 1
+        });
+        break;
+      case 'test-tips-right':
+        layer.tips('默认向右', this);
+        break;
+      case 'test-tips-bottom':
+        layer.tips('向下', this, {
+          tips: 3
+        });
+        break;
+      case 'test-tips-left':
+        layer.tips('向左', this, {
+          tips: 4
+        });
+        break;
+      case 'test-tips-color':
+        layer.tips('<div class="title_tips">自动续费服务声明</div><ul class="tips_list"><li>1、到期前24小时为您自动续费；</li><li>2、扣款前消息通知，完全透明；</li><li>3、自动续费可随时取消；</li><li>4、点击查看自动续费协议。</li></ul>', this, {
+          tips: [1, '#3E3E4A'],
+          time:5000
+        });
+        break;
+      case 'test-tips-more':
+        layer.tips('不会关闭之前的 tips', this, {
+          tipsMore: true
+        });
+        break;
+    }
+  });
+});
+    </script>
+
+</body>
+
+</html>
