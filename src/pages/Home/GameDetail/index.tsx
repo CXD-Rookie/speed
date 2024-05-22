@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-24 11:42:52
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-22 17:09:46
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -29,7 +29,6 @@ interface Game {
   tags: string[];
   description: string;
 }
-
 
 const game: Game = {
   id: 1,
@@ -144,33 +143,36 @@ const data = [
   { label: "C", value: 300 },
 ];
 
-
-
 const GameDetail: React.FC = () => {
-  
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const stopSpeed = () => {
-  console.log("stop speed ----------------");
-  CefWebInstance.call('jsCallStopSpeed', { message:'jsCallStopSpeed' }, (error: any, result1: any) => {
-  console.log("stop111111111111111")
-  console.log(error)
-  console.log(result1)
-  navigate("/gameList");
-  localStorage.setItem("stopSpeed","1")
-  })
+  const stopSpeed = () => {
+    console.log("stop speed ----------------");
+    CefWebInstance.call(
+      "jsCallStopSpeed",
+      { message: "jsCallStopSpeed" },
+      (error: any, result1: any) => {
+        console.log("stop111111111111111");
+        console.log(error);
+        console.log(result1);
+        navigate("/gameList");
+        localStorage.setItem("stopSpeed", "1");
+      }
+    );
+  };
 
-};
-
-const openGame = () => {
-  console.log("opengame--------------------------");
-  CefWebInstance.call('jsCallStartGame', { message:'jsCallStartGame' }, (error: any, result1: any) => {
-  console.log("stop111111111111111")
-  console.log(error)
-  console.log(result1)
-  })
-
-};
+  const openGame = () => {
+    console.log("opengame--------------------------");
+    CefWebInstance.call(
+      "jsCallStartGame",
+      { message: "jsCallStartGame" },
+      (error: any, result1: any) => {
+        console.log("stop111111111111111");
+        console.log(error);
+        console.log(result1);
+      }
+    );
+  };
 
   return (
     <div className="home-module-detail">
@@ -182,22 +184,29 @@ const openGame = () => {
         </div>
         <div className="game-detail">
           <div className="game-left">
-            <img src={game.image} alt={game.name} />
-            <h2>{game.name}</h2>
-            <Button className="on-game game-btn" type="default" onClick={openGame}>
+            <div className="game-text">{game.name}</div>
+            <div className="info-switch">
+              <span>00:50:21 亚服-北京-A508376（电信）</span>
+              <span>切换</span>
+            </div>
+            <Button
+              className="on-game game-btn"
+              type="default"
+              onClick={openGame}
+            >
               <img src={activateIcon} alt="" />
               启动游戏
             </Button>
-            <Button className="down-game game-btn" type="default" onClick={stopSpeed}>
+            <Button
+              className="down-game game-btn"
+              type="default"
+              onClick={stopSpeed}
+            >
               <img src={cessationIcon} alt="" />
               停止加速
             </Button>
           </div>
           <div className="game-right">
-            <div className="info-switch info-common-style">
-              <span>00:50:21 亚服-北京-A508376（电信）</span>
-              <span>切换</span>
-            </div>
             <div className="info-speed info-common-style">
               <div className="keep speed-common">
                 实时延迟
@@ -210,33 +219,6 @@ const openGame = () => {
                 丢包率
                 <div>
                   0<span> %</span>
-                </div>
-              </div>
-            </div>
-            <div className="appliances info-common-style">
-              <div className="title">设备连接</div>
-              <div className="content-box">
-                <div className="icon-box">
-                  <img src={laptopsIcon} alt="" />
-                  <div>电脑</div>
-                </div>
-
-                <div className="line-box">
-                  2ms
-                  <div className="line" />
-                </div>
-                <div className="icon-box">
-                  <img src={computingIcon} alt="" />
-                  <div>路由器</div>
-                </div>
-
-                <div className="line-box">
-                  2ms
-                  <div className="line" />
-                </div>
-                <div className="icon-box">
-                  <img src={computerIcon} alt="" />
-                  <div>服务器</div>
                 </div>
               </div>
             </div>
