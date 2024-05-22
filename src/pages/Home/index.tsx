@@ -56,6 +56,7 @@ const Home: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
   useEffect(() => {
     let arr =
       localStorage.getItem("speed-1.0.0.1-accelerate") || JSON.stringify([]);

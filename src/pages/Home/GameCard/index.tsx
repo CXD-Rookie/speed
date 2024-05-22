@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-21 21:11:18
+ * @LastEditTime: 2024-05-22 14:00:36
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -43,6 +43,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const [accelOpen, setAccelOpen] = useState(false);
 
+  // 立即加速
   const handleAccelerateClick = () => {
     if (gameAccelerateList?.length < 1) {
       setGameAccelerateList([gameData.id]);
@@ -55,6 +56,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     }
   };
 
+  // 进入详情
+  const handleDetails = () => {
+    navigate("/gameDetail");
+  };
+
+  // 停止加速
   const handleStopClick = () => {
     setGameAccelerateList([]);
 
@@ -96,7 +103,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                             marginTop: 130,
                           }
                     }
-                    onClick={handleAccelerateClick}
+                    onClick={handleDetails}
                   >
                     进入详情
                     <img src={rightArrow} alt="" />
