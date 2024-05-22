@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 15:05:24
+ * @LastEditTime: 2024-05-22 15:21:14
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -17,14 +17,6 @@ import addIcon from "@/assets/images/common/add.svg";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
 
-interface Game {
-  id: number;
-  name: string;
-  image: string;
-  tags: string[];
-  is_accelerate?: boolean;
-}
-
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
@@ -32,6 +24,7 @@ const Home: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [homeList, setHomeList] = useState([]);
+  const [myGamesNum, setMyGamesNum] = useState(0);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -52,7 +45,10 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setHomeList(getMyGames());
+    let arr = getMyGames();
+
+    setMyGamesNum(arr?.length);
+    setHomeList(arr?.slice(0, 4));
   }, []);
 
   return (
@@ -113,7 +109,7 @@ const Home: React.FC = () => {
           onClick={() => navigate("/myGames")}
         >
           <img src={gamesIcon} width={100} height={100} alt="" />
-          我的游戏 (9)
+          我的游戏 ({myGamesNum})
         </div>
       </div>
     </div>

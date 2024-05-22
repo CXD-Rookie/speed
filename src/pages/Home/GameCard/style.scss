@@ -169,4 +169,13 @@
   .card-text-box {
     font-size: 20px;
   }
+
+  .accelerate-button {
+    position: absolute;
+    color: #F86C34;
+    font-size: 22px;
+    cursor: pointer;
+    margin: 146px 0 0 calc(50% - 50px) !important;
+    z-index: 2;
+  }
 }
