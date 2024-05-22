@@ -1,8 +1,12 @@
 // src/pages/GameLibrary.tsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import gameApi from "@/api/gamelist";
 
 import "./style.scss";
+import addThemeIcon from "@/assets/images/common/add-theme.svg";
+import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 
 interface Game {
   id: string;
@@ -56,20 +60,23 @@ const gamesTitle: GamesTitleProps[] = [
 ];
 
 const GameLibrary: React.FC = () => {
-  const [games, setGames] = useState<Game[]>([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchGames();
-  }, []);
+  const [games, setGames] = useState<Game[]>([]);
+  const [gameActiveType, setGameActiveType] = useState<string>("1");
+
+  const clickAddGame = () => {
+    navigate("/home");
+  };
 
   const fetchGames = async () => {
     try {
       let res = await gameApi.gameList({
         params: {
-          s: "",
-          t: "",
-          page: 1,
-          pagesize: 10,
+          // s: "",
+          // t: "",
+          // page: 1,
+          // pagesize: 10,
         },
       });
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
@@ -82,16 +89,20 @@ const GameLibrary: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    fetchGames();
+  }, []);
+
   return (
-    <div className="game-library">
+    <div className="game-list-module-container">
       <div className="game-title-box">
         {gamesTitle.map((item) => (
           <div
             key={item?.key}
-            // className={`game-label ${
-            //   gameActiveType === item?.key && "game-label-active"
-            // }`}
-            // onClick={() => setGameActiveType(item?.key)}
+            className={`game-label ${
+              gameActiveType === item?.key && "game-label-active"
+            }`}
+            onClick={() => setGameActiveType(item?.key)}
           >
             {item?.label}
           </div>
@@ -100,9 +111,26 @@ const GameLibrary: React.FC = () => {
       <div className="game-list">
         {games.map((game) => (
           <div key={game.id} className="game-card">
-            <img src={game.cover_img} alt={game.name} />
-            <h2>{game.name}</h2>
-            <p>{game.name_en}</p>
+            <div className="content-box">
+              <img className="back-icon" src={game.cover_img} alt={game.name} />
+              <div className="game-card-content">
+                <img
+                  className="add-icon"
+                  src={addThemeIcon}
+                  alt=""
+                  onClick={() => clickAddGame()}
+                />
+                <img
+                  className="game-card-active-icon"
+                  src={acceleratedIcon}
+                  alt=""
+                />
+              </div>
+            </div>
+            <div className="card-text-box">
+              <div className="game-name">{game.name}</div>
+              <div className="game-name-en">{game.name_en}</div>
+            </div>
           </div>
         ))}
       </div>

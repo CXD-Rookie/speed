@@ -14,7 +14,7 @@ import Home from "@/pages/Home";
 import GameDetail from "@/pages/Home/GameDetail";
 import MyGames from "@/pages/Home/MyGames";
 import Login from "@/containers/Login";
-import PrivateRoute from "./PrivateRoute"; 
+import PrivateRoute from "./PrivateRoute";
 
 export default [
   {

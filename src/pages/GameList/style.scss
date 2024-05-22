@@ -1,26 +1,99 @@
-/* src/pages/GameLibrary.css */
-.game-library {
+/* style.scss */
+.game-list-module-container {
+  width: 100vw;
+  height: calc(100vh - 100px);
   padding: 24px 40px;
-}
 
-.game-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  // overflow: scroll;
-  height: 400px;
-}
+  h1 {
+    text-align: center;
+  }
 
-.game-card {
-  background: #222;
-  color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  width: 328px;
-  text-align: center;
-}
+  .game-title-box {
+    display: flex;
+    justify-content: center;
+    column-gap: 20px;
 
-.game-card img {
-  max-width: 100%;
-  border-radius: 10px;
+    .game-label {
+      font-size: var(--speed-dominant-font-size);
+      color: #999;
+      cursor: pointer;
+      padding: 0px 12px;
+    }
+
+    .game-label-active {
+      font-size: 20px;
+      color: #fff;
+    }
+  }
+
+  .game-list {
+    width: 100%;
+    height: calc(100vh - 146px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 16px;
+    row-gap: 24px;
+    margin-top: 20px;
+    overflow-y: scroll;
+
+    /* GameCard.css */
+    .game-card {
+      position: relative;
+      width: 138px;
+      border-radius: var(--speed-dominant-border-radius);
+
+      .content-box {
+        img {
+          width: 100%;
+          height: 210px;
+          object-fit: cover;
+          border-radius: var(--speed-dominant-border-radius);
+        }
+
+        .game-card-content {
+          display: none;
+        }
+
+        .game-card-active-icon {
+          position: absolute;
+          width: 100%;
+          height: 210px;
+          left: 0;
+          top: 0;
+          z-index: 1;
+        }
+
+        .add-icon {
+          position: absolute;
+          width: 48px;
+          height: 48px;
+          top: 80px;
+          left: calc(50% - 24px);
+          z-index: 2;
+        }
+      }
+
+      .content-box:hover .game-card-content {
+        display: block;
+      }
+    }
+
+    .card-text-box {
+      height: auto;
+      text-align: center;
+
+      .game-name {
+        font-size: var(--speed-dominant-font-size);
+        color: #999;
+        margin-top: 8px;
+      }
+
+      .game-name-en {
+        color: #555555;
+        font-size: 14px;
+        margin-top: 6px;
+      }
+    }
+  }
 }
