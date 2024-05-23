@@ -18,7 +18,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   onCancel,
 }) => {
   const [selectedRegion, setSelectedRegion] = useState(); // 当前命中区服
-  const [selectedMode, setSelectedMode] = useState("路由模式");
+
   const [selectedNode, setSelectedNode] = useState("0418 亚洲网20");
   const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
 
@@ -174,17 +174,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
         <TabPane tab="节点" key="2">
           <div className="content">
             <div className="current-settings">
-              <span>当前游戏: 英雄联盟大吉大利 | {selectedRegion}</span>
-            </div>
-            <div className="mode-select">
-              模式选择:
-              <Select
-                defaultValue={selectedMode}
-                onChange={(value) => setSelectedMode(value)}
-              >
-                <Option value="路由模式">路由模式</Option>
-                <Option value="进程模式">进程模式</Option>
-              </Select>
+              英雄联盟大吉大利 | {selectedRegion}
             </div>
             <div className="node-select">
               节点记录:

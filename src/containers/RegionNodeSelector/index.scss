@@ -108,6 +108,19 @@
       color: #fff;
     }
 
+    .current-settings {
+      height: 20px;
+      font-size: 14px;
+      font-weight: Regular;
+      text-align: left;
+      color: #ffffff;
+      line-height: 20px;
+    }
+
+    .node-select {
+      display: flex;
+    }
+
     .ant-table {
       background-color: #3e3e4a;
       .ant-table-thead > tr > th {
@@ -174,10 +187,6 @@
   /* align-items: baseline; */
 }
 
-.region-node-selector .content {
-  // margin-top: 60px;
-}
-
 :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn {
   outline: none;
   transition: all 0.3s;
@@ -213,15 +222,4 @@
 
 .ant-tabs-nav-list {
   height: 40px;
-}
-
-.current-settings {
-  /* width: 224px; */
-  height: 20px;
-  font-size: 14px;
-  font-family: Source Han Sans SC, Source Han Sans SC-Regular;
-  font-weight: Regular;
-  text-align: left;
-  color: #ffffff;
-  line-height: 20px;
 }
