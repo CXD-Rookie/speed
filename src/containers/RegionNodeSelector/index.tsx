@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Select, Button, Table } from "antd";
+
 import "./index.scss";
 import playSuitApi from "@/api/speed";
+
 const { TabPane } = Tabs;
 const { Option } = Select;
 const { Column } = Table;
@@ -15,21 +17,14 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   visible,
   onCancel,
 }) => {
-  const [selectedRegion, setSelectedRegion] = useState("亚服-所有服务器");
+  const [selectedRegion, setSelectedRegion] = useState();
   const [selectedMode, setSelectedMode] = useState("路由模式");
   const [selectedNode, setSelectedNode] = useState("0418 亚洲网20");
   const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
 
-  const regions = [
-    "亚服",
-    "韩服",
-    "东南亚服",
-    "美服",
-    "日服",
-    "澳服",
-    "欧服",
-    "俄服",
-  ];
+  const [regions, setRegions] = useState([]);
+  const [selectRegions, setSelectRegions] = useState([]);
+
   const nodes = [
     {
       key: "1",
@@ -73,11 +68,56 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     console.log("Selected node:", node);
   };
 
+  // 获取游戏区服列表
+  const handleSuitList = async () => {
+    try {
+      let res = await playSuitApi.playSuitList();
+
+      setRegions(res?.data || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 选择区服
+  const handleSelectRegion = (region: any) => {
+    let arr: any = [...selectRegions];
+    console.log("选择区服", region);
+
+    // 去重 添加
+    if (!arr.some((item: any) => item?.id === region?.id)) {
+      arr.push(region);
+    }
+
+    // 选择当前区服
+    arr = arr.map((item: any) => {
+      return { ...item, is_select: item?.id === region?.id };
+    });
+
+    localStorage.setItem("speed-1.0.0.1-region", JSON.stringify(arr));
+    onCancel();
+  };
+
+  useEffect(() => {
+    handleSuitList();
+  }, []);
+
+  useEffect(() => {
+    let arr: any = localStorage.getItem("speed-1.0.0.1-region");
+
+    arr = arr ? JSON.parse(arr) : [];
+    let result = arr.filter((item: any) => item?.is_select);
+
+    setSelectedRegion(result?.[0]?.id || "");
+    setSelectRegions(arr);
+  }, []);
+
   return (
     <Modal
       title="区服、节点选择"
       visible={visible}
       onCancel={onCancel}
+      destroyOnClose
       footer={null}
       className="region-node-selector"
     >
@@ -92,18 +132,23 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 onChange={(value) => setSelectedRegion(value)}
                 className="region-select"
               >
-                <Option value="亚服-所有服务器">亚服-所有服务器</Option>
-                {regions.map((region) => (
-                  <Option key={region} value={region}>
-                    {region}
-                  </Option>
-                ))}
+                {selectRegions.map((item: any) => {
+                  return (
+                    <Option key={item?.id} value={item?.id}>
+                      {item?.region}
+                    </Option>
+                  );
+                })}
               </Select>
             </div>
             <div className="region-buttons">
-              {regions.map((region) => (
-                <Button key={region} className="region-button">
-                  {region}
+              {Object.entries(regions).map(([key, value]) => (
+                <Button
+                  key={key}
+                  className="region-button"
+                  onClick={() => handleSelectRegion({ id: key, region: value })}
+                >
+                  {value}
                 </Button>
               ))}
             </div>
