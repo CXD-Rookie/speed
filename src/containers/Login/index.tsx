@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-22 21:17:34
+ * @LastEditTime: 2024-05-23 15:06:28
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -74,6 +74,11 @@ const Login: React.FC<LoginProps> = (_props) => {
         localStorage.setItem("userInfo", JSON.stringify(res.data));
         localStorage.setItem("token", JSON.stringify(res.data.token));
         localStorage.setItem("isLogin", "true");
+
+        const loginMask = document.querySelector('.login-mask');
+        if (loginMask) {
+          loginMask.remove();
+        }
         // 处理登录逻辑
         const loginModal = document.querySelector(
           ".login-modal"
@@ -81,6 +86,7 @@ const Login: React.FC<LoginProps> = (_props) => {
         if (loginModal) {
           loginModal.style.display = "none";
         }
+
         // navigate("/home")
       
       //   CefWebInstance.call('jsCallPushClientInfo', res.data, (_AError: any, AResult: any) => {
@@ -99,7 +105,12 @@ const Login: React.FC<LoginProps> = (_props) => {
 
   const close = async () => {
     console.log(1111);
+    const loginMask = document.querySelector('.login-mask');
+    if (loginMask) {
+      loginMask.remove();
+    }
     setIsShow(false);
+
   };
 //   const pushData= async () => {
 //     var params = {

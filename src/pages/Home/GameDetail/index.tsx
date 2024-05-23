@@ -1,12 +1,12 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 18:53:25
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-23 10:55:32
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 
 import BarChart from "@/containers/BarChart/index";
 import SwitchDom from "@/containers/switch-dom";
-
+import RegionNodeSelector from '@/containers/RegionNodeSelector/index';
 declare const CefWebInstance: any;
 
 interface Game {
@@ -150,6 +150,16 @@ const data = [
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const hideModal = () => {
+    setIsModalVisible(false);
+  };
+
   const stopSpeed = () => {
     CefWebInstance.call(
       "jsCallStopSpeed",
@@ -254,6 +264,10 @@ const GameDetail: React.FC = () => {
               <div className="title">加速趋势</div>
               <BarChart data={data} />
             </div>
+            <Button type="primary" onClick={showModal}>
+              打开区服、节点选择
+            </Button>
+            <RegionNodeSelector visible={isModalVisible} onCancel={hideModal} />
           </div>
         </div>
       </div>

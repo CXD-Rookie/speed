@@ -25,6 +25,14 @@ interface CustomMenuProps {
   is_active?: boolean;
 }
 
+// global.d.ts
+interface Window {
+  NativeApi_ExitProcess: () => void; //退出程序
+  NativeApi_OnDragZoneMouseDown: () => void; //鼠标点击事件,放在拖拽区域里面
+  NativeApi_OnDragZoneMouseUp: () => void; //鼠标松开事件,放在拖拽区域里面
+  cefQuery: ({ }) => void; //不用管
+}
+
 const menuList: CustomMenuProps[] = [
   {
     key: "home",
@@ -88,7 +96,6 @@ const App: React.FC = (props: any) => {
   // 点击菜单
   const handleChangeTabs = (item: any) => {
     let localtion = item?.router || "home";
-
     setMenuActive(item?.key);
     navigate(localtion, {
       replace: false,
@@ -98,16 +105,42 @@ const App: React.FC = (props: any) => {
     });
   };
 
+  // 定义退出程序的处理函数
+  const handleExitProcess = () => {
+    if ((window as any).NativeApi_ExitProcess) {
+      (window as any).NativeApi_ExitProcess();
+    } else {
+      console.warn("NativeApi_ExitProcess is not defined");
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+
+    (window as any).NativeApi_OnDragZoneMouseDown();
+    console.log("--111111111111111111111");
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+    (window as any).NativeApi_OnDragZoneMouseUp();
+    console.log("--wwwwwwwwwwwww");
+  };
+
+  const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log("--eeeeeeeee");
+    e.stopPropagation();
+  };
+
+
   useEffect(() => {
     setMenuActive(location?.pathname);
   }, [location]);
 
   return (
     <Layout className="app-module">
-      <Header className="header">
+      <Header className="header" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
         <SlackOutlined className="header-icon" />
-        <div className="header-functional-areas">
-          <div className="menu-list">
+        <div className="header-functional-areas"  >
+          <div className="menu-list" onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
             {menuList.map((item) => (
               <div
                 key={item?.key}
@@ -123,7 +156,7 @@ const App: React.FC = (props: any) => {
 
           <SearchBar />
 
-          <div className="personal-information">
+          <div className="personal-information" onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
             <div>登录/注册</div>
             <Dropdown
               overlayClassName={"dropdown-overlay"}
@@ -132,10 +165,11 @@ const App: React.FC = (props: any) => {
             >
               <img src={menuIcon} width={12} height={12} alt="" />
             </Dropdown>
-            <img src={minIcon} width={12} height={12} alt="" />
-            <img src={closeIcon} width={12} height={12} alt="" />
+            <img  className="minType" src={minIcon} width={12} height={12} alt="" />
+            <img onClick={handleExitProcess} className="closeType" src={closeIcon} width={12} height={12} alt="" />
           </div>
         </div>
+        
       </Header>
       <Layout>
         <Content className="content">{routeView}</Content>
