@@ -145,8 +145,8 @@ const App: React.FC = (props: any) => {
     <Layout className="app-module">
       <Header
         className="header"
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
+        // onMouseDown={handleMouseDown}
+        // onMouseUp={handleMouseUp}
       >
         <SlackOutlined className="header-icon" />
         <div className="header-functional-areas">

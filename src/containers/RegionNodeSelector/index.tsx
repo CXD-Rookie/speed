@@ -43,7 +43,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
     (window as any).cefQuery({
       request: requestData,
-
       onSuccess: (response: any) => {
         console.log("Response from C++:", response);
         const jsonResponse = JSON.parse(response); //{"delay":32(这个是毫秒,9999代表超时与丢包)}
