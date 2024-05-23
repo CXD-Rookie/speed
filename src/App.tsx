@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { SlackOutlined } from "@ant-design/icons";
-import { Layout, Input } from "antd";
+import { Layout, Dropdown } from "antd";
+import type { MenuProps } from "antd";
 
 import { connect } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
@@ -11,16 +12,20 @@ import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
 import "@/assets/css/App.scss";
 
+import menuIcon from "@/assets/images/common/menu.svg";
+import minIcon from "@/assets/images/common/min.svg";
+import closeIcon from "@/assets/images/common/cloture.svg";
+
 const { Header, Content } = Layout;
 
-interface MenuProps {
+interface CustomMenuProps {
   key: string;
   label: string;
   router: string;
   is_active?: boolean;
 }
 
-const menuList: MenuProps[] = [
+const menuList: CustomMenuProps[] = [
   {
     key: "home",
     label: "首页",
@@ -30,6 +35,24 @@ const menuList: MenuProps[] = [
     key: "gameLibrary",
     label: "游戏库",
     router: "/gameLibrary",
+  },
+];
+
+const items: MenuProps["items"] = [
+  {
+    key: "1",
+    label: <div className="public-style">设置</div>,
+  },
+  {
+    key: "2",
+    label: <div className="public-style">问题反馈</div>,
+  },
+  {
+    type: "divider", // 使用 Menu.Divider
+  },
+  {
+    key: "3",
+    label: <div className="public-style">退出登录</div>,
   },
 ];
 
@@ -48,10 +71,18 @@ const App: React.FC = (props: any) => {
   const location = useLocation();
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
+
   const isLogin = localStorage.getItem("isLogin");
-  if (isLogin === "" ||   isLogin === null || isLogin === undefined || isLogin === "undefined") {
-      localStorage.setItem("isLogin","false");
-  } 
+
+  if (
+    isLogin === "" ||
+    isLogin === null ||
+    isLogin === undefined ||
+    isLogin === "undefined"
+  ) {
+    localStorage.setItem("isLogin", "false");
+  }
+
   const [isLoginModal, setIsLoginModal] = useState(true);
 
   // 点击菜单
@@ -68,7 +99,6 @@ const App: React.FC = (props: any) => {
   };
 
   useEffect(() => {
-
     setMenuActive(location?.pathname);
   }, [location]);
 
@@ -90,24 +120,34 @@ const App: React.FC = (props: any) => {
               </div>
             ))}
           </div>
-          
+
           <SearchBar />
-          {/* <Input className="search-input" size="large" placeholder="搜索游戏" /> */}
+
           <div className="personal-information">
             <div>登录/注册</div>
+            <Dropdown
+              overlayClassName={"dropdown-overlay"}
+              menu={{ items }}
+              placement="bottomRight"
+            >
+              <img src={menuIcon} width={12} height={12} alt="" />
+            </Dropdown>
+            <img src={minIcon} width={12} height={12} alt="" />
+            <img src={closeIcon} width={12} height={12} alt="" />
           </div>
         </div>
       </Header>
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
-      {isLogin === "false" &&<div
-        className="login-mask"
-        style={{ display: isLoginModal ? "none" : "none" }}
-      >
-        <Login setIsLoginModal={setIsLoginModal} />
-      </div>
-      }
+      {isLogin === "false" && (
+        <div
+          className="login-mask"
+          style={{ display: isLoginModal ? "none" : "none" }}
+        >
+          <Login setIsLoginModal={setIsLoginModal} />
+        </div>
+      )}
     </Layout>
   );
 };

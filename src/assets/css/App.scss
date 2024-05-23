@@ -51,6 +51,13 @@
       .personal-information {
         color: #FFF;
         font-size: 14px;
+        display: flex;
+        align-items: center;
+        column-gap: 20px;
+
+        img {
+          cursor: pointer;
+        }
       }
 
       .ant-tabs-tab {
@@ -66,4 +73,28 @@
   .content {
     background-color: var(--speed-dominant-background-color);
   }
+}
+
+.ant-dropdown .ant-dropdown-menu {
+  background: #3E3E4A !important;
+  border-radius: var(--speed-dominant-border-radius);
+}
+
+.ant-dropdown-menu-item {
+  width: 128px;
+  height: 32px;
+}
+
+.ant-dropdown-menu-item:hover {
+  background: rgba(255,255,255,0.10) !important;
+}
+
+.ant-dropdown-menu-item .public-style {
+  color: #fff !important;
+}
+
+.ant-dropdown-menu-item-divider {
+  width: 108px !important;
+  border-top: 0.5px solid rgba(255,255,255,0.10) !important; /* 你想要的横线颜色 */
+  margin: 20px 0 14px 10px !important; /* 调整横线的上下间距 */
 }
