@@ -17,15 +17,19 @@ import clotureIcon from "@/assets/images/common/cloture.svg";
 import loginLogocon from "@/assets/images/common/login-logo.svg";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
+
 declare const CefWebInstance: any;
+
 export interface LoginProps {
   setIsLoginModal?: (value: any) => void;
+  isLoginModal?: number;
 }
 
 const Login: React.FC<LoginProps> = (_props) => {
-  const { setIsLoginModal = () => {} } = _props;
+  const { setIsLoginModal = () => {}, isLoginModal = 0 } = _props;
 
   const navigate = useNavigate();
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
 
@@ -77,12 +81,14 @@ const Login: React.FC<LoginProps> = (_props) => {
         localStorage.setItem("token", JSON.stringify(res.data.token));
         localStorage.setItem("isLogin", "true");
 
-        const loginMask = document.querySelector('.login-mask');
+        const loginMask = document.querySelector(".login-mask");
+
         if (loginMask) {
           loginMask.remove();
         }
         // 处理登录逻辑
-        setIsLoginModal(true);
+        setIsLoginModal(isLoginModal + 1);
+
         const loginModal = document.querySelector(
           ".login-modal"
         ) as HTMLElement | null;
@@ -108,12 +114,11 @@ const Login: React.FC<LoginProps> = (_props) => {
 
   const close = async () => {
     console.log(1111);
-    const loginMask = document.querySelector('.login-mask');
+    const loginMask = document.querySelector(".login-mask");
     if (loginMask) {
       loginMask.remove();
     }
     setIsShow(false);
-
   };
   //   const pushData= async () => {
   //     var params = {

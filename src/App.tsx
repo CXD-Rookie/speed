@@ -31,7 +31,7 @@ interface Window {
   NativeApi_ExitProcess: () => void; //退出程序
   NativeApi_OnDragZoneMouseDown: () => void; //鼠标点击事件,放在拖拽区域里面
   NativeApi_OnDragZoneMouseUp: () => void; //鼠标松开事件,放在拖拽区域里面
-  cefQuery: ({ }) => void; //不用管
+  cefQuery: ({}) => void; //不用管
 }
 
 const menuList: CustomMenuProps[] = [
@@ -81,18 +81,8 @@ const App: React.FC = (props: any) => {
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
 
-  const isLogin = localStorage.getItem("isLogin");
-
-  if (
-    isLogin === "" ||
-    isLogin === null ||
-    isLogin === undefined ||
-    isLogin === "undefined"
-  ) {
-    localStorage.setItem("isLogin", "false");
-  }
-
-  const [isLoginModal, setIsLoginModal] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+  const [isLoginModal, setIsLoginModal] = useState(0);
 
   // 点击菜单
   const handleChangeTabs = (item: any) => {
@@ -116,7 +106,6 @@ const App: React.FC = (props: any) => {
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-
     (window as any).NativeApi_OnDragZoneMouseDown();
     console.log("--111111111111111111111");
   };
@@ -131,17 +120,35 @@ const App: React.FC = (props: any) => {
     e.stopPropagation();
   };
 
-
   useEffect(() => {
     setMenuActive(location?.pathname);
   }, [location]);
 
+  useEffect(() => {
+    const isLogin = localStorage.getItem("isLogin");
+
+    if (isLogin === "true") {
+      setIsLogin(true);
+    } else {
+      localStorage.setItem("isLogin", "false");
+      setIsLogin(false);
+    }
+  }, [isLoginModal]);
+
   return (
     <Layout className="app-module">
-      <Header className="header" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
+      <Header
+        className="header"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
         <SlackOutlined className="header-icon" />
-        <div className="header-functional-areas"  >
-          <div className="menu-list" onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
+        <div className="header-functional-areas">
+          <div
+            className="menu-list"
+            onMouseDown={stopPropagation}
+            onMouseUp={stopPropagation}
+          >
             {menuList.map((item) => (
               <div
                 key={item?.key}
@@ -157,7 +164,11 @@ const App: React.FC = (props: any) => {
 
           <SearchBar />
 
-          <div className="personal-information" onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
+          <div
+            className="personal-information"
+            onMouseDown={stopPropagation}
+            onMouseUp={stopPropagation}
+          >
             {isLogin ? <CustomDropdown /> : <div>登录/注册</div>}
             <Dropdown
               overlayClassName={"dropdown-overlay"}
@@ -166,21 +177,36 @@ const App: React.FC = (props: any) => {
             >
               <img src={menuIcon} width={12} height={12} alt="" />
             </Dropdown>
-            <img  className="minType" src={minIcon} width={12} height={12} alt="" />
-            <img onClick={handleExitProcess} className="closeType" src={closeIcon} width={12} height={12} alt="" />
+            <img
+              className="minType"
+              src={minIcon}
+              width={12}
+              height={12}
+              alt=""
+            />
+            <img
+              onClick={handleExitProcess}
+              className="closeType"
+              src={closeIcon}
+              width={12}
+              height={12}
+              alt=""
+            />
           </div>
         </div>
-        
       </Header>
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
-      {isLogin === "false" && (
+      {!isLogin && (
         <div
           className="login-mask"
-          style={{ display: isLoginModal || isLogin ? "none" : "block" }}
+          style={{ display: isLogin ? "none" : "block" }}
         >
-          <Login setIsLoginModal={setIsLoginModal} />
+          <Login
+            isLoginModal={isLoginModal}
+            setIsLoginModal={setIsLoginModal}
+          />
         </div>
       )}
     </Layout>
