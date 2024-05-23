@@ -27,6 +27,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   const [regionDomList, setRegionDomList] = useState([{ key: "" }]); // 节点列表
 
+  const [listenerNode, setListenerNode] = useState(0);
+
   const handleNodeClick = (node: (typeof regionDomList)[0]) => {
     setSelectedNodeKey(node?.key);
     console.log("Selected node:", node);
@@ -36,7 +38,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const handleSuitList = async () => {
     try {
       let res = await playSuitApi.playSuitList();
-
+      console.log("获取游戏区服列表", res);
       setRegions(res?.data || []);
     } catch (error) {
       console.log(error);
@@ -46,7 +48,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   // 选择区服
   const handleSelectRegion = (region: any) => {
     let arr: any = [...selectRegions];
-
+    console.log("选择区服参数：", region);
     // 去重 添加
     if (!arr.some((item: any) => item?.id === region?.id)) {
       arr.push(region);
@@ -57,8 +59,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       return { ...item, is_select: item?.id === region?.id };
     });
 
+    console.log("当前区服列表历史记录", arr); // 已选择区服列表
     localStorage.setItem("speed-1.0.0.1-region", JSON.stringify(arr));
-    onCancel();
+    setListenerNode(listenerNode + 1);
+    // onCancel();
   };
 
   // 获取游戏区服节点列表
@@ -66,8 +70,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     try {
       let res = await playSuitApi.playSpeedList({
         platform: 3,
-        id: selectedRegion,
+        nid: selectedRegion,
       });
+      console.log("获取节点列表", res);
+
       setRegionDomList(res?.data || []);
     } catch (error) {
       console.log(error);
@@ -76,6 +82,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 切换tab
   const handleTabsChange = (e: any) => {
+    console.log("切换tab", e);
+
     if (e === "2") {
       handleSuitDomList();
     }
@@ -91,12 +99,11 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
       arr = arr ? JSON.parse(arr) : [];
       let result = arr.filter((item: any) => item?.is_select);
-      console.log(arr);
 
       setSelectedRegion(result?.[0]?.id || "");
       setSelectRegions(arr);
     }
-  }, [visible]);
+  }, [visible, selectedRegion, listenerNode]);
 
   return (
     <Modal
