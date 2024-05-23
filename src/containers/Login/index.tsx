@@ -23,6 +23,8 @@ export interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = (_props) => {
+  const { setIsLoginModal = () => {} } = _props;
+
   const navigate = useNavigate();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -80,6 +82,7 @@ const Login: React.FC<LoginProps> = (_props) => {
           loginMask.remove();
         }
         // 处理登录逻辑
+        setIsLoginModal(true);
         const loginModal = document.querySelector(
           ".login-modal"
         ) as HTMLElement | null;
@@ -88,11 +91,11 @@ const Login: React.FC<LoginProps> = (_props) => {
         }
 
         // navigate("/home")
-      
-      //   CefWebInstance.call('jsCallPushClientInfo', res.data, (_AError: any, AResult: any) => {
-      //     console.log('return jsCallStartSpeed');
-      //     console.log(AResult);
-      // })
+
+        //   CefWebInstance.call('jsCallPushClientInfo', res.data, (_AError: any, AResult: any) => {
+        //     console.log('return jsCallStartSpeed');
+        //     console.log(AResult);
+        // })
       } else {
         console.log(res, "111111111");
         setVeryCode(false);
@@ -112,22 +115,22 @@ const Login: React.FC<LoginProps> = (_props) => {
     setIsShow(false);
 
   };
-//   const pushData= async () => {
-//     var params = {
-//         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-//         "user_info": {
-//             "id": "6641ce2f1dca28a167f7e93f",
-//             "phone": "150****3252",
-//             "nickname": "幻想工程奇才",
-//             "avatar": "",
-//             "create_time": 1715588655
-//         }
-//     };
-//     CefWebInstance.call('jsCallPushClientInfo', params, (_AError: any, AResult: any) => {
-//         console.log('return jsCallStartSpeed');
-//         console.log(AResult);
-//     })
-// }
+  //   const pushData= async () => {
+  //     var params = {
+  //         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+  //         "user_info": {
+  //             "id": "6641ce2f1dca28a167f7e93f",
+  //             "phone": "150****3252",
+  //             "nickname": "幻想工程奇才",
+  //             "avatar": "",
+  //             "create_time": 1715588655
+  //         }
+  //     };
+  //     CefWebInstance.call('jsCallPushClientInfo', params, (_AError: any, AResult: any) => {
+  //         console.log('return jsCallStartSpeed');
+  //         console.log(AResult);
+  //     })
+  // }
 
   return (
     <>
@@ -138,7 +141,14 @@ const Login: React.FC<LoginProps> = (_props) => {
           </div>
           <div className="main">
             <div className="login-logo">
-              <img src={"https://jsq-web.oss-cn-beijing.aliyuncs.com/web/assets/login.png"} width={40} height={40} alt="" />
+              <img
+                src={
+                  "https://jsq-web.oss-cn-beijing.aliyuncs.com/web/assets/login.png"
+                }
+                width={40}
+                height={40}
+                alt=""
+              />
             </div>
             <div className="login-text">请登录</div>
             <div className="input-group public-input-group">
@@ -160,12 +170,7 @@ const Login: React.FC<LoginProps> = (_props) => {
                 placeholder={"请输入验证码"}
                 countdown={countdown}
                 prefix={
-                  <img
-                    src={challengeIcon}
-                    width={18}
-                    height={18}
-                    alt=""
-                  />
+                  <img src={challengeIcon} width={18} height={18} alt="" />
                 }
                 suffix={
                   <div
