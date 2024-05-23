@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-23 10:55:32
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-23 16:51:17
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -22,8 +22,7 @@ import laptopsIcon from "@/assets/images/common/laptops.svg";
 import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 
 import BarChart from "@/containers/BarChart/index";
-import SwitchDom from "@/containers/switch-dom";
-import RegionNodeSelector from '@/containers/RegionNodeSelector/index';
+import RegionNodeSelector from "@/containers/RegionNodeSelector/index";
 declare const CefWebInstance: any;
 
 interface Game {
@@ -217,7 +216,10 @@ const GameDetail: React.FC = () => {
             </Button>
           </div>
           <div className="game-right">
-            <SwitchDom />
+            <div className="info-switch info-common-style">
+              <span>00:50:21 亚服-北京-A508376（电信）</span>
+              <span onClick={showModal}>切换</span>
+            </div>
             <div className="info-speed info-common-style">
               <div className="keep speed-common">
                 实时延迟
@@ -264,9 +266,6 @@ const GameDetail: React.FC = () => {
               <div className="title">加速趋势</div>
               <BarChart data={data} />
             </div>
-            <Button type="primary" onClick={showModal}>
-              打开区服、节点选择
-            </Button>
             <RegionNodeSelector visible={isModalVisible} onCancel={hideModal} />
           </div>
         </div>
