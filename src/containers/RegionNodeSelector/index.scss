@@ -1,10 +1,11 @@
 .region-node-selector {
     .ant-modal-content {
-      background-color: #3e3e4a;
+      width: 676px;
       height: 500px;
-      padding-top: 5px;
+      background-color: #3e3e4a;
+      padding: 12px 16px;
     }
-  
+    
     .ant-modal-title, .ant-modal-header, .ant-modal-body, .ant-modal-footer {
       background-color: #3e3e4a;
     }
@@ -12,7 +13,21 @@
     .ant-modal-title, .ant-modal-body, .ant-modal-footer, .ant-modal-close-x {
       color: #fff;
     }
-  
+    
+    .ant-modal-close {
+      width: 12px;
+      height: 12px;
+    }
+    
+    .ant-modal-title, .ant-modal-close-x {
+      opacity: 0.5;
+      font-size: 12px;
+      font-weight: Regular;
+      color: #ffffff;
+      text-align: left;
+      line-height: 12px;
+    }
+
     .content {
       .current-game, .current-region, .mode-select, .node-select {
         color: #fff;
