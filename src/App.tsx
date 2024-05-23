@@ -82,18 +82,8 @@ const App: React.FC = (props: any) => {
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
 
-  const isLogin = localStorage.getItem("isLogin");
-
-  if (
-    isLogin === "" ||
-    isLogin === null ||
-    isLogin === undefined ||
-    isLogin === "undefined"
-  ) {
-    localStorage.setItem("isLogin", "false");
-  }
-
-  const [isLoginModal, setIsLoginModal] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+  const [isLoginModal, setIsLoginModal] = useState(0);
 
   // 点击菜单
   const handleChangeTabs = (item: any) => {
@@ -116,11 +106,14 @@ const App: React.FC = (props: any) => {
     }
   };
 
+<<<<<<< HEAD
   const handleMinimize = () => {
     (window as any).NativeApi_MinimumWindow();
   };
 
 
+=======
+>>>>>>> 377cc327d548c132951e5cfa99fff0b6f62fd9aa
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     (window as any).NativeApi_OnDragZoneMouseDown();
     console.log("--111111111111111111111");
@@ -136,17 +129,35 @@ const App: React.FC = (props: any) => {
     e.stopPropagation();
   };
 
-
   useEffect(() => {
     setMenuActive(location?.pathname);
   }, [location]);
 
+  useEffect(() => {
+    const isLogin = localStorage.getItem("isLogin");
+
+    if (isLogin === "true") {
+      setIsLogin(true);
+    } else {
+      localStorage.setItem("isLogin", "false");
+      setIsLogin(false);
+    }
+  }, [isLoginModal]);
+
   return (
     <Layout className="app-module">
-      <Header className="header" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
+      <Header
+        className="header"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
         <SlackOutlined className="header-icon" />
-        <div className="header-functional-areas"  >
-          <div className="menu-list" onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
+        <div className="header-functional-areas">
+          <div
+            className="menu-list"
+            onMouseDown={stopPropagation}
+            onMouseUp={stopPropagation}
+          >
             {menuList.map((item) => (
               <div
                 key={item?.key}
@@ -162,7 +173,11 @@ const App: React.FC = (props: any) => {
 
           <SearchBar />
 
-          <div className="personal-information" onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
+          <div
+            className="personal-information"
+            onMouseDown={stopPropagation}
+            onMouseUp={stopPropagation}
+          >
             {isLogin ? <CustomDropdown /> : <div>登录/注册</div>}
             <Dropdown
               overlayClassName={"dropdown-overlay"}
@@ -175,17 +190,19 @@ const App: React.FC = (props: any) => {
             <img onClick={handleExitProcess} className="closeType" src={closeIcon} width={12} height={12} alt="" />
           </div>
         </div>
-        
       </Header>
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
-      {isLogin === "false" && (
+      {!isLogin && (
         <div
           className="login-mask"
-          style={{ display: isLoginModal || isLogin ? "none" : "block" }}
+          style={{ display: isLogin ? "none" : "block" }}
         >
-          <Login setIsLoginModal={setIsLoginModal} />
+          <Login
+            isLoginModal={isLoginModal}
+            setIsLoginModal={setIsLoginModal}
+          />
         </div>
       )}
     </Layout>
