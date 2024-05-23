@@ -55,9 +55,9 @@ instance.interceptors.response.use(
         message.error('网络错误，请稍后再试');
       }
     } else if (error.request) {
-      message.error('网络错误，请检查您的网络连接');
+      console('网络错误，请检查您的网络连接');
     } else {
-      message.error('请求失败，请稍后再试');
+      console('请求失败，请稍后再试');
     }
     return Promise.reject(error);
   }

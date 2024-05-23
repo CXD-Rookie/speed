@@ -31,7 +31,8 @@ interface Window {
   NativeApi_ExitProcess: () => void; //退出程序
   NativeApi_OnDragZoneMouseDown: () => void; //鼠标点击事件,放在拖拽区域里面
   NativeApi_OnDragZoneMouseUp: () => void; //鼠标松开事件,放在拖拽区域里面
-  cefQuery: ({}) => void; //不用管
+  NativeApi_MinimumWindow: () => void; //最小化
+  cefQuery: ({ }) => void; //不用管
 }
 
 const menuList: CustomMenuProps[] = [
@@ -105,6 +106,11 @@ const App: React.FC = (props: any) => {
     }
   };
 
+  const handleMinimize = () => {
+    (window as any).NativeApi_MinimumWindow();
+  };
+
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     (window as any).NativeApi_OnDragZoneMouseDown();
     console.log("--111111111111111111111");
@@ -177,21 +183,8 @@ const App: React.FC = (props: any) => {
             >
               <img src={menuIcon} width={12} height={12} alt="" />
             </Dropdown>
-            <img
-              className="minType"
-              src={minIcon}
-              width={12}
-              height={12}
-              alt=""
-            />
-            <img
-              onClick={handleExitProcess}
-              className="closeType"
-              src={closeIcon}
-              width={12}
-              height={12}
-              alt=""
-            />
+            <img onClick={handleMinimize} className="minType" src={minIcon} width={12} height={12} alt="" />
+            <img onClick={handleExitProcess} className="closeType" src={closeIcon} width={12} height={12} alt="" />
           </div>
         </div>
       </Header>
