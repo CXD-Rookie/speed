@@ -13,9 +13,8 @@ class GameList {
   // url = `/api/v1`
 
   gameList (parmas) {
-    return get(
-      `${this.url}/game/list`
-    );
+    const queryString = new URLSearchParams(parmas).toString();
+    return get(`${this.url}/game/list?${queryString}`);
   }
 }
 
