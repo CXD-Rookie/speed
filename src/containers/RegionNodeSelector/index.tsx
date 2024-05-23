@@ -22,8 +22,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const [selectedNode, setSelectedNode] = useState("0418 亚洲网20");
   const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
 
-  const [regions, setRegions] = useState([]);
-  const [selectRegions, setSelectRegions] = useState([]); // 区服列表
+  const [regions, setRegions] = useState([]); // 区服列表
+  const [selectRegions, setSelectRegions] = useState([]); // 选择过的区服列表
 
   const [regionDomList, setRegionDomList] = useState([{ key: "" }]); // 节点列表
 
