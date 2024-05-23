@@ -10,6 +10,7 @@ import { menuActive } from "./redux/actions/menu";
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
+import CustomDropdown from "@/containers/login-user";
 import "@/assets/css/App.scss";
 
 import menuIcon from "@/assets/images/common/menu.svg";
@@ -124,7 +125,7 @@ const App: React.FC = (props: any) => {
           <SearchBar />
 
           <div className="personal-information">
-            <div>登录/注册</div>
+            {isLogin ? <CustomDropdown /> : <div>登录/注册</div>}
             <Dropdown
               overlayClassName={"dropdown-overlay"}
               menu={{ items }}
@@ -143,7 +144,7 @@ const App: React.FC = (props: any) => {
       {isLogin === "false" && (
         <div
           className="login-mask"
-          style={{ display: isLoginModal ? "none" : "none" }}
+          style={{ display: isLoginModal || isLogin ? "none" : "block" }}
         >
           <Login setIsLoginModal={setIsLoginModal} />
         </div>
