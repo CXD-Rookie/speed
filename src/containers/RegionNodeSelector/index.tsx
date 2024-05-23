@@ -29,27 +29,30 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   const [listenerNode, setListenerNode] = useState(0);
 
-  const handleNodeClick = (node: { key: string; ip: string; server: { port: number }[] }) => {
+  const handleNodeClick = (node: {
+    key: string;
+    ip: string;
+    server: { port: number }[];
+  }) => {
     setSelectedNodeKey(node?.key);
     console.log("Selected node:", node);
     const requestData = JSON.stringify({
       method: "NativeApi_GetIpDelay",
-      params: { ip: node.ip, port: node.server[0].port }
+      params: { ip: node.ip, port: node.server[0].port },
     });
 
     (window as any).cefQuery({
       request: requestData,
 
       onSuccess: (response: any) => {
-        console.log('Response from C++:', response);
+        console.log("Response from C++:", response);
         const jsonResponse = JSON.parse(response); //{"delay":32(这个是毫秒,9999代表超时与丢包)}
       },
       onFailure: (errorCode: any, errorMessage: any) => {
-        console.error('Query failed:', errorMessage);
-      }
+        console.error("Query failed:", errorMessage);
+      },
     });
   };
-  
 
   // 获取游戏区服列表
   const handleSuitList = async () => {
@@ -134,23 +137,26 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       <Tabs defaultActiveKey="1" onChange={handleTabsChange}>
         <TabPane tab="区服" key="1">
           <div className="content">
-            <div className="current-game">当前游戏: 英雄联盟大吉大利</div>
-            <div className="current-region">
-              当前区服:
-              <Select
-                defaultValue={selectedRegion}
-                onChange={(value) => setSelectedRegion(value)}
-                className="region-select"
-              >
-                {selectRegions.map((item: any) => {
-                  return (
-                    <Option key={item?.id} value={item?.id}>
-                      {item?.region}
-                    </Option>
-                  );
-                })}
-              </Select>
+            <div className="current-box">
+              <div className="current-game">英雄联盟大吉大利</div>
+              <div className="current-region">
+                当前区服:
+                <Select
+                  className="region-select"
+                  defaultValue={selectedRegion}
+                  onChange={(value) => setSelectedRegion(value)}
+                >
+                  {selectRegions.map((item: any) => {
+                    return (
+                      <Option key={item?.id} value={item?.id}>
+                        {item?.region}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </div>
             </div>
+
             <div className="region-buttons">
               {Object.entries(regions).map(([key, value]) => (
                 <Button
@@ -162,7 +168,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 </Button>
               ))}
             </div>
-            <div className="no-region">请先选择游戏区服</div>
+
+            <div className="not-have-region">没有找到区服？</div>
           </div>
         </TabPane>
         <TabPane tab="节点" key="2">
@@ -191,18 +198,25 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               <Button className="refresh-button">刷新</Button>
             </div>
             <Table
-                rowKey="id"
-                dataSource={regionDomList}
-                pagination={false}
-                rowClassName={(record) =>(
-                    record.id === selectedNodeKey ? "selected-node" : ""
-                )  
-                }
-                onRow={(record) => ({
-                    onClick: () => handleNodeClick(record as { id:any, key: string; ip: string; server: { port: number }[] })
-                })}
-                className="nodes-table"
-                >
+              rowKey="id"
+              dataSource={regionDomList}
+              pagination={false}
+              rowClassName={(record) =>
+                record.id === selectedNodeKey ? "selected-node" : ""
+              }
+              onRow={(record) => ({
+                onClick: () =>
+                  handleNodeClick(
+                    record as {
+                      id: any;
+                      key: string;
+                      ip: string;
+                      server: { port: number }[];
+                    }
+                  ),
+              })}
+              className="nodes-table"
+            >
               <Column title="节点" dataIndex="name" key="name" />
               <Column title="游戏延迟" dataIndex="delay" key="delay" />
               <Column title="丢包" dataIndex="packetLoss" key="packetLoss" />
