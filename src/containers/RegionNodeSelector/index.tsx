@@ -17,7 +17,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   visible,
   onCancel,
 }) => {
-  const [selectedRegion, setSelectedRegion] = useState();
+  const [selectedRegion, setSelectedRegion] = useState(); // 当前命中区服
   const [selectedMode, setSelectedMode] = useState("路由模式");
   const [selectedNode, setSelectedNode] = useState("0418 亚洲网20");
   const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
@@ -46,7 +46,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   // 选择区服
   const handleSelectRegion = (region: any) => {
     let arr: any = [...selectRegions];
-    console.log("选择区服", region);
 
     // 去重 添加
     if (!arr.some((item: any) => item?.id === region?.id)) {
@@ -67,29 +66,37 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     try {
       let res = await playSuitApi.playSpeedList({
         platform: 3,
-        nid: "1",
+        id: selectedRegion,
       });
-
       setRegionDomList(res?.data || []);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // 切换tab
+  const handleTabsChange = (e: any) => {
+    if (e === "2") {
+      handleSuitDomList();
+    }
+  };
+
   useEffect(() => {
     handleSuitList();
-    handleSuitDomList();
   }, []);
 
   useEffect(() => {
-    let arr: any = localStorage.getItem("speed-1.0.0.1-region");
+    if (visible) {
+      let arr: any = localStorage.getItem("speed-1.0.0.1-region");
 
-    arr = arr ? JSON.parse(arr) : [];
-    let result = arr.filter((item: any) => item?.is_select);
+      arr = arr ? JSON.parse(arr) : [];
+      let result = arr.filter((item: any) => item?.is_select);
+      console.log(arr);
 
-    setSelectedRegion(result?.[0]?.id || "");
-    setSelectRegions(arr);
-  }, []);
+      setSelectedRegion(result?.[0]?.id || "");
+      setSelectRegions(arr);
+    }
+  }, [visible]);
 
   return (
     <Modal
@@ -100,7 +107,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       footer={null}
       className="region-node-selector"
     >
-      <Tabs defaultActiveKey="1">
+      <Tabs defaultActiveKey="1" onChange={handleTabsChange}>
         <TabPane tab="区服" key="1">
           <div className="content">
             <div className="current-game">当前游戏: 英雄联盟大吉大利</div>
