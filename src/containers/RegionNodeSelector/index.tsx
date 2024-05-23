@@ -23,48 +23,12 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
 
   const [regions, setRegions] = useState([]);
-  const [selectRegions, setSelectRegions] = useState([]);
+  const [selectRegions, setSelectRegions] = useState([]); // 区服列表
 
-  const nodes = [
-    {
-      key: "1",
-      name: "北京-A1234",
-      delay: "56ms",
-      packetLoss: "60%",
-      mode: "进程模式",
-    },
-    {
-      key: "2",
-      name: "北京-A1234",
-      delay: "98ms",
-      packetLoss: "80%",
-      mode: "路由模式",
-    },
-    {
-      key: "3",
-      name: "北京-A1234",
-      delay: "98ms",
-      packetLoss: "80%",
-      mode: "进程模式",
-    },
-    {
-      key: "4",
-      name: "北京-A1234",
-      delay: "98ms",
-      packetLoss: "80%",
-      mode: "路由模式",
-    },
-    {
-      key: "5",
-      name: "北京-A1234",
-      delay: "98ms",
-      packetLoss: "80%",
-      mode: "进程模式",
-    },
-  ];
+  const [regionDomList, setRegionDomList] = useState([{ key: "" }]); // 节点列表
 
-  const handleNodeClick = (node: (typeof nodes)[0]) => {
-    setSelectedNodeKey(node.key);
+  const handleNodeClick = (node: (typeof regionDomList)[0]) => {
+    setSelectedNodeKey(node?.key);
     console.log("Selected node:", node);
   };
 
@@ -98,8 +62,23 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     onCancel();
   };
 
+  // 获取游戏区服节点列表
+  const handleSuitDomList = async () => {
+    try {
+      let res = await playSuitApi.playSpeedList({
+        platform: 3,
+        nid: "1",
+      });
+
+      setRegionDomList(res?.data || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     handleSuitList();
+    handleSuitDomList();
   }, []);
 
   useEffect(() => {
@@ -181,7 +160,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               <Button className="refresh-button">刷新</Button>
             </div>
             <Table
-              dataSource={nodes}
+              dataSource={regionDomList}
               pagination={false}
               rowClassName={(record) =>
                 record.key === selectedNodeKey ? "selected-node" : ""
