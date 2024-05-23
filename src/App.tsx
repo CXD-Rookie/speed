@@ -106,14 +106,11 @@ const App: React.FC = (props: any) => {
     }
   };
 
-<<<<<<< HEAD
   const handleMinimize = () => {
     (window as any).NativeApi_MinimumWindow();
   };
 
 
-=======
->>>>>>> 377cc327d548c132951e5cfa99fff0b6f62fd9aa
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     (window as any).NativeApi_OnDragZoneMouseDown();
     console.log("--111111111111111111111");
