@@ -25,14 +25,31 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const [regions, setRegions] = useState([]); // 区服列表
   const [selectRegions, setSelectRegions] = useState([]); // 选择过的区服列表
 
-  const [regionDomList, setRegionDomList] = useState([{ key: "" }]); // 节点列表
+  const [regionDomList, setRegionDomList] = useState(); // 节点列表
 
   const [listenerNode, setListenerNode] = useState(0);
 
-  const handleNodeClick = (node: (typeof regionDomList)[0]) => {
+  const handleNodeClick = (node: { key: string; ip: string; server: { port: number }[] }) => {
     setSelectedNodeKey(node?.key);
     console.log("Selected node:", node);
+    const requestData = JSON.stringify({
+      method: "NativeApi_GetIpDelay",
+      params: { ip: node.ip, port: node.server[0].port }
+    });
+
+    (window as any).cefQuery({
+      request: requestData,
+
+      onSuccess: (response: any) => {
+        console.log('Response from C++:', response);
+        const jsonResponse = JSON.parse(response); //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+      },
+      onFailure: (errorCode: any, errorMessage: any) => {
+        console.error('Query failed:', errorMessage);
+      }
+    });
   };
+  
 
   // 获取游戏区服列表
   const handleSuitList = async () => {
@@ -108,7 +125,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   return (
     <Modal
       title="区服、节点选择"
-      visible={visible}
+      open={visible}
       onCancel={onCancel}
       destroyOnClose
       footer={null}
@@ -174,16 +191,18 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               <Button className="refresh-button">刷新</Button>
             </div>
             <Table
-              dataSource={regionDomList}
-              pagination={false}
-              rowClassName={(record) =>
-                record.key === selectedNodeKey ? "selected-node" : ""
-              }
-              onRow={(record) => ({
-                onClick: () => handleNodeClick(record),
-              })}
-              className="nodes-table"
-            >
+                rowKey="id"
+                dataSource={regionDomList}
+                pagination={false}
+                rowClassName={(record) =>(
+                    record.id === selectedNodeKey ? "selected-node" : ""
+                )  
+                }
+                onRow={(record) => ({
+                    onClick: () => handleNodeClick(record as { id:any, key: string; ip: string; server: { port: number }[] })
+                })}
+                className="nodes-table"
+                >
               <Column title="节点" dataIndex="name" key="name" />
               <Column title="游戏延迟" dataIndex="delay" key="delay" />
               <Column title="丢包" dataIndex="packetLoss" key="packetLoss" />
