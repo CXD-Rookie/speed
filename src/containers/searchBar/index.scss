@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-22 14:58:00
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-22 18:39:47
+ * @LastEditTime: 2024-05-23 20:58:17
  * @FilePath: \speed\src\containers\searchBar\index.scss
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -26,21 +26,30 @@
     position: absolute;
     top: 100%;
     left: 0;
-    width: 100%;
     max-height: 300px;
     overflow-y: auto;
-    background: #fff;
     border: 1px solid #ccc;
     border-top: none;
     z-index: 1000;
-  }
+    width: 200px;
+    background: #3e3e4a;
+    border-radius: 10px;
+    box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.50); 
+    }
   
   .search-item {
     padding: 10px;
     cursor: pointer;
+    font-size: 14px;
+    font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+    font-weight: Regular;
+    text-align: left;
+    color: #ffffff;
+    line-height: 18px;
   }
   
   .search-item:hover {
-    background: #f0f0f0;
+    background: rgba(255,255,255,0.10);
+    border-radius: 5px;
   }
   

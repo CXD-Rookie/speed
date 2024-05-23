@@ -98,3 +98,24 @@
   border-top: 0.5px solid rgba(255,255,255,0.10) !important; /* 你想要的横线颜色 */
   margin: 20px 0 14px 10px !important; /* 调整横线的上下间距 */
 }
+
+/* 隐藏浏览器自带滚动条 */
+::-webkit-scrollbar {
+  width: 12px; /* 设置滚动条宽度 */
+}
+
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+  background: transparent; /* 设置滚动条轨道背景色 */
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.5); /* 设置滚动条滑块背景色，这里设置为半透明的黑色 */
+  border-radius: 6px; /* 设置滑块圆角 */
+}
+
+/* 滚动条滑块悬停状态 */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.7); /* 设置滚动条滑块悬停状态下的背景色 */
+}
