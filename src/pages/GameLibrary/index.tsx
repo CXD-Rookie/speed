@@ -37,24 +37,29 @@ interface Game {
 interface GamesTitleProps {
   label: string;
   key: string;
+  t: string;
 }
 
 const gamesTitle: GamesTitleProps[] = [
   {
     key: "1",
     label: "热门游戏",
+    t: "热门游戏",
   },
   {
     key: "2",
     label: "近期推荐",
+    t: "近期推荐",
   },
   {
     key: "3",
     label: "休闲娱乐",
+    t: "休闲娱乐",
   },
   {
     key: "4",
     label: "游戏平台",
+    t: "游戏平台",
   },
 ];
 
@@ -63,8 +68,9 @@ const GameLibrary: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [gameActiveType, setGameActiveType] = useState<string>("1");
   const [page, setPage] = useState<number>(1);
-  const isFetching = useRef<boolean>(false); // 使用 ref 变量防止重复请求
-  const hasMore = useRef<boolean>(true); // 用于追踪是否还有更多数据
+  const [t, setT] = useState<string | null>("热门游戏"); // 默认选中热门游戏
+  const isFetching = useRef<boolean>(false);
+  const hasMore = useRef<boolean>(true);
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
   const gameListRef = useRef<HTMLDivElement>(null);
@@ -85,21 +91,24 @@ const GameLibrary: React.FC = () => {
     navigate("/home");
   };
 
-  const fetchGames = async (pageNum: number) => {
-    if (isFetching.current || !hasMore.current) return; // 如果正在加载或没有更多数据则返回
+  const fetchGames = async (pageNum: number, tParam: string | null) => {
+    if (isFetching.current || !hasMore.current) return;
     isFetching.current = true;
     try {
-      const param = {
+      const param: any = {
         page: pageNum,
         pagesize: 10,
       };
+      if (tParam) {
+        param.t = tParam;
+      }
       const res = await gameApi.gameList(param);
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
         cover_img: `https://jsq-cdn.yuwenlong.cn/${game.cover_img}`,
       }));
       if (res.data.list.length < 10) {
-        hasMore.current = false; // 如果获取到的数据少于请求的数量，说明没有更多数据了
+        hasMore.current = false;
       }
       setGames(prevGames => [...prevGames, ...gamesWithFullImgUrl]);
     } catch (error) {
@@ -110,13 +119,12 @@ const GameLibrary: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchGames(page); // 在组件加载时调用一次，用于初始化
-
+    fetchGames(page, t);
     const handleScroll = () => {
       if (gameListRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = gameListRef.current;
         if (clientHeight + scrollTop >= scrollHeight - 200 && !isFetching.current) {
-          setPage(prevPage => prevPage + 1); // 更新 page
+          setPage(prevPage => prevPage + 1);
         }
       }
     };
@@ -132,9 +140,28 @@ const GameLibrary: React.FC = () => {
 
   useEffect(() => {
     if (page > 1) {
-      fetchGames(page); // 当 page 更新时调用
+      fetchGames(page, t);
     }
   }, [page]);
+
+  useEffect(() => {
+    if (t !== null) {
+      setPage(1);
+      setGames([]);
+      hasMore.current = true;
+      fetchGames(1, t);
+    }
+  },[t]);
+
+  const handleTitleClick = (item: GamesTitleProps) => {
+    setGameActiveType(item.key);
+    setT(item.t);
+  };
+
+  useEffect(() => {
+    // 在组件加载时，默认选中热门游戏并请求数据
+    setT("热门游戏");
+  }, []);
 
   return (
     <div className="game-list-module-container">
@@ -143,7 +170,7 @@ const GameLibrary: React.FC = () => {
           <div
             key={item?.key}
             className={`game-label ${gameActiveType === item?.key && "game-label-active"}`}
-            onClick={() => setGameActiveType(item?.key)}
+            onClick={() => handleTitleClick(item)}
           >
             {item?.label}
           </div>
