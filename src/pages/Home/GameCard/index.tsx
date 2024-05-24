@@ -7,7 +7,7 @@
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
@@ -30,10 +30,11 @@ export interface GameCardProps {
   onClear?: ((value: any) => void) | undefined;
   style?: React.CSSProperties;
   className?: string;
+  accelTag?: object;
 }
 
 const GameCard: React.FC<GameCardProps> = (props) => {
-  const { gameData = {}, type = "home", onClear = () => {} } = props;
+  const { gameData = {}, type = "home", accelTag, onClear = () => {} } = props;
 
   const navigate = useNavigate();
 
@@ -46,58 +47,50 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         playSuitApi.speedInfo({
           platform: 3,
           gid: t,
-          pid: pid
+          pid: pid,
         }),
         playSuitApi.playSpeedList({
           platform: 3,
           gid: t,
-          pid: pid
-        })
+          pid: pid,
+        }),
       ]);
-  
+
       console.log("获取游戏加速用的信息", speedInfoRes);
       console.log("获取游戏加速列表的信息", speedListRes);
-  
+
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes.data.executable;
       const { ip, server } = speedListRes.data[0];
-  
+
       const jsonResult = {
-        process:[
-          process[0],
-          process[1],
-          process[2],
-        ],
-        black_ip: [
-          "42.201.128.0/17"
-        ],
+        process: [process[0], process[1], process[2]],
+        black_ip: ["42.201.128.0/17"],
         black_domain: [
           "re:.+\\.steamcommunity\\.com",
-          "steamcdn-a.akamaihd.net"
+          "steamcdn-a.akamaihd.net",
         ],
         tunnel: {
           address: ip,
-          server: server
-        }
+          server: server,
+        },
       };
-  
+
       console.log("拼接后的 JSON 对象:", jsonResult);
-  
+
       // 假设你需要根据两个请求的结果更新 state
       // setRegionDomList(jsonResult); // 根据实际需求更新 state
-  
     } catch (error) {
       console.log(error);
     }
   };
-  
-  
+
   // 立即加速
   const handleAccelerateClick = (option: any) => {
-    console.log("option 游戏数据",option)
+    console.log("option 游戏数据", option);
     let is_true = getMyGames().some((item: any) => item?.is_accelerate);
 
-    handleSuitDomList(option.id)
+    handleSuitDomList(option.id);
     // if (is_true) {
     //   setAccelOpen(true);
     // } else {
@@ -150,6 +143,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(result));
     onClear(result);
   };
+
+  useEffect(() => {
+    console.log(222);
+  }, [accelTag]);
 
   return (
     <div

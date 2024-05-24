@@ -1,13 +1,13 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-24 18:10:22
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-24 20:57:07
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { Button } from "antd";
 import PayModal from "../../containers/Pay/index";
@@ -20,12 +20,15 @@ import emptyIcon from "@/assets/images/home/empty.svg";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [status, setStatus] = useState<any>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [homeList, setHomeList] = useState([]);
   const [myGamesNum, setMyGamesNum] = useState(0);
+
+  const [accelTag, setAccelTag] = useState({});
 
   const pid = localStorage.getItem("pid");
 
@@ -37,12 +40,25 @@ const Home: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
+  const updateData = () => {
     let arr = getMyGames();
 
     setMyGamesNum(arr?.length);
     setHomeList(arr?.slice(0, 4));
+  };
+
+  useEffect(() => {
+    updateData();
   }, [status]);
+
+  useEffect(() => {
+    console.log(location);
+    // if (location?.state?.type) {
+    //   window.history.replaceState({}, "");
+    //   updateData();
+    //   setAccelTag(location?.state?.data);
+    // }
+  }, [location]);
 
   return (
     <div className="home-module">
@@ -51,6 +67,7 @@ const Home: React.FC = () => {
           <GameCard
             key={index}
             gameData={game}
+            accelTag={accelTag}
             onClear={() => setStatus(status + 1)}
           />
         ))}

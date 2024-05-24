@@ -120,12 +120,12 @@ const App: React.FC = (props: any) => {
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    (window as any).NativeApi_OnDragZoneMouseDown();
+    // (window as any).NativeApi_OnDragZoneMouseDown();
     console.log("--111111111111111111111");
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    (window as any).NativeApi_OnDragZoneMouseUp();
+    // (window as any).NativeApi_OnDragZoneMouseUp();
     console.log("--wwwwwwwwwwwww");
   };
 
@@ -139,8 +139,8 @@ const App: React.FC = (props: any) => {
       let res = await playSuitApi.pcPlatform();
       console.log("获取运营平台信息", res.data[1]);
       const keys = Object.keys(res.data);
-      console.log(keys)
-      localStorage.setItem("pid", keys[0])
+      console.log(keys);
+      localStorage.setItem("pid", keys[0]);
       // 更新 state
       //@ts-ignore
     } catch (error) {
@@ -164,9 +164,8 @@ const App: React.FC = (props: any) => {
   }, [isLoginModal]);
 
   useEffect(() => {
-    handleSuitDomList()
-  }, [])
-  
+    handleSuitDomList();
+  }, []);
 
   return (
     <Layout className="app-module">
