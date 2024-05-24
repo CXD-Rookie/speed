@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 17:30:57
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-24 20:35:41
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -162,17 +162,20 @@ const GameDetail: React.FC = () => {
   };
 
   const stopSpeed = () => {
-    CefWebInstance.call(
-      "jsCallStopSpeed",
-      { message: "jsCallStopSpeed" },
-      (error: any, result1: any) => {
-        console.log("stop111111111111111");
-        console.log(error);
-        console.log(result1);
-        navigate("/gameList");
-        localStorage.setItem("stopSpeed", "1");
-      }
-    );
+    const requestData = JSON.stringify({
+      method: "NativeApi_StopProxy",
+      params: null
+    });
+    (window as any).cefQuery({
+      request: requestData,
+      onSuccess: (response: any) => {
+        console.log("停止加速----------:", response);
+        navigate("/home")
+      },
+      onFailure: (errorCode: any, errorMessage: any) => {
+        console.error("加速失败 failed:", errorMessage);
+      },
+    });
   };
 
   const openGame = () => {
