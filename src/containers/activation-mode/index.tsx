@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 18:06:45
+ * @LastEditTime: 2024-05-24 18:16:19
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
@@ -31,10 +31,21 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
   ]); // 平台列表
   const [trails, setTerrace] = useState("Select://asdfgdsa/12edsasdfc"); // 启动路径
 
+  const handleInputChange = (e: any) => {
+    let value = e.target.value;
+    console.log("启动路径：value");
+
+    setTerrace(value);
+  };
+
+  const handleSave = () => {
+    console.log("点击报存");
+  };
+
   return (
     <Modal
       className="activation-modal"
-      open={true} //isOpen
+      open={isOpen} //isOpen
       onCancel={onClose}
       title="启动方式"
       width={400}
@@ -51,8 +62,14 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
           <Option value="stema">Stema</Option>
         </Select>
         <div className="content-title">启动路径：</div>
-        <Input className="content-input" />
-        <Button className="content-btn">保存</Button>
+        <Input
+          className="content-input"
+          value={trails}
+          onChange={handleInputChange}
+        />
+        <Button className="content-btn" type="default" onClick={handleSave}>
+          保存
+        </Button>
       </div>
     </Modal>
   );

@@ -228,7 +228,7 @@ const App: React.FC = (props: any) => {
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
       />
-      <ActivationModal />
+      {/* <ActivationModal /> */}
     </Layout>
   );
 };
