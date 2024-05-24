@@ -152,7 +152,7 @@ const GameDetail: React.FC = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
-
+  const [lostBag, setLostBag] = useState<any>(); // 当前加速游戏数据
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -193,9 +193,27 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     let arr = getMyGames();
     let details_arr = arr.filter((item: any) => item?.is_accelerate);
-
+    const speedIp = localStorage.getItem("speedIp");
     console.log("我的游戏总数据", arr);
     console.log("当前加速游戏数据", details_arr);
+
+    const requestData = JSON.stringify({
+      method: "NativeApi_GetIpDelayByICMP",
+      params: { ip: speedIp },
+    });
+
+    (window as any).cefQuery({
+      request: requestData,
+      onSuccess: (response: any) => {
+        console.log("详情丢包信息=========================:", response);
+        const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+        console.log("详情丢包信息jsonResponse=========================:", jsonResponse);
+        setLostBag(jsonResponse)
+      },
+      onFailure: (errorCode: any, errorMessage: any) => {
+        console.error("Query failed:", errorMessage);
+      },
+    });
 
     setDetailData(details_arr?.[0] || {});
   }, []);
@@ -239,7 +257,7 @@ const GameDetail: React.FC = () => {
               <div className="keep speed-common">
                 实时延迟
                 <div>
-                  98<span> ms</span>
+                  {lostBag}<span> ms</span>
                 </div>
               </div>
               <div className="speed-line" />

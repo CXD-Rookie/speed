@@ -120,12 +120,12 @@ const App: React.FC = (props: any) => {
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    // (window as any).NativeApi_OnDragZoneMouseDown();
+    (window as any).NativeApi_OnDragZoneMouseDown();
     console.log("--111111111111111111111");
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    // (window as any).NativeApi_OnDragZoneMouseUp();
+    (window as any).NativeApi_OnDragZoneMouseUp();
     console.log("--wwwwwwwwwwwww");
   };
 

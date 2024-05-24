@@ -62,7 +62,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes.data.executable;
       const { ip, server } = speedListRes.data[0];
-
+      localStorage.setItem("speedIp", ip);
       const jsonResult = {
         process: [process[0], process[1], process[2]],
         black_ip: ["42.201.128.0/17"],
