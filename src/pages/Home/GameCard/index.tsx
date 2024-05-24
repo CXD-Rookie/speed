@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-24 19:08:00
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-24 19:21:37
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -106,18 +106,26 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 加速逻辑
-  const handleExpedite = (option: any) => {
+  const handleExpedite = (option: any, type: any = "on") => {
     let game_arr = getMyGames();
+    console.log(type, game_arr);
 
     game_arr = game_arr.map((item: any) => ({
       ...item,
-      is_accelerate: option?.id === item?.id,
+      is_accelerate: type === "off" ? false : option?.id === item?.id,
     }));
-
+    console.log(game_arr);
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
 
     setAccelOpen(false);
-    handleDetails();
+
+    if (type === "on") {
+      handleDetails();
+    }
+
+    if (type === "off") {
+      onClear(true);
+    }
   };
 
   // 进入详情
@@ -127,7 +135,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 停止加速
   const handleStopClick = (option: any) => {
-    handleExpedite(option);
+    handleExpedite(option, "off");
   };
 
   const handleClearGame = (options: any) => {
