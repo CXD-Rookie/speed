@@ -11,6 +11,7 @@ import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
 import CustomDropdown from "@/containers/login-user";
+import SettingsModal from "./containers/setting/index";  // 引入 SettingsModal 组件
 import "@/assets/css/App.scss";
 
 import menuIcon from "@/assets/images/common/menu.svg";
@@ -35,36 +36,6 @@ interface Window {
   cefQuery: ({ }) => void; //不用管
 }
 
-const menuList: CustomMenuProps[] = [
-  {
-    key: "home",
-    label: "首页",
-    router: "/home",
-  },
-  {
-    key: "gameLibrary",
-    label: "游戏库",
-    router: "/gameLibrary",
-  },
-];
-
-const items: MenuProps["items"] = [
-  {
-    key: "1",
-    label: <div className="public-style">设置</div>,
-  },
-  {
-    key: "2",
-    label: <div className="public-style">问题反馈</div>,
-  },
-  {
-    type: "divider", // 使用 Menu.Divider
-  },
-  {
-    key: "3",
-    label: <div className="public-style">退出登录</div>,
-  },
-];
 
 const mapStateToProps = (state: any) => ({
   // Map state to props if needed
@@ -84,7 +55,38 @@ const App: React.FC = (props: any) => {
 
   const [isLogin, setIsLogin] = useState(false);
   const [isLoginModal, setIsLoginModal] = useState(0);
+  const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
+  const menuList: CustomMenuProps[] = [
+    {
+      key: "home",
+      label: "首页",
+      router: "/home",
+    },
+    {
+      key: "gameLibrary",
+      label: "游戏库",
+      router: "/gameLibrary",
+    },
+  ];
+  
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <div className="public-style" onClick={() => setShowSettingsModal(true)}>设置</div>,
+    },
+    {
+      key: "2",
+      label: <div className="public-style">问题反馈</div>,
+    },
+    {
+      type: "divider", // 使用 Menu.Divider
+    },
+    {
+      key: "3",
+      label: <div className="public-style">退出登录</div>,
+    },
+  ];
   // 点击菜单
   const handleChangeTabs = (item: any) => {
     let localtion = item?.router || "home";
@@ -202,6 +204,7 @@ const App: React.FC = (props: any) => {
           />
         </div>
       )}
+      <SettingsModal isOpen={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
     </Layout>
   );
 };
