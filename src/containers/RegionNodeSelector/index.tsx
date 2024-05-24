@@ -195,7 +195,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     >
       <Tabs defaultActiveKey="1" onChange={handleTabsChange}>
         <TabPane tab="区服" key="1">
-          <div className="district-content content">
+          <div className="content">
             <div className="current-box">
               <div className="current-game">英雄联盟大吉大利</div>
               <div className="current-region">
@@ -232,7 +232,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
           </div>
         </TabPane>
         <TabPane tab="节点" key="2">
-          <div className="district-content content">
+          <div className="content">
             <div className="current-settings">
               英雄联盟大吉大利 | {selectedRegion}
             </div>

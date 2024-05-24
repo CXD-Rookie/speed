@@ -58,14 +58,11 @@
     color: #999;
   }
 
-  .district-content {
-    position: relative;
-  }
-
   .content {
     margin-top: 9px;
     padding: 0 16px 8px 16px;
-    
+    position: relative;
+
     .current-box {
       display: flex;
       justify-content: space-between;
@@ -88,9 +85,17 @@
         height: 32px;
         margin-left: 8px;
         
+        .ant-select-open {
+          color: #fff;
+        }
+
         .ant-select-selector {
           color: #fff;
           background: rgba(255, 255, 255, 0.1);
+          border: none;
+        }
+
+        .ant-select-focused .ant-select-selector {
           border: none;
         }
       }
@@ -210,4 +215,25 @@
       left: 213.5px;
     }
   }
+}
+
+.ant-select-dropdown {
+  color: #fff !important;
+  background: #6b6b7d !important; 
+}
+
+.ant-select-item-option {
+  color: #fff !important;
+}
+
+/* 修改选项在鼠标经过时的样式 */
+.ant-select-item-option-active {
+  background-color: #3E3E4A !important; /* 修改背景颜色 */
+  color: #fff !important;            /* 修改文字颜色 */
+}
+
+/* 修改选中项的样式 */
+.ant-select-item-option-selected {
+  background-color: #3E3E4A !important; /* 修改背景颜色 */
+  color: #fff !important;            /* 修改文字颜色 */
 }
