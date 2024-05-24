@@ -39,20 +39,32 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
     setUserInfo(user_info);
   }, []);
-
+  console.log(userInfo?.user_info);
   return (
     <div className="custom-dropdown" ref={dropdownRef}>
       <div className={"children-content"} onClick={toggleDropdown}>
         <div>
           <span>{userInfo?.user_info?.nickname}</span>
-          <Avatar size={20} src="path/to/avatar.jpg" />
+          <Avatar
+            size={20}
+            src={
+              userInfo?.user_info?.avatar ||
+              "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+            }
+          />
         </div>
       </div>
       {visible && (
         <div className={`dropdown-menu ${"bottomRight"}`} ref={menuRef}>
           <div className="dropdwon-conent">
             <div>
-              <Avatar size={20} src="path/to/avatar.jpg" />
+              <Avatar
+                size={20}
+                src={
+                  userInfo?.user_info?.avatar ||
+                  "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                }
+              />
               &nbsp;
               {userInfo?.user_info?.nickname} <span>编辑</span>
             </div>

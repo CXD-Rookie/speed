@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
-import { SlackOutlined } from "@ant-design/icons";
 import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
+import ActivationModal from "@/containers/activation-mode";
 
 import { connect } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
@@ -17,6 +17,7 @@ import playSuitApi from "./api/speed";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
+import logoIcon from "@/assets/images/common/logo.svg";
 
 const { Header, Content } = Layout;
 
@@ -174,7 +175,13 @@ const App: React.FC = (props: any) => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       >
-        <SlackOutlined className="header-icon" />
+        <img
+          className="header-icon"
+          src={logoIcon}
+          width={40}
+          height={40}
+          alt=""
+        />
         <div className="header-functional-areas">
           <div
             className="menu-list"
@@ -246,6 +253,7 @@ const App: React.FC = (props: any) => {
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
       />
+      {/* <ActivationModal /> */}
     </Layout>
   );
 };
