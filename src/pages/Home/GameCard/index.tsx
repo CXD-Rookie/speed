@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 19:21:37
+ * @LastEditTime: 2024-05-24 20:59:42
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -75,6 +75,21 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           server: server,
         },
       };
+      const requestData = JSON.stringify({
+        method: "NativeApi_StartProcessProxy",
+        params: jsonResult,
+      });
+
+      (window as any).cefQuery({
+        request: requestData,
+        onSuccess: (response: any) => {
+          console.log("加速中----------:", response);
+          const jsonResponse = JSON.parse(response); //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+        },
+        onFailure: (errorCode: any, errorMessage: any) => {
+          console.error("加速失败 failed:", errorMessage);
+        },
+      });
 
       console.log("拼接后的 JSON 对象:", jsonResult);
 
@@ -91,11 +106,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let is_true = getMyGames().some((item: any) => item?.is_accelerate);
 
     handleSuitDomList(option.id);
-    // if (is_true) {
-    //   setAccelOpen(true);
-    // } else {
-    //   handleExpedite(option);
-    // }
+    if (is_true) {
+      setAccelOpen(true);
+    } else {
+      handleExpedite(option);
+    }
   };
 
   // 加速逻辑
@@ -128,7 +143,21 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 停止加速
   const handleStopClick = (option: any) => {
-    handleExpedite(option, "off");
+    console.log("stop speed--------------------------");
+    const requestData = JSON.stringify({
+      method: "NativeApi_StopProxy",
+      params: null,
+    });
+    (window as any).cefQuery({
+      request: requestData,
+      onSuccess: (response: any) => {
+        console.log("停止加速----------:", response);
+        handleExpedite(option, "off");
+      },
+      onFailure: (errorCode: any, errorMessage: any) => {
+        console.error("加速失败 failed:", errorMessage);
+      },
+    });
   };
 
   const handleClearGame = (options: any) => {
