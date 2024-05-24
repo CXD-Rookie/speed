@@ -77,6 +77,10 @@
   }
 }
 
+.ant-dropdown, :where(.css-dev-only-do-not-override-usln0u) .ant-dropdown {
+  top: 60px !important;
+}
+
 .ant-dropdown .ant-dropdown-menu {
   background: #3E3E4A !important;
   border-radius: var(--speed-dominant-border-radius);
