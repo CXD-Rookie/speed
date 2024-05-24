@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-21 22:22:17
+ * @LastEditTime: 2024-05-24 10:55:34
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -55,9 +55,9 @@ instance.interceptors.response.use(
         message.error('网络错误，请稍后再试');
       }
     } else if (error.request) {
-      console('网络错误，请检查您的网络连接');
+      console.log('网络错误，请检查您的网络连接');
     } else {
-      console('请求失败，请稍后再试');
+      console.log('请求失败，请稍后再试');
     }
     return Promise.reject(error);
   }

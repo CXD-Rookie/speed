@@ -1,0 +1,48 @@
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .setting-item label {
+    flex: 1;
+    margin-right: 10px;
+    font-size: 16px;
+  }
+  
+  .setting-item span {
+    flex: 1;
+    font-size: 16px;
+  }
+  
+  .setting-item .ant-checkbox-wrapper {
+    margin-left: auto;
+  }
+  
+  .setting-item .ant-btn {
+    margin-left: 10px;
+  }
+  
+  .setting-item .avatar {
+    display: flex;
+    align-items: center;
+  }
+  
+  .setting-item .avatar .ant-avatar {
+    margin-right: 10px;
+  }
+  
+  .tab-content {
+    padding: 20px;
+  }
+  
+  .ant-modal-close-x {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+  }
+  
