@@ -22,6 +22,7 @@ const Modal: React.FC = () => {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
+    (window as any).NativeApi_OpenBrowser(dataTitle)
     console.log('data-title:', dataTitle);
   };
 
@@ -102,7 +103,7 @@ const Modal: React.FC = () => {
               <ul>
                 <li><span className="txt">支付宝或微信扫码支付</span></li>
                 <li><span className="priceBig">{item.totalPrice}</span></li>
-                <li>我已同意《<div onClick={handleClick} ref={divRef} data-title="222">用户协议</div>》及《<div onClick={handleClick} ref={divRef} data-title="1111">自动续费协议</div>》到期按每月29元自动续费，可随时取消 <i className="tips">?</i></li>
+                <li>我已同意《<div className='txt' onClick={handleClick} ref={divRef} data-title="https://tc-js.yuwenlong.cn/terms_of_service.html">用户协议</div>》及《<div className='txt' onClick={handleClick} ref={divRef} data-title="https://tc-js.yuwenlong.cn/automatic_renewal_agreement.html">自动续费协议</div>》到期按每月29元自动续费，可随时取消 <i className="tips">?</i></li>
               </ul>
             </div>
           </div>

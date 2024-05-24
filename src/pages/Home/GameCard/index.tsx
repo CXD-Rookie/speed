@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 19:13:51
+ * @LastEditTime: 2024-05-24 19:21:37
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
-
+import playSuitApi from "@/api/speed";
 import rightArrow from "@/assets/images/common/right-arrow.svg";
 import accelerateIcon from "@/assets/images/common/accelerate.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
@@ -38,16 +38,71 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const navigate = useNavigate();
 
   const [accelOpen, setAccelOpen] = useState(false);
+  const pid = localStorage.getItem("pid");
 
+  const handleSuitDomList = async (t: any) => {
+    try {
+      const [speedInfoRes, speedListRes] = await Promise.all([
+        playSuitApi.speedInfo({
+          platform: 3,
+          gid: t,
+          pid: pid
+        }),
+        playSuitApi.playSpeedList({
+          platform: 3,
+          gid: t,
+          pid: pid
+        })
+      ]);
+  
+      console.log("获取游戏加速用的信息", speedInfoRes);
+      console.log("获取游戏加速列表的信息", speedListRes);
+  
+      // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
+      const process = speedInfoRes.data.executable;
+      const { ip, server } = speedListRes.data[0];
+  
+      const jsonResult = {
+        process:[
+          process[0],
+          process[1],
+          process[2],
+        ],
+        black_ip: [
+          "42.201.128.0/17"
+        ],
+        black_domain: [
+          "re:.+\\.steamcommunity\\.com",
+          "steamcdn-a.akamaihd.net"
+        ],
+        tunnel: {
+          address: ip,
+          server: server
+        }
+      };
+  
+      console.log("拼接后的 JSON 对象:", jsonResult);
+  
+      // 假设你需要根据两个请求的结果更新 state
+      // setRegionDomList(jsonResult); // 根据实际需求更新 state
+  
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  
   // 立即加速
   const handleAccelerateClick = (option: any) => {
+    console.log("option 游戏数据",option)
     let is_true = getMyGames().some((item: any) => item?.is_accelerate);
 
-    if (is_true) {
-      setAccelOpen(true);
-    } else {
-      handleExpedite(option);
-    }
+    handleSuitDomList(option.id)
+    // if (is_true) {
+    //   setAccelOpen(true);
+    // } else {
+    //   handleExpedite(option);
+    // }
   };
 
   // 加速逻辑
