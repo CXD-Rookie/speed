@@ -2,13 +2,13 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 14:47:56
+ * @LastEditTime: 2024-05-24 16:37:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { useState } from "react";
-import { Modal, Tabs, Checkbox, Button, Avatar, Switch, Radio } from "antd";
+import { Modal, Tabs, Button, Avatar, Switch, Radio } from "antd";
 import "./index.scss";
 
 const { TabPane } = Tabs;
@@ -20,6 +20,7 @@ interface SettingsModalProps {
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("system");
+  const [isAccreditation, setIsAccreditation] = useState(false); // 是否认证
 
   return (
     <Modal
@@ -41,8 +42,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   开机自动启动
                   <Switch defaultChecked />
                 </span>
-                桌面快捷图标
                 <span>
+                  桌面快捷图标
                   <Switch defaultChecked />
                 </span>
               </div>
@@ -59,10 +60,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             <div className="setting-item">
               <div className="item-title">关于</div>
               <div className="regard-item-content">
-                版本号: 1.0.110<Button type="primary">检查新版本</Button>
+                版本号: 1.0.110<Button type="default">检查新版本</Button>
               </div>
             </div>
-            <div>
+            <div className="protocols">
               <span>用户协议</span>
               <span>隐私协议</span>
               <span>儿童保护及监护人须知</span>
@@ -72,22 +73,26 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         </TabPane>
         <TabPane tab="账户设置" key="account">
           <div className="tab-content">
-            <div>
-              <div>头像名称</div>
-              <Avatar size={64} src="path/to/avatar.jpg" />
+            <div className="tab-avatar">
+              <Avatar size={57} src="path/to/avatar.jpg" />
+              <div className="avatar-name">头像名称</div>
             </div>
-            <div>
+            <div className="info-box">
               <label>手机号:</label>
-              <span>159****2022</span>
+              <div>159****2022</div>
             </div>
-            <div>
-              <label>实名认证</label>
-              <span>未认证</span>
-              <Button type="primary">实名认证</Button>
+            <div className="info-box info-flex">
+              <div className="info-left">
+                <label>实名认证</label>
+                <div>未认证</div>
+              </div>
+              {!isAccreditation && <Button type="primary">实名认证</Button>}
             </div>
-            <div>
-              <label>会员到期时间</label>
-              <span>非会员</span>
+            <div className="info-box info-flex">
+              <div className="info-left">
+                <label>会员到期时间</label>
+                <div>非会员</div>
+              </div>
               <Button type="primary">充值</Button>
             </div>
           </div>

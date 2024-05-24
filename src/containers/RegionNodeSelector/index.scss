@@ -31,7 +31,10 @@
   }
 
   .ant-tabs-ink-bar {
-    background-color: #F86C34;
+    width: 20px !important;
+    height: 3px !important;
+    background: #f86c34;
+    border-radius: 2px !important;
   }
 
   .ant-tabs-nav::before {

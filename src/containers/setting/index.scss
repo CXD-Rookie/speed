@@ -1,34 +1,20 @@
 .system-setting {
   .ant-modal-content {
-    width: 676px;
     height: 500px;
     background-color: #3e3e4a;
     padding: 12px 16px;
   }
 
-  .ant-modal-title,
-  .ant-modal-header,
-  .ant-modal-body,
-  .ant-modal-footer {
-    background-color: #3e3e4a;
-  }
-
-  .ant-modal-title,
-  .ant-modal-body,
-  .ant-modal-footer,
-  .ant-modal-close-x {
+  .ant-modal-header {
     color: #fff;
-  }
-
-  .ant-tabs-ink-bar {
-    background-color: #F86C34;
+    background-color: #3e3e4a;
   }
 
   .ant-modal-close {
     width: 12px;
     height: 12px;
-    left: 638px;
-    top: -2px;
+    right: 12px;
+    top: 12px;
   }
 
   .ant-modal-title,
@@ -37,8 +23,26 @@
     font-size: 12px;
     font-weight: Regular;
     color: #ffffff;
-    text-align: left;
-    line-height: 12px;
+  }
+
+  .ant-tabs {
+    width: 100%;
+    height: 436px;
+  }
+
+  .ant-tabs-ink-bar {
+    width: 20px !important;
+    height: 3px !important;
+    background: #f86c34;
+    border-radius: 2px !important;
+  }
+
+  .ant-tabs-nav::before {
+    border: none !important;
+  }
+
+  .ant-tabs-nav-wrap {
+    height: 40px;
   }
 
   .ant-tabs-nav-list {
@@ -46,45 +50,21 @@
     column-gap: 200px;
   }
 
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn {
-    outline: none;
-    transition: all 0.3s;
-    width: 36px;
-    height: 32px;
-    font-size: 18px;
-    font-family: Source Han Sans SC, Source Han Sans SC-Regular;
-    font-weight: Regular;
-    text-align: center;
-    color: #999999;
-    line-height: 32px;
-  }
-
   :where(.css-dev-only-do-not-override-usln0u).ant-tabs
     .ant-tabs-tab.ant-tabs-tab-active
     .ant-tabs-tab-btn {
-    color: #fff;
-    text-shadow: 0 0 0.25px currentcolor;
+    color: #fff !important;
   }
 
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs-top
-    > .ant-tabs-nav::before {
-    position: absolute;
-    right: 0;
-    left: 0;
-    border-bottom: none;
-    content: "";
-  }
-
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs-top > .ant-tabs-nav {
-    margin: 0 0 6px 0;
-  }
-
-  .ant-tabs-nav-list {
-    height: 40px;
+  .ant-tabs-tab {
+    font-size: 20px;
+    color: #999;
   }
 
   .tab-content {
-    padding: 25px 20px;
+    margin-top: 9px;
+    padding: 0 16px 8px 16px;
+    position: relative;
 
     .setting-item {
       margin-bottom: 28px;
@@ -100,19 +80,108 @@
       .item-content {
         color: #fff;
         margin-top: 8px;
+        display: flex;
+        align-items: center;
+        column-gap: 40px;
 
         & span {
-          margin-top: 9px;
+          display: flex;
+          column-gap: 8px;
+
+          .ant-switch {
+            background-color: #999;
+          }
+
+          .ant-switch-checked {
+            background-color: #f86c34 !important;
+          }
         }
       }
 
       .off-item-content {
         color: #fff;
         margin-top: 8px;
+
+        :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
+          color: #fff !important;
+          margin-inline-end: 38px !important;
+        }
+
+        .ant-radio-checked .ant-radio-inner {
+          background-color: #f86c34;
+        }
       }
 
       .regard-item-content {
+        color: #fff;
         margin-top: 8px;
+
+        & button {
+          width: 96px;
+          height: 32px;
+          color: #fff;
+          background: rgba(255,255,255,0.10);
+          border-radius: 16px;
+          border: none;
+          outline: none;
+          margin-left: 21px;
+        }
+      }
+    }
+
+    .protocols {
+      position: absolute;
+      top: 350px;
+      left: 16px;
+
+      & span {
+        height: 20px;
+        font-size: 14px;
+        font-weight: Regular;
+        text-decoration: underline;
+        text-align: left;
+        color: #999999;
+        line-height: 20px;
+        margin-right: 20px;
+        cursor: pointer;
+      }
+    }
+
+    .tab-avatar {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 12px;
+      position: relative;
+
+      .avatar-name {
+        color: #fff;
+        margin-top: 8px;
+      }
+    }
+
+    .info-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-box {
+      margin-top: 28px;
+
+      label {
+        color: #999;
+      }
+
+      div {
+        color: #fff;
+        margin-top: 8px;
+      }
+
+      button {
+        width: 96px;
+        height: 32px;
+        background: #f86c34;
+        border-radius: 16px;
       }
     }
   }
