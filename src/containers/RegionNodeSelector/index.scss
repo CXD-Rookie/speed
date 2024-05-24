@@ -119,6 +119,20 @@
 
     .node-select {
       display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+
+      & div span{
+        font-size: 14px;
+        font-weight: Regular;
+        text-align: left;
+        color: #999999;
+        line-height: 20px;
+      }
+
+      .ant-select-selector {
+        border: none;
+      }
     }
 
     .ant-table {

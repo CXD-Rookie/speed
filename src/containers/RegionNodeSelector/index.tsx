@@ -177,13 +177,16 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               英雄联盟大吉大利 | {selectedRegion}
             </div>
             <div className="node-select">
-              节点记录:
-              <Select
-                defaultValue={selectedNode}
-                onChange={(value) => setSelectedNode(value)}
-              >
-                <Option value="0418 亚洲网20">0418 亚洲网20</Option>
-              </Select>
+              <div>
+                <span>节点记录:</span>
+                <Select
+                  defaultValue={selectedNode}
+                  onChange={(value) => setSelectedNode(value)}
+                >
+                  <Option value="0418 亚洲网20">0418 亚洲网20</Option>
+                </Select>
+              </div>
+
               <Button className="refresh-button">刷新</Button>
             </div>
             <Table
