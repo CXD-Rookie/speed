@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { SlackOutlined } from "@ant-design/icons";
 import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
+import ActivationModal from "@/containers/activation-mode";
 
 import { connect } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
@@ -227,6 +228,7 @@ const App: React.FC = (props: any) => {
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
       />
+      <ActivationModal />
     </Layout>
   );
 };
