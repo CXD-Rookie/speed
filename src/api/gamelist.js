@@ -9,9 +9,8 @@
 import { get, post } from "./api";
 
 class GameList {
-  // url = `https://rm-mga-dev.yuwenlong.cn/api/v1`
-  url = `${process.env.REACT_APP_API_URL}/api/v1`
-  // url = `/api/v1`
+  url = `https://rm-mga-dev.yuwenlong.cn/api/v1`
+  // url = `${process.env.REACT_APP_API_URL}/api/v1`
 
   gameList (parmas) {
     const queryString = new URLSearchParams(parmas).toString();

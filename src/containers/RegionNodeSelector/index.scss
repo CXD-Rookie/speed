@@ -170,7 +170,7 @@
       .ant-table-cell::before {
         content: normal;
       }
-      
+
       .ant-table-tbody > tr.ant-table-row:hover > td,
       .ant-table-tbody > tr.selected-node > td {
         background-color: #555;
@@ -209,19 +209,6 @@
 
 .region-node-selector {
   width: 676px !important;
-}
-
-.region-buttons {
-  /* width: 113px; */
-  /* height: 40px; */
-  /* background: #6b6b7d; */
-  /* border-radius: 5px; */
-  display: flex;
-  align-content: flex-end;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  justify-content: space-around;
-  /* align-items: baseline; */
 }
 
 :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn {
