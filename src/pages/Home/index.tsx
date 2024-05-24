@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-23 18:43:40
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-24 18:10:22
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -13,7 +13,6 @@ import { Button } from "antd";
 import PayModal from "../../containers/Pay/index";
 import "./style.scss";
 import GameCard from "./GameCard";
-
 import addIcon from "@/assets/images/common/add.svg";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
@@ -27,6 +26,8 @@ const Home: React.FC = () => {
 
   const [homeList, setHomeList] = useState([]);
   const [myGamesNum, setMyGamesNum] = useState(0);
+
+  const pid = localStorage.getItem("pid");
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -90,7 +91,6 @@ const Home: React.FC = () => {
           />
           会员充值
           {isModalOpen && (
-   
             <div className="modal-overlay">
               <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <button className="close-button" onClick={closeModal}>

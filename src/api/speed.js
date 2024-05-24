@@ -1,7 +1,18 @@
 import { get } from "./api";
 
 class PlaySuit {
+
   url = `https://rm-mga-dev.yuwenlong.cn/api/v1`;
+
+  speedInfo (params) {
+    const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/game/speed_info?${queryString}`);
+  }
+
+  pcPlatform (params) {
+    const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/game/pc_platform/list?${queryString}`);
+  }
 
   playSuit (params) {
     const queryString = new URLSearchParams(params).toString();

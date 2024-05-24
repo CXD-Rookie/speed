@@ -13,7 +13,7 @@ import Login from "./containers/Login/index";
 import CustomDropdown from "@/containers/login-user";
 import SettingsModal from "./containers/setting/index"; // 引入 SettingsModal 组件
 import "@/assets/css/App.scss";
-
+import playSuitApi from "./api/speed";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
@@ -133,6 +133,20 @@ const App: React.FC = (props: any) => {
     e.stopPropagation();
   };
 
+  const handleSuitDomList = async () => {
+    try {
+      let res = await playSuitApi.pcPlatform();
+      console.log("获取运营平台信息", res.data[1]);
+      const keys = Object.keys(res.data);
+      console.log(keys)
+      localStorage.setItem("pid", keys[0])
+      // 更新 state
+      //@ts-ignore
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     setMenuActive(location?.pathname);
   }, [location]);
@@ -147,6 +161,11 @@ const App: React.FC = (props: any) => {
       setIsLogin(false);
     }
   }, [isLoginModal]);
+
+  useEffect(() => {
+    handleSuitDomList()
+  }, [])
+  
 
   return (
     <Layout className="app-module">
