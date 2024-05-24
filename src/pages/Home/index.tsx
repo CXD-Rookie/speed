@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { Button } from "antd";
-
+import PayModal from "../../containers/Pay/index";
 import "./style.scss";
 import GameCard from "./GameCard";
 
@@ -90,17 +90,19 @@ const Home: React.FC = () => {
           />
           会员充值
           {isModalOpen && (
+   
             <div className="modal-overlay">
               <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <button className="close-button" onClick={closeModal}>
                   x
                 </button>
-                <iframe
+                <PayModal />
+                {/* <iframe
                   src="https://jsq-cdn.yuwenlong.cn/web/pay.html"
                   width="100%"
                   height="400px"
                   title="Payment"
-                ></iframe>
+                ></iframe> */}
               </div>
             </div>
           )}

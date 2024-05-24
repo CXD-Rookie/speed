@@ -1,0 +1,341 @@
+.pay-modal {
+    & {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      width: 636px;
+      height: 460px;
+      background: #3e3e4a;
+      border-radius: 10px;
+      box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.50);
+    }
+  
+    .popup-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      top: 12px;
+    }
+  
+    .popup-header span {
+      opacity: 0.5;
+      font-size: 12px;
+      font-weight: Regular;
+      text-align: left;
+      color: #ffffff;
+      line-height: 16px;
+    }
+  
+    .headerAll {
+      /* text-align: center; */
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-content: stretch;
+      align-items: center;
+      margin: 30px 0px;
+    }
+  
+    .title {
+      width: 140px;
+      height: 32px;
+      font-size: 20px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: center;
+      color: #ffffff;
+      line-height: 32px;
+      padding-bottom: 5px;
+    }
+  
+    .description {
+      /* width: 378px; */
+      /* height: 20px; */
+      font-size: 14px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: center;
+      color: #999999;
+      line-height: 20px;
+    }
+  
+    /* Tabs container styles */
+    .tabs-container {
+      overflow: hidden;
+      position: relative;
+      width: 596px !important;
+      margin: 0 auto;
+    }
+  
+    /* Tabs styles */
+    .tabs {
+      display: flex;
+      /* justify-content: center; */
+      /* position: relative; */
+    }
+  
+    .tab {
+      flex: 0 0 auto;
+      /* border: 1px solid #ccc; */
+      margin-right: 10px;
+      cursor: pointer;
+      width: 120px;
+      height: 78px;
+      background: rgba(153, 153, 153, 0.10);
+      border-radius: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: left;
+      padding-left: 20px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+  
+    .tab.active {
+      background-color: #f97d4c;
+      color: #fff;
+    }
+  
+    .tab ul li:first-child,
+    .tab ul li:nth-child(2) {
+      font-weight: bold;
+    }
+  
+    .tab ul li:nth-child(1) {
+      height: 16px;
+      font-size: 12px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Bold;
+      font-weight: Bold;
+      text-align: left;
+      color: #ffffff;
+      line-height: 16px;
+    }
+  
+    .tab ul li:nth-child(2) {
+      font-size: 12px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Bold;
+      font-weight: Bold;
+      text-align: left;
+      color: #ffffff;
+      line-height: 17.5px;
+    }
+  
+    .tab ul li:nth-child(3) {
+      height: 17.5px;
+      font-size: 12px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: rgba(255, 255, 255, 0.40);
+      line-height: 17.5px;
+    }
+  
+    span.price {
+      font-size: 30px;
+      font-family: Roboto, Roboto-Bold;
+      font-weight: Bold;
+      text-align: left;
+      color: #ffffff;
+      line-height: 35.5px;
+    }
+  
+    /* Left and right arrow styles */
+    .arrow {
+      width: 8px;
+      height: 8px;
+      font-size: 12px;
+      color: #999;
+      position: fixed;
+      top: 37%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      padding: 10px;
+      border: 0.5px dashed #fff;
+    }
+  
+    .arrow.left {
+      left: 6px;
+    }
+  
+    .arrow.right {
+      right: 6px;
+    }
+  
+    /* Carousel container */
+    .carousel {
+      overflow: hidden;
+      white-space: nowrap;
+      width: 70%;
+      display: inline-block;
+      line-height: 60px;
+    }
+  
+    /* Carousel item */
+    .carousel-item {
+      display: inline-block;
+      width: 100%;
+      text-align: left;
+      padding-left: 36px;
+    }
+  
+    /* QR Code styles */
+    .qrcode {
+      text-align: left;
+    }
+  
+    .qrcode canvas {
+      width: 120px;
+      height: 120px;
+      display: block;
+    }
+  
+    .priceAll ul li:nth-child(1) {
+      font-size: 10px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 16px;
+      padding-bottom: 8px;
+    }
+  
+    .priceAll ul li:nth-child(2) {
+      font-size: 10px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 16px;
+      padding-bottom: 8px;
+    }
+  
+    .priceAll ul li:nth-child(3) {
+      font-size: 10px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 16px;
+    }
+    .priceBig{
+      width: 69px;
+      height: 46px;
+      font-size: 40px;
+      font-family: Roboto, Roboto-Bold;
+      font-weight: Bold;
+      text-align:"left";
+      color: #f86c34 !important;
+      line-height: 46px;
+    }
+  
+    a {
+      text-decoration: none;
+      color: #f97d4c;
+    }
+  
+    span.txt {
+      width: 140px;
+      height: 20px;
+      font-size: 14px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 20px;
+    }
+  
+    .arrow.right::after {
+      width: 8px;
+      height: 8px;
+      border-top: 1.5px solid;
+      border-right: 1.5px solid;
+      border-color: #ffffff;
+      content: '';
+      position: absolute;
+      right: 11px;
+      top: 6px;
+      transform: rotate(45deg);
+    }
+  
+    .arrow.left::after {
+      width: 8px;
+      height: 8px;
+      border-top: 1.5px solid;
+      border-right: 1.5px solid;
+      border-color: #ffffff;
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 6px;
+      transform: rotate(-135deg); /* This is the main difference */
+    }
+  
+    .tips {
+      width: 10px !important;
+      height: 10px !important;
+      border: 1px solid #999999;
+      border-radius: 50%;
+      line-height: 10px;
+      display: inline-block;
+      text-align: center;
+      font-size: 10px;
+    }
+  
+    .title_tips {
+      width: 96px;
+      height: 16px;
+      font-size: 12px;
+      font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+      font-weight: Regular;
+      text-align: left;
+      color: #999999;
+      line-height: 16px;
+      margin-bottom: 12px;
+    }
+  
+    .qrcode {
+      text-align: left;
+    //   width: 120px;
+      border: 6px solid #fff;
+      border-radius: 6px;
+      display: inline-block;
+      margin-left: 15px;
+    }
+  
+    .line {
+      margin-top: 80px;
+    }
+  
+    .layui-layer-content {
+      width: 210px;
+      height: 140px;
+      right: 103px;
+      background: #3e3e4a;
+      box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.50) !important; 
+    }
+  
+    .layui-layer-tips i.layui-layer-TipsB, .layui-layer-tips i.layui-layer-TipsT {
+      left: 100px;
+      border-right-style: solid;
+      border-right-color: #000;
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 9px 9px 0 9px;
+      border-color: rgb(62, 62, 74) transparent transparent transparent;
+      border-right-color: transparent !important;
+    }
+  }
+  
+  
