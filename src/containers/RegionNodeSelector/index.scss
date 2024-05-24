@@ -1,6 +1,4 @@
 .region-node-selector {
-  position: relative;
-
   .ant-modal-content {
     width: 676px;
     height: 500px;
@@ -29,6 +27,8 @@
   .ant-modal-close {
     width: 12px;
     height: 12px;
+    left: 638px;
+    top: -2px;
   }
 
   .ant-modal-title,
@@ -49,6 +49,7 @@
   .content {
     margin-top: 21px;
     padding: 0 32px;
+    position: relative;
 
     .current-box {
       display: flex;
@@ -105,7 +106,7 @@
       color: #ffffff;
       line-height: 16px;
       top: 360px;
-      left: 213px;
+      left: 253px;
     }
 
     .ant-tabs-tab .ant-tabs-tab-active .ant-tabs-tab-btn {
