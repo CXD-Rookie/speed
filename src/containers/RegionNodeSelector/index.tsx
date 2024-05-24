@@ -184,16 +184,18 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   return (
     <Modal
-      title="区服、节点选择"
-      open={visible}
-      onCancel={onCancel}
-      destroyOnClose
-      footer={null}
       className="region-node-selector"
+      open={visible}
+      title="区服、节点选择"
+      width={676}
+      destroyOnClose
+      centered
+      footer={null}
+      onCancel={onCancel}
     >
       <Tabs defaultActiveKey="1" onChange={handleTabsChange}>
         <TabPane tab="区服" key="1">
-          <div className="content">
+          <div className="district-content content">
             <div className="current-box">
               <div className="current-game">英雄联盟大吉大利</div>
               <div className="current-region">
@@ -230,7 +232,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
           </div>
         </TabPane>
         <TabPane tab="节点" key="2">
-          <div className="content">
+          <div className="district-content content">
             <div className="current-settings">
               英雄联盟大吉大利 | {selectedRegion}
             </div>

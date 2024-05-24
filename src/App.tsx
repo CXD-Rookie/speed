@@ -11,7 +11,7 @@ import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
 import CustomDropdown from "@/containers/login-user";
-import SettingsModal from "./containers/setting/index";  // 引入 SettingsModal 组件
+import SettingsModal from "./containers/setting/index"; // 引入 SettingsModal 组件
 import "@/assets/css/App.scss";
 
 import menuIcon from "@/assets/images/common/menu.svg";
@@ -33,9 +33,8 @@ interface Window {
   NativeApi_OnDragZoneMouseDown: () => void; //鼠标点击事件,放在拖拽区域里面
   NativeApi_OnDragZoneMouseUp: () => void; //鼠标松开事件,放在拖拽区域里面
   NativeApi_MinimumWindow: () => void; //最小化
-  cefQuery: ({ }) => void; //不用管
+  cefQuery: ({}) => void; //不用管
 }
-
 
 const mapStateToProps = (state: any) => ({
   // Map state to props if needed
@@ -69,11 +68,18 @@ const App: React.FC = (props: any) => {
       router: "/gameLibrary",
     },
   ];
-  
+
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <div className="public-style" onClick={() => setShowSettingsModal(true)}>设置</div>,
+      label: (
+        <div
+          className="public-style"
+          onClick={() => setShowSettingsModal(true)}
+        >
+          设置
+        </div>
+      ),
     },
     {
       key: "2",
@@ -112,7 +118,6 @@ const App: React.FC = (props: any) => {
     (window as any).NativeApi_MinimumWindow();
   };
 
-
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     (window as any).NativeApi_OnDragZoneMouseDown();
     console.log("--111111111111111111111");
@@ -146,7 +151,7 @@ const App: React.FC = (props: any) => {
   return (
     <Layout className="app-module">
       <Header
-        className="header"
+        className="app-header"
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       >
@@ -185,8 +190,22 @@ const App: React.FC = (props: any) => {
             >
               <img src={menuIcon} width={12} height={12} alt="" />
             </Dropdown>
-            <img onClick={handleMinimize} className="minType" src={minIcon} width={12} height={12} alt="" />
-            <img onClick={handleExitProcess} className="closeType" src={closeIcon} width={12} height={12} alt="" />
+            <img
+              onClick={handleMinimize}
+              className="minType"
+              src={minIcon}
+              width={12}
+              height={12}
+              alt=""
+            />
+            <img
+              onClick={handleExitProcess}
+              className="closeType"
+              src={closeIcon}
+              width={12}
+              height={12}
+              alt=""
+            />
           </div>
         </div>
       </Header>
@@ -204,7 +223,10 @@ const App: React.FC = (props: any) => {
           />
         </div>
       )}
-      <SettingsModal isOpen={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
+      <SettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+      />
     </Layout>
   );
 };
