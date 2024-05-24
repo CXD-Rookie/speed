@@ -128,26 +128,49 @@
         text-align: left;
         color: #999999;
         line-height: 20px;
+        margin-right: 8px;
       }
 
       .ant-select-selector {
+        width: 200px;
+        height: 32px;
+        color: #fff;
+        background: rgba(255,255,255,0.10);
+        border-radius: 5px;
+        border: none;
+      }
+
+      .refresh-button {
+        width: 70px;
+        height: 32px;
+        color: #fff;
+        background: rgba(255,255,255,0.10);
+        border-radius: 5px;
         border: none;
       }
     }
 
     .ant-table {
       background-color: #3e3e4a;
+      margin-top: 24px;
+
       .ant-table-thead > tr > th {
+        font-size: 12px;
+        font-weight: Regular;
+        color: #999999;
         background-color: #3e3e4a;
-        color: #fff;
       }
 
       .ant-table-tbody > tr > td {
-        background-color: #3e3e4a;
         color: #fff;
         padding: 8.65px;
+        background-color: #3e3e4a;
       }
 
+      .ant-table-cell::before {
+        content: normal;
+      }
+      
       .ant-table-tbody > tr.ant-table-row:hover > td,
       .ant-table-tbody > tr.selected-node > td {
         background-color: #555;
