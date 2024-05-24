@@ -1,48 +1,188 @@
-.setting-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    border-bottom: 1px solid #f0f0f0;
+.system-setting {
+  .ant-modal-content {
+    height: 500px;
+    background-color: #3e3e4a;
+    padding: 12px 16px;
   }
-  
-  .setting-item label {
-    flex: 1;
-    margin-right: 10px;
-    font-size: 16px;
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
   }
-  
-  .setting-item span {
-    flex: 1;
-    font-size: 16px;
+
+  .ant-modal-close {
+    width: 12px;
+    height: 12px;
+    right: 12px;
+    top: 12px;
   }
-  
-  .setting-item .ant-checkbox-wrapper {
-    margin-left: auto;
-  }
-  
-  .setting-item .ant-btn {
-    margin-left: 10px;
-  }
-  
-  .setting-item .avatar {
-    display: flex;
-    align-items: center;
-  }
-  
-  .setting-item .avatar .ant-avatar {
-    margin-right: 10px;
-  }
-  
-  .tab-content {
-    padding: 20px;
-  }
-  
+
+  .ant-modal-title,
   .ant-modal-close-x {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
+    opacity: 0.5;
+    font-size: 12px;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  .ant-tabs {
+    width: 100%;
+    height: 436px;
+  }
+
+  .ant-tabs-ink-bar {
+    width: 20px !important;
+    height: 3px !important;
+    background: #f86c34;
+    border-radius: 2px !important;
+  }
+
+  .ant-tabs-nav::before {
+    border: none !important;
+  }
+
+  .ant-tabs-nav-wrap {
     height: 40px;
   }
-  
+
+  .ant-tabs-nav-list {
+    margin: 0 auto;
+    column-gap: 200px;
+  }
+
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs
+    .ant-tabs-tab.ant-tabs-tab-active
+    .ant-tabs-tab-btn {
+    color: #fff !important;
+  }
+
+  .ant-tabs-tab {
+    font-size: 20px;
+    color: #999;
+  }
+
+  .tab-content {
+    margin-top: 9px;
+    padding: 0 16px 8px 16px;
+    position: relative;
+
+    .setting-item {
+      margin-bottom: 28px;
+
+      .item-title {
+        font-size: 14px;
+        font-weight: Regular;
+        text-align: left;
+        color: #999999;
+        line-height: 20px;
+      }
+
+      .item-content {
+        color: #fff;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        column-gap: 40px;
+
+        & span {
+          display: flex;
+          column-gap: 8px;
+
+          .ant-switch {
+            background-color: #999;
+          }
+
+          .ant-switch-checked {
+            background-color: #f86c34 !important;
+          }
+        }
+      }
+
+      .off-item-content {
+        color: #fff;
+        margin-top: 8px;
+
+        :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
+          color: #fff !important;
+          margin-inline-end: 38px !important;
+        }
+
+        .ant-radio-checked .ant-radio-inner {
+          background-color: #f86c34;
+        }
+      }
+
+      .regard-item-content {
+        color: #fff;
+        margin-top: 8px;
+
+        & button {
+          width: 96px;
+          height: 32px;
+          color: #fff;
+          background: rgba(255,255,255,0.10);
+          border-radius: 16px;
+          border: none;
+          outline: none;
+          margin-left: 21px;
+        }
+      }
+    }
+
+    .protocols {
+      position: absolute;
+      top: 350px;
+      left: 16px;
+
+      & span {
+        height: 20px;
+        font-size: 14px;
+        font-weight: Regular;
+        text-decoration: underline;
+        text-align: left;
+        color: #999999;
+        line-height: 20px;
+        margin-right: 20px;
+        cursor: pointer;
+      }
+    }
+
+    .tab-avatar {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 12px;
+      position: relative;
+
+      .avatar-name {
+        color: #fff;
+        margin-top: 8px;
+      }
+    }
+
+    .info-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-box {
+      margin-top: 28px;
+
+      label {
+        color: #999;
+      }
+
+      div {
+        color: #fff;
+        margin-top: 8px;
+      }
+
+      button {
+        width: 96px;
+        height: 32px;
+        background: #f86c34;
+        border-radius: 16px;
+      }
+    }
+  }
+}

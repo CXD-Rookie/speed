@@ -185,12 +185,14 @@ const handleSuitDomList = async () => {
 
   return (
     <Modal
-      title="区服、节点选择"
-      open={visible}
-      onCancel={onCancel}
-      destroyOnClose
-      footer={null}
       className="region-node-selector"
+      open={visible}
+      title="区服、节点选择"
+      width={676}
+      destroyOnClose
+      centered
+      footer={null}
+      onCancel={onCancel}
     >
       <Tabs defaultActiveKey="1" onChange={handleTabsChange}>
         <TabPane tab="区服" key="1">
