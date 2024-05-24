@@ -9,22 +9,24 @@
   };
 
   .app-header {
-    height: 58px;
+    height: 61px;
     padding: 0 32px;
     background-color: var(--speed-dominant-background-color);
     display: flex;
+    align-items: flex-end;
     margin:0px;
     position: relative;
     z-index: 9999;
 
     .header-icon {
-      width: 148px;
-      font-size: 40px;
-      color: var(--speed-dominant-font-color);
+      text-align: left;
+      margin: -20px 32px 0 0;
     }
 
     .header-functional-areas {
       width: calc(100vw - 48px);
+      height: 40px;
+      margin-top: 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
