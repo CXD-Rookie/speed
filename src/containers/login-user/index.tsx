@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button } from "antd";
+import { Button, Avatar } from "antd";
 import "./index.scss";
 
 interface CustomDropdownProps {}
@@ -43,12 +43,17 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   return (
     <div className="custom-dropdown" ref={dropdownRef}>
       <div className={"children-content"} onClick={toggleDropdown}>
-        <div>{userInfo?.user_info?.nickname}</div>
+        <div>
+          <span>{userInfo?.user_info?.nickname}</span>
+          <Avatar size={20} src="path/to/avatar.jpg" />
+        </div>
       </div>
       {visible && (
         <div className={`dropdown-menu ${"bottomRight"}`} ref={menuRef}>
           <div className="dropdwon-conent">
             <div>
+              <Avatar size={20} src="path/to/avatar.jpg" />
+              &nbsp;
               {userInfo?.user_info?.nickname} <span>编辑</span>
             </div>
             <Button type={"primary"}>会员充值</Button>

@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-23 16:51:17
+ * @LastEditTime: 2024-05-24 17:30:57
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { getMyGames } from "@/common/utils";
 import "./style.scss";
 
 import backGameIcon from "@/assets/images/common/back-game.svg";
@@ -150,6 +151,7 @@ const GameDetail: React.FC = () => {
   const navigate = useNavigate();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -185,6 +187,16 @@ const GameDetail: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    let arr = getMyGames();
+    let details_arr = arr.filter((item: any) => item?.is_accelerate);
+
+    console.log("我的游戏总数据", arr);
+    console.log("当前加速游戏数据", details_arr);
+
+    setDetailData(details_arr?.[0] || {});
+  }, []);
+
   return (
     <div className="home-module-detail">
       <img className="back-icon" src={backGameIcon} alt="" />
@@ -195,7 +207,7 @@ const GameDetail: React.FC = () => {
         </div>
         <div className="game-detail">
           <div className="game-left">
-            <div className="game-text">{game.name}</div>
+            <div className="game-text">{detailData?.name}</div>
             <Button
               className="on-game game-btn"
               type="default"
