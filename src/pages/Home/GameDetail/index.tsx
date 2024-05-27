@@ -212,20 +212,20 @@ const GameDetail: React.FC = () => {
       params: { ip: speedIp },
     });
 
-    (window as any).cefQuery({
-      request: requestData,
-      onSuccess: (response: any) => {
-        console.log("详情丢包信息=========================:", response);
-        const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-        console.log("详情丢包信息jsonResponse=========================:", jsonResponse);
-        setLostBag(jsonResponse)
-      },
-      onFailure: (errorCode: any, errorMessage: any) => {
-        console.error("Query failed:", errorMessage);
-      },
-    });
+    // (window as any).cefQuery({
+    //   request: requestData,
+    //   onSuccess: (response: any) => {
+    //     console.log("详情丢包信息=========================:", response);
+    //     const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+    //     console.log("详情丢包信息jsonResponse=========================:", jsonResponse);
+    //     setLostBag(jsonResponse)
+    //   },
+    //   onFailure: (errorCode: any, errorMessage: any) => {
+    //     console.error("Query failed:", errorMessage);
+    //   },
+    // });
 
-    setDetailData(details_arr?.[0] || {});
+    // setDetailData(details_arr?.[0] || {});
   }, []);
 
   return (
@@ -267,7 +267,8 @@ const GameDetail: React.FC = () => {
               <div className="keep speed-common">
                 实时延迟
                 <div>
-                  {lostBag}<span> ms</span>
+                  {lostBag}
+                  <span> ms</span>
                 </div>
               </div>
               <div className="speed-line" />

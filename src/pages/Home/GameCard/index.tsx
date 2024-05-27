@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-27 14:55:57
+ * @LastEditTime: 2024-05-27 15:38:14
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -177,11 +177,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       setTimeout(() => {
         console.log("加速动画结束");
         setIsAnimate(false);
-      }, 2000);
 
-      handleSuitDomList(option.id);
-
-      handleDetails();
+        handleSuitDomList(option.id);
+        handleDetails();
+      }, 5000);
     }
 
     if (type === "off") {
@@ -241,7 +240,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       <div className="content-box">
         <img src={gameData?.cover_img} alt={gameData.name} />
         <div
-          className="accelerate-content progress-bar animate"
+          className="accelerate-content"
           style={gameData?.is_accelerate ? { display: "block" } : {}}
         >
           {gameData?.is_accelerate ? (
@@ -312,14 +311,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 <img src={arrowIcon} width={18} height={18} alt="" />
               </div>
               <img className="on-accel-img" src={accelerateIcon} alt="" />
-              <div
-                className={`accelerate-animate ${
-                  isAnimate && "accelerate-animate-start"
-                }`}
-              />
             </Fragment>
           )}
         </div>
+        {isAnimate && (
+          <div className={"animate-box"}>
+            <div className={"animate-text"}>加速中</div>
+            <div
+              className={`accelerate-animate ${
+                isAnimate && "accelerate-animate-start"
+              }`}
+            />
+          </div>
+        )}
       </div>
       <div className="card-text-box">{gameData.name}</div>
       <div
