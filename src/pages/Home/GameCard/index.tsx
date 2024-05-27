@@ -64,7 +64,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes.data.executable;
       const { ip, server } = speedListRes.data[0];
-
+      localStorage.setItem("speedIp", ip);
+      // 真实拼接
       const jsonResult = {
         process: [process[0], process[1], process[2]],
         black_ip: ["42.201.128.0/17"],
@@ -77,6 +78,48 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           server: server,
         },
       };
+      // 虚假拼接
+      //  const jsonResult = {
+      //   process: [process[0], process[1], process[2]],
+      //   black_ip: ["42.201.128.0/17"],
+      //   black_domain: [
+      //     "re:.+\\.steamcommunity\\.com",
+      //     "steamcdn-a.akamaihd.net",
+      //   ],
+      //   tunnel: {
+      //     "address": "192.168.111.105",
+      //     "server": [
+      //         {
+      //             "port": 18080,
+      //             "protocol": {
+      //                 "from": "quic",
+      //                 "to": "tcp"
+      //             }
+      //         },
+      //         {
+      //             "port": 18081,
+      //             "protocol": {
+      //                 "from": "quic",
+      //                 "to": "udp"
+      //             }
+      //         },
+      //         {
+      //             "port": 19080,
+      //             "protocol": {
+      //                 "from": "kcp",
+      //                 "to": "tcp"
+      //             } 
+      //         },
+      //         {
+      //             "port": 38081,
+      //             "protocol": {
+      //                 "from": "xudp",
+      //                 "to": "udp"
+      //             }
+      //         }
+      //     ]
+      // }
+      // };
       const requestData = JSON.stringify({
         method: "NativeApi_StartProcessProxy",
         params: jsonResult,

@@ -125,8 +125,9 @@
         position: absolute;
         z-index: 2;
         top: 12px;
-        left: 188px;
+        left: auto !important;
         cursor: pointer;
+        right: 13px !important;
       };
 
       .accelerate-button {

@@ -11,7 +11,8 @@ import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
 import CustomDropdown from "@/containers/login-user";
-import SettingsModal from "./containers/setting/index"; // 引入 SettingsModal 组件
+import SettingsModal from "./containers/setting/index"; 
+import IssueModal from "./containers/IssueModal/index"; 
 import "@/assets/css/App.scss";
 import playSuitApi from "./api/speed";
 import menuIcon from "@/assets/images/common/menu.svg";
@@ -58,7 +59,7 @@ const App: React.FC = (props: any) => {
 
   const [isLoginModal, setIsLoginModal] = useState(0);
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
-
+  const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -86,7 +87,7 @@ const App: React.FC = (props: any) => {
     },
     {
       key: "2",
-      label: <div className="public-style">问题反馈</div>,
+      label: <div className="public-style" onClick={() => setShowIssueModal(true)}>问题反馈</div>,
     },
     {
       type: "divider", // 使用 Menu.Divider
@@ -122,12 +123,12 @@ const App: React.FC = (props: any) => {
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    // (window as any).NativeApi_OnDragZoneMouseDown();
+    (window as any).NativeApi_OnDragZoneMouseDown();
     console.log("--111111111111111111111");
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    // (window as any).NativeApi_OnDragZoneMouseUp();
+    (window as any).NativeApi_OnDragZoneMouseUp();
     console.log("--wwwwwwwwwwwww");
   };
 
@@ -268,6 +269,7 @@ const App: React.FC = (props: any) => {
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
       />
+     {showIssueModal && <IssueModal />}
       {/* <ActivationModal /> */}
     </Layout>
   );
