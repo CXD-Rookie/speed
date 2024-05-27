@@ -53,7 +53,9 @@ const App: React.FC = (props: any) => {
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
 
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(false); // 渲染显示登录框 控制状态
+  const [isRealityLogin, setIsRealityLogin] = useState(false); // 实际是否登录 控制状态
+
   const [isLoginModal, setIsLoginModal] = useState(0);
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
@@ -157,9 +159,11 @@ const App: React.FC = (props: any) => {
 
     if (isLogin === "true") {
       setIsLogin(true);
+      setIsRealityLogin(true);
     } else {
       localStorage.setItem("isLogin", "false");
       setIsLogin(false);
+      setIsRealityLogin(false);
     }
   }, [isLoginModal]);
 
@@ -207,7 +211,16 @@ const App: React.FC = (props: any) => {
             onMouseDown={stopPropagation}
             onMouseUp={stopPropagation}
           >
-            {isLogin ? <CustomDropdown /> : <div>登录/注册</div>}
+            {isRealityLogin ? (
+              <CustomDropdown />
+            ) : (
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => setIsLoginModal(isLoginModal + 1)}
+              >
+                登录/注册
+              </div>
+            )}
             <Dropdown
               overlayClassName={"dropdown-overlay"}
               menu={{ items }}
@@ -237,6 +250,7 @@ const App: React.FC = (props: any) => {
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
+
       {!isLogin && (
         <div
           className="login-mask"
@@ -245,6 +259,7 @@ const App: React.FC = (props: any) => {
           <Login
             isLoginModal={isLoginModal}
             setIsLoginModal={setIsLoginModal}
+            setIsLogin={setIsLogin}
           />
         </div>
       )}
