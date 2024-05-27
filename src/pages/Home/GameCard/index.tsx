@@ -156,13 +156,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       console.log("加速动画结束");
       setIsAnimate(false);
     }, 2000);
-    // handleSuitDomList(option.id);
 
-    // if (is_true) {
-    //   setAccelOpen(true);
-    // } else {
-    //   handleExpedite(option);
-    // }
+    handleSuitDomList(option.id);
+
+    if (is_true) {
+      setAccelOpen(true);
+    } else {
+      handleExpedite(option);
+    }
   };
 
   // 加速逻辑
