@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-27 20:30:19
+ * @LastEditTime: 2024-05-27 21:08:17
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -157,7 +157,7 @@ const GameDetail: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
-  const [lostBag, setLostBag] = useState<any>(0); // 当前加速游戏数据
+  const [lostBag, setLostBag] = useState<any>(); // 当前加速游戏数据
 
   const [count, setCount] = useState(0);
 
@@ -215,6 +215,41 @@ const GameDetail: React.FC = () => {
     console.log("我的游戏总数据", arr);
     console.log("当前加速游戏数据", details_arr);
     console.log("speedInfo全部信息", speedInfo);
+    // const displayValue = lostBag === 0 ? 0 : lostBag - 1;
+    const requestData = JSON.stringify({
+      method: "NativeApi_GetIpDelayByICMP",
+      params: { ip: speedIp },
+    });
+    (window as any).cefQuery({
+      request: requestData,
+      onSuccess: (response: any) => {
+        console.log("详情丢包信息=========================:", response);
+        const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+        console.log(
+          "详情丢包信息jsonResponse=========================:",
+          jsonResponse
+        );
+        setLostBag(jsonResponse);
+
+        setDetailData(details_arr?.[0] || {});
+      },
+      onFailure: (errorCode: any, errorMessage: any) => {
+        console.error("Query failed:", errorMessage);
+      },
+    });
+  }, [])
+  
+
+  useEffect(() => {
+    let arr = getMyGames();
+    let details_arr = arr.filter((item: any) => item?.is_accelerate);
+    const speedIp = localStorage.getItem("speedIp");
+    const speedInfoString = localStorage.getItem("speedInfo");
+    const speedInfo = speedInfoString ? JSON.parse(speedInfoString) : null;
+    console.log("我的游戏总数据", arr);
+    console.log("当前加速游戏数据", details_arr);
+    console.log("speedInfo全部信息", speedInfo);
+    // setDetailData(details_arr?.[0] || {});
     // @ts-ignore
 
     // 每隔 10 秒增加计数器的值
@@ -236,7 +271,7 @@ const GameDetail: React.FC = () => {
           );
           setLostBag(jsonResponse);
 
-          setDetailData(details_arr?.[0] || {});
+
         },
         onFailure: (errorCode: any, errorMessage: any) => {
           console.error("Query failed:", errorMessage);
@@ -309,7 +344,7 @@ const GameDetail: React.FC = () => {
                 </div>
 
                 <div className="line-box">
-                  2ms
+                {lostBag}ms
                   <div className="line">
                     <div className="animate-line" />
                   </div>
@@ -320,7 +355,7 @@ const GameDetail: React.FC = () => {
                 </div>
 
                 <div className="line-box">
-                  2ms
+                {lostBag}ms
                   <div className="line">
                     <div className="animate-line" />
                   </div>
