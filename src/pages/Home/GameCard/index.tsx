@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-27 11:26:09
+ * @LastEditTime: 2024-05-27 11:53:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -108,7 +108,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       //             "protocol": {
       //                 "from": "kcp",
       //                 "to": "tcp"
-      //             } 
+      //             }
       //         },
       //         {
       //             "port": 38081,
@@ -155,7 +155,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setTimeout(() => {
       console.log("加速动画结束");
       setIsAnimate(false);
-    }, 3000);
+    }, 2000);
     // handleSuitDomList(option.id);
 
     // if (is_true) {
