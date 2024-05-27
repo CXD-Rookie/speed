@@ -179,7 +179,7 @@ const GameDetail: React.FC = () => {
   };
 
   const stopSpeed = () => {
-    console.log("停止加速---------------")
+    console.log("停止加速---------------");
     const requestData = JSON.stringify({
       method: "NativeApi_StopProxy",
       params: null,
@@ -206,7 +206,6 @@ const GameDetail: React.FC = () => {
     });
   };
 
-
   useEffect(() => {
     let arr = getMyGames();
     let details_arr = arr.filter((item: any) => item?.is_accelerate);
@@ -221,7 +220,7 @@ const GameDetail: React.FC = () => {
     // 每隔 10 秒增加计数器的值
     const interval = setInterval(() => {
       setCount((prevCount) => prevCount + 1);
-      console.log("ip---------------------------",speedIp)
+      console.log("ip---------------------------", speedIp);
       const requestData = JSON.stringify({
         method: "NativeApi_GetIpDelayByICMP",
         params: { ip: speedIp },
@@ -312,7 +311,7 @@ const GameDetail: React.FC = () => {
                 <div className="line-box">
                   2ms
                   <div className="line">
-                    {/* <div className="animate-line" /> */}
+                    <div className="animate-line" />
                   </div>
                 </div>
                 <div className="icon-box">
