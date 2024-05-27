@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-27 18:37:57
+ * @LastEditTime: 2024-05-27 18:42:44
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,7 +12,7 @@ import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import "./style.scss";
-
+import ActivationModal from "@/containers/activation-mode";
 import backGameIcon from "@/assets/images/common/back-game.svg";
 import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
 import activateIcon from "@/assets/images/common/activate.svg";
@@ -151,14 +151,29 @@ const GameDetail: React.FC = () => {
   const navigate = useNavigate();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [isModalShow, setIsModalShow] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(); // 当前加速游戏数据
+
+  const showModalActive = () => {
+    setIsOpen(true);
+  };
+
   const showModal = () => {
     setIsModalVisible(true);
   };
 
   const hideModal = () => {
     setIsModalVisible(false);
+  };
+
+  const closeModal = () => {
+    console.log(1111111111);
+    setIsOpen(false);
   };
 
   const stopSpeed = () => {
@@ -188,25 +203,15 @@ const GameDetail: React.FC = () => {
     });
   };
 
-  const openGame = () => {
-    CefWebInstance.call(
-      "jsCallStartGame",
-      { message: "jsCallStartGame" },
-      (error: any, result1: any) => {
-        console.log("stop111111111111111");
-        console.log(error);
-        console.log(result1);
-      }
-    );
-  };
-
   useEffect(() => {
     let arr = getMyGames();
     let details_arr = arr.filter((item: any) => item?.is_accelerate);
     const speedIp = localStorage.getItem("speedIp");
+    const speedInfoString = localStorage.getItem("speedInfo");
+    const speedInfo = speedInfoString ? JSON.parse(speedInfoString) : null;
     console.log("我的游戏总数据", arr);
     console.log("当前加速游戏数据", details_arr);
-
+    console.log("speedInfo全部信息", speedInfo);
     const requestData = JSON.stringify({
       method: "NativeApi_GetIpDelayByICMP",
       params: { ip: speedIp },
@@ -245,7 +250,7 @@ const GameDetail: React.FC = () => {
             <Button
               className="on-game game-btn"
               type="default"
-              onClick={openGame}
+              onClick={showModalActive}
             >
               <img src={activateIcon} width={18} height={18} alt="" />
               启动游戏
@@ -314,6 +319,9 @@ const GameDetail: React.FC = () => {
               <BarChart data={data} />
             </div>
             <RegionNodeSelector visible={isModalVisible} onCancel={hideModal} />
+            {isOpen && (
+              <ActivationModal gameId={detailData.id} onClose={closeModal} />
+            )}
           </div>
         </div>
       </div>

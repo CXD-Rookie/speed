@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-27 15:45:15
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-27 18:35:37
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -60,11 +60,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
       console.log("获取游戏加速用的信息", speedInfoRes);
       console.log("获取游戏加速列表的信息", speedListRes);
-
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes.data.executable;
       const { ip, server } = speedListRes.data[0];
       localStorage.setItem("speedIp", ip);
+      localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
+      
       // 真实拼接
       const jsonResult = {
         process: [process[0], process[1], process[2]],
