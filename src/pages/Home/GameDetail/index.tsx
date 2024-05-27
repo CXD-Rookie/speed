@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-27 20:17:53
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-27 20:36:45
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -179,7 +179,7 @@ const GameDetail: React.FC = () => {
   };
 
   const stopSpeed = () => {
-    console.log("停止加速---------------")
+    console.log("停止加速---------------");
     const requestData = JSON.stringify({
       method: "NativeApi_StopProxy",
       params: null,
@@ -205,7 +205,6 @@ const GameDetail: React.FC = () => {
       },
     });
   };
-
 
   useEffect(() => {
     let arr = getMyGames();
@@ -242,7 +241,7 @@ const GameDetail: React.FC = () => {
     // 每隔 5 秒增加计数器的值
     const interval = setInterval(() => {
       setCount((prevCount) => prevCount + 1);
-      console.log("ip---------------------------",speedIp)
+      console.log("ip---------------------------", speedIp);
       const requestData = JSON.stringify({
         method: "NativeApi_GetIpDelayByICMP",
         params: { ip: speedIp },
@@ -265,7 +264,6 @@ const GameDetail: React.FC = () => {
         },
       });
     }, 5000);
-    
 
     // 返回一个清理函数，在组件卸载时清除定时器
     return () => clearInterval(interval);
@@ -333,7 +331,7 @@ const GameDetail: React.FC = () => {
                 <div className="line-box">
                   2ms
                   <div className="line">
-                    {/* <div className="animate-line" /> */}
+                    <div className="animate-line" />
                   </div>
                 </div>
                 <div className="icon-box">

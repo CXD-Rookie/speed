@@ -75,8 +75,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           "re:.+\\.steamcommunity\\.com",
           "steamcdn-a.akamaihd.net",
         ],
-        tcp_tunnel_mode:0,
-        udp_tunnel_mode:1,
+        tcp_tunnel_mode: 0,
+        udp_tunnel_mode: 1,
         tunnel: {
           address: ip,
           server: server,
@@ -132,7 +132,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       (window as any).cefQuery({
         request: requestData,
         onSuccess: (response: any) => {
-          console.log("开启真实加速中----------:", response); 
+          console.log("开启真实加速中----------:", response);
         },
         onFailure: (errorCode: any, errorMessage: any) => {
           console.error("加速失败 failed:", errorMessage);
@@ -181,14 +181,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("加速动画结束");
         setIsAnimate(false);
         const requestDataStep = JSON.stringify({
-          method: "NativeApi_PreCheckEnv"
+          method: "NativeApi_PreCheckEnv",
         });
         (window as any).cefQuery({
           request: requestDataStep,
           onSuccess: (response: any) => {
             console.log("校验是否合法文件----------:", response);
-            const isCheck = JSON.parse(response); 
-            if (isCheck.pre_check_status === 0 ) {
+            const isCheck = JSON.parse(response);
+            if (isCheck.pre_check_status === 0) {
               handleSuitDomList(option.id);
             } else {
               message.error(`不是合法文件，请重新安装加速器`);
@@ -263,7 +263,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           className="accelerate-content"
           style={gameData?.is_accelerate ? { display: "block" } : {}}
         >
-          {gameData?.is_accelerate && !isAnimate ? (
+          {gameData?.is_accelerate && !isAnimate && (
             <Fragment>
               <div className="accelerated-content">
                 {type === "home" && (
@@ -315,7 +315,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               </div>
               <img src={acceleratedIcon} alt="" />
             </Fragment>
-          ) : (
+          )}
+          {!gameData?.is_accelerate && !isAnimate && (
             <Fragment>
               <img
                 className="clear-game"
