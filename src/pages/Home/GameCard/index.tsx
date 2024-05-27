@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 20:59:42
+ * @LastEditTime: 2024-05-27 11:18:10
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -105,12 +105,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     console.log("option 游戏数据", option);
     let is_true = getMyGames().some((item: any) => item?.is_accelerate);
 
-    handleSuitDomList(option.id);
-    if (is_true) {
-      setAccelOpen(true);
-    } else {
-      handleExpedite(option);
-    }
+    // handleSuitDomList(option.id);
+
+    // if (is_true) {
+    //   setAccelOpen(true);
+    // } else {
+    //   handleExpedite(option);
+    // }
   };
 
   // 加速逻辑
@@ -188,7 +189,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       <div className="content-box">
         <img src={gameData?.cover_img} alt={gameData.name} />
         <div
-          className="accelerate-content"
+          className="accelerate-content progress-bar animate"
           style={gameData?.is_accelerate ? { display: "block" } : {}}
         >
           {gameData?.is_accelerate ? (
@@ -259,6 +260,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 <img src={arrowIcon} width={18} height={18} alt="" />
               </div>
               <img className="on-accel-img" src={accelerateIcon} alt="" />
+              {/* <div className="accelerate-animate" /> */}
             </Fragment>
           )}
         </div>

@@ -225,6 +225,7 @@ const App: React.FC = (props: any) => {
               overlayClassName={"dropdown-overlay"}
               menu={{ items }}
               placement="bottomRight"
+              trigger={["click"]}
             >
               <img src={menuIcon} width={12} height={12} alt="" />
             </Dropdown>
