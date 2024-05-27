@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 20:59:42
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-24 21:43:43
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -63,6 +63,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const process = speedInfoRes.data.executable;
       const { ip, server } = speedListRes.data[0];
       localStorage.setItem("speedIp", ip);
+      // 真实拼接
       const jsonResult = {
         process: [process[0], process[1], process[2]],
         black_ip: ["42.201.128.0/17"],
@@ -75,6 +76,48 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           server: server,
         },
       };
+      // 虚假拼接
+      //  const jsonResult = {
+      //   process: [process[0], process[1], process[2]],
+      //   black_ip: ["42.201.128.0/17"],
+      //   black_domain: [
+      //     "re:.+\\.steamcommunity\\.com",
+      //     "steamcdn-a.akamaihd.net",
+      //   ],
+      //   tunnel: {
+      //     "address": "192.168.111.105",
+      //     "server": [
+      //         {
+      //             "port": 18080,
+      //             "protocol": {
+      //                 "from": "quic",
+      //                 "to": "tcp"
+      //             }
+      //         },
+      //         {
+      //             "port": 18081,
+      //             "protocol": {
+      //                 "from": "quic",
+      //                 "to": "udp"
+      //             }
+      //         },
+      //         {
+      //             "port": 19080,
+      //             "protocol": {
+      //                 "from": "kcp",
+      //                 "to": "tcp"
+      //             } 
+      //         },
+      //         {
+      //             "port": 38081,
+      //             "protocol": {
+      //                 "from": "xudp",
+      //                 "to": "udp"
+      //             }
+      //         }
+      //     ]
+      // }
+      // };
       const requestData = JSON.stringify({
         method: "NativeApi_StartProcessProxy",
         params: jsonResult,
