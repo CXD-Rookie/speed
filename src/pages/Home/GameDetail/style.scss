@@ -191,10 +191,41 @@
               .line {
                 width: 180px;
                 height: 2px;
-                border-radius: 50%;
-                background-color: #f86c34;
-                opacity: 0.4;
+                border-radius: 2px;
+                background-color: rgba(248, 108, 52, 0.6);
                 margin: 4px 10px 0 10px;
+                position: relative;
+
+                .animate-line {
+                  width: 10px;
+                  height: 2px;
+                  border-radius: 2px;
+                  background-color: #f54904;
+                  margin: 4px 10px 0 10px;
+                  position: absolute;
+                  left: -10px;
+                  top: -4px;
+                  animation: moveLine 1.4s cubic-bezier(0.42, 0, 1.0, 1.0) infinite; /* 定义动画，持续时间为2秒，循环播放 */
+                }
+
+                @keyframes moveLine {
+                  0% {
+                    left: -10px;
+                    opacity: 1; /* 初始完全可见 */
+                  }
+                  90% {
+                    left: 155px;
+                    opacity: 0.8; /* 大部分时间保持可见 */
+                  }
+                  95% {
+                    left: 160px;
+                    opacity: 0.4; /* 大部分时间保持可见 */
+                  }
+                  100% {
+                    left: 165px;
+                    opacity: 0; /* 末尾渐变为透明 */
+                  }
+                }
               }
             }
           }

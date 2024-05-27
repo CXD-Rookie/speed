@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-27 18:42:44
+ * @LastEditTime: 2024-05-27 19:46:41
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -217,21 +217,21 @@ const GameDetail: React.FC = () => {
       params: { ip: speedIp },
     });
 
-    (window as any).cefQuery({
-      request: requestData,
-      onSuccess: (response: any) => {
-        console.log("详情丢包信息=========================:", response);
-        const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-        console.log(
-          "详情丢包信息jsonResponse=========================:",
-          jsonResponse
-        );
-        setLostBag(jsonResponse);
-      },
-      onFailure: (errorCode: any, errorMessage: any) => {
-        console.error("Query failed:", errorMessage);
-      },
-    });
+    // (window as any).cefQuery({
+    //   request: requestData,
+    //   onSuccess: (response: any) => {
+    //     console.log("详情丢包信息=========================:", response);
+    //     const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+    //     console.log(
+    //       "详情丢包信息jsonResponse=========================:",
+    //       jsonResponse
+    //     );
+    //     setLostBag(jsonResponse);
+    //   },
+    //   onFailure: (errorCode: any, errorMessage: any) => {
+    //     console.error("Query failed:", errorMessage);
+    //   },
+    // });
 
     setDetailData(details_arr?.[0] || {});
   }, []);
@@ -297,7 +297,9 @@ const GameDetail: React.FC = () => {
 
                 <div className="line-box">
                   2ms
-                  <div className="line" />
+                  <div className="line">
+                    {/* <div className="animate-line" /> */}
+                  </div>
                 </div>
                 <div className="icon-box">
                   <img src={computingIcon} alt="" />
@@ -306,7 +308,9 @@ const GameDetail: React.FC = () => {
 
                 <div className="line-box">
                   2ms
-                  <div className="line" />
+                  <div className="line">
+                    <div className="animate-line" />
+                  </div>
                 </div>
                 <div className="icon-box">
                   <img src={computerIcon} alt="" />
