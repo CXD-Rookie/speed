@@ -1,14 +1,16 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 18:16:19
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-27 18:27:18
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
  */
 import React, { useState } from "react";
-import { Modal, Button, Select, Input } from "antd";
+import { Modal, Button, Select, Input, Upload, message } from "antd";
+import { UploadOutlined } from '@ant-design/icons';
+import { RcFile, UploadChangeParam, UploadFile } from 'antd/lib/upload/interface';
 
 import "./index.scss";
 
@@ -16,30 +18,91 @@ const { Option } = Select;
 
 interface ActivationModalProps {
   isOpen?: boolean;
-  onClose?: () => void;
+  gameId: string;
+  onClose: () => void;
 }
 
-const ActivationModal: React.FC<ActivationModalProps> = ({
-  isOpen = true,
-  onClose,
-}) => {
+interface Game {
+  id: string;
+  name: string;
+  name_en: string;
+  cover_img: string;
+  background_img: string;
+  icon: string;
+  note: string;
+  description: string;
+  developer: string;
+  playsuit: number;
+  pack_name: string;
+  screen_shot: any;
+  system_id: number[];
+  pc_platform: number[];
+  download: { android: string };
+  site: string;
+  tags: string[];
+  game_more: {
+    news: string;
+    guide: string;
+    store: string;
+    bbs: string;
+    mod: string;
+    modifier: string;
+  };
+  create_time: number;
+  update_time: number;
+  is_accelerate: boolean;
+  start_path?: string;
+}
+
+const ActivationModal: React.FC<ActivationModalProps> = ({ isOpen = true, gameId, onClose }) => {
   const [terrace, seTerrace] = useState([
     {
-      label: "Stema",
-      value: "stema",
+      label: "Steam",
+      value: "Steam",
     },
   ]); // 平台列表
   const [trails, setTerrace] = useState("Select://asdfgdsa/12edsasdfc"); // 启动路径
+  const [filePath, setFilePath] = useState('');
+  const [game, setGame] = useState<Game | null>(null);
 
-  const handleInputChange = (e: any) => {
-    let value = e.target.value;
-    console.log("启动路径：value");
-
-    setTerrace(value);
+  const handleInputChange = () => {
+    console.log("打开路径=====================",gameId)
+   
+    const requestData = JSON.stringify({
+      method: "NativeApi_SelectFilePath"
+    });
+    (window as any).cefQuery({
+      request: requestData,
+      onSuccess: (response: any) => {
+        console.log("获取返回路径=========================:", response);
+        setFilePath(response.path);
+      },
+      onFailure: (errorCode: any, errorMessage: any) => {
+        console.error("Query failed:", errorMessage);
+      },
+    });
+  
   };
 
   const handleSave = () => {
     console.log("点击报存");
+     // 这个逻辑需要在打开文件之后回调处理，这是保存的逻辑
+     const gamesListString = localStorage.getItem("speed-1.0.0.1-games");
+     if (gamesListString) {
+       try {
+         const gamesList: Game[] = JSON.parse(gamesListString);
+         const gameDetail = gamesList.find((game) => game.id === gameId); // 使用传递进来的 gameId
+         if (gameDetail) {
+           gameDetail.start_path = filePath; // 添加 start_path 属性
+           console.log(11111111111111111);
+           localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(gamesList));
+           setGame(gameDetail); // 更新本地状态
+           onClose(); // 关闭弹窗
+         }
+       } catch (error) {
+         console.error('Failed to parse gamesList from localStorage', error);
+       }
+     }
   };
 
   return (
@@ -59,14 +122,18 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
           // defaultValue={selectedNode}
           // onChange={(value) => setSelectedNode(value)}
         >
-          <Option value="stema">Stema</Option>
+          <Option value="Steam">Steam</Option>
         </Select>
         <div className="content-title">启动路径：</div>
-        <Input
+        <Button onClick={(handleInputChange)}>浏览</Button>
+        {filePath && <p>File selected: {filePath}</p>}
+        {/* <Input
           className="content-input"
           value={trails}
           onChange={handleInputChange}
         />
+         <input type="file" id="fileInput" onChange={handleFileChange} />
+      {filePath && <p>File selected: {filePath}</p>} */}
         <Button className="content-btn" type="default" onClick={handleSave}>
           保存
         </Button>
