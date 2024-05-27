@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-27 14:57:25
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-27 14:55:57
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -150,15 +150,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     console.log("option 游戏数据", option);
     let is_true = getMyGames().some((item: any) => item?.is_accelerate);
 
-    setIsAnimate(true);
-
-    setTimeout(() => {
-      console.log("加速动画结束");
-      setIsAnimate(false);
-    }, 2000);
-
-    handleSuitDomList(option.id);
-
     if (is_true) {
       setAccelOpen(true);
     } else {
@@ -181,6 +172,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setAccelOpen(false);
 
     if (type === "on") {
+      setIsAnimate(true);
+
+      setTimeout(() => {
+        console.log("加速动画结束");
+        setIsAnimate(false);
+      }, 2000);
+
+      handleSuitDomList(option.id);
+
       handleDetails();
     }
 
