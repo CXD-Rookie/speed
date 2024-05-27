@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-27 19:36:12
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-27 18:48:15
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -66,7 +66,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const { ip, server } = speedListRes.data[0];
       localStorage.setItem("speedIp", ip);
       localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
-      
+
       // 真实拼接
       const jsonResult = {
         process: [process[0], process[1], process[2]],
@@ -263,7 +263,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           className="accelerate-content"
           style={gameData?.is_accelerate ? { display: "block" } : {}}
         >
-          {gameData?.is_accelerate ? (
+          {gameData?.is_accelerate && !isAnimate ? (
             <Fragment>
               <div className="accelerated-content">
                 {type === "home" && (

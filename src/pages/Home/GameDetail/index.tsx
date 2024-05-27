@@ -332,7 +332,9 @@ const GameDetail: React.FC = () => {
 
                 <div className="line-box">
                   2ms
-                  <div className="line" />
+                  <div className="line">
+                    {/* <div className="animate-line" /> */}
+                  </div>
                 </div>
                 <div className="icon-box">
                   <img src={computingIcon} alt="" />
@@ -341,7 +343,9 @@ const GameDetail: React.FC = () => {
 
                 <div className="line-box">
                   2ms
-                  <div className="line" />
+                  <div className="line">
+                    <div className="animate-line" />
+                  </div>
                 </div>
                 <div className="icon-box">
                   <img src={computerIcon} alt="" />
