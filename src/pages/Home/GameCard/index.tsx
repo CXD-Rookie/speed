@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-27 11:18:10
+ * @LastEditTime: 2024-05-27 11:26:09
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -39,6 +39,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const navigate = useNavigate();
 
   const [accelOpen, setAccelOpen] = useState(false);
+  const [isAnimate, setIsAnimate] = useState(false); // 是否开始加速动画
+
   const pid = localStorage.getItem("pid");
 
   const handleSuitDomList = async (t: any) => {
@@ -105,6 +107,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     console.log("option 游戏数据", option);
     let is_true = getMyGames().some((item: any) => item?.is_accelerate);
 
+    setIsAnimate(true);
+
+    setTimeout(() => {
+      console.log("加速动画结束");
+      setIsAnimate(false);
+    }, 3000);
     // handleSuitDomList(option.id);
 
     // if (is_true) {
@@ -260,7 +268,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 <img src={arrowIcon} width={18} height={18} alt="" />
               </div>
               <img className="on-accel-img" src={accelerateIcon} alt="" />
-              {/* <div className="accelerate-animate" /> */}
+              <div
+                className={`accelerate-animate ${
+                  isAnimate && "accelerate-animate-start"
+                }`}
+              />
             </Fragment>
           )}
         </div>

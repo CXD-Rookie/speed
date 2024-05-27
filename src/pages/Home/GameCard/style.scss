@@ -16,6 +16,7 @@
       left: 0;
       z-index: 2;
       display: none;
+      border-radius: var(--speed-dominant-border-radius);
 
       img {
         position: absolute;
@@ -28,7 +29,28 @@
         z-index: 1;
       }
 
-      // transition: width 3s linear;
+      .accelerate-animate {
+        position: absolute;
+        top: 326px;
+        left: 10px;
+        width: 0%;
+        height: 2px;
+        background-color: #F86C34;
+      }
+      
+      .accelerate-animate-start {
+        animation: moveRight 3s normal 1;
+      }
+
+      @keyframes moveRight {
+        from {
+          width: 0%;
+        }
+        to {
+          width: calc(100% - 20px);
+        }
+      }
+
       .accelerated-content {
         position: absolute;
         width: 100%;
