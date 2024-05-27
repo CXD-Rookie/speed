@@ -111,11 +111,28 @@ const App: React.FC = (props: any) => {
 
   // 定义退出程序的处理函数
   const handleExitProcess = () => {
-    if ((window as any).NativeApi_ExitProcess) {
-      (window as any).NativeApi_ExitProcess();
-    } else {
-      console.warn("NativeApi_ExitProcess is not defined");
-    }
+    console.log("stop speed--------------------------");
+    const requestData = JSON.stringify({
+      method: "NativeApi_StopProxy",
+      params: null,
+    });
+    (window as any).cefQuery({
+      request: requestData,
+      onSuccess: (response: any) => {
+        console.log("停止加速----------:", response);        
+        (window as any).NativeApi_ExitProcess();
+
+        // if ((window as any).NativeApi_ExitProcess) {
+        //   (window as any).NativeApi_ExitProcess();
+        // } else {
+        //   console.warn("NativeApi_ExitProcess is not defined");
+        // }
+      },
+      onFailure: (errorCode: any, errorMessage: any) => {
+        console.error("加速失败 failed:", errorMessage);
+      },
+    });
+
   };
 
   const handleMinimize = () => {

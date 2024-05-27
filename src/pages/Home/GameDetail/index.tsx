@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-27 18:42:44
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-27 20:17:53
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -159,6 +159,8 @@ const GameDetail: React.FC = () => {
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(); // 当前加速游戏数据
 
+  const [count, setCount] = useState(0);
+
   const showModalActive = () => {
     setIsOpen(true);
   };
@@ -177,6 +179,7 @@ const GameDetail: React.FC = () => {
   };
 
   const stopSpeed = () => {
+    console.log("停止加速---------------")
     const requestData = JSON.stringify({
       method: "NativeApi_StopProxy",
       params: null,
@@ -203,6 +206,7 @@ const GameDetail: React.FC = () => {
     });
   };
 
+
   useEffect(() => {
     let arr = getMyGames();
     let details_arr = arr.filter((item: any) => item?.is_accelerate);
@@ -216,7 +220,6 @@ const GameDetail: React.FC = () => {
       method: "NativeApi_GetIpDelayByICMP",
       params: { ip: speedIp },
     });
-
     (window as any).cefQuery({
       request: requestData,
       onSuccess: (response: any) => {
@@ -227,14 +230,46 @@ const GameDetail: React.FC = () => {
           jsonResponse
         );
         setLostBag(jsonResponse);
+
+        setDetailData(details_arr?.[0] || {});
       },
       onFailure: (errorCode: any, errorMessage: any) => {
         console.error("Query failed:", errorMessage);
       },
     });
+    // @ts-ignore
 
-    setDetailData(details_arr?.[0] || {});
-  }, []);
+    // 每隔 5 秒增加计数器的值
+    const interval = setInterval(() => {
+      setCount((prevCount) => prevCount + 1);
+      console.log("ip---------------------------",speedIp)
+      const requestData = JSON.stringify({
+        method: "NativeApi_GetIpDelayByICMP",
+        params: { ip: speedIp },
+      });
+      (window as any).cefQuery({
+        request: requestData,
+        onSuccess: (response: any) => {
+          console.log("详情丢包信息=========================:", response);
+          const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+          console.log(
+            "详情丢包信息jsonResponse=========================:",
+            jsonResponse
+          );
+          setLostBag(jsonResponse);
+
+          setDetailData(details_arr?.[0] || {});
+        },
+        onFailure: (errorCode: any, errorMessage: any) => {
+          console.error("Query failed:", errorMessage);
+        },
+      });
+    }, 5000);
+    
+
+    // 返回一个清理函数，在组件卸载时清除定时器
+    return () => clearInterval(interval);
+  }, [count]);
 
   return (
     <div className="home-module-detail">

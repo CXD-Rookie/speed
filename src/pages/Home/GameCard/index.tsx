@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-27 18:35:37
+ * @LastEditTime: 2024-05-27 19:36:12
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -10,6 +10,7 @@
 import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 import { getMyGames } from "@/common/utils";
 import playSuitApi from "@/api/speed";
 import rightArrow from "@/assets/images/common/right-arrow.svg";
@@ -74,6 +75,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           "re:.+\\.steamcommunity\\.com",
           "steamcdn-a.akamaihd.net",
         ],
+        tcp_tunnel_mode:0,
+        udp_tunnel_mode:1,
         tunnel: {
           address: ip,
           server: server,
@@ -129,8 +132,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       (window as any).cefQuery({
         request: requestData,
         onSuccess: (response: any) => {
-          console.log("加速中----------:", response);
-          const jsonResponse = JSON.parse(response); //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+          console.log("开启真实加速中----------:", response); 
         },
         onFailure: (errorCode: any, errorMessage: any) => {
           console.error("加速失败 failed:", errorMessage);
@@ -178,8 +180,25 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       setTimeout(() => {
         console.log("加速动画结束");
         setIsAnimate(false);
+        const requestDataStep = JSON.stringify({
+          method: "NativeApi_PreCheckEnv"
+        });
+        (window as any).cefQuery({
+          request: requestDataStep,
+          onSuccess: (response: any) => {
+            console.log("校验是否合法文件----------:", response);
+            const isCheck = JSON.parse(response); 
+            if (isCheck.pre_check_status === 0 ) {
+              handleSuitDomList(option.id);
+            } else {
+              message.error(`不是合法文件，请重新安装加速器`);
+            }
+          },
+          onFailure: (errorCode: any, errorMessage: any) => {
+            console.error("加速失败 failed:", errorMessage);
+          },
+        });
 
-        handleSuitDomList(option.id);
         handleDetails();
       }, 5000);
     }
