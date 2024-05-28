@@ -9,12 +9,11 @@
   };
 
   .app-header {
-    height: 61px;
+    height: 9vh;
     padding: 0 32px;
     background-color: var(--speed-dominant-background-color);
     display: flex;
     align-items: flex-end;
-    margin:0px;
     position: relative;
 
     .header-icon {
@@ -74,6 +73,7 @@
   }
 
   .content {
+    height: 91vh;
     background-color: var(--speed-dominant-background-color);
   }
 }

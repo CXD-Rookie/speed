@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import ActivationModal from "@/containers/activation-mode";
 
 import { connect } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
@@ -11,8 +10,8 @@ import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
 import CustomDropdown from "@/containers/login-user";
-import SettingsModal from "./containers/setting/index"; 
-import IssueModal from "./containers/IssueModal/index"; 
+import SettingsModal from "./containers/setting/index";
+import IssueModal from "./containers/IssueModal/index";
 import "@/assets/css/App.scss";
 import playSuitApi from "./api/speed";
 import menuIcon from "@/assets/images/common/menu.svg";
@@ -87,7 +86,11 @@ const App: React.FC = (props: any) => {
     },
     {
       key: "2",
-      label: <div className="public-style" onClick={() => setShowIssueModal(true)}>问题反馈</div>,
+      label: (
+        <div className="public-style" onClick={() => setShowIssueModal(true)}>
+          问题反馈
+        </div>
+      ),
     },
     {
       type: "divider", // 使用 Menu.Divider
@@ -119,7 +122,7 @@ const App: React.FC = (props: any) => {
     (window as any).cefQuery({
       request: requestData,
       onSuccess: (response: any) => {
-        console.log("停止加速----------:", response);        
+        console.log("停止加速----------:", response);
         (window as any).NativeApi_ExitProcess();
 
         // if ((window as any).NativeApi_ExitProcess) {
@@ -132,7 +135,6 @@ const App: React.FC = (props: any) => {
         console.error("加速失败 failed:", errorMessage);
       },
     });
-
   };
 
   const handleMinimize = () => {
@@ -286,8 +288,7 @@ const App: React.FC = (props: any) => {
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
       />
-     {showIssueModal && <IssueModal />}
-      {/* <ActivationModal /> */}
+      {showIssueModal && <IssueModal />}
     </Layout>
   );
 };

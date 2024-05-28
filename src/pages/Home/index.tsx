@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 20:57:07
+ * @LastEditTime: 2024-05-28 16:55:56
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -82,8 +82,10 @@ const Home: React.FC = () => {
               className="null-data-card"
               onClick={() => navigate("/gameLibrary")}
             >
-              <img src={addIcon} width={100} height={100} alt="" />
-              <div>加载更多游戏</div>
+              <div>
+                <img src={addIcon} width={100} height={100} alt="" />
+                <div>加载更多游戏</div>
+              </div>
             </div>
           ))}
         {homeList?.length <= 0 && (
@@ -114,12 +116,6 @@ const Home: React.FC = () => {
                   x
                 </button>
                 <PayModal />
-                {/* <iframe
-                  src="https://jsq-cdn.yuwenlong.cn/web/pay.html"
-                  width="100%"
-                  height="400px"
-                  title="Payment"
-                ></iframe> */}
               </div>
             </div>
           )}
