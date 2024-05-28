@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-
-import { connect } from "react-redux";
+import { connect,useDispatch,useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
-
+import { setIsLogin } from './redux/actions/auth';
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
@@ -48,12 +47,13 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const App: React.FC = (props: any) => {
   const { state, setMenuActive } = props;
-
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state: any) => state.auth.isLogin);
   const location = useLocation();
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
 
-  const [isLogin, setIsLogin] = useState(false); // 渲染显示登录框 控制状态
+  // const [isLogin, setIsLogin] = useState(false); // 渲染显示登录框 控制状态
   const [isRealityLogin, setIsRealityLogin] = useState(false); // 实际是否登录 控制状态
 
   const [isLoginModal, setIsLoginModal] = useState(0);
@@ -178,11 +178,12 @@ const App: React.FC = (props: any) => {
     const isLogin = localStorage.getItem("isLogin");
 
     if (isLogin === "true") {
-      setIsLogin(true);
+      // setIsLogin(true);
+      dispatch(setIsLogin(true));
       setIsRealityLogin(true);
     } else {
       localStorage.setItem("isLogin", "false");
-      setIsLogin(false);
+      dispatch(setIsLogin(false));
       setIsRealityLogin(false);
     }
   }, [isLoginModal]);
@@ -276,7 +277,6 @@ const App: React.FC = (props: any) => {
           <Login
             isLoginModal={isLoginModal}
             setIsLoginModal={setIsLoginModal}
-            setIsLogin={setIsLogin}
           />
         </div>
       )}

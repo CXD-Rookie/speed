@@ -1,3 +1,11 @@
+/*
+ * @Author: steven libo@rongma.com
+ * @Date: 2024-05-22 14:34:24
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-28 20:19:10
+ * @FilePath: \speed\src\containers\searchBar\index.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"; // 导入 useHistory

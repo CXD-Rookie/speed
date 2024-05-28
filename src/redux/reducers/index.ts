@@ -12,12 +12,13 @@ import countReducer from './count';
 import tigerReducer from './tiger';
 import menuReducer from './menu';
 import searchReducer from './search';  // 导入 search reducer
-
+import authReducer from './auth';  // 导入 search reducer
 // 合并所有 reducers
 export default combineReducers({
   count: countReducer,
   tigerArr: tigerReducer,
   menu: menuReducer,
   search: searchReducer,  // 添加 search reducer
+  auth:authReducer,
 });
 
