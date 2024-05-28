@@ -131,6 +131,8 @@
           justify-content: center;
 
           img {
+            width: 1.8vw;
+            height: 2.7vh;
             position: static;
             margin-right: 8px;
           }
@@ -154,7 +156,7 @@
         color: #F86C34;
         font-size: 2.2vw;
         cursor: pointer;
-        margin: 40vh 0 0 calc(50% - 6vw);
+        margin: 40vh 0 0 calc(50% - 3vw) !important;
         z-index: 2;
 
         img {
@@ -212,13 +214,12 @@
 }
 
 .home-module-game-card-my-game {
-  width: 140px;
-  height: auto;
+  width: 14vw;
 
   .content-box {
     img {
       width: 100%;
-      height: 210px;
+      height: 32vh;
       object-fit: cover;
       border-radius: var(--speed-dominant-border-radius);
     }
@@ -226,42 +227,57 @@
     .accelerate-content {
       img {
         width: 100%;
-        height: 210px;
+        height: 32vh;
       }
 
       .accelerated-content {
         .go-deteils {
-          font-size: 14px !important;
-          margin-top: 80px !important;
-          margin-left: calc(50% - 30px) !important;
+          font-size: 1.4vw !important;
+          margin-top: 8vh !important;
+          margin-left: calc(50% - 6vw) !important;
 
           img {
-            left: 60px;
-            top: 5px;
+            margin-top: 0.2vh;
           }
         }
 
         .down-accelerate {
-          width: 120px !important;
-          height: 32px !important;
-          font-size: 16px !important;
+          width: 12vw !important;
+          height: 4.8vh !important;
+          font-size: 1.6vw !important;
           background: #ffffff;
-          border-radius: 16px !important;
-          margin-left: calc(50% - 60px) !important;
+          border-radius: 1.6vw !important;
+          margin-left: calc(50% - 6vw) !important;
           line-height: 32px !important;
-          margin-top: 58px !important;
+          margin-top: 14.7vh !important;
+
+          img {
+            width: 1.8vw;
+            height: 2.7vh;
+          }
         }
       };
 
       .accelerate-button {
-        margin: 162px 0 0 calc(50% - 36px) !important;
+        margin: 24.3vh 0 0 calc(50% - 4.2vw) !important;
         font-size: var(--speed-dominant-font-size);
+
+        img {
+          width: 1.8vw !important;
+          height: 2.4vh !important;
+          top: 0.5vh;
+          left: 8vw;
+        }
+      }
+
+      .on-accel-img {
+        right: 1.2vw !important;
       }
     }
   }
 
   .card-text-box {
     font-size: var(--speed-dominant-font-size) !important;
-    padding-top: 8px !important;
+    padding-top: 1.2vh !important;
   }
 }

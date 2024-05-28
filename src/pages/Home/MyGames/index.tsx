@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 16:19:53
+ * @LastEditTime: 2024-05-28 21:24:29
  * @FilePath: \speed\src\pages\Home\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,16 +13,6 @@ import { getMyGames } from "@/common/utils";
 
 import "./style.scss";
 import GameCard from "../GameCard";
-
-interface Game {
-  id: number;
-  name: string;
-  image: string;
-  tags: string[];
-  is_accelerate?: boolean;
-}
-
-const games: Game[] = [];
 
 const MyGames: React.FC = () => {
   const navigate = useNavigate();

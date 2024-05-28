@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-28 20:22:30
+ * @LastEditTime: 2024-05-28 21:52:00
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -23,8 +23,8 @@ import cessationIcon from "@/assets/images/common/cessation.svg";
 import arrowIcon from "@/assets/images/common/accel-arrow.svg";
 import closeIcon from "@/assets/images/common/close.svg";
 
-import { connect,useDispatch,useSelector } from "react-redux";
-import { setIsLogin } from '../../../redux/actions/auth';
+import { useDispatch } from "react-redux";
+import { setIsLogin } from "../../../redux/actions/auth";
 
 import "./style.scss";
 
@@ -45,8 +45,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = localStorage.getItem("token")
-  const isLogin = localStorage.getItem("isLogin")
+  const token = localStorage.getItem("token");
+  const isLogin = localStorage.getItem("isLogin");
+
   const [accelOpen, setAccelOpen] = useState(false);
   const [isAnimate, setIsAnimate] = useState(false); // 是否开始加速动画
 
@@ -168,10 +169,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         handleExpedite(option);
       }
     } else {
-      console.log("没登录--------------------------")
-      dispatch(setIsLogin(false))
+      console.log("没登录--------------------------");
+      dispatch(setIsLogin(false));
     }
-
   };
 
   // 加速逻辑
@@ -304,26 +304,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 </div>
                 <div
                   className="down-accelerate"
-                  style={
-                    type === "home"
-                      ? {}
-                      : {
-                          width: 160,
-                          height: 40,
-                          lineHeight: "40px",
-                          fontSize: 20,
-                          marginLeft: "calc(50% - 80px)",
-                        }
-                  }
                   onClick={() => handleStopClick(gameData)}
                 >
-                  <img
-                    style={{ width: 18, height: 18 }}
-                    src={cessationIcon}
-                    width={18}
-                    height={18}
-                    alt=""
-                  />
+                  <img src={cessationIcon} width={18} height={18} alt="" />
                   停止加速
                 </div>
               </div>

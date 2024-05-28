@@ -140,7 +140,11 @@ const GameLibrary: React.FC = () => {
           {games.map((game) => (
             <div key={game.id} className="game-card">
               <div className="content-box">
-                <img className="back-icon" src={game.cover_img} alt={game.name} />
+                <img
+                  className="back-icon"
+                  src={game.cover_img}
+                  alt={game.name}
+                />
                 <div className="game-card-content">
                   <img
                     className="add-icon"
