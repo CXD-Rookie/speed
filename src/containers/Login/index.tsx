@@ -17,20 +17,22 @@ import clotureIcon from "@/assets/images/common/cloture.svg";
 import loginLogocon from "@/assets/images/common/login-logo.svg";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
+import { connect,useDispatch,useSelector } from "react-redux";
+import { setIsLogin } from '../../redux/actions/auth';
 
 declare const CefWebInstance: any;
 
 export interface LoginProps {
   setIsLoginModal?: (value: any) => void;
   isLoginModal?: number;
-  setIsLogin?: (value: boolean) => void;
+  // setIsLogin?: (value: boolean) => void;
 }
 
 const Login: React.FC<LoginProps> = (_props) => {
   const {
     setIsLoginModal = () => {},
     isLoginModal = 0,
-    setIsLogin = () => {},
+    // setIsLogin = () => {},
   } = _props;
 
   const navigate = useNavigate();
@@ -44,6 +46,10 @@ const Login: React.FC<LoginProps> = (_props) => {
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
+
+
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state: any) => state.auth.isLogin);
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
@@ -112,7 +118,9 @@ const Login: React.FC<LoginProps> = (_props) => {
   };
 
   const close = async () => {
-    setIsLogin(true);
+    // setIsLogin(true);
+    console.log(11111)
+    dispatch(setIsLogin(true));
   };
 
   return (

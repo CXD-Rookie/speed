@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-27 18:48:15
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-28 19:52:38
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -19,6 +19,9 @@ import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 import cessationIcon from "@/assets/images/common/cessation.svg";
 import arrowIcon from "@/assets/images/common/accel-arrow.svg";
 import closeIcon from "@/assets/images/common/close.svg";
+
+import { connect,useDispatch,useSelector } from "react-redux";
+import { setIsLogin } from '../../../redux/actions/auth';
 
 import "./style.scss";
 
@@ -38,7 +41,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const { gameData = {}, type = "home", accelTag, onClear = () => {} } = props;
 
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token")
+  const isLogin = localStorage.getItem("isLogin")
   const [accelOpen, setAccelOpen] = useState(false);
   const [isAnimate, setIsAnimate] = useState(false); // 是否开始加速动画
 
@@ -151,13 +156,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 立即加速
   const handleAccelerateClick = (option: any) => {
     console.log("option 游戏数据", option);
-    let is_true = getMyGames().some((item: any) => item?.is_accelerate);
 
-    if (is_true) {
-      setAccelOpen(true);
+    if (token) {
+      let is_true = getMyGames().some((item: any) => item?.is_accelerate);
+      if (is_true) {
+        setAccelOpen(true);
+      } else {
+        handleExpedite(option);
+      }
     } else {
-      handleExpedite(option);
+      console.log("没登录--------------------------")
+      dispatch(setIsLogin(false))
     }
+
   };
 
   // 加速逻辑
