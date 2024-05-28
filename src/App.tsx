@@ -235,7 +235,7 @@ const App: React.FC = (props: any) => {
               <CustomDropdown />
             ) : (
               <div
-                className="login-text"
+                className="login-enroll-text"
                 onClick={() => setIsLoginModal(isLoginModal + 1)}
               >
                 登录/注册
@@ -247,22 +247,18 @@ const App: React.FC = (props: any) => {
               placement="bottomRight"
               trigger={["click"]}
             >
-              <img src={menuIcon} width={12} height={12} alt="" />
+              <img src={menuIcon} alt="" />
             </Dropdown>
             <img
               onClick={handleMinimize}
               className="minType"
               src={minIcon}
-              width={12}
-              height={12}
               alt=""
             />
             <img
               onClick={handleExitProcess}
               className="closeType"
               src={closeIcon}
-              width={12}
-              height={12}
               alt=""
             />
           </div>
