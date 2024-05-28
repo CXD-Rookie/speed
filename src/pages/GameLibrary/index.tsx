@@ -69,15 +69,18 @@ const GameLibrary: React.FC = () => {
   const [gameActiveType, setGameActiveType] = useState<string>("1");
   const [page, setPage] = useState<number>(1);
   const [t, setT] = useState<string | null>("热门游戏"); // 默认选中热门游戏
+
   const isFetching = useRef<boolean>(false);
   const hasMore = useRef<boolean>(true);
+  const gameListRef = useRef<HTMLDivElement>(null);
+
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
-  const gameListRef = useRef<HTMLDivElement>(null);
 
   const clickAddGame = (option: any) => {
     let arr = getMyGames();
-    let is_true = arr.filter((item: any) => item?.id === option?.id)?.length > 0;
+    let is_true =
+      arr.filter((item: any) => item?.id === option?.id)?.length > 0;
 
     if (!is_true) {
       if (arr?.length >= 4) {
@@ -110,7 +113,7 @@ const GameLibrary: React.FC = () => {
       if (res.data.list.length < 10) {
         hasMore.current = false;
       }
-      setGames(prevGames => [...prevGames, ...gamesWithFullImgUrl]);
+      setGames((prevGames) => [...prevGames, ...gamesWithFullImgUrl]);
     } catch (error) {
       console.error("Error fetching games:", error);
     } finally {
@@ -123,17 +126,20 @@ const GameLibrary: React.FC = () => {
     const handleScroll = () => {
       if (gameListRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = gameListRef.current;
-        if (clientHeight + scrollTop >= scrollHeight - 200 && !isFetching.current) {
-          setPage(prevPage => prevPage + 1);
+        if (
+          clientHeight + scrollTop >= scrollHeight - 200 &&
+          !isFetching.current
+        ) {
+          setPage((prevPage) => prevPage + 1);
         }
       }
     };
 
     const gameListElement = gameListRef.current;
     if (gameListElement) {
-      gameListElement.addEventListener('scroll', handleScroll);
+      gameListElement.addEventListener("scroll", handleScroll);
       return () => {
-        gameListElement.removeEventListener('scroll', handleScroll);
+        gameListElement.removeEventListener("scroll", handleScroll);
       };
     }
   }, []);
@@ -151,7 +157,7 @@ const GameLibrary: React.FC = () => {
       hasMore.current = true;
       fetchGames(1, t);
     }
-  },[t]);
+  }, [t]);
 
   const handleTitleClick = (item: GamesTitleProps) => {
     setGameActiveType(item.key);
@@ -164,12 +170,14 @@ const GameLibrary: React.FC = () => {
   }, []);
 
   return (
-    <div className="game-list-module-container">
+    <div className="game-library-module-container">
       <div className="game-title-box">
         {gamesTitle.map((item) => (
           <div
             key={item?.key}
-            className={`game-label ${gameActiveType === item?.key && "game-label-active"}`}
+            className={`game-label ${
+              gameActiveType === item?.key && "game-label-active"
+            }`}
             onClick={() => handleTitleClick(item)}
           >
             {item?.label}
