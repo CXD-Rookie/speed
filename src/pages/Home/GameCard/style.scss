@@ -185,7 +185,7 @@
     text-align: center;
     font-size: var(--speed-dominant-font-size);
     color: #999;
-    padding: 16px;
+    padding: 8px 10px 0 10px;
   }
 
   .accelerate-modal {
@@ -220,12 +220,12 @@
 }
 
 .home-module-game-card-home {
-  width: 24%;
+  width: calc(25% - 9px);
 
   .content-box {
     img {
       width: 100%;
-      height: 327px;
+      height: 49vh;
       object-fit: cover;
       border-radius: var(--speed-dominant-border-radius);
     }
@@ -233,9 +233,15 @@
     .accelerate-content {
       img {
         width: 100%;
-        height: 327px;
+        height: 49vh;
       }
     }
+  }
+
+  .card-text-box {
+    width: 100% !important;
+    height: 6.6vh;
+    word-break: break-all;
   }
 }
 
