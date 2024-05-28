@@ -23,6 +23,12 @@ class LoginApi {
       `${this.url}/login_phone_code`, parmas
     );
   }
+
+  authenticationUser (parmas) {
+    return post(
+      `${this.url}/user/authentication?platform=${parmas?.platform}`, parmas
+    );
+  }
 }
 
 const loginApi = new LoginApi();
