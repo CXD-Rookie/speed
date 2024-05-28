@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-28 16:55:56
+ * @LastEditTime: 2024-05-28 18:37:13
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -90,7 +90,7 @@ const Home: React.FC = () => {
           ))}
         {homeList?.length <= 0 && (
           <div className="empty-card">
-            <img src={emptyIcon} width={68} height={69} alt="" />
+            <img src={emptyIcon} alt="" />
             <div className="title">未发现本地游戏</div>
             <div className="text">去游戏库添加或者试试搜索游戏吧～</div>
             <Button type="primary" onClick={() => navigate("/gameLibrary")}>
@@ -101,13 +101,7 @@ const Home: React.FC = () => {
       </div>
       <div className="functional-areas">
         <div className="membership-recharge areas-list-box">
-          <img
-            onClick={openModal}
-            src={rechargeIcon}
-            width={100}
-            height={100}
-            alt=""
-          />
+          <img onClick={openModal} src={rechargeIcon} alt="" />
           会员充值
           {isModalOpen && (
             <div className="modal-overlay">
@@ -124,7 +118,7 @@ const Home: React.FC = () => {
           className="may-games areas-list-box"
           onClick={() => navigate("/myGames")}
         >
-          <img src={gamesIcon} width={100} height={100} alt="" />
+          <img src={gamesIcon} alt="" />
           我的游戏 ({myGamesNum})
         </div>
       </div>

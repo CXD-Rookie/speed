@@ -9,33 +9,34 @@
   };
 
   .app-header {
+    width: 100vw;
     height: 9vh;
-    padding: 0 32px;
+    padding: 0 3.2vw;
     background-color: var(--speed-dominant-background-color);
     display: flex;
     align-items: flex-end;
-    position: relative;
 
     .header-icon {
-      text-align: left;
-      margin: -20px 32px 0 0;
+      width: 4vw;
+      height: 6vh;
+      margin-right: 3.2vw;
     }
 
     .header-functional-areas {
-      width: calc(100vw - 48px);
-      height: 40px;
-      margin-top: 20px;
+      width: calc(100vw - 3.2vw);
+      height: 6vh;
       display: flex;
       align-items: center;
       justify-content: space-between;
 
       .menu-list {
+        height: 100%;
         display: flex;
-        gap: 28px;
+        align-items: center;
+        column-gap: 2.8vw;
 
         .menu {
-          height: 64px;
-          font-size: 18px;
+          font-size: 1.8vw;
           color: #999;
           cursor: pointer;
         }
@@ -45,17 +46,19 @@
         }
       };
 
-      .search-input {
-        width: 200px;
-        height: 32px;
-      }
-
       .personal-information {
+        height: 6vh;
         color: #FFF;
-        font-size: 14px;
         display: flex;
         align-items: center;
-        column-gap: 20px;
+        column-gap: 2vw;
+
+        .login-text {
+          height: 6vh;
+          font-size: 1.4vw;
+          cursor: pointer;
+          line-height: 9vh;
+        }
 
         img {
           cursor: pointer;

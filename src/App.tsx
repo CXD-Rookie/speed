@@ -235,7 +235,7 @@ const App: React.FC = (props: any) => {
               <CustomDropdown />
             ) : (
               <div
-                style={{ cursor: "pointer" }}
+                className="login-text"
                 onClick={() => setIsLoginModal(isLoginModal + 1)}
               >
                 登录/注册
