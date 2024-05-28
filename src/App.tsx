@@ -52,8 +52,6 @@ const App: React.FC = (props: any) => {
   const location = useLocation();
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
-
-  // const [isLogin, setIsLogin] = useState(false); // 渲染显示登录框 控制状态
   const [isRealityLogin, setIsRealityLogin] = useState(false); // 实际是否登录 控制状态
 
   const [isLoginModal, setIsLoginModal] = useState(0);
@@ -269,7 +267,7 @@ const App: React.FC = (props: any) => {
         <Content className="content">{routeView}</Content>
       </Layout>
 
-      {!isLogin && (
+      {isLogin && (
         <div
           className="login-mask"
           style={{ display: isLogin ? "none" : "block" }}
