@@ -30,30 +30,30 @@
     position: absolute;
     top: 100%;
     left: 0;
-    max-height: 300px;
+    max-height: 45vh;
     overflow-y: auto;
     border: 1px solid #ccc;
     border-top: none;
     z-index: 1000;
-    width: 200px;
+    width: 20vw;
     background: #3e3e4a;
-    border-radius: 10px;
-    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 1vw;
+    box-shadow: 0px 0px 3vw 0px rgba(0, 0, 0, 0.5);
   }
 
   .search-item {
     padding: 10px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 1.4vw;
     font-family: Source Han Sans SC, Source Han Sans SC-Regular;
     font-weight: Regular;
     text-align: left;
     color: #ffffff;
-    line-height: 18px;
+    line-height: 2.7vh;
   }
 
   .search-item:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    border-radius: 0.5vw;
   }
 }
