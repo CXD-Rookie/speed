@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-28 15:17:35
+ * @LastEditTime: 2024-05-28 15:24:42
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
@@ -36,6 +36,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     id: "",
   }); // 身份认证信息
 
+  // 姓名是否合法
   function validateName(name: any) {
     // 正则表达式验证姓名
     const namePattern = /^[\u4e00-\u9fa5·]{2,30}$/;
@@ -50,6 +51,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     }
   }
 
+  // 身份证号是否合法
   function validateIDCard(id: any) {
     const idCard = id;
 
@@ -86,6 +88,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     }
   }
 
+  // 是否未成年
   function validateAge(id: any) {
     const idCard = id;
 
