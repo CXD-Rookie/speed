@@ -3,7 +3,7 @@
   --speed-dominant-module-color: rgba(255, 255, 255, 0.10);
   --speed-dominant-font-color: #F86C34;
   --speed-dominant-border-radius: 10px;
-  --speed-dominant-font-size: 18px;
+  --speed-dominant-font-size: 1.8vw;
 }
 
 body {

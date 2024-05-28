@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-28 20:53:33
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-28 20:22:30
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -12,7 +12,10 @@ import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getMyGames } from "@/common/utils";
+
 import playSuitApi from "@/api/speed";
+import BreakConfirmModal from "@/containers/break-confirm";
+
 import rightArrow from "@/assets/images/common/right-arrow.svg";
 import accelerateIcon from "@/assets/images/common/accelerate.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
@@ -291,7 +294,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     type === "home"
                       ? {}
                       : {
-                          marginTop: 130,
+                          marginTop: "4.2vh",
                         }
                   }
                   onClick={handleDetails}
@@ -348,7 +351,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         </div>
         {isAnimate && (
           <div className={"animate-box"}>
-            <div className={"animate-text"}>加速中</div>
+            <div className={"animate-text"}>加速中...</div>
             <div
               className={`accelerate-animate ${
                 isAnimate && "accelerate-animate-start"
@@ -358,22 +361,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         )}
       </div>
       <div className="card-text-box">{gameData.name}</div>
-      <div
-        className="accelerate-modal"
-        style={{
-          display: accelOpen ? "block" : "none",
-        }}
-      >
-        其他游戏正在加速，你确定要加速此游戏吗？
-        <div className="accelerate-modal-footer">
-          <div className="footer-ok" onClick={() => handleExpedite(gameData)}>
-            确定
-          </div>
-          <div className="footer-cancel" onClick={() => setAccelOpen(false)}>
-            取消
-          </div>
-        </div>
-      </div>
+      <BreakConfirmModal
+        accelOpen={accelOpen}
+        setAccelOpen={setAccelOpen}
+        onConfirm={() => handleExpedite(gameData)}
+      />
     </div>
   );
 };

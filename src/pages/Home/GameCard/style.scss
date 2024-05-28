@@ -12,7 +12,7 @@
     .animate-box {
       position: absolute;
       width: 100%;
-      height: 327px;
+      height: 49vh;
       top: 0;
       left: 0;
       background-color: rgba($color: #000000, $alpha: 0.6);
@@ -20,21 +20,20 @@
 
       .animate-text {
         width: 100%;
-        height: 18px;
-        color: #F86C34;
-        font-size: 22px;
+        color: rgba(255,255,255,0.60);
+        font-size: 2.2vw;
         cursor: pointer;
         text-align: center;
-        line-height: 327px;
+        line-height: 49vh;
         z-index: 3;
       }
 
       .accelerate-animate {
         position: absolute;
-        top: 324px;
+        top: 48.5vh;
         left: 10px;
         width: 0%;
-        height: 3px;
+        height: 0.5vh;
         background-color: #F86C34;
         border-radius: var(--speed-dominant-border-radius);
       }
@@ -66,7 +65,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        height: 327px;
+        height: 49vh;
         width: 100%;
         object-fit: cover;
         border-radius: var(--speed-dominant-border-radius);
@@ -81,22 +80,22 @@
         text-align: center;
 
         .instant-delay {
-          width: 82px;
-          height: 28px;
+          width: 8.2vw;
+          height: 4.2vh;
           background: rgba(255, 255, 255, 0.10);
           border-radius: 18px;
-          font-size: 14px;
+          font-size: 1.4vw;
           color: #ffffff;
           text-align: center;
-          line-height: 28px;
-          margin: 40px 0 0 calc(50% - 41px);
+          line-height: 4.2vh;
+          margin: 6vh 0 0 calc(50% - 4.1vw);
         }
 
         .speed {
-          font-size: 50px;
+          font-size: 5vw;
           color: #ffffff;
-          line-height: 58.5px;
-          margin-top: 12px;
+          line-height: 8.8vh;
+          margin-top: 1.8vh;
 
           span {
             font-size: var(--speed-dominant-font-size);
@@ -104,32 +103,29 @@
         }
 
         .go-deteils {
-          width: fit-content;
-          font-size: 16px;
+          font-size: 1.6vw;
           color: #ffffff;
-          margin-top: 28px;
+          margin-top: 4.2vh;
+          margin-left: calc(50% - 10vw);
           cursor: pointer;
-          position: relative;
-          margin-left: calc(50% - 40px);
 
           img {
-            width: 12px;
-            height: 12px;
-            position: absolute;
-            left: 68px;
-            top: 7px;
+            width: 1.2vw;
+            height: 1.8vh;
+            position: unset;
+            margin-left: 0.8vw;
           }
         }
 
         .down-accelerate {
-          width: 150px;
-          height: 36px;
+          width: 15vw;
+          height: 5.4vh;
           font-size: var(--speed-dominant-font-size);
           background: #ffffff;
-          border-radius: 18px;
-          margin-left: calc(50% - 75px);
+          border-radius: 2.7vh;
+          margin-left: calc(50% - 7.5vw);
           cursor: pointer;
-          margin-top: 62px;
+          margin-top: 10vh;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -142,31 +138,31 @@
       };
 
       .clear-game {
-        width: 18px;
-        height: 18px;
+        width: 1.8vw;
+        height: 2.7vh;
         position: absolute;
         z-index: 2;
-        top: 12px;
+        top: 1.8vh;
         left: auto !important;
+        right: 1.3vw !important;
         cursor: pointer;
-        right: 13px !important;
       };
 
       .accelerate-button {
-        height: 18px;
+        height: 2.7vh;
         position: relative;
         color: #F86C34;
-        font-size: 22px;
+        font-size: 2.2vw;
         cursor: pointer;
-        margin: 266px 0 0 calc(50% - 60px);
+        margin: 40vh 0 0 calc(50% - 6vw);
         z-index: 2;
 
         img {
-          width: 18px;
-          height: 18px;
+          width: 1.8vw;
+          height: 2.7vh;
           position: absolute;
-          top: 8px;
-          left: 96px;
+          top: 0.7vh;
+          left: 9.6vw;
           cursor: pointer;
         }
       }
@@ -185,37 +181,7 @@
     text-align: center;
     font-size: var(--speed-dominant-font-size);
     color: #999;
-    padding: 8px 10px 0 10px;
-  }
-
-  .accelerate-modal {
-    width: 400px;
-    position: fixed;
-    top: 200px;
-    left: calc(50% - 200px);
-    color: #fff;
-    background: rgba(0,0,0, 0.7);
-    border-radius: 20px;
-    padding: 53px;
-    z-index: 10;
-
-    .accelerate-modal-footer {
-      display: flex;
-      margin-top: 20px;
-
-      .footer-ok {
-        padding: 8px 16px;
-        background: #F86C34;
-        border-radius: var(--speed-dominant-border-radius);
-      }
-
-      .footer-cancel {
-        background: rgba(255,255,255,0.1);
-        padding: 8px 16px;
-        margin-left: 20px;
-        border-radius: var(--speed-dominant-border-radius);
-      }
-    }
+    padding: 1.2vw 1vw 0 1vw;
   }
 }
 

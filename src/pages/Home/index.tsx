@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-28 18:37:13
+ * @LastEditTime: 2024-05-28 20:48:05
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -82,8 +82,8 @@ const Home: React.FC = () => {
               className="null-data-card"
               onClick={() => navigate("/gameLibrary")}
             >
-              <div>
-                <img src={addIcon} width={100} height={100} alt="" />
+              <div className="null-content-card">
+                <img src={addIcon} alt="" />
                 <div>加载更多游戏</div>
               </div>
             </div>
