@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-28 13:58:16
+ * @LastEditTime: 2024-05-28 14:13:28
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
@@ -23,7 +23,12 @@ interface SettingsModalProps {
 const RealNameModal: React.FC<SettingsModalProps> = (props) => {
   const { isRealOpen, setIsRealOpen = () => {} } = props;
 
-  const [realType, setRealType] = useState<any>(0); // 认证类型 假设 0 - 未填写 1 - 成功 2 - 加速时未成年 3 - 充值时未成年
+  // 认证类型 假设 0 - 未填写 1 - 成功 2 - 加速时未成年 3 - 充值时未成年
+  const [realType, setRealType] = useState<any>(0);
+  const [isRankVerify, setIsRankVerify] = useState({
+    name: true,
+    rank: true,
+  }); // 校验身份信息是否通过
 
   const onClose = () => {
     setIsRealOpen(false);
@@ -33,7 +38,11 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
   const handleSubmit = () => {
     try {
       console.log("提交");
-      setRealType(3);
+      setIsRankVerify({
+        name: false,
+        rank: false,
+      });
+      setRealType(0);
     } catch (error) {
       console.log(error);
     }
@@ -57,10 +66,16 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
           <div className="modal-content-input-box">
             <div>姓名</div>
             <Input placeholder="请输入您的真实姓名" />
+            {!isRankVerify?.name && (
+              <div className="error-tootip">你输入的姓名有误！</div>
+            )}
           </div>
           <div className="modal-content-input-box">
             <div>身份证号</div>
             <Input placeholder="请输入你的证件号" />
+            {!isRankVerify?.rank && (
+              <div className="error-tootip">你输入的身份证号有误！</div>
+            )}
           </div>
           <Button className="modal-content-btn" onClick={handleSubmit}>
             立即提交
