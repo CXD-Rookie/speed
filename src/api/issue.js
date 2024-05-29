@@ -10,13 +10,12 @@ class Feedback {
   }
 
   feedback_upload_image (params) {
-    const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/feedback_upload_image?${queryString}`);
+    return post(`${this.url}/feedback_upload_image?platform=3`,params);
   }
 
   feedback (parmas) {
     return post(
-      `${this.url}/feedback`, parmas
+      `${this.url}/feedback?platform=3`, parmas
     );
   }
 }

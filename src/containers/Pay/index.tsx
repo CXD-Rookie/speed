@@ -21,6 +21,7 @@ const Modal: React.FC = () => {
 
   const updateActiveTabIndex = (index: number) => {
     setActiveTabIndex(index);
+    console.log(index,"---------------")
   };
 
   const divRef = useRef<HTMLDivElement>(null);
@@ -31,6 +32,15 @@ const Modal: React.FC = () => {
     (window as any).NativeApi_OpenBrowser(dataTitle);
     console.log('data-title:', dataTitle);
   };
+
+  const guid = () =>{
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+  }
+  console.log(guid())
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,11 +56,13 @@ const Modal: React.FC = () => {
 
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
-            const initialQrCodeResponse = await payApi.getQrCodeUrl({
-              cid: commodityResponse.data.list[0].id,
-              user_id: userToken
-            });
-            setQrCodeUrl(initialQrCodeResponse);
+            // const initialQrCodeResponse = await payApi.getQrCodeUrl({
+            //   cid: commodityResponse.data.list[0].id,
+            //   user_id: userToken,
+            //   key:guid(),
+            // });
+            // console.log(initialQrCodeResponse,"initialQrCodeResponse------")
+            setQrCodeUrl(`https://rm-mga-dev.yuwenlong.cn/api/v1/pay/qrcode?cid=${commodityResponse.data.list[0].id}&user_id=${userToken}&key=${guid()}`);
           }
         }
       } catch (error) {
@@ -107,23 +119,23 @@ const Modal: React.FC = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const updateQrCode = async () => {
-  //     if (commodities.length > 0) {
-  //       try {
-  //         const qrCodeResponse = await payApi.getQrCodeUrl({
-  //           pid: commodities[activeTabIndex].id,
-  //           user_token: userToken
-  //         });
-  //         // setQrCodeUrl(qrCodeResponse);
-  //       } catch (error) {
-  //         console.error('Error updating QR code', error);
-  //       }
-  //     }
-  //   };
+  useEffect(() => {
+    const updateQrCode = async () => {
+      if (commodities.length > 0) {
+        try {
+          // const qrCodeResponse = await payApi.getQrCodeUrl({
+          //   pid: commodities[activeTabIndex].id,
+          //   user_token: userToken
+          // });
+          setQrCodeUrl(`https://rm-mga-dev.yuwenlong.cn/api/v1/pay/qrcode?cid=${commodities[activeTabIndex].id}&user_id=${userToken}&key=${guid()}`);
+        } catch (error) {
+          console.error('Error updating QR code', error);
+        }
+      }
+    };
 
-  //   updateQrCode();
-  // }, [activeTabIndex, commodities, userToken]);
+    updateQrCode();
+  }, [activeTabIndex, commodities, userToken]);
 
   return (
     <div className="pay-modal">
@@ -148,7 +160,13 @@ const Modal: React.FC = () => {
       </div>
       <div className="line"></div>
       <div className="qrcode">
-        <QRCode value={qrCodeUrl} />
+        {/* <QRCode value={qrCodeUrl} /> */}
+        {/* <Img src={qrCodeUrl}> */}
+        <img
+          className="header-icon"
+          src={qrCodeUrl}
+          alt=""
+        />
       </div>
       <div className="carousel">
         {commodities.map((item, index) => (
