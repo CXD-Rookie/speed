@@ -1,3 +1,4 @@
+
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-22 14:34:24
@@ -8,7 +9,7 @@
  */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; // 导入 useHistory
+import { useNavigate } from "react-router-dom"; 
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchSearchResults } from "../../redux/actions/search";
@@ -25,7 +26,7 @@ type RootState = {
 
 const SearchBar: React.FC = () => {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-  const navigate = useNavigate(); // 获取 history 对象
+  const navigate = useNavigate();
   const query = useSelector((state: RootState) => state.search.query);
   const results = useSelector((state: RootState) => state.search.results) || [];
   const [showDropdown, setShowDropdown] = useState(false);
@@ -37,22 +38,23 @@ const SearchBar: React.FC = () => {
   };
 
   const handleSearchResultClick = (option: any) => {
-    let arr = getMyGames();
-    let result = getMyGames();
+    console.log("触发游戏添加--------------")
+    // 获取当前的我的游戏列表
+    let myGames = getMyGames();
 
-    arr?.forEach((item: any, index: number) => {
-      if (item?.id === option?.id && index > 4) {
-        // 从位置4取出元素
-        let elementToMove = result.splice(index, 1)[0]; // splice返回被删除的元素数组，所以我们使用[0]来取出被删除的元素
+    // 检查是否已经包含了当前选中的游戏
+    const isAlreadyAdded = myGames.some((game: any) => game.id === option.id);
 
-        // 将取出的元素插入到位置1
-        result.splice(0, 0, elementToMove); // 在位置0插入元素
-      } else if (item?.id !== option?.id) {
-        result.splice(0, 0, option); // 在位置0插入元素
-      }
-    });
+    // 如果游戏没有被添加过，将其添加到我的游戏列表的开头
+    if (!isAlreadyAdded) {
+      myGames.unshift(option);
 
-    navigate("/home", { state: { isNav: true, data: option } }); // 点击搜索结果后跳转到搜索结果页面
+      // 更新本地存储
+      localStorage.setItem('speed-1.0.0.1-games', JSON.stringify(myGames));
+    }
+
+    // 跳转到首页并触发自动加速autoAccelerate
+    navigate('/home', { state: { isNav: true, data: option, autoAccelerate: true } });
   };
 
   const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -70,7 +72,7 @@ const SearchBar: React.FC = () => {
         onChange={handleSearch}
         onFocus={() => setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-        onKeyDown={handleEnterKeyPress} // 监听键盘事件
+        onKeyDown={handleEnterKeyPress} 
       />
       {showDropdown && results.length > 0 && (
         <div className="search-dropdown">

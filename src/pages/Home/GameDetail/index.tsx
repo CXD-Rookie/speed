@@ -180,24 +180,24 @@ const GameDetail: React.FC = () => {
 
   const stopSpeed = () => {
     console.log("停止加速---------------");
+    
     const requestData = JSON.stringify({
       method: "NativeApi_StopProxy",
       params: null,
     });
 
-    let game_arr = getMyGames();
-
-    game_arr = game_arr.map((item: any) => ({
-      ...item,
-      is_accelerate: false,
-    }));
-
-    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
-
     (window as any).cefQuery({
       request: requestData,
       onSuccess: (response: any) => {
         console.log("停止加速----------:", response);
+        let game_arr = getMyGames();
+
+        game_arr = game_arr.map((item: any) => ({
+          ...item,
+          is_accelerate: false,
+        }));
+
+        localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
         navigate("/home");
       },
       onFailure: (errorCode: any, errorMessage: any) => {

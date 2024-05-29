@@ -222,8 +222,11 @@ const App: React.FC = (props: any) => {
               </div>
             ))}
           </div>
-
+          <div  onMouseDown={stopPropagation}
+            onMouseUp={stopPropagation}>
           <SearchBar />
+          </div>
+         
 
           <div
             className="personal-information"

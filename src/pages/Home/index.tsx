@@ -1,22 +1,30 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-28 20:48:05
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-29 16:11:22
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { Button } from "antd";
 import PayModal from "../../containers/Pay/index";
-import "./style.scss";
 import GameCard from "./GameCard";
 import addIcon from "@/assets/images/common/add.svg";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
 import emptyIcon from "@/assets/images/home/empty.svg";
+
+import "./style.scss";
+
+interface Game {
+  id: string;
+  name: string;
+  cover_img: string;
+  is_accelerate?: boolean;
+}
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -27,10 +35,11 @@ const Home: React.FC = () => {
 
   const [homeList, setHomeList] = useState([]);
   const [myGamesNum, setMyGamesNum] = useState(0);
-
   const [accelTag, setAccelTag] = useState({});
+  const [autoAccelerateGame, setAutoAccelerateGame] = useState<Game | null>(null);
 
   const pid = localStorage.getItem("pid");
+  const childRef = useRef<any>();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -44,6 +53,7 @@ const Home: React.FC = () => {
     let arr = getMyGames();
 
     setMyGamesNum(arr?.length);
+    console.log("查看mygame是否更新-------------------------")
     setHomeList(arr?.slice(0, 4));
   };
 
@@ -52,13 +62,47 @@ const Home: React.FC = () => {
   }, [status]);
 
   useEffect(() => {
-    console.log(location);
-    // if (location?.state?.type) {
-    //   window.history.replaceState({}, "");
-    //   updateData();
-    //   setAccelTag(location?.state?.data);
-    // }
+    if (location.state?.autoAccelerate && location.state?.data) {
+      console.log("查看updata是否更新")
+      setAutoAccelerateGame(location.state.data as Game);
+      window.history.replaceState({}, document.title); // Remove state from history
+      updateData();
+      setAccelTag(location?.state?.data);
+  }
   }, [location]);
+
+  useEffect(() => {
+    console.log(`看看游戏的id------------------------------------------------`,autoAccelerateGame)
+    if (autoAccelerateGame) {
+      handleAccelerateClick(autoAccelerateGame);
+    }
+  }, [autoAccelerateGame]);
+
+  const handleAccelerateClick = (game: Game) => {
+    // 查找对应的游戏卡片并触发其加速逻辑
+    console.log("查看game----------",game)
+ 
+    if (game) {
+       // 将自动加速的游戏数据添加到 homeList 中
+       //@ts-ignore
+      setHomeList(prevList => [...prevList, game]);
+      updateData();
+      setAccelTag(location?.state?.data);
+       // @ts-ignore
+      const index = homeList.findIndex((item) => item.id === game.id);
+      if (index !== -1) {
+        // 触发对应游戏卡片的加速逻辑
+       // document.getElementById(`${game.id}`)?.click();
+        if (childRef.current) {
+          //@ts-ignore
+          console.log("homeList----------",homeList)
+           //@ts-ignore
+          childRef.current.triggerAccelerate();
+        }
+        console.log(`看看id------------------------------------------------`)
+      }
+    }
+  };
 
   return (
     <div className="home-module">
@@ -66,9 +110,12 @@ const Home: React.FC = () => {
         {homeList.map((game, index) => (
           <GameCard
             key={index}
+            ref={childRef}
             gameData={game}
             accelTag={accelTag}
             onClear={() => setStatus(status + 1)}
+                //@ts-ignore
+            id={`${game.id}`}
           />
         ))}
         {homeList?.length < 4 &&

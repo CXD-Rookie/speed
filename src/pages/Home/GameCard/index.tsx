@@ -2,17 +2,17 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-28 20:55:59
+ * @LastEditTime: 2024-05-29 16:29:02
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
-import React, { useEffect, useState } from "react";
+// 在 GameCard 组件中添加一个暴露的方法，例如 useImperativeHandle 和 forwardRef
+import React, { useEffect, useState, useImperativeHandle, forwardRef } from "react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { getMyGames } from "@/common/utils";
-
 import playSuitApi from "@/api/speed";
 import BreakConfirmModal from "@/containers/break-confirm";
 
@@ -38,11 +38,11 @@ export interface GameCardProps {
   style?: React.CSSProperties;
   className?: string;
   accelTag?: object;
+  id?: string;
 }
 
-const GameCard: React.FC<GameCardProps> = (props) => {
-  const { gameData = {}, type = "home", accelTag, onClear = () => {} } = props;
-
+const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref) => {
+  const { gameData = {}, type = "home", accelTag, onClear = () => {}, id } = props;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
@@ -53,19 +53,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const pid = localStorage.getItem("pid");
 
+  useImperativeHandle(ref, () => ({
+    triggerAccelerate: () => {
+      handleAccelerateClick(accelTag);
+    },
+  }));
+
   const handleSuitDomList = async (t: any) => {
     try {
       const [speedInfoRes, speedListRes] = await Promise.all([
-        playSuitApi.speedInfo({
-          platform: 3,
-          gid: t,
-          pid: pid,
-        }),
-        playSuitApi.playSpeedList({
-          platform: 3,
-          gid: t,
-          pid: pid,
-        }),
+        playSuitApi.speedInfo({ platform: 3, gid: t, pid: pid }),
+        playSuitApi.playSpeedList({ platform: 3, gid: t, pid: pid }),
       ]);
 
       console.log("获取游戏加速用的信息", speedInfoRes);
@@ -270,9 +268,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           ? "home-module-game-card-home"
           : "home-module-game-card-my-game"
       }`}
+      id={id}
     >
       <div className="content-box">
-        <img src={gameData?.cover_img} alt={gameData.name} />
+        <img src={"https://jsq-cdn.yuwenlong.cn/"+gameData?.cover_img} alt={gameData.name} />
         <div
           className="accelerate-content"
           style={gameData?.is_accelerate ? { display: "block" } : {}}
@@ -353,4 +352,5 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   );
 };
 
-export default GameCard;
+export default forwardRef(GameCard);
+
