@@ -56,7 +56,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     };
   }, [data]);
 
-  return <div ref={chartRef} style={{ width: "100%", height: "90px" }} />;
+  return <div ref={chartRef} style={{ width: "65vw", height: "13.5vh" }} />;
 };
 
 export default BarChart;

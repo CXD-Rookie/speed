@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-27 21:08:17
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-29 11:15:47
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,8 +11,10 @@ import { Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
+
 import "./style.scss";
 import ActivationModal from "@/containers/activation-mode";
+
 import backGameIcon from "@/assets/images/common/back-game.svg";
 import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
 import activateIcon from "@/assets/images/common/activate.svg";
@@ -24,25 +26,8 @@ import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 
 import BarChart from "@/containers/BarChart/index";
 import RegionNodeSelector from "@/containers/RegionNodeSelector/index";
+
 declare const CefWebInstance: any;
-
-interface Game {
-  id: number;
-  name: string;
-  image: string;
-  tags: string[];
-  description: string;
-}
-
-const game: Game = {
-  id: 1,
-  name: "原神",
-  image:
-    "https://gameplus-platform.cdn.bcebos.com/gameplus-platform/upload/file/img/f6ea86cc2b6189959d7b1309d7a209e7/f6ea86cc2b6189959d7b1309d7a209e7.jpg",
-  tags: ["二次元", "开放世界", "RPG"],
-  description:
-    "《原神》是由中国大陆游戏开发商miHoYo制作并发行的一款开放世界动作角色扮演游戏。",
-};
 
 // 柱形图数据示例
 const data = [
@@ -151,9 +136,6 @@ const GameDetail: React.FC = () => {
   const navigate = useNavigate();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const [isModalShow, setIsModalShow] = useState(false);
-
   const [isOpen, setIsOpen] = useState(false);
 
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
@@ -237,8 +219,7 @@ const GameDetail: React.FC = () => {
         console.error("Query failed:", errorMessage);
       },
     });
-  }, [])
-  
+  }, []);
 
   useEffect(() => {
     let arr = getMyGames();
@@ -270,15 +251,12 @@ const GameDetail: React.FC = () => {
             jsonResponse
           );
           setLostBag(jsonResponse);
-
-
         },
         onFailure: (errorCode: any, errorMessage: any) => {
           console.error("Query failed:", errorMessage);
         },
       });
     }, 10000);
-    
 
     // 返回一个清理函数，在组件卸载时清除定时器
     return () => clearInterval(interval);
@@ -315,9 +293,9 @@ const GameDetail: React.FC = () => {
             </Button>
           </div>
           <div className="game-right">
-            <div className="info-switch info-common-style">
+            <div className="info-switch info-common-style" onClick={showModal}>
               <span>00:50:21 亚服-北京-A508376（电信）</span>
-              <span onClick={showModal}>切换</span>
+              <span>切换</span>
             </div>
             <div className="info-speed info-common-style">
               <div className="keep speed-common">
@@ -344,7 +322,7 @@ const GameDetail: React.FC = () => {
                 </div>
 
                 <div className="line-box">
-                {lostBag}ms
+                  {lostBag}ms
                   <div className="line">
                     <div className="animate-line" />
                   </div>
@@ -355,7 +333,7 @@ const GameDetail: React.FC = () => {
                 </div>
 
                 <div className="line-box">
-                {lostBag}ms
+                  {lostBag}ms
                   <div className="line">
                     <div className="animate-line" />
                   </div>

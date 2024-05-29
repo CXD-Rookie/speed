@@ -1,14 +1,14 @@
 /* style.scss */
 .home-module-detail {
   width: 100%;
-  height: calc(100vh - 58px);
+  height: 91vh;
   position: relative;
 
   .back-icon {
     position: absolute;
     z-index: 2;
     width: 100vw;
-    height: calc(100vh - 74px);
+    height: 91vh;
     object-fit: cover;
   }
 
@@ -16,57 +16,58 @@
     position: absolute;
     z-index: 3;
     width: 100vw;
-    height: calc(100vh - 60px);
+    height: 94vh;
     object-fit: cover;
   }
 
   .cantainer {
     width: 100%;
-    padding: 24px 40px;
+    padding: 3.6vh 4vw;
     position: absolute;
     left: 0;
     top: 0;
     z-index: 4;
 
     .back {
-      width: 48px;
-      height: 24px;
-      font-size: 12px;
-      border-radius: 4px;
+      width: 4.8vw;
+      height: 3.6vh;
+      font-size: 1.2vw;
+      border-radius: 0.4vw;
       color: #fff;
       background-color: var(--speed-dominant-module-color);
       text-align: center;
-      line-height: 24px;
+      line-height: 3.6vh;
     }
 
     .game-detail {
       width: 100%;
-      height: calc(100vh - 236px);
-      margin-top: 24px;
+      height: 76.6vh;
+      margin-top: 3.6vh;
       display: flex;
       justify-content: space-between;
 
       .game-left {
-        width: 262px;
-
+        width: 26.2vw;
+        
         .game-text {
-          height: 46px;
-          font-size: 22px;
+          height: 6.9vh;
+          font-size: 2.2vw;
           font-weight: Bold;
           color: #ffffff;
-          line-height: 46px;
-          margin-top: 80px;
+          line-height: 6.9vh;
+          margin-top: 12vh;
           display: flex;
           justify-content: center;
         }
 
         .game-btn {
-          width: 160px;
-          height: 44px;
-          border-radius: 22px;
+          width: 16vw;
+          height: 6.6vh;
+          font-size: 1.4vw;
+          border-radius: 3.3vh;
           border: none;
-          margin-top: 40px;
-          margin-left: 38px;
+          margin-top: 6vh;
+          margin-left: 5.1vw;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -77,17 +78,17 @@
           background-color: #f86c34;
 
           .line {
-            width: 0.5px;
-            height: 20px;
+            width: 0.05vw;
+            height: 3vh;
             opacity: 0.4;
-            border: 0.5px solid #ffffff;
-            margin: 0 8px 0 14px;
+            border: 0.05vw solid #ffffff;
+            margin: 0 0.8vw 0 1.4vw;
           }
 
           img {
-            width: 18px;
-            height: 18px;
-            margin-right: 4px;
+            width: 1.8vw;
+            height: 2.4vh;
+            margin-right: 0.4vw;
           }
         }
 
@@ -96,25 +97,27 @@
           background-color: #fff;
 
           img {
-            width: 18px;
-            height: 18px;
-            margin-right: 4px;
+            width: 1.8vw;
+            height: 2.4vh;
+            margin-right: 0.4vw;
           }
         }
       }
 
       .game-right {
-        width: 654px;
+        width: 65.4vw;
 
         .info-common-style {
           color: #fff;
           background-color: rgba(0, 0, 0, 0.4);
           border-radius: var(--speed-dominant-border-radius);
+          font-size: 1.4vw;
         }
 
         .info-switch {
           width: 100%;
-          padding: 10px 16px;
+          padding: 1.5vh 1.6vw;
+          cursor: pointer;
           display: flex;
           justify-content: space-between;
 
@@ -124,18 +127,18 @@
         }
 
         .info-speed {
-          padding: 16px 0;
-          margin-top: 12px;
+          padding: 2.4vh 0;
+          margin-top: 1.8vh;
           display: flex;
           align-items: center;
 
           .keep {
             color: #999999;
-            font-size: 14px;
+            font-size: 1.4vw;
 
             div {
               color: #fff;
-              font-size: 50px;
+              font-size: 5vw;
 
               span {
                 font-size: var(--speed-dominant-font-size);
@@ -144,26 +147,26 @@
           }
 
           .speed-common {
-            width: calc(50% - 1px);
+            width: calc(50% - 0.1vw);
             text-align: center;
           }
 
           .speed-line {
-            width: 1px;
-            height: 54px;
+            width: 0.1vw;
+            height: 8.1vh;
             background: rgba(255, 255, 255, 0.1);
           }
         }
 
         .appliances {
-          margin-top: 12px;
-          padding: 16px 0;
+          margin-top: 1.8vh;
+          padding: 2.4vh 0;
 
           .title {
             width: 100%;
             color: #fff;
-            font-size: 14px;
-            padding-bottom: 20px;
+            font-size: 1.4vw;
+            padding-bottom: 3vh;
             text-align: center;
           }
 
@@ -174,55 +177,52 @@
 
             .icon-box {
               text-align: center;
-              font-size: 14px;
+              font-size: 1.4vw;
               color: #999999;
 
               img {
-                width: 32px;
-                height: 32px;
+                width: 3.2vw;
+                height: 4.8vh;
               }
             }
 
             .line-box {
               color: #f86c34;
               text-align: center;
-              font-size: 14px;
+              font-size: 1.4vw;
 
               .line {
-                width: 180px;
-                height: 2px;
-                border-radius: 2px;
+                width: 18vw;
+                height: 0.3vh;
+                border-radius: 0.3vh;
                 background-color: rgba(248, 108, 52, 0.6);
-                margin: 4px 10px 0 10px;
+                margin: 0.4vh 1vw 0 1.5vw;
                 position: relative;
 
                 .animate-line {
-                  width: 10px;
-                  height: 2px;
-                  border-radius: 2px;
+                  width: 1vw;
+                  height: 0.3vh;
+                  border-radius: 0.3vh;
                   background-color: #f54904;
-                  margin: 4px 10px 0 10px;
                   position: absolute;
-                  left: -10px;
-                  top: -4px;
                   animation: moveLine 1.4s cubic-bezier(0.42, 0, 1.0, 1.0) infinite; /* 定义动画，持续时间为2秒，循环播放 */
                 }
 
                 @keyframes moveLine {
                   0% {
-                    left: -10px;
+                    left: 0;
                     opacity: 1; /* 初始完全可见 */
                   }
                   90% {
-                    left: 155px;
+                    left: 15.4vw;
                     opacity: 0.8; /* 大部分时间保持可见 */
                   }
                   95% {
-                    left: 160px;
-                    opacity: 0.4; /* 大部分时间保持可见 */
+                    left: 16.3vw;
+                    opacity: 0.4; /* 小部分时间保持可见 */
                   }
                   100% {
-                    left: 165px;
+                    left: 17vw;
                     opacity: 0; /* 末尾渐变为透明 */
                   }
                 }
@@ -233,15 +233,15 @@
 
         .tendencies {
           width: 100%;
-          margin-top: 12px;
-          padding: 16px 0;
+          margin-top: 1.8vh;
+          padding: 2.4vh 0;
 
           .title {
             width: 100%;
-            font-size: 14px;
+            font-size: 1.4vw;
             color: #fff;
             text-align: center;
-            padding-bottom: 20px;
+            padding-bottom: 3vh;
           }
         }
       }
