@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { Modal } from "antd";
 import { useDropzone, Accept } from "react-dropzone";
+
+import axios from "axios";
 import issueApi from "@/api/issue";
 import "./index.scss";
+
 interface FeedbackType {
   id: string;
   value: string;
 }
 
-const FeedbackPopup: React.FC = () => {
+interface FeedbackTypeProps {
+  showIssueModal?: boolean;
+  onClose?: () => void;
+}
+
+const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
+  const { showIssueModal = false, onClose = () => {} } = props;
+
   const [feedbackTypes, setFeedbackTypes] = useState<FeedbackType[]>([]);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [description, setDescription] = useState<string>("");
@@ -86,25 +96,16 @@ const FeedbackPopup: React.FC = () => {
   };
 
   return (
-    <div
+    <Modal
       className="overlay"
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "rgba(0, 0, 0, 0.5)",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-      }}
+      open={showIssueModal}
+      onCancel={onClose}
+      title="问题反馈"
+      width={"67.6vw"}
+      centered
+      footer={null}
     >
       <div className="feedback-popup">
-        <div className="popup-header">
-          <span>问题反馈</span>
-          <img src="assets/cloture_write.svg" alt="" />
-        </div>
         <div className="type-buttons" id="btnAll">
           <div className="matter-type">
             <span>*</span>
@@ -196,7 +197,7 @@ const FeedbackPopup: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </Modal>
   );
 };
 
