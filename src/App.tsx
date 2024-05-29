@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import { connect,useDispatch,useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
-import { setIsLogin } from './redux/actions/auth';
+import { setIsLogin } from "./redux/actions/auth";
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
@@ -241,7 +241,6 @@ const App: React.FC = (props: any) => {
               </div>
             )}
             <Dropdown
-              overlayClassName={"dropdown-overlay"}
               menu={{ items }}
               placement="bottomRight"
               trigger={["click"]}
