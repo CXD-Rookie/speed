@@ -17,7 +17,7 @@ const Modal: React.FC = () => {
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState('');
-  const [userToken, setUserToken] = useState(localStorage.getItem("token") || '');
+  const [userToken, setUserToken] = useState("664c90bbfa7788e5974bb89a" || '');
 
   const updateActiveTabIndex = (index: number) => {
     setActiveTabIndex(index);
@@ -47,10 +47,10 @@ const Modal: React.FC = () => {
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
             const initialQrCodeResponse = await payApi.getQrCodeUrl({
-              pid: commodityResponse.data.list[0].id,
-              user_token: userToken
+              cid: commodityResponse.data.list[0].id,
+              user_id: userToken
             });
-            // setQrCodeUrl(initialQrCodeResponse);
+            setQrCodeUrl(initialQrCodeResponse);
           }
         }
       } catch (error) {
