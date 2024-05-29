@@ -1,14 +1,19 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-29 16:29:02
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-29 18:54:53
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
 // 在 GameCard 组件中添加一个暴露的方法，例如 useImperativeHandle 和 forwardRef
-import React, { useEffect, useState, useImperativeHandle, forwardRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
@@ -41,8 +46,17 @@ export interface GameCardProps {
   id?: string;
 }
 
-const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref) => {
-  const { gameData = {}, type = "home", accelTag, onClear = () => {}, id } = props;
+const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
+  props,
+  ref
+) => {
+  const {
+    gameData = {},
+    type = "home",
+    accelTag = {},
+    onClear = () => {},
+    id,
+  } = props;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
@@ -54,10 +68,19 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
   const pid = localStorage.getItem("pid");
 
   useImperativeHandle(ref, () => ({
-    triggerAccelerate: () => {
-      handleAccelerateClick(accelTag);
+    triggerAccelerate: (e: any) => {
+      handleAccelerateClick(e);
     },
   }));
+
+  useEffect(() => {
+    if (
+      Object.keys(accelTag || {})?.length > 0 &&
+      (accelTag as any)?.id === gameData?.id
+    ) {
+      handleAccelerateClick(accelTag);
+    }
+  }, [accelTag]);
 
   const handleSuitDomList = async (t: any) => {
     try {
@@ -158,6 +181,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
   // 立即加速
   const handleAccelerateClick = (option: any) => {
     console.log("option 游戏数据", option);
+    console.log(option, gameData);
 
     if (token) {
       let is_true = getMyGames().some((item: any) => item?.is_accelerate);
@@ -181,7 +205,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
       ...item,
       is_accelerate: type === "off" ? false : option?.id === item?.id,
     }));
-    console.log(game_arr);
+
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
 
     setAccelOpen(false);
@@ -257,10 +281,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
     onClear(result);
   };
 
-  useEffect(() => {
-    console.log(222);
-  }, [accelTag]);
-
   return (
     <div
       className={`home-module-game-card ${
@@ -271,7 +291,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
       id={id}
     >
       <div className="content-box">
-        <img src={"https://jsq-cdn.yuwenlong.cn/"+gameData?.cover_img} alt={gameData.name} />
+        <img src={gameData?.cover_img} alt={gameData.name} />
         <div
           className="accelerate-content"
           style={gameData?.is_accelerate ? { display: "block" } : {}}
@@ -346,11 +366,15 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
       <BreakConfirmModal
         accelOpen={accelOpen}
         setAccelOpen={setAccelOpen}
-        onConfirm={() => handleExpedite(gameData)}
+        onConfirm={() => {
+          onClear(true);
+          handleExpedite(
+            Object?.keys(accelTag || {})?.length > 0 ? accelTag : gameData
+          );
+        }}
       />
     </div>
   );
 };
 
 export default forwardRef(GameCard);
-

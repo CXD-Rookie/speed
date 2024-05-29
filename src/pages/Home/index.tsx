@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-29 16:11:22
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-29 18:40:38
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -36,7 +36,9 @@ const Home: React.FC = () => {
   const [homeList, setHomeList] = useState([]);
   const [myGamesNum, setMyGamesNum] = useState(0);
   const [accelTag, setAccelTag] = useState({});
-  const [autoAccelerateGame, setAutoAccelerateGame] = useState<Game | null>(null);
+  const [autoAccelerateGame, setAutoAccelerateGame] = useState<Game | null>(
+    null
+  );
 
   const pid = localStorage.getItem("pid");
   const childRef = useRef<any>();
@@ -53,7 +55,7 @@ const Home: React.FC = () => {
     let arr = getMyGames();
 
     setMyGamesNum(arr?.length);
-    console.log("查看mygame是否更新-------------------------")
+    console.log("查看mygame是否更新-------------------------");
     setHomeList(arr?.slice(0, 4));
   };
 
@@ -63,16 +65,19 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (location.state?.autoAccelerate && location.state?.data) {
-      console.log("查看updata是否更新")
+      console.log("查看updata是否更新");
       setAutoAccelerateGame(location.state.data as Game);
       window.history.replaceState({}, document.title); // Remove state from history
       updateData();
       setAccelTag(location?.state?.data);
-  }
+    }
   }, [location]);
 
   useEffect(() => {
-    console.log(`看看游戏的id------------------------------------------------`,autoAccelerateGame)
+    console.log(
+      `看看游戏的id------------------------------------------------`,
+      autoAccelerateGame
+    );
     if (autoAccelerateGame) {
       handleAccelerateClick(autoAccelerateGame);
     }
@@ -80,26 +85,28 @@ const Home: React.FC = () => {
 
   const handleAccelerateClick = (game: Game) => {
     // 查找对应的游戏卡片并触发其加速逻辑
-    console.log("查看game----------",game)
- 
+    console.log("查看game----------", game);
+
     if (game) {
-       // 将自动加速的游戏数据添加到 homeList 中
-       //@ts-ignore
-      setHomeList(prevList => [...prevList, game]);
+      // 将自动加速的游戏数据添加到 homeList 中
+      //@ts-ignore
+      setHomeList((prevList) => [...prevList, game]);
       updateData();
+
       setAccelTag(location?.state?.data);
-       // @ts-ignore
+      // @ts-ignore
       const index = homeList.findIndex((item) => item.id === game.id);
       if (index !== -1) {
         // 触发对应游戏卡片的加速逻辑
-       // document.getElementById(`${game.id}`)?.click();
+        // document.getElementById(`${game.id}`)?.click();
         if (childRef.current) {
           //@ts-ignore
-          console.log("homeList----------",homeList)
-           //@ts-ignore
-          childRef.current.triggerAccelerate();
+          console.log("homeList----------", homeList);
+          //@ts-ignore
+          setAccelTag(location?.state?.data);
+          // childRef.current.triggerAccelerate(location?.state?.data);
         }
-        console.log(`看看id------------------------------------------------`)
+        console.log(`看看id------------------------------------------------`);
       }
     }
   };
@@ -114,7 +121,7 @@ const Home: React.FC = () => {
             gameData={game}
             accelTag={accelTag}
             onClear={() => setStatus(status + 1)}
-                //@ts-ignore
+            //@ts-ignore
             id={`${game.id}`}
           />
         ))}

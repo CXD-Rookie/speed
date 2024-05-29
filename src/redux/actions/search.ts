@@ -27,7 +27,12 @@ export const fetchSearchResults = (query: string, tag?: string, page: number = 1
       console.log('Fetching search results with params:', params);
 
       let response = await searchApi.search(params);
-      const results = response.data.list || []; // 如果 data.list 为 null，则使用空数组
+      let results = response.data.list || []; // 如果 data.list 为 null，则使用空数组
+      console.log(11111111111111, results);
+      
+      results = results.map((item: any) => ({...item, 
+        cover_img: `https://jsq-cdn.yuwenlong.cn/${item?.cover_img}`,
+      }))
 
       dispatch({
         type: FETCH_SEARCH_RESULTS,
