@@ -33,7 +33,7 @@ interface Window {
   NativeApi_OnDragZoneMouseDown: () => void; //鼠标点击事件,放在拖拽区域里面
   NativeApi_OnDragZoneMouseUp: () => void; //鼠标松开事件,放在拖拽区域里面
   NativeApi_MinimumWindow: () => void; //最小化
-  cefQuery: ({}) => void; //不用管
+  cefQuery: () => void; //不用管
 }
 
 const mapStateToProps = (state: any) => ({

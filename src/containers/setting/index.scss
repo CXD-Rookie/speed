@@ -192,12 +192,17 @@
         margin-top: 1.2vh;
       }
 
-      button {
+      .real-name-btn {
         width: 9.6vw;
         height: 4.8vh;
         font-size: 1.4vw;
+        color: #fff;
         background: #f86c34;
         border-radius: 2.4vh;
+        outline: none;
+        text-align: center;
+        line-height: 4.8vh;
+        cursor: pointer;
       }
     }
   }
