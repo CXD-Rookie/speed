@@ -351,7 +351,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
             </Fragment>
           )}
         </div>
-        {isAnimate && gameData?.is_accelerate && (
+        {isAnimate && (
           <div className={"animate-box"}>
             <div className={"animate-text"}>加速中...</div>
             <div

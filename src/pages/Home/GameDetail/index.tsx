@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-29 11:15:47
+ * @LastEditTime: 2024-05-29 19:22:49
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -162,7 +162,7 @@ const GameDetail: React.FC = () => {
 
   const stopSpeed = () => {
     console.log("停止加速---------------");
-    
+
     const requestData = JSON.stringify({
       method: "NativeApi_StopProxy",
       params: null,
@@ -191,10 +191,14 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     let arr = getMyGames();
     let details_arr = arr.filter((item: any) => item?.is_accelerate);
+
     const speedIp = localStorage.getItem("speedIp");
     const speedInfoString = localStorage.getItem("speedInfo");
     const speedInfo = speedInfoString ? JSON.parse(speedInfoString) : null;
-    console.log("我的游戏总数据", arr);
+
+    let new_arr =
+      // arr.filter((item: any) => item?.is)
+      console.log("我的游戏总数据", arr);
     console.log("当前加速游戏数据", details_arr);
     console.log("speedInfo全部信息", speedInfo);
     // const displayValue = lostBag === 0 ? 0 : lostBag - 1;
@@ -227,6 +231,14 @@ const GameDetail: React.FC = () => {
     const speedIp = localStorage.getItem("speedIp");
     const speedInfoString = localStorage.getItem("speedInfo");
     const speedInfo = speedInfoString ? JSON.parse(speedInfoString) : null;
+
+    let details_arr_index = arr.findIndex((item: any) => item?.is_accelerate);
+    let elementToMove = arr.splice(details_arr_index, 1)[0]; // splice返回被删除的元素数组，所以我们使用[0]来取出被删除的元素
+
+    // 将取出的元素插入到位置1
+    arr.splice(0, 0, elementToMove);
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+
     console.log("我的游戏总数据", arr);
     console.log("当前加速游戏数据", details_arr);
     console.log("speedInfo全部信息", speedInfo);
