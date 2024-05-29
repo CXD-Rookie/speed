@@ -84,71 +84,73 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     // onCancel();
   };
 
-//   const handleSuitDomList = async () => {
-//     try {
-//       let res = await playSuitApi.playSpeedList({
-//         platform: 3,
-//         nid: selectedRegion,
-//       });
-//       console.log("获取节点列表", res);
-  
-//       // 给每一项添加 delay, lostBag 和 type 属性
-//       const modifiedData = res?.data.map((item:any) => ({
-//         ...item,
-//         delay: 9999,
-//         packetLoss: 10,
-//         mode: "进程模式",
-//       }));
-  
-//       setRegionDomList(modifiedData || []);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
+  //   const handleSuitDomList = async () => {
+  //     try {
+  //       let res = await playSuitApi.playSpeedList({
+  //         platform: 3,
+  //         nid: selectedRegion,
+  //       });
+  //       console.log("获取节点列表", res);
 
-const handleSuitDomList = async () => {
+  //       // 给每一项添加 delay, lostBag 和 type 属性
+  //       const modifiedData = res?.data.map((item:any) => ({
+  //         ...item,
+  //         delay: 9999,
+  //         packetLoss: 10,
+  //         mode: "进程模式",
+  //       }));
+
+  //       setRegionDomList(modifiedData || []);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  const handleSuitDomList = async () => {
     try {
       let res = await playSuitApi.playSpeedList({
         platform: 3,
         nid: selectedRegion,
       });
       console.log("获取节点列表", res);
-  
+
       const nodes = res?.data || [];
-  
+
       // 创建一个新的Promise数组，以便等待所有异步操作完成
-      const updatedNodes = await Promise.all(nodes.map(async (node: any) => {
-        const requestData = JSON.stringify({
-          method: "NativeApi_GetIpDelayByICMP",
-          params: { ip: node.ip },
-        });
-  
-        return new Promise<any>((resolve, reject) => {
-          (window as any).cefQuery({
-            request: requestData,
-            onSuccess: (response: any) => {
-              console.log("Response from C++:", response);
-              const jsonResponse = JSON.parse(response);
-              resolve({
-                ...node,
-                delay: jsonResponse.delay,
-                packetLoss: 10,
-                mode: "进程模式",
-              });
-            },
-            onFailure: (errorCode: any, errorMessage: any) => {
-              console.error("Query failed:", errorMessage);
-              resolve({
-                ...node,
-                delay: 9999, // 处理失败的情况，设为9999
-                packetLoss: 10,
-                mode: "进程模式",
-              });
-            },
+      const updatedNodes = await Promise.all(
+        nodes.map(async (node: any) => {
+          const requestData = JSON.stringify({
+            method: "NativeApi_GetIpDelayByICMP",
+            params: { ip: node.ip },
           });
-        });
-      }));
-  
+
+          return new Promise<any>((resolve, reject) => {
+            (window as any).cefQuery({
+              request: requestData,
+              onSuccess: (response: any) => {
+                console.log("Response from C++:", response);
+                const jsonResponse = JSON.parse(response);
+                resolve({
+                  ...node,
+                  delay: jsonResponse.delay,
+                  packetLoss: 10,
+                  mode: "进程模式",
+                });
+              },
+              onFailure: (errorCode: any, errorMessage: any) => {
+                console.error("Query failed:", errorMessage);
+                resolve({
+                  ...node,
+                  delay: 9999, // 处理失败的情况，设为9999
+                  packetLoss: 10,
+                  mode: "进程模式",
+                });
+              },
+            });
+          });
+        })
+      );
+
       // 更新 state
       //@ts-ignore
       setRegionDomList(updatedNodes);
@@ -156,7 +158,6 @@ const handleSuitDomList = async () => {
       console.log(error);
     }
   };
-  
 
   // 切换tab
   const handleTabsChange = (e: any) => {
@@ -188,8 +189,8 @@ const handleSuitDomList = async () => {
       className="region-node-selector"
       open={visible}
       title="区服、节点选择"
-      width={676}
       destroyOnClose
+      width={"67.6vw"}
       centered
       footer={null}
       onCancel={onCancel}
