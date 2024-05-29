@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-24 16:37:01
+ * @LastEditTime: 2024-05-29 15:43:14
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -33,7 +33,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         open={isOpen}
         onCancel={onClose}
         title="系统设置"
-        width={676}
+        width={"67.6vw"}
         centered
         footer={null}
       >
@@ -92,9 +92,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   <div>未认证</div>
                 </div>
                 {!isAccreditation && (
-                  <Button type="primary" onClick={() => setIsRealOpen(true)}>
+                  <div
+                    className="real-name-btn"
+                    onClick={() => setIsRealOpen(true)}
+                  >
                     实名认证
-                  </Button>
+                  </div>
                 )}
               </div>
               <div className="info-box info-flex">
@@ -102,7 +105,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                   <label>会员到期时间</label>
                   <div>非会员</div>
                 </div>
-                <Button type="primary">充值</Button>
+                <div className="real-name-btn">充值</div>
               </div>
             </div>
           </TabPane>

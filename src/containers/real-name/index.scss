@@ -1,8 +1,9 @@
 .real-name-modal {
   .ant-modal-content {
-    height: 500px;
+    width: 67.6vw;
+    height: 75vh;
     background-color: #3e3e4a;
-    padding: 12px 16px;
+    padding: 1.2vw 2.4vh;
   }
 
   .ant-modal-header {
@@ -11,78 +12,82 @@
   }
 
   .ant-modal-close {
-    width: 12px;
-    height: 12px;
-    right: 12px;
-    top: 12px;
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
   }
 
   .ant-modal-title,
   .ant-modal-close-x {
     opacity: 0.5;
-    font-size: 12px;
+    font-size: 1.2vw;
     font-weight: Regular;
     color: #ffffff;
   }
 
   .real-modal-content {
-    margin-top: 9px;
-    padding: 16px 18px;
+    margin-top: 1.35vh;
+    padding: 2.4vh 1.8vw;
     position: relative;
 
     .modal-content-text {
-      font-size: 14px;
+      font-size: 1.4vw;
       font-weight: Regular;
       color: #999999;
     }
 
     .modal-content-input-box {
-      margin-top: 33px;
+      margin-top: 4.9vh;
       position: relative;
 
       & div {
-        font-size: 14px;
+        font-size: 1.4vw;
         font-weight: Regular;
         color: #999999;
-        line-height: 20px;
+        line-height: 3vh;
       }
 
       & input {
-        width: 368px;
-        height: 32px;
-        font-size: 12px;
+        width: 36.8vw;
+        height: 4.8vh;
+        font-size: 1.2vw;
         color: #fff;
         background: rgba(255,255,255,0.10);
         border: none;
-        border-radius: 5px;
-        margin-top: 8px;
+        border-radius: 0.75vh;
+        margin-top: 0.8vh;
 
         &::placeholder {
-          font-size: 12px;
+          font-size: 1.2vw;
           color: #fff;
         }
       }
 
       .error-tootip {
-        font-size: 10px;
+        font-size: 1vw;
         font-weight: Regular;
         color: #ff0000;
         line-height: 18px;
         position: absolute;
-        left: 4px;
-        top: 62px;
+        left: 0.4vw;
+        top: 9.3vh;
       }
     }
 
     .modal-content-btn {
-      width: 185px;
-      height: 44px;
-      font-size: 18px;
+      width: 18.5vw;
+      height: 6.6vh;
+      font-size: 1.8vw;
       color: #fff;
       background: rgba(255,255,255,0.10);
-      margin: 150px 0 0 211px;
-      border-radius: 22px;
+      margin: 15vw 0 0 31.5vh;
+      border-radius: 3.3vh;
       border: none;
+
+      &:hover, &:active {
+        background-color: rgba(255,255,255,0.10);
+      }
     }
   }
 
@@ -93,30 +98,30 @@
 
     & p {
       opacity: 0.5;
-      font-size: 14px;
+      font-size: 1.4vw;
       font-weight: Regular;
       text-align: center;
       color: #ffffff;
-      line-height: 20px;
-      margin-top: 12px;
+      line-height: 3vh;
+      margin-top: 1.8vh;
     }
 
     .real-sueccess-btn {
-      width: 185px;
-      height: 44px;
-      font-size: 16px;
+      width: 18.5vw;
+      height: 6.6vh;
+      font-size: 1.6vw;
       font-weight: Regular;
       color: #ffffff;
       background: #f86c34;
-      border-radius: 22px;
+      border-radius: 3.3vh;
       border: none;
-      margin-top: 37px;
+      margin-top: 5.5vh;
     }
   }
 
   .real-error-modal-content {
     & p {
-      width: 320px;
+      width: 32vw;
       text-align: center;
       margin: 0 auto;
     }

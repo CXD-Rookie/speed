@@ -167,7 +167,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
       open={isRealOpen}
       destroyOnClose
       title="实名认证"
-      width={676}
+      width={"67.6vw"}
       centered
       footer={null}
       onCancel={onClose}

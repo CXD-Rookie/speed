@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import { connect,useDispatch,useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
-import { setIsLogin } from './redux/actions/auth';
+import { setIsLogin } from "./redux/actions/auth";
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
@@ -33,7 +33,7 @@ interface Window {
   NativeApi_OnDragZoneMouseDown: () => void; //鼠标点击事件,放在拖拽区域里面
   NativeApi_OnDragZoneMouseUp: () => void; //鼠标松开事件,放在拖拽区域里面
   NativeApi_MinimumWindow: () => void; //最小化
-  cefQuery: ({}) => void; //不用管
+  cefQuery: () => void; //不用管
 }
 
 const mapStateToProps = (state: any) => ({
@@ -244,7 +244,6 @@ const App: React.FC = (props: any) => {
               </div>
             )}
             <Dropdown
-              overlayClassName={"dropdown-overlay"}
               menu={{ items }}
               placement="bottomRight"
               trigger={["click"]}
@@ -285,7 +284,10 @@ const App: React.FC = (props: any) => {
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
       />
-      {showIssueModal && <IssueModal />}
+      <IssueModal
+        showIssueModal={showIssueModal}
+        onClose={() => setShowIssueModal(false)}
+      />
     </Layout>
   );
 };

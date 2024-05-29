@@ -1,8 +1,9 @@
 .system-setting {
   .ant-modal-content {
-    height: 500px;
+    width: 67.6vw;
+    height: 75vh;
     background-color: #3e3e4a;
-    padding: 12px 16px;
+    padding: 1.2vw 2.4vh;
   }
 
   .ant-modal-header {
@@ -11,30 +12,30 @@
   }
 
   .ant-modal-close {
-    width: 12px;
-    height: 12px;
-    right: 12px;
-    top: 12px;
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
   }
 
   .ant-modal-title,
   .ant-modal-close-x {
     opacity: 0.5;
-    font-size: 12px;
+    font-size: 1.2vw;
     font-weight: Regular;
     color: #ffffff;
   }
 
   .ant-tabs {
     width: 100%;
-    height: 436px;
+    height: 65.7vh;
   }
 
   .ant-tabs-ink-bar {
-    width: 20px !important;
-    height: 3px !important;
+    width: 2vw !important;
+    height: 0.3vh !important;
     background: #f86c34;
-    border-radius: 2px !important;
+    border-radius: 0.2vw !important;
   }
 
   .ant-tabs-nav::before {
@@ -42,12 +43,12 @@
   }
 
   .ant-tabs-nav-wrap {
-    height: 40px;
+    height: 6vh;
   }
 
   .ant-tabs-nav-list {
     margin: 0 auto;
-    column-gap: 200px;
+    column-gap: 20vw;
   }
 
   :where(.css-dev-only-do-not-override-usln0u).ant-tabs
@@ -57,36 +58,38 @@
   }
 
   .ant-tabs-tab {
-    font-size: 20px;
+    font-size: 2vw;
     color: #999;
   }
 
   .tab-content {
-    margin-top: 9px;
-    padding: 0 16px 8px 16px;
+    margin-top: 1.35vh;
+    padding: 0 1.6vw 1.2vh 1.6vw;
     position: relative;
 
     .setting-item {
-      margin-bottom: 28px;
+      margin-bottom: 4.2vh;
 
       .item-title {
-        font-size: 14px;
+        font-size: 1.4vw;
         font-weight: Regular;
         text-align: left;
         color: #999999;
-        line-height: 20px;
+        line-height: 3vh;
       }
 
       .item-content {
         color: #fff;
-        margin-top: 8px;
+        margin-top: 1.2vh;
         display: flex;
         align-items: center;
-        column-gap: 40px;
+        column-gap: 4vw;
 
         & span {
           display: flex;
-          column-gap: 8px;
+          align-items: center;
+          column-gap: 0.8vw;
+          font-size: 1.4vw;
 
           .ant-switch {
             background-color: #999;
@@ -99,50 +102,55 @@
       }
 
       .off-item-content {
+        font-size: 1.4vw;
         color: #fff;
-        margin-top: 8px;
+        margin-top: 1.2vh;
 
         :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
+          font-size: 1.4vw;
           color: #fff !important;
-          margin-inline-end: 38px !important;
+          margin-inline-end: 3.8vw !important;
         }
 
         .ant-radio-checked .ant-radio-inner {
+          font-size: 1.4vw;
           background-color: #f86c34;
         }
       }
 
       .regard-item-content {
+        font-size: 1.4vw;
         color: #fff;
-        margin-top: 8px;
+        margin-top: 1.2vh;
 
         & button {
-          width: 96px;
-          height: 32px;
+          width: 9.6vw;
+          height: 4.8vh;
+          font-size: 1.4vw;
           color: #fff;
           background: rgba(255,255,255,0.10);
-          border-radius: 16px;
+          border-radius: 2.4vh;
           border: none;
           outline: none;
-          margin-left: 21px;
+          margin-left: 2.1vw;
         }
       }
     }
 
     .protocols {
       position: absolute;
-      top: 350px;
-      left: 16px;
+      top: 52.5vh;
+      left: 1.6vw;
 
       & span {
-        height: 20px;
-        font-size: 14px;
+        height: 2vw;
+        font-size: 1.4vw;
         font-weight: Regular;
         text-decoration: underline;
         text-align: left;
         color: #999999;
-        line-height: 20px;
-        margin-right: 20px;
+        line-height: 3vh;
+        margin-right: 2vw;
         cursor: pointer;
       }
     }
@@ -150,12 +158,18 @@
     .tab-avatar {
       width: 100%;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 1.8vh;
       position: relative;
+
+      .ant-avatar {
+        width: 5.7vw !important;
+        height: 5.7vw !important;
+      }
 
       .avatar-name {
         color: #fff;
-        margin-top: 8px;
+        font-size: 1.4vw;
+        margin-top: 1.2vh;
       }
     }
 
@@ -166,7 +180,8 @@
     }
 
     .info-box {
-      margin-top: 28px;
+      font-size: 1.4vw;
+      margin-top: 4.2vh;
 
       label {
         color: #999;
@@ -174,14 +189,20 @@
 
       div {
         color: #fff;
-        margin-top: 8px;
+        margin-top: 1.2vh;
       }
 
-      button {
-        width: 96px;
-        height: 32px;
+      .real-name-btn {
+        width: 9.6vw;
+        height: 4.8vh;
+        font-size: 1.4vw;
+        color: #fff;
         background: #f86c34;
-        border-radius: 16px;
+        border-radius: 2.4vh;
+        outline: none;
+        text-align: center;
+        line-height: 4.8vh;
+        cursor: pointer;
       }
     }
   }
