@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-29 16:45:50
+ * @LastEditTime: 2024-05-29 18:40:38
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -86,13 +86,13 @@ const Home: React.FC = () => {
   const handleAccelerateClick = (game: Game) => {
     // 查找对应的游戏卡片并触发其加速逻辑
     console.log("查看game----------", game);
-    console.log(game);
 
     if (game) {
       // 将自动加速的游戏数据添加到 homeList 中
       //@ts-ignore
       setHomeList((prevList) => [...prevList, game]);
       updateData();
+
       setAccelTag(location?.state?.data);
       // @ts-ignore
       const index = homeList.findIndex((item) => item.id === game.id);
@@ -103,7 +103,8 @@ const Home: React.FC = () => {
           //@ts-ignore
           console.log("homeList----------", homeList);
           //@ts-ignore
-          childRef.current.triggerAccelerate();
+          setAccelTag(location?.state?.data);
+          // childRef.current.triggerAccelerate(location?.state?.data);
         }
         console.log(`看看id------------------------------------------------`);
       }

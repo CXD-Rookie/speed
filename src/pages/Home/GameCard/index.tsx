@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-29 16:40:12
+ * @LastEditTime: 2024-05-29 18:54:53
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -53,7 +53,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   const {
     gameData = {},
     type = "home",
-    accelTag,
+    accelTag = {},
     onClear = () => {},
     id,
   } = props;
@@ -68,10 +68,19 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   const pid = localStorage.getItem("pid");
 
   useImperativeHandle(ref, () => ({
-    triggerAccelerate: () => {
-      handleAccelerateClick(accelTag);
+    triggerAccelerate: (e: any) => {
+      handleAccelerateClick(e);
     },
   }));
+
+  useEffect(() => {
+    if (
+      Object.keys(accelTag || {})?.length > 0 &&
+      (accelTag as any)?.id === gameData?.id
+    ) {
+      handleAccelerateClick(accelTag);
+    }
+  }, [accelTag]);
 
   const handleSuitDomList = async (t: any) => {
     try {
@@ -172,6 +181,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   // 立即加速
   const handleAccelerateClick = (option: any) => {
     console.log("option 游戏数据", option);
+    console.log(option, gameData);
 
     if (token) {
       let is_true = getMyGames().some((item: any) => item?.is_accelerate);
@@ -195,7 +205,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       ...item,
       is_accelerate: type === "off" ? false : option?.id === item?.id,
     }));
-    console.log(game_arr);
+
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
 
     setAccelOpen(false);
@@ -271,8 +281,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
     onClear(result);
   };
 
-  console.log(gameData);
-
   return (
     <div
       className={`home-module-game-card ${
@@ -343,7 +351,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
             </Fragment>
           )}
         </div>
-        {isAnimate && (
+        {isAnimate && gameData?.is_accelerate && (
           <div className={"animate-box"}>
             <div className={"animate-text"}>加速中...</div>
             <div
@@ -358,7 +366,12 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       <BreakConfirmModal
         accelOpen={accelOpen}
         setAccelOpen={setAccelOpen}
-        onConfirm={() => handleExpedite(gameData)}
+        onConfirm={() => {
+          onClear(true);
+          handleExpedite(
+            Object?.keys(accelTag || {})?.length > 0 ? accelTag : gameData
+          );
+        }}
       />
     </div>
   );
