@@ -1,15 +1,14 @@
-
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-22 14:34:24
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-28 20:19:10
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-29 17:00:45
  * @FilePath: \speed\src\containers\searchBar\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchSearchResults } from "../../redux/actions/search";
@@ -33,12 +32,13 @@ const SearchBar: React.FC = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
+
     dispatch(fetchSearchResults(searchQuery));
     setShowDropdown(!!searchQuery);
   };
 
   const handleSearchResultClick = (option: any) => {
-    console.log("触发游戏添加--------------")
+    console.log("触发游戏添加--------------");
     // 获取当前的我的游戏列表
     let myGames = getMyGames();
 
@@ -50,11 +50,13 @@ const SearchBar: React.FC = () => {
       myGames.unshift(option);
 
       // 更新本地存储
-      localStorage.setItem('speed-1.0.0.1-games', JSON.stringify(myGames));
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(myGames));
     }
 
     // 跳转到首页并触发自动加速autoAccelerate
-    navigate('/home', { state: { isNav: true, data: option, autoAccelerate: true } });
+    navigate("/home", {
+      state: { isNav: true, data: option, autoAccelerate: true },
+    });
   };
 
   const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -72,7 +74,7 @@ const SearchBar: React.FC = () => {
         onChange={handleSearch}
         onFocus={() => setShowDropdown(true)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-        onKeyDown={handleEnterKeyPress} 
+        onKeyDown={handleEnterKeyPress}
       />
       {showDropdown && results.length > 0 && (
         <div className="search-dropdown">

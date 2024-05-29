@@ -1,14 +1,19 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-29 16:29:02
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-29 16:40:12
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
 // 在 GameCard 组件中添加一个暴露的方法，例如 useImperativeHandle 和 forwardRef
-import React, { useEffect, useState, useImperativeHandle, forwardRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
@@ -41,8 +46,17 @@ export interface GameCardProps {
   id?: string;
 }
 
-const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref) => {
-  const { gameData = {}, type = "home", accelTag, onClear = () => {}, id } = props;
+const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
+  props,
+  ref
+) => {
+  const {
+    gameData = {},
+    type = "home",
+    accelTag,
+    onClear = () => {},
+    id,
+  } = props;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
@@ -257,9 +271,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
     onClear(result);
   };
 
-  useEffect(() => {
-    console.log(222);
-  }, [accelTag]);
+  console.log(gameData);
 
   return (
     <div
@@ -271,7 +283,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
       id={id}
     >
       <div className="content-box">
-        <img src={"https://jsq-cdn.yuwenlong.cn/"+gameData?.cover_img} alt={gameData.name} />
+        <img src={gameData?.cover_img} alt={gameData.name} />
         <div
           className="accelerate-content"
           style={gameData?.is_accelerate ? { display: "block" } : {}}
@@ -353,4 +365,3 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (props, ref
 };
 
 export default forwardRef(GameCard);
-
