@@ -35,19 +35,38 @@ const payTypeMap: { [key: number]: string } = {
 
 const PaymentModal: React.FC<PayModalProps> = (props) => {
   const { open, info, setOpen = () => {} } = props;
+  console.log(open);
 
   return (
-    <Modal open={open} onCancel={() => setOpen(null)} footer={null}>
+    <Modal
+      className="payment-module"
+      open={open}
+      title="会员订单"
+      width={"40vw"}
+      centered
+      onCancel={() => setOpen(null)}
+      footer={null}
+    >
       <div className="popup-content">
         {info && (
           <>
-            <p>订单编号: {info.pay_order}</p>
-            <p>充值账号: {"18888888888888"}</p>
-            <p>支付类型: {payTypeMap[info.pay_type] || "其他"}</p>
-            <p>支付金额: ¥{info.price}</p>
+            <p>
+              订单编号:
+              <span>{info?.pay_order}</span>
+            </p>
+            <p>
+              充值账号<span>{"18888888888888"}</span>
+            </p>
+            <p>
+              支付类型<span>{payTypeMap?.[info?.pay_type] || "其他"}</span>
+            </p>
+            <p>
+              支付金额<span>{info?.price}</span>
+            </p>
           </>
         )}
-        <button onClick={() => setOpen(null)}>showPopup</button>
+
+        <button onClick={() => setOpen(null)}>已完成支付</button>
       </div>
     </Modal>
   );
