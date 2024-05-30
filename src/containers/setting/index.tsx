@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-30 16:59:41
+ * @LastEditTime: 2024-05-30 18:08:24
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -82,39 +82,41 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           </TabPane>
-          <TabPane tab="账户设置" key="account">
-            <div className="tab-content">
-              <div className="tab-avatar">
-                <Avatar size={57} src="path/to/avatar.jpg" />
-                <div className="avatar-name">头像名称</div>
-              </div>
-              <div className="info-box">
-                <label>手机号:</label>
-                <div>159****2022</div>
-              </div>
-              <div className="info-box info-flex">
-                <div className="info-left">
-                  <label>实名认证</label>
-                  <div>未认证</div>
-                </div>
-                {!isAccreditation && (
-                  <div
-                    className="real-name-btn"
-                    onClick={() => dispatch(openRealNameModal())}
-                  >
-                    实名认证
-                  </div>
-                )}
-              </div>
-              <div className="info-box info-flex">
-                <div className="info-left">
-                  <label>会员到期时间</label>
-                  <div>非会员</div>
-                </div>
-                <div className="real-name-btn">充值</div>
-              </div>
+          {token && (
+        <TabPane tab="账户设置" key="account">
+          <div className="tab-content">
+            <div className="tab-avatar">
+              <Avatar size={57} src="path/to/avatar.jpg" />
+              <div className="avatar-name">头像名称</div>
             </div>
-          </TabPane>
+            <div className="info-box">
+              <label>手机号:</label>
+              <div>159****2022</div>
+            </div>
+            <div className="info-box info-flex">
+              <div className="info-left">
+                <label>实名认证</label>
+                <div>未认证</div>
+              </div>
+              {!isAccreditation && (
+                <div
+                  className="real-name-btn"
+                  onClick={() => dispatch(openRealNameModal())}
+                >
+                  实名认证
+                </div>
+              )}
+            </div>
+            <div className="info-box info-flex">
+              <div className="info-left">
+                <label>会员到期时间</label>
+                <div>非会员</div>
+              </div>
+              <div className="real-name-btn">充值</div>
+            </div>
+          </div>
+            </TabPane>
+          )}
         </Tabs>
       </Modal>
       <RealNameModal />

@@ -29,6 +29,12 @@ class LoginApi {
       `${this.url}/user/authentication?platform=${parmas?.platform}`, parmas
     );
   }
+
+  loginOut (params) {
+    const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/user/loginout?platform=3`);
+  }
+
 }
 
 const loginApi = new LoginApi();
