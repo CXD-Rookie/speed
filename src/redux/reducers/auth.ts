@@ -1,12 +1,13 @@
 // reducers/auth.ts
 
-import { LOGIN_SUCCESS, LOGOUT, SET_IS_LOGIN, OPEN_REAL_NAME_MODAL, CLOSE_REAL_NAME_MODAL} from '../actions/auth';
+import { LOGIN_SUCCESS, LOGOUT, SET_IS_LOGIN, OPEN_REAL_NAME_MODAL, CLOSE_REAL_NAME_MODAL,OPEN_PAY_MODAL,CLOSE_PAY_MODAL} from '../actions/auth';
 
 const initialState = {
   isAuthenticated: false,
   token: null,
   isLogin:false,
   isRealOpen: false,
+  isPayOpen:false,
 };
 
 const authReducer = (state = initialState, action:any) => {
@@ -37,6 +38,16 @@ const authReducer = (state = initialState, action:any) => {
       return {
         ...state,
         isRealOpen: false,
+      };
+    case OPEN_PAY_MODAL:
+      return {
+        ...state,
+        isPayOpen: true,
+      };
+    case CLOSE_PAY_MODAL:
+      return {
+        ...state,
+        isPayOpen: false,
       };
     default:
       return state;

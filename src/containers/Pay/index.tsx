@@ -45,6 +45,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [showPopup, setShowPopup] = useState<string | null>(null);
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
 
+  // const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  // const dispatch = useDispatch();
+
+  // const handleClose = () => {
+  //   dispatch(closeRealNameModal());
+  // };
+
+
   const payTypeMap: { [key: number]: string } = {
     1: "包月",
     2: "包季",
