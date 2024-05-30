@@ -54,15 +54,13 @@
         column-gap: 2vw;
 
         .login-enroll-text {
-          // height: 6vh;
           font-size: 1.4vw;
           cursor: pointer;
-          // line-height: 8vh;
         }
 
-        img {
-          width: 1.2vw;
-          height: 1.8vh;
+        .ant-avatar, img {
+          width: 2vw;
+          height: 2vw;
           cursor: pointer;
         }
       }

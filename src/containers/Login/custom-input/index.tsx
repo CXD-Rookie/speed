@@ -25,7 +25,7 @@ const CustomInput: React.FC<InputProps> = (props) => {
       <div className="prefix">{prefix}</div>
       <input
         className={"input-com"}
-        style={suffix ? { width: countdown > 0 ? "240px" : "270px" } : {}}
+        style={suffix ? { width: countdown > 0 ? "12vw" : "15vw" } : {}}
         type="text"
         placeholder={placeholder}
         value={value}

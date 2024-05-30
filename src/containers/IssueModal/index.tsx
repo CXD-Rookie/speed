@@ -93,6 +93,21 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
     }
   };
 
+  useEffect(() => {
+    window.addEventListener("message", function (event) {
+      if (event.origin !== "http://192.168.111.114:3001") {
+        return;
+      }
+
+      // 处理来自 iframe 的消息
+      const message = event.data;
+      console.log(message);
+      if (message.type === "GREETING") {
+        onClose();
+      }
+    });
+  }, []);
+
   return (
     <Modal
       className="overlay"

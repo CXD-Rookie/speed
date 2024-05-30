@@ -1,14 +1,14 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-09 17:55:10
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-21 20:24:48
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-30 15:38:14
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\Login\captcha\index.tsx
  */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState } from "react";
+import React from "react";
 import { useEffect } from "react";
 
 import "./index.scss";
