@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-29 18:40:38
+ * @LastEditTime: 2024-05-30 17:02:19
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -154,8 +154,8 @@ const Home: React.FC = () => {
         )}
       </div>
       <div className="functional-areas">
-        <div className="membership-recharge areas-list-box">
-          <img onClick={openModal} src={rechargeIcon} alt="" />
+        <div className="membership-recharge areas-list-box" onClick={openModal}>
+          <img src={rechargeIcon} alt="" />
           会员充值
           {isModalOpen && (
             <div className="modal-overlay">
