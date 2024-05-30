@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-29 15:43:14
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-30 16:59:41
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -12,6 +12,8 @@ import { Modal, Tabs, Button, Avatar, Switch, Radio } from "antd";
 
 import "./index.scss";
 import RealNameModal from "../real-name";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLogin, openRealNameModal, closeRealNameModal } from '@/redux/actions/auth';
 
 const { TabPane } = Tabs;
 
@@ -25,6 +27,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
   const [isAccreditation, setIsAccreditation] = useState(false); // 是否认证
   const [isRealOpen, setIsRealOpen] = useState(false); // 实名认证弹窗框
+
+  const token = localStorage.getItem("token");
+  const isRealNamel = localStorage.getItem("isRealName")
+  const dispatch = useDispatch();
 
   return (
     <Fragment>
@@ -94,7 +100,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                 {!isAccreditation && (
                   <div
                     className="real-name-btn"
-                    onClick={() => setIsRealOpen(true)}
+                    onClick={() => dispatch(openRealNameModal())}
                   >
                     实名认证
                   </div>
@@ -111,7 +117,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
           </TabPane>
         </Tabs>
       </Modal>
-      <RealNameModal isRealOpen={isRealOpen} setIsRealOpen={setIsRealOpen} />
+      <RealNameModal />
     </Fragment>
   );
 };

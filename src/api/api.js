@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-24 10:55:34
+ * @LastEditTime: 2024-05-30 16:38:17
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -28,8 +28,7 @@ instance.interceptors.request.use(
 
     config.headers.client_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY2xpZW50X2lwIjoiMTI3LjAuMC4xIiwiZXhwIjoxNzE5NjMxOTI4fQ.r_n6n8fbRxpSNVr3R5DaHYh5plUu10SXPa6fYstsdRk';
     config.headers.client_id = 'rdfgsdf-amfhft-mfmertaa-adfadfgds-gdfsgf';
-    config.headers.user_token= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXIiOiIiLCJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY3JlYXRlX3RpbWUiOjE3MTYyOTM4MTksImV4cCI6MTcxOTYzMTk4MiwiaWQiOiI2NjRjOTBiYmZhNzc4OGU1OTc0YmI4OWEiLCJsb2dpbl9pcCI6IjEyNy4wLjAuMSIsIm5pY2tuYW1lIjoi5pyI5LmL6Kej6K-76ICFIiwicGhvbmUiOiI4ZjBmM2M1YTdmMTJmYmE2MTMxMWE4ZDBmNDBjNjY3NSIsInBsYXRmb3JtIjoiV2luZG93cyIsInVwZGF0ZV90aW1lIjoxNzE3MDM5OTgyfQ.SavfhO3W0PTQDTxiWd_LvPJ27UEc-nMnzfSwReD9LuA"
-    // if (token) {
+    config.headers.user_token= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXIiOiIiLCJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY3JlYXRlX3RpbWUiOjE3MTYyOTM4MTksImV4cCI6MTcxOTY1MDE5NCwiaWQiOiI2NjRjOTBiYmZhNzc4OGU1OTc0YmI4OWEiLCJpc192aXAiOmZhbHNlLCJsb2dpbl9pcCI6IjEyNy4wLjAuMSIsIm5pY2tuYW1lIjoi5pyI5LmL6Kej6K-76ICFIiwicGhvbmUiOiI4ZjBmM2M1YTdmMTJmYmE2MTMxMWE4ZDBmNDBjNjY3NSIsInBsYXRmb3JtIjoiV2luZG93cyIsInVwZGF0ZV90aW1lIjoxNzE3MDU4MTk0LCJ2aXBfZXhwaXJhdGlvbl90aW1lIjoxNzIyMzY5NjAwLCJ2aXBfbGV2ZWwiOjF9.9xasUrkvNjvReRY2pShQQyBva10NtFnYeBbmC-jhPe8"
     //   config.headers.user_token = `Bearer ${token}`;
     // } else {
     //   // 如果没有 token，则跳转到登录页
