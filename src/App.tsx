@@ -71,14 +71,32 @@ const App: React.FC = (props: any) => {
     },
   ];
  
+  const loginOutStop = async() =>{
+    const requestData = JSON.stringify({
+      method: "NativeApi_StopProxy",
+      params: null,
+    });
+    (window as any).cefQuery({
+      request: requestData,
+      onSuccess: (response: any) => {
+        console.log("停止加速----------:", response);
+        loginOut()
+      },
+      onFailure: (errorCode: any, errorMessage: any) => {
+        console.error("加速失败 failed:", errorMessage);
+      },
+    });
+  }
 
   const loginOut = async() =>{
     console.log("退出")
+    console.log("stop speed--------------------------");
     let res = await loginApi.loginOut()
     if(res.error === 0 ) {
       console.log("退出成功")
       localStorage.removeItem("token")
       localStorage.removeItem("isRealName")
+      localStorage.removeItem("isLogin")
       navigate("/home")
     }
     
@@ -108,7 +126,7 @@ const App: React.FC = (props: any) => {
     },
     {
       key: "3",
-      label: <div className="public-style" onClick={loginOut}>退出登录</div>,
+      label: <div className="public-style" onClick={loginOutStop}>退出登录</div>,
     },
   ];
   // 点击菜单
@@ -186,8 +204,7 @@ const App: React.FC = (props: any) => {
   }, [location]);
 
   useEffect(() => {
-    const isLogin = localStorage.getItem("isLogin");
-
+console.log(isLogin,"isLogin-----------")
     if (isLogin === "true") {
       // setIsLogin(true);
       dispatch(setIsLogin(true));
@@ -246,7 +263,7 @@ const App: React.FC = (props: any) => {
             onMouseDown={stopPropagation}
             onMouseUp={stopPropagation}
           >
-            {isRealityLogin ? (
+            {!isLogin ? (
               <CustomDropdown />
             ) : (
               <div

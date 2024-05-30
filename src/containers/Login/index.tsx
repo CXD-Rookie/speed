@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-30 15:36:36
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-30 19:18:23
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -82,15 +82,20 @@ const Login: React.FC<LoginProps> = (_props) => {
       let res = await loginApi.phoneCodeLogin({
         phone: phoneNumber,
         verification_code: verificationCode,
-        platform: 1,
+        platform: 3,
       });
 
       if (res?.error === 0) {
         console.log(res.data, "111111111111111");
-        localStorage.setItem("userInfo", JSON.stringify(res.data));
+        localStorage.setItem("userInfo", JSON.stringify(res.data.user_info));
         localStorage.setItem("token", JSON.stringify(res.data.token));
         localStorage.setItem("isLogin", "true");
-
+        
+        if(res.data.user_info.user_ext === null || res.data.user_info.user_ext.idcard === ""){
+          localStorage.setItem("isRealName","1")
+        }else{
+          localStorage.setItem("isRealName","0")
+        }
         // 处理登录逻辑
         setIsLoginModal(isLoginModal + 1);
 
@@ -100,6 +105,7 @@ const Login: React.FC<LoginProps> = (_props) => {
         if (loginModal) {
           loginModal.style.display = "none";
         }
+        dispatch(setIsLogin(false))
 
         // navigate("/home")
 
