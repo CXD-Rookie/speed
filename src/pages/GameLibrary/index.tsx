@@ -48,13 +48,13 @@ const gamesTitle: GamesTitleProps[] = [
   },
   {
     key: "2",
-    label: "近期推荐",
-    t: "近期推荐",
+    label: "最新推荐",
+    t: "最新推荐",
   },
   {
     key: "3",
-    label: "休闲娱乐",
-    t: "休闲娱乐",
+    label: "吃鸡竞技",
+    t: "吃鸡竞技",
   },
   {
     key: "4",

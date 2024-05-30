@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-28 15:24:42
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-30 15:47:49
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
@@ -16,13 +16,16 @@ import loginApi from "@/api/login";
 import realSucessIcon from "@/assets/images/common/real-sucess.svg";
 import realErrorIcon from "@/assets/images/common/real_error.svg";
 
+import { useDispatch, useSelector } from "react-redux";
+import { openRealNameModal, closeRealNameModal } from '@/redux/actions/auth';
+
 interface SettingsModalProps {
-  isRealOpen: boolean;
-  setIsRealOpen?: (value: boolean) => void;
+  // isRealOpen: boolean;
+  // setIsRealOpen?: (value: boolean) => void;
 }
 
 const RealNameModal: React.FC<SettingsModalProps> = (props) => {
-  const { isRealOpen, setIsRealOpen = () => {} } = props;
+  // const { isRealOpen, setIsRealOpen = () => {} } = props;
 
   // 认证类型 假设 0 - 未填写 1 - 成功 2 - 加速时未成年 3 - 充值时未成年
   const [realType, setRealType] = useState<any>(0);
@@ -35,6 +38,13 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     name: "",
     id: "",
   }); // 身份认证信息
+
+  const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  const dispatch = useDispatch();
+
+  const handleClose = () => {
+    dispatch(closeRealNameModal());
+  };
 
   // 姓名是否合法
   function validateName(name: any) {
@@ -117,9 +127,9 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     }
   }
 
-  const onClose = () => {
-    setIsRealOpen(false);
-  };
+  // const onClose = () => {
+  //   setIsRealOpen(false);
+  // };
 
   const handleInputChange = (e: any, type: string) => {
     let value = e.target.value;
@@ -147,6 +157,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
           id: true,
         });
         setRealType(1);
+        localStorage.setItem("isRealName","0") //已经实名
       } else if (res?.error === 1) {
         // 认证失败
         setIsRankVerify({
@@ -154,6 +165,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
           id: false,
         });
         setRealType(0);
+        localStorage.setItem("isRealName","1")//没有实名
       }
       console.log(res?.error);
     } catch (error) {
@@ -170,7 +182,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
       width={"67.6vw"}
       centered
       footer={null}
-      onCancel={onClose}
+      onCancel={handleClose}
     >
       {realType === 0 && (
         <div className="real-modal-content">
@@ -206,7 +218,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
         <div className="real-sueccess-modal-content">
           <img src={realSucessIcon} width={69} height={69} alt="" />
           <p>恭喜，实名认证成功</p>
-          <Button className="real-sueccess-btn" onClick={onClose}>
+          <Button className="real-sueccess-btn" onClick={handleClose}>
             好的
           </Button>
         </div>

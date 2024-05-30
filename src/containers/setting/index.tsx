@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-29 15:43:14
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-30 18:08:24
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -12,6 +12,8 @@ import { Modal, Tabs, Button, Avatar, Switch, Radio } from "antd";
 
 import "./index.scss";
 import RealNameModal from "../real-name";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLogin, openRealNameModal, closeRealNameModal } from '@/redux/actions/auth';
 
 const { TabPane } = Tabs;
 
@@ -25,6 +27,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
   const [isAccreditation, setIsAccreditation] = useState(false); // 是否认证
   const [isRealOpen, setIsRealOpen] = useState(false); // 实名认证弹窗框
+
+  const token = localStorage.getItem("token");
+  const isRealNamel = localStorage.getItem("isRealName")
+  const dispatch = useDispatch();
 
   return (
     <Fragment>
@@ -76,42 +82,44 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           </TabPane>
-          <TabPane tab="账户设置" key="account">
-            <div className="tab-content">
-              <div className="tab-avatar">
-                <Avatar size={57} src="path/to/avatar.jpg" />
-                <div className="avatar-name">头像名称</div>
-              </div>
-              <div className="info-box">
-                <label>手机号:</label>
-                <div>159****2022</div>
-              </div>
-              <div className="info-box info-flex">
-                <div className="info-left">
-                  <label>实名认证</label>
-                  <div>未认证</div>
-                </div>
-                {!isAccreditation && (
-                  <div
-                    className="real-name-btn"
-                    onClick={() => setIsRealOpen(true)}
-                  >
-                    实名认证
-                  </div>
-                )}
-              </div>
-              <div className="info-box info-flex">
-                <div className="info-left">
-                  <label>会员到期时间</label>
-                  <div>非会员</div>
-                </div>
-                <div className="real-name-btn">充值</div>
-              </div>
+          {token && (
+        <TabPane tab="账户设置" key="account">
+          <div className="tab-content">
+            <div className="tab-avatar">
+              <Avatar size={57} src="path/to/avatar.jpg" />
+              <div className="avatar-name">头像名称</div>
             </div>
-          </TabPane>
+            <div className="info-box">
+              <label>手机号:</label>
+              <div>159****2022</div>
+            </div>
+            <div className="info-box info-flex">
+              <div className="info-left">
+                <label>实名认证</label>
+                <div>未认证</div>
+              </div>
+              {!isAccreditation && (
+                <div
+                  className="real-name-btn"
+                  onClick={() => dispatch(openRealNameModal())}
+                >
+                  实名认证
+                </div>
+              )}
+            </div>
+            <div className="info-box info-flex">
+              <div className="info-left">
+                <label>会员到期时间</label>
+                <div>非会员</div>
+              </div>
+              <div className="real-name-btn">充值</div>
+            </div>
+          </div>
+            </TabPane>
+          )}
         </Tabs>
       </Modal>
-      <RealNameModal isRealOpen={isRealOpen} setIsRealOpen={setIsRealOpen} />
+      <RealNameModal />
     </Fragment>
   );
 };

@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-05-30 16:57:37
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-05-30 17:38:51
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -30,11 +30,8 @@ instance.interceptors.request.use(
     config.headers.client_id = 'rdfgsdf-amfhft-mfmertaa-adfadfgds-gdfsgf';
     config.headers.user_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXIiOiIiLCJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY3JlYXRlX3RpbWUiOjE3MTYyOTM4MTksImV4cCI6MTcxOTY1MDE5NCwiaWQiOiI2NjRjOTBiYmZhNzc4OGU1OTc0YmI4OWEiLCJpc192aXAiOmZhbHNlLCJsb2dpbl9pcCI6IjEyNy4wLjAuMSIsIm5pY2tuYW1lIjoi5pyI5LmL6Kej6K-76ICFIiwicGhvbmUiOiI4ZjBmM2M1YTdmMTJmYmE2MTMxMWE4ZDBmNDBjNjY3NSIsInBsYXRmb3JtIjoiV2luZG93cyIsInVwZGF0ZV90aW1lIjoxNzE3MDU4MTk0LCJ2aXBfZXhwaXJhdGlvbl90aW1lIjoxNzIyMzY5NjAwLCJ2aXBfbGV2ZWwiOjF9.9xasUrkvNjvReRY2pShQQyBva10NtFnYeBbmC-jhPe8"
     // if (token) {
-    //   config.headers.user_token = `Bearer ${token}`;
-    // } else {
     //   // 如果没有 token，则跳转到登录页
     //   window.location.href = '/login';
-    // }
     return config;
   },
   error => {

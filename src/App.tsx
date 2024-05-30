@@ -13,6 +13,7 @@ import SettingsModal from "./containers/setting/index";
 import IssueModal from "./containers/IssueModal/index";
 import "@/assets/css/App.scss";
 import playSuitApi from "./api/speed";
+import loginApi from "./api/login";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
@@ -69,7 +70,19 @@ const App: React.FC = (props: any) => {
       router: "/gameLibrary",
     },
   ];
+ 
 
+  const loginOut = async() =>{
+    console.log("退出")
+    let res = await loginApi.loginOut()
+    if(res.error === 0 ) {
+      console.log("退出成功")
+      localStorage.removeItem("token")
+      localStorage.removeItem("isRealName")
+      navigate("/home")
+    }
+    
+  }
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -95,7 +108,7 @@ const App: React.FC = (props: any) => {
     },
     {
       key: "3",
-      label: <div className="public-style">退出登录</div>,
+      label: <div className="public-style" onClick={loginOut}>退出登录</div>,
     },
   ];
   // 点击菜单

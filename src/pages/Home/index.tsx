@@ -10,6 +10,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLogin, openRealNameModal, closeRealNameModal } from '@/redux/actions/auth';
 import PayModal from "../../containers/Pay/index";
 import GameCard from "./GameCard";
 import addIcon from "@/assets/images/common/add.svg";
@@ -41,10 +43,33 @@ const Home: React.FC = () => {
   );
 
   const pid = localStorage.getItem("pid");
+  const token = localStorage.getItem("token");
   const childRef = useRef<any>();
+  const isRealNamel = localStorage.getItem("isRealName")
+  const dispatch = useDispatch();
 
+  const handleClose = () => {
+    dispatch(closeRealNameModal());
+  };
+  const handleOpen = () => {
+    dispatch(openRealNameModal());
+  };
+  
   const openModal = () => {
-    setIsModalOpen(true);
+    console.log(111111)
+    if(token){
+      if(isRealNamel === "1"){
+        handleOpen();
+      }else{
+        // handleClose();
+        setIsModalOpen(true);
+      }
+    }else{
+      console.log("没登录")
+      dispatch((setIsLogin(true)));
+    }
+
+    
   };
 
   const closeModal = () => {
