@@ -1,0 +1,57 @@
+.payment-module {
+  .ant-modal-content {
+    height: 42.4vh;
+    background-color: #3e3e4a;
+    padding: 1.2vw 2.4vh;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
+  }
+
+  .ant-modal-title,
+  .ant-modal-close-x {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  .popup-content {
+    color: #999999;
+    padding-top: 4.8vh;
+
+    p {
+      font-size: 1.4vw;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.8vh;
+      padding: 0 0.4vw;
+
+      span {
+        color: #fff;
+      }
+    }
+
+    button {
+      width: 12vw;
+      height: 4.8vh;
+      color: #fff;
+      background: rgba(255,255,255,0.10);
+      border-radius: 2.4vh;
+      font-size: 1.4vw;
+      margin-top: 4.7vh;
+      margin-left: 14vw;
+      border: none;
+      outline: none;
+    }
+  }
+}
