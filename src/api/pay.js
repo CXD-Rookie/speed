@@ -18,6 +18,11 @@ class PayApi {
     // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/pay/qrcode?cid=${params.cid}&user_id=${params.user_id}&key=${params.key}`);
   }
+  getPolling(params) {
+    // const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/pay/order/qrcode_key/polling?platform=3&key=${params.key}`);
+  }
+
 
 }
 
