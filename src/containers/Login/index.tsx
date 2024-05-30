@@ -1,24 +1,25 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-28 21:16:02
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-30 15:36:36
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLogin } from "../../redux/actions/auth";
 
 import Captcha from "./captcha";
 import CustomInput from "./custom-input";
 import loginApi from "@/api/login";
 import "./index.scss";
+
 import clotureIcon from "@/assets/images/common/cloture.svg";
-import loginLogocon from "@/assets/images/common/login-logo.svg";
+import logoIcon from "@/assets/images/common/logo.svg";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
-import { connect,useDispatch,useSelector } from "react-redux";
-import { setIsLogin } from '../../redux/actions/auth';
 
 declare const CefWebInstance: any;
 
@@ -46,7 +47,6 @@ const Login: React.FC<LoginProps> = (_props) => {
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
-
 
   const dispatch = useDispatch();
   const isLogin = useSelector((state: any) => state.auth.isLogin);
@@ -118,8 +118,6 @@ const Login: React.FC<LoginProps> = (_props) => {
   };
 
   const close = async () => {
-    // setIsLogin(true);
-    console.log(11111)
     dispatch(setIsLogin(false));
   };
 
@@ -130,14 +128,7 @@ const Login: React.FC<LoginProps> = (_props) => {
       </div>
       <div className="main">
         <div className="login-logo">
-          <img
-            src={
-              "https://jsq-web.oss-cn-beijing.aliyuncs.com/web/assets/login.png"
-            }
-            width={40}
-            height={40}
-            alt=""
-          />
+          <img src={logoIcon} alt="" />
         </div>
         <div className="login-text">请登录</div>
         <div className="input-group public-input-group">
@@ -145,7 +136,7 @@ const Login: React.FC<LoginProps> = (_props) => {
             placeholder={"请输入手机号码"}
             prefix={
               <div className="custom-prefix-box">
-                <img src={phoneIcon} width={18} height={18} alt="" />
+                <img src={phoneIcon} alt="" />
                 <span>+86</span>
               </div>
             }
@@ -158,7 +149,11 @@ const Login: React.FC<LoginProps> = (_props) => {
           <CustomInput
             placeholder={"请输入验证码"}
             countdown={countdown}
-            prefix={<img src={challengeIcon} width={18} height={18} alt="" />}
+            prefix={
+              <div className="custom-prefix-box">
+                <img src={challengeIcon} alt="" />
+              </div>
+            }
             suffix={
               <div
                 className={`old-verification-code ${
@@ -168,7 +163,7 @@ const Login: React.FC<LoginProps> = (_props) => {
                 }`}
               >
                 {countdown > 0 ? (
-                  `${countdown}s后获取`
+                  `${countdown}s后重新获取`
                 ) : !isPhoneNumberValid ? (
                   "发送验证码"
                 ) : (
