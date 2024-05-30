@@ -97,6 +97,7 @@
             border-top-left-radius: 1vh;
             border-top-right-radius: 1vh;
             resize: none;
+            vertical-align: middle;
         }
 
         .description::-webkit-scrollbar {
@@ -119,7 +120,7 @@
             padding: 1.6vh 1.8vw;
             border-bottom-left-radius: 1vh;
             border-bottom-right-radius: 1vh;
-            margin-top: -0.4vh;
+            vertical-align: middle;
         }
 
         .layui-upload {
@@ -298,7 +299,7 @@
         .sucess-btn {
             width: 14.4vw;
             height: 6.4vh;
-            font-size: 3vw;
+            font-size: 1.4vw;
             color: #fff;
             background: rgba(255, 255, 255, 0.10);
             border-radius: 3.2vh;
@@ -538,7 +539,15 @@
                             $('.description').val('');
                             $('#upload-demo-preview').empty();
                             $('.type-btn').removeClass('selected');
-                            $('.overlay').fadeOut();
+                            // $('.overlay').fadeOut();
+
+                            const message = {
+                                type: "GREETING",
+                                text: "关闭问题反馈",
+                                timestamp: Date.now()
+                            };
+
+                            window.parent.postMessage(message, "http://192.168.111.114:3001");
                         })
                         $('.popup-success-img').click(function () {
                             $('#popup-success').hide();
@@ -546,7 +555,15 @@
                             $('.description').val('');
                             $('#upload-demo-preview').empty();
                             $('.type-btn').removeClass('selected');
-                            $('.overlay').fadeOut();
+                            // $('.overlay').fadeOut();
+
+                            const message = {
+                                type: "GREETING",
+                                text: "关闭问题反馈",
+                                timestamp: Date.now()
+                            };
+
+                            window.parent.postMessage(message, "http://192.168.111.114:3001");
                         })
 
                     },
