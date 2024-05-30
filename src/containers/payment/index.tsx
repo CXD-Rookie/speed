@@ -35,7 +35,6 @@ const payTypeMap: { [key: number]: string } = {
 
 const PaymentModal: React.FC<PayModalProps> = (props) => {
   const { open, info, setOpen = () => {} } = props;
-  console.log(open);
 
   return (
     <Modal

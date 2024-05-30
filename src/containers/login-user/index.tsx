@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Button, Avatar, Popover } from "antd";
+
+import SettingsModal from "../setting";
 import "./index.scss";
 
 interface CustomDropdownProps {}
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [userInfo, setUserInfo] = useState<any>({});
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     let user_info = localStorage.getItem("userInfo");
@@ -33,7 +36,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
                 />
                 <span>{userInfo?.user_info?.nickname}</span>
               </div>
-              <span>编辑</span>
+              <span onClick={() => setEditOpen(true)}>编辑</span>
             </div>
             <Button type={"primary"}>会员充值</Button>
             <p>解锁全新游戏体验，畅玩游戏从未有过的速度！</p>
@@ -51,6 +54,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           />
         </div>
       </Popover>
+      <SettingsModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
     </div>
   );
 };

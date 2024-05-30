@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-30 19:01:40
+ * @LastEditTime: 2024-05-30 20:25:42
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -113,27 +113,44 @@ const Home: React.FC = () => {
   const handleAccelerateClick = (game: Game) => {
     // 查找对应的游戏卡片并触发其加速逻辑
     console.log("查看game----------", game);
+    // let details_arr_index = arr.findIndex((item: any) => item?.is_accelerate);
+    // let elementToMove = arr.splice(details_arr_index, 1)[0]; // splice返回被删除的元素数组，所以我们使用[0]来取出被删除的元素
 
+    // // 将取出的元素插入到位置1
+    // arr.splice(0, 0, elementToMove);
     if (game) {
       // 将自动加速的游戏数据添加到 homeList 中
       //@ts-ignore
-      setHomeList((prevList) => [...prevList, game]);
-      updateData();
+      let default_arr = getMyGames();
+      let default_index = default_arr.findIndex(
+        (item: any) => item?.id === game?.id
+      );
 
-      setAccelTag(location?.state?.data);
-      // @ts-ignore
-      const index = homeList.findIndex((item) => item.id === game.id);
-      if (index !== -1) {
+      if (default_index !== -1) {
+        // splice返回被删除的元素数组，所以我们使用[0]来取出被删除的元素
+        let elementToMove = default_arr.splice(default_index, 1)[0];
+
+        if (default_index > 3) {
+          default_arr.splice(0, 0, elementToMove);
+        } else if (default_index >= 0 && default_index <= 3) {
+          default_arr.splice(default_index, 0, elementToMove);
+        }
+
+        localStorage.setItem(
+          "speed-1.0.0.1-games",
+          JSON.stringify(default_arr)
+        );
+        setHomeList(default_arr.slice(0, 4));
+        updateData();
+
+        // @ts-ignore
         // 触发对应游戏卡片的加速逻辑
         // document.getElementById(`${game.id}`)?.click();
         if (childRef.current) {
-          //@ts-ignore
           console.log("homeList----------", homeList);
-          //@ts-ignore
           setAccelTag(location?.state?.data);
           // childRef.current.triggerAccelerate(location?.state?.data);
         }
-        console.log(`看看id------------------------------------------------`);
       }
     }
   };
@@ -147,6 +164,7 @@ const Home: React.FC = () => {
             ref={childRef}
             gameData={game}
             accelTag={accelTag}
+            setAccelTag={() => setAccelTag({})}
             onClear={() => setStatus(status + 1)}
             //@ts-ignore
             id={`${game.id}`}

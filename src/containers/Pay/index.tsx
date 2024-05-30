@@ -72,7 +72,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       }
     );
   };
-  console.log(guid());
+
   const [pollingKey, setPollingKey] = useState<string>(guid());
 
   const updateActiveTabIndex = (index: number) => {

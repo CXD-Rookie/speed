@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-30 16:17:29
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-30 20:55:18
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -28,8 +28,12 @@ import cessationIcon from "@/assets/images/common/cessation.svg";
 import arrowIcon from "@/assets/images/common/accel-arrow.svg";
 import closeIcon from "@/assets/images/common/close.svg";
 
-import { useDispatch, useSelector } from "react-redux";
-import { setIsLogin, openRealNameModal, closeRealNameModal } from "../../../redux/actions/auth";
+import { useDispatch } from "react-redux";
+import {
+  setIsLogin,
+  openRealNameModal,
+  closeRealNameModal,
+} from "../../../redux/actions/auth";
 
 import "./style.scss";
 
@@ -40,6 +44,7 @@ export interface GameCardProps {
   type?: string;
   size?: "middle" | "small" | "large"; // 输入框类型 默认 middle
   onClear?: ((value: any) => void) | undefined;
+  setAccelTag?: (value: any) => void;
   style?: React.CSSProperties;
   className?: string;
   accelTag?: object;
@@ -55,12 +60,12 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
     type = "home",
     accelTag = {},
     onClear = () => {},
+    setAccelTag = () => {},
     id,
   } = props;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
-  const isLogin = localStorage.getItem("isLogin");
 
   const [accelOpen, setAccelOpen] = useState(false);
   const [isAnimate, setIsAnimate] = useState(false); // 是否开始加速动画
@@ -178,23 +183,20 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
     }
   };
 
-
   const handleClose = () => {
     dispatch(closeRealNameModal());
   };
+
   const handleOpen = () => {
     dispatch(openRealNameModal());
   };
   // 立即加速
   const handleAccelerateClick = (option: any) => {
-
     if (token) {
-      if(isRealName === "1"){
+      if (isRealName === "1") {
         handleOpen();
-        console.log("goto realName----------------------")
-      }else{
+      } else {
         console.log("option 游戏数据", option);
-        console.log(option, gameData);
         let is_true = getMyGames().some((item: any) => item?.is_accelerate);
         if (is_true) {
           setAccelOpen(true);
@@ -202,7 +204,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
           handleExpedite(option);
         }
       }
- 
     } else {
       console.log("没登录--------------------------");
       dispatch(setIsLogin(true));
@@ -219,6 +220,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       is_accelerate: type === "off" ? false : option?.id === item?.id,
     }));
 
+    console.log(option, game_arr);
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
 
     setAccelOpen(false);
@@ -227,7 +229,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       setIsAnimate(true);
 
       setTimeout(() => {
-        console.log("加速动画结束");
+        setAccelTag({});
         setIsAnimate(false);
         const requestDataStep = JSON.stringify({
           method: "NativeApi_PreCheckEnv",
@@ -381,6 +383,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         setAccelOpen={setAccelOpen}
         onConfirm={() => {
           onClear(true);
+
           handleExpedite(
             Object?.keys(accelTag || {})?.length > 0 ? accelTag : gameData
           );
