@@ -238,7 +238,7 @@ const App: React.FC = (props: any) => {
             ) : (
               <div
                 className="login-enroll-text"
-                onClick={() => setIsLoginModal(isLoginModal + 1)}
+                onClick={() =>  dispatch(setIsLogin(true))}
               >
                 登录/注册
               </div>

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 import { useDropzone, Accept } from "react-dropzone";
-
-import axios from "axios";
 import issueApi from "@/api/issue";
 import "./index.scss";
 
@@ -28,18 +26,19 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch_Feedback_type();
+    fetchFeedbackType();
   }, []);
 
   const handleButtonClick = (typeId: any) => {
     setSelectedType(typeId);
   };
-  const fetch_Feedback_type = async () => {
+
+  const fetchFeedbackType = async () => {
     try {
-      let res = await issueApi.feedback_type();
+      const res = await issueApi.feedback_type();
       setFeedbackTypes(res.data.types);
     } catch (error) {
-      console.error("Error fetching games:", error);
+      console.error("Error fetching feedback types:", error);
     }
   };
 
@@ -67,11 +66,9 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
 
     const imageUploadPromises = uploadedImages.map((file) => {
       const formData = new FormData();
-      formData.append("file", file);
-      return axios.post(
-        "https://tc-js.yuwenlong.cn/api/v1/feedback_upload_image?platform=3",
-        formData
-      );
+      formData.append("file", file); // 确保文件名也传递
+
+      return issueApi.feedback_upload_image(formData);
     });
 
     try {
@@ -82,7 +79,7 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
 
       setUploadedImageUrls(imageUrls);
 
-      await axios.post("https://tc-js.yuwenlong.cn/api/v1/feedback", {
+      await issueApi.feedback({
         feedback_type: selectedType,
         content: description,
         image_url: imageUrls,
@@ -105,7 +102,10 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
       centered
       footer={null}
     >
-      <div className="feedback-popup">
+      <div>
+        <iframe src="http://192.168.111.119:3001/issue.html"></iframe>
+      </div>
+      {/* <div className="feedback-popup">
         <div className="type-buttons" id="btnAll">
           <div className="matter-type">
             <span>*</span>
@@ -187,16 +187,16 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
               height="12"
               alt="success"
             />
-            <div className="sucess-text">您的问题已反馈</div>
+            <div className="success-text">您的问题已反馈</div>
             <button
-              className="sucess-btn"
+              className="success-btn"
               onClick={() => setShowSuccess(false)}
             >
               确定
             </button>
           </div>
         )}
-      </div>
+      </div> */}
     </Modal>
   );
 };
