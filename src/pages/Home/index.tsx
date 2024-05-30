@@ -157,16 +157,7 @@ const Home: React.FC = () => {
         <div className="membership-recharge areas-list-box" onClick={openModal}>
           <img src={rechargeIcon} alt="" />
           会员充值
-          {isModalOpen && (
-            <div className="modal-overlay">
-              <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <button className="close-button" onClick={closeModal}>
-                  x
-                </button>
-                <PayModal />
-              </div>
-            </div>
-          )}
+          <PayModal isModalOpen={isModalOpen} closeModal={() => closeModal()} />
         </div>
         <div
           className="may-games areas-list-box"
