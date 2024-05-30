@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-30 17:02:19
+ * @LastEditTime: 2024-05-30 19:01:40
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -11,7 +11,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsLogin, openRealNameModal, closeRealNameModal } from '@/redux/actions/auth';
+import {
+  setIsLogin,
+  openRealNameModal,
+  closeRealNameModal,
+} from "@/redux/actions/auth";
 import PayModal from "../../containers/Pay/index";
 import GameCard from "./GameCard";
 import addIcon from "@/assets/images/common/add.svg";
@@ -45,7 +49,7 @@ const Home: React.FC = () => {
   const pid = localStorage.getItem("pid");
   const token = localStorage.getItem("token");
   const childRef = useRef<any>();
-  const isRealNamel = localStorage.getItem("isRealName")
+  const isRealNamel = localStorage.getItem("isRealName");
   const dispatch = useDispatch();
 
   const handleClose = () => {
@@ -54,22 +58,20 @@ const Home: React.FC = () => {
   const handleOpen = () => {
     dispatch(openRealNameModal());
   };
-  
+
   const openModal = () => {
-    console.log(111111)
-    if(token){
-      if(isRealNamel === "1"){
+    console.log(111111);
+    if (token) {
+      if (isRealNamel === "1") {
         handleOpen();
-      }else{
+      } else {
         // handleClose();
         setIsModalOpen(true);
       }
-    }else{
-      console.log("没登录")
-      dispatch((setIsLogin(true)));
+    } else {
+      console.log("没登录");
+      dispatch(setIsLogin(true));
     }
-
-    
   };
 
   const closeModal = () => {
@@ -182,7 +184,13 @@ const Home: React.FC = () => {
         <div className="membership-recharge areas-list-box" onClick={openModal}>
           <img src={rechargeIcon} alt="" />
           会员充值
-          <PayModal isModalOpen={isModalOpen} closeModal={() => closeModal()} />
+          <PayModal
+            isModalOpen={isModalOpen}
+            setIsModalOpen={(e) => {
+              console.log(e);
+              setIsModalOpen(e);
+            }}
+          />
         </div>
         <div
           className="may-games areas-list-box"

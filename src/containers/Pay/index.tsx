@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
+
 import payApi from "@/api/pay";
 import "./index.scss";
+import PaymentModal from "../payment";
 
 interface PayModalProps {
   isModalOpen?: boolean;
-  closeModal?: () => void;
+  setIsModalOpen?: (e: any) => void;
 }
 
 interface Commodity {
@@ -32,7 +34,7 @@ interface OrderInfo {
 }
 
 const PayModal: React.FC<PayModalProps> = (props) => {
-  const { isModalOpen, closeModal = () => {} } = props;
+  const { isModalOpen, setIsModalOpen = () => {} } = props;
 
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
@@ -226,7 +228,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       <Modal
         className="pay-module"
         open={isModalOpen}
-        onCancel={() => closeModal()}
+        onCancel={() => setIsModalOpen(false)}
         title="会员充值"
         width={"67.6vw"}
         centered
@@ -310,25 +312,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           </div>
         </div>
       </Modal>
-      <Modal
+      <PaymentModal
         open={!!showPopup}
-        onCancel={() => setShowPopup(null)}
-        footer={null}
-      >
-        {showPopup && (
-          <div className="popup-content">
-            {orderInfo && (
-              <>
-                <p>订单编号: {orderInfo.pay_order}</p>
-                <p>充值账号: {"18888888888888"}</p>
-                <p>支付类型: {payTypeMap[orderInfo.pay_type] || "其他"}</p>
-                <p>支付金额: ¥{orderInfo.price}</p>
-              </>
-            )}
-            <button onClick={() => setShowPopup(null)}>showPopup</button>
-          </div>
-        )}
-      </Modal>
+        info={orderInfo}
+        setOpen={(e) => setShowPopup(e)}
+      />
     </Fragment>
   );
 };
