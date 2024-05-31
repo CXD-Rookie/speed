@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 15:38:35
+ * @LastEditTime: 2024-05-31 17:50:46
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -116,6 +116,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         ],
         tcp_tunnel_mode: 0,
         udp_tunnel_mode: 1,
+        user_id: localStorage.userInfo.id,
+        game_id: t,
         tunnel: {
           address: ip,
           server: server,
@@ -222,7 +224,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       is_accelerate: type === "off" ? false : option?.id === item?.id,
     }));
 
-    console.log(option, game_arr);
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
 
     setAccelOpen(false);
