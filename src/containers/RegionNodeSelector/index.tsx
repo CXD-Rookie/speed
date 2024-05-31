@@ -1,33 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Select, Button, Table } from "antd";
+import { useNavigate } from "react-router-dom";
+import { getMyGames } from "@/common/utils";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
-
 const { TabPane } = Tabs;
 const { Option } = Select;
 const { Column } = Table;
 
 interface RegionNodeSelectorProps {
   visible: boolean;
+  detailData?: any;
   onCancel: () => void;
+  onSelect: (value: any) => void;
 }
 
 const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
+  detailData,
   visible,
   onCancel,
+  onSelect,
 }) => {
-  const [selectedRegion, setSelectedRegion] = useState(); // 当前命中区服
+  const navigate = useNavigate();
 
   const [selectedNode, setSelectedNode] = useState("0418 亚洲网20");
   const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
 
   const [regions, setRegions] = useState([]); // 区服列表
   const [selectRegions, setSelectRegions] = useState([]); // 选择过的区服列表
+  const [selectValue, setSelectValue] = useState<any>(""); // 当前选择的区服id
+  const [selectInfo, setSelectInfo] = useState<any>({}); // 当前选择的区服信息
 
   const [regionDomList, setRegionDomList] = useState(); // 节点列表
-
-  const [listenerNode, setListenerNode] = useState(0);
 
   const handleNodeClick = (node: {
     key: string;
@@ -64,24 +69,90 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
   };
 
+  // 更新游戏默认选择区服
+  const updateGamesRegion = () => {
+    let arr: any = getMyGames(); // 我的游戏列表
+
+    arr = arr.map((item: any) => {
+      let select_arr = item?.select_region || [];
+
+      if (select_arr.some((item: any) => item?.id === "2")) {
+        if (!select_arr.some((item: any) => item?.is_select)) {
+          select_arr.map((child: any) => ({
+            ...child,
+            is_select: child?.id === "2",
+          }));
+        }
+
+        return {
+          ...item,
+          select_region: select_arr,
+        };
+      } else {
+        return {
+          ...item,
+          select_region: [{ id: "2", region: "国服", is_select: true }],
+        };
+      }
+    });
+
+    let select_arr = arr.filter((item: any) => item?.is_accelerate)[0]
+      .select_region;
+    let result = select_arr.filter((item: any) => item?.is_select);
+
+    setSelectValue(result[0]?.id);
+    setSelectInfo(result[0]);
+    setSelectRegions(select_arr);
+
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+  };
+
   // 选择区服
   const handleSelectRegion = (region: any) => {
-    let arr: any = [...selectRegions];
+    let arr: any = getMyGames(); // 我的游戏列表
+    let acc_arr = arr.filter((item: any) => item?.is_accelerate); // 当前加速游戏的数据
+    let region_arr = acc_arr?.[0]?.select_region || []; // 当前加速游戏的历史区服列表
+
     console.log("选择区服参数：", region);
     // 去重 添加
-    if (!arr.some((item: any) => item?.id === region?.id)) {
-      arr.push(region);
+    if (!region_arr.some((item: any) => item?.id === region?.id)) {
+      region_arr.push(region);
     }
 
     // 选择当前区服
-    arr = arr.map((item: any) => {
+    region_arr = region_arr.map((item: any) => {
       return { ...item, is_select: item?.id === region?.id };
     });
 
-    console.log("当前区服列表历史记录", arr); // 已选择区服列表
-    localStorage.setItem("speed-1.0.0.1-region", JSON.stringify(arr));
-    setListenerNode(listenerNode + 1);
-    // onCancel();
+    // 更新当前区服列表
+    acc_arr[0].select_region = region_arr;
+
+    setSelectRegions(region_arr);
+    setSelectValue(region?.id);
+    setSelectInfo(region);
+    onSelect(region); // 将选中数据返回上级
+
+    // 更新我的游戏
+    let arr_index = arr.findIndex((item: any) => item?.is_accelerate);
+
+    arr[arr_index] = acc_arr[0];
+    arr = arr.map((item: any) => ({ ...item, is_accelerate: false }));
+
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+
+    onCancel();
+
+    // 跳转到首页并触发自动加速autoAccelerate
+    navigate("/home", {
+      state: {
+        isNav: true,
+        data: {
+          ...acc_arr[0],
+          router: "details",
+        },
+        autoAccelerate: true,
+      },
+    });
   };
 
   //   const handleSuitDomList = async () => {
@@ -110,7 +181,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     try {
       let res = await playSuitApi.playSpeedList({
         platform: 3,
-        nid: selectedRegion,
+        nid: selectValue,
       });
       console.log("获取节点列表", res);
 
@@ -161,28 +232,18 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 切换tab
   const handleTabsChange = (e: any) => {
-    console.log("切换tab", e);
-
     if (e === "2") {
       handleSuitDomList();
     }
   };
 
   useEffect(() => {
-    handleSuitList();
+    updateGamesRegion();
   }, []);
 
   useEffect(() => {
-    if (visible) {
-      let arr: any = localStorage.getItem("speed-1.0.0.1-region");
-
-      arr = arr ? JSON.parse(arr) : [];
-      let result = arr.filter((item: any) => item?.is_select);
-
-      setSelectedRegion(result?.[0]?.id || "");
-      setSelectRegions(arr);
-    }
-  }, [visible, selectedRegion, listenerNode]);
+    handleSuitList();
+  }, []);
 
   return (
     <Modal
@@ -199,13 +260,19 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
         <TabPane tab="区服" key="1">
           <div className="content">
             <div className="current-box">
-              <div className="current-game">英雄联盟大吉大利</div>
+              <div className="current-game">{detailData?.name}</div>
               <div className="current-region">
                 当前区服:
                 <Select
                   className="region-select"
-                  defaultValue={selectedRegion}
-                  onChange={(value) => setSelectedRegion(value)}
+                  value={selectValue}
+                  onChange={(value) => {
+                    let arr: any = selectRegions.filter(
+                      (child: any) => child?.id === value
+                    );
+                    setSelectValue(value);
+                    handleSelectRegion({ id: value, region: arr?.[0]?.region });
+                  }}
                 >
                   {selectRegions.map((item: any) => {
                     return (
@@ -236,14 +303,17 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
         <TabPane tab="节点" key="2">
           <div className="content">
             <div className="current-settings">
-              英雄联盟大吉大利 | {selectedRegion}
+              {detailData?.name} | {selectInfo?.region}
             </div>
             <div className="node-select">
               <div>
                 <span>节点记录:</span>
                 <Select
                   defaultValue={selectedNode}
-                  onChange={(value) => setSelectedNode(value)}
+                  onChange={(value) => {
+                    setSelectedNode(value);
+                    onCancel();
+                  }}
                 >
                   <Option value="0418 亚洲网20">0418 亚洲网20</Option>
                 </Select>

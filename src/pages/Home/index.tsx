@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 10:38:19
+ * @LastEditTime: 2024-05-31 15:32:02
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -10,12 +10,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { Button } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setIsLogin,
-  openRealNameModal,
-  closeRealNameModal,
-} from "@/redux/actions/auth";
+import { useDispatch } from "react-redux";
+import { setIsLogin, openRealNameModal } from "@/redux/actions/auth";
 import PayModal from "../../containers/Pay/index";
 import GameCard from "./GameCard";
 import addIcon from "@/assets/images/common/add.svg";
@@ -46,15 +42,11 @@ const Home: React.FC = () => {
     null
   );
 
-  const pid = localStorage.getItem("pid");
   const token = localStorage.getItem("token");
   const childRef = useRef<any>();
   const isRealNamel = localStorage.getItem("isRealName");
   const dispatch = useDispatch();
 
-  const handleClose = () => {
-    dispatch(closeRealNameModal());
-  };
   const handleOpen = () => {
     dispatch(openRealNameModal());
   };
@@ -72,10 +64,6 @@ const Home: React.FC = () => {
       console.log("没登录");
       dispatch(setIsLogin(true));
     }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
   };
 
   const updateData = () => {
