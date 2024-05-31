@@ -206,6 +206,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               "userInfo",
               JSON.stringify(jsonResponse.data.user_info)
             );
+            localStorage.setItem("token", JSON.stringify(jsonResponse.data.token));
           }
           if (status !== 1) {
             const res = await payApi.getCommodityInfo(response.data?.cid);
