@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-29 19:22:49
+ * @LastEditTime: 2024-05-31 15:30:29
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -139,7 +139,10 @@ const GameDetail: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
-  const [lostBag, setLostBag] = useState<any>(); // 当前加速游戏数据
+  const [lostBag, setLostBag] = useState<any>(); // 实时延迟
+  const [packetLoss, setPacketLoss] = useState<any>(); // 丢包率
+
+  const [regionInfo, setRegionInfo] = useState<any>(); // 当前加速区服
 
   const [count, setCount] = useState(0);
 
@@ -153,11 +156,6 @@ const GameDetail: React.FC = () => {
 
   const hideModal = () => {
     setIsModalVisible(false);
-  };
-
-  const closeModal = () => {
-    console.log(1111111111);
-    setIsOpen(false);
   };
 
   const stopSpeed = () => {
@@ -191,14 +189,15 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     let arr = getMyGames();
     let details_arr = arr.filter((item: any) => item?.is_accelerate);
+    let region_info = details_arr?.[0]?.select_region.filter(
+      (item: any) => item?.is_select
+    );
 
     const speedIp = localStorage.getItem("speedIp");
     const speedInfoString = localStorage.getItem("speedInfo");
     const speedInfo = speedInfoString ? JSON.parse(speedInfoString) : null;
 
-    let new_arr =
-      // arr.filter((item: any) => item?.is)
-      console.log("我的游戏总数据", arr);
+    console.log("我的游戏总数据", arr);
     console.log("当前加速游戏数据", details_arr);
     console.log("speedInfo全部信息", speedInfo);
     // const displayValue = lostBag === 0 ? 0 : lostBag - 1;
@@ -216,8 +215,9 @@ const GameDetail: React.FC = () => {
           jsonResponse
         );
         setLostBag(jsonResponse);
-
+        setPacketLoss(jsonResponse === 9999 ? 25 : 0);
         setDetailData(details_arr?.[0] || {});
+        setRegionInfo(region_info?.[0]);
       },
       onFailure: (errorCode: any, errorMessage: any) => {
         console.error("Query failed:", errorMessage);
@@ -242,7 +242,7 @@ const GameDetail: React.FC = () => {
     console.log("我的游戏总数据", arr);
     console.log("当前加速游戏数据", details_arr);
     console.log("speedInfo全部信息", speedInfo);
-    // setDetailData(details_arr?.[0] || {});
+
     // @ts-ignore
 
     // 每隔 10 秒增加计数器的值
@@ -263,6 +263,7 @@ const GameDetail: React.FC = () => {
             jsonResponse
           );
           setLostBag(jsonResponse);
+          setPacketLoss(jsonResponse === 9999 ? 25 : 0);
         },
         onFailure: (errorCode: any, errorMessage: any) => {
           console.error("Query failed:", errorMessage);
@@ -306,7 +307,7 @@ const GameDetail: React.FC = () => {
           </div>
           <div className="game-right">
             <div className="info-switch info-common-style" onClick={showModal}>
-              <span>00:50:21 亚服-北京-A508376（电信）</span>
+              <span>00:50:21 {regionInfo?.region}</span>
               <span>切换</span>
             </div>
             <div className="info-speed info-common-style">
@@ -321,7 +322,8 @@ const GameDetail: React.FC = () => {
               <div className="keep speed-common">
                 丢包率
                 <div>
-                  0<span> %</span>
+                  {packetLoss}
+                  <span> %</span>
                 </div>
               </div>
             </div>
@@ -360,9 +362,17 @@ const GameDetail: React.FC = () => {
               <div className="title">加速趋势</div>
               <BarChart data={data} />
             </div>
-            <RegionNodeSelector visible={isModalVisible} onCancel={hideModal} />
+            <RegionNodeSelector
+              visible={isModalVisible}
+              detailData={detailData}
+              onCancel={hideModal}
+              onSelect={(e) => setRegionInfo(e)}
+            />
             {isOpen && (
-              <ActivationModal gameId={detailData.id} onClose={closeModal} />
+              <ActivationModal
+                gameId={detailData.id}
+                onClose={() => setIsOpen(false)}
+              />
             )}
           </div>
         </div>
