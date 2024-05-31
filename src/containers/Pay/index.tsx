@@ -52,7 +52,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   //   dispatch(closeRealNameModal());
   // };
 
-
   const payTypeMap: { [key: number]: string } = {
     1: "包月",
     2: "包季",
@@ -238,6 +237,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         title="会员充值"
+        destroyOnClose
         width={"67.6vw"}
         centered
         footer={null}

@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-30 20:25:42
+ * @LastEditTime: 2024-05-31 10:38:19
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -202,13 +202,6 @@ const Home: React.FC = () => {
         <div className="membership-recharge areas-list-box" onClick={openModal}>
           <img src={rechargeIcon} alt="" />
           会员充值
-          <PayModal
-            isModalOpen={isModalOpen}
-            setIsModalOpen={(e) => {
-              console.log(e);
-              setIsModalOpen(e);
-            }}
-          />
         </div>
         <div
           className="may-games areas-list-box"
@@ -218,6 +211,15 @@ const Home: React.FC = () => {
           我的游戏 ({myGamesNum})
         </div>
       </div>
+      {!!isModalOpen && (
+        <PayModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={(e) => {
+            console.log(e);
+            setIsModalOpen(e);
+          }}
+        />
+      )}
     </div>
   );
 };
