@@ -37,13 +37,13 @@ interface OrderInfo {
 
 const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {} } = props;
-       //@ts-ignore
-  const userInfo = JSON.parse(localStorage.getItem("userInfo")) || '';
+  //@ts-ignore
+  const userInfo = JSON.parse(localStorage.getItem("userInfo")) || "";
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
-        //@ts-ignore
+  //@ts-ignore
   const [userToken, setUserToken] = useState(userInfo.id);
   const [paymentStatus, setPaymentStatus] = useState<number | null>(null);
   const [showPopup, setShowPopup] = useState<string | null>(null);
@@ -190,7 +190,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   }, [activeTabIndex, commodities, userToken]);
 
   useEffect(() => {
-    const intervalId = setInterval(async() => {
+    const intervalId = setInterval(async () => {
       try {
         const response = await payApi.getPolling({
           key: pollingKey,
@@ -199,16 +199,18 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
         if (response.error === 0) {
           const status = response.data?.status;
-          if(status === 2){
-            console.log("支付成功")
-            let jsonResponse = await loginApi.userInfo()
-            localStorage.setItem("userInfo", JSON.stringify(jsonResponse.data.user_info));
+          if (status === 2) {
+            console.log("支付成功");
+            let jsonResponse = await loginApi.userInfo();
+            localStorage.setItem(
+              "userInfo",
+              JSON.stringify(jsonResponse.data.user_info)
+            );
           }
           if (status !== 1) {
-            
             const res = await payApi.getCommodityInfo(response.data?.cid);
             console.log(res, "订单信息----------");
-            
+
             setPaymentStatus(status);
             setShowPopup(null);
             setOrderInfo(response.data);
@@ -234,7 +236,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     }, 3000);
 
     if (paymentStatus !== 1) {
-
       return () => clearInterval(intervalId);
     }
   }, [paymentStatus, pollingKey]);
@@ -332,7 +333,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       <PaymentModal
         open={!!showPopup}
         info={orderInfo}
-        setOpen={(e) => setShowPopup(e)}
+        setOpen={(e) => {
+          setIsModalOpen(false);
+          setShowPopup(e);
+        }}
       />
     </Fragment>
   );
