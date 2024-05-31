@@ -2,12 +2,12 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-30 18:08:24
+ * @LastEditTime: 2024-05-31 18:33:45
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState,useEffect } from "react";
 import { Modal, Tabs, Button, Avatar, Switch, Radio } from "antd";
 
 import "./index.scss";
@@ -24,14 +24,30 @@ interface SettingsModalProps {
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("system");
-
+  const [userInfo, setUserInfo] = useState<any>({});
+  const [isRealNameTag, setRealNameTag] = useState<any>('');
   const [isAccreditation, setIsAccreditation] = useState(false); // 是否认证
   const [isRealOpen, setIsRealOpen] = useState(false); // 实名认证弹窗框
 
   const token = localStorage.getItem("token");
-  const isRealNamel = localStorage.getItem("isRealName")
+ 
   const dispatch = useDispatch();
+  useEffect(() => {
+    let user_info = localStorage.getItem("userInfo");
+    let isRealName = localStorage.getItem("isRealName")
+    isRealName = isRealName ? isRealName : '';
+    user_info = user_info ? JSON.parse(user_info) : {};
+    setUserInfo(user_info);
+    setRealNameTag(isRealName);
+  }, []);
 
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
   return (
     <Fragment>
       <Modal
@@ -87,18 +103,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
           <div className="tab-content">
             <div className="tab-avatar">
               <Avatar size={57} src="path/to/avatar.jpg" />
-              <div className="avatar-name">头像名称</div>
+              <div className="avatar-name">{userInfo.nickname}</div>
             </div>
             <div className="info-box">
               <label>手机号:</label>
-              <div>159****2022</div>
+              <div>{userInfo.phone}</div>
             </div>
             <div className="info-box info-flex">
               <div className="info-left">
                 <label>实名认证</label>
-                <div>未认证</div>
+                {isRealNameTag === 1
+                ? <div>未认证</div>
+                : <div>已实名认证通过</div>}
               </div>
-              {!isAccreditation && (
+              {!isRealNameTag && (
                 <div
                   className="real-name-btn"
                   onClick={() => dispatch(openRealNameModal())}
@@ -110,9 +128,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             <div className="info-box info-flex">
               <div className="info-left">
                 <label>会员到期时间</label>
-                <div>非会员</div>
-              </div>
-              <div className="real-name-btn">充值</div>
+                {userInfo.isVip
+                ? <div>非会员</div>
+                :  <div>{formatDate(userInfo.vip_expiration_time)}</div>}
+              </div> 
+              {userInfo.isVip
+                ? <div className="real-name-btn">充值</div>
+                :  <div className="real-name-btn">续费</div>}
             </div>
           </div>
             </TabPane>
