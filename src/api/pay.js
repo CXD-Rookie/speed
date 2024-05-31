@@ -25,7 +25,8 @@ class PayApi {
 
   getCommodityInfo(params) {
     // const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/commodity/info?platform=3&cid=${params.cid}`);
+    console.log(params,"params------------")
+    return get(`${this.url}/commodity/info?platform=3&cid=${params}`);
   }
 
 }

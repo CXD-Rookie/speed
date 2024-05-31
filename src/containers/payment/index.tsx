@@ -10,20 +10,6 @@ interface PayModalProps {
   closeModal?: () => void;
 }
 
-interface OrderInfo {
-  id: string;
-  uid: string;
-  cid: string;
-  qrcode_key: string;
-  price: number;
-  status: number;
-  pay_order: string;
-  pay_type: number;
-  is_deleted: boolean;
-  create_time: number;
-  update_time: number;
-}
-
 const payTypeMap: { [key: number]: string } = {
   1: "包月",
   2: "包季",
@@ -31,6 +17,13 @@ const payTypeMap: { [key: number]: string } = {
   4: "连续包月",
   5: "连续包季",
   6: "连续包年",
+};
+const payStatusMap: { [key: number]: string } = {
+  1: "待支付",
+  2: "支付成功",
+  3: "支付失败",
+  4: "支付取消",
+  5: "支付超时",
 };
 
 const PaymentModal: React.FC<PayModalProps> = (props) => {
@@ -51,7 +44,7 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
           <>
             <p>
               订单编号:
-              <span>{info?.pay_order}</span>
+              <span>{info?.id}</span>
             </p>
             <p>
               充值账号<span>{"18888888888888"}</span>
@@ -60,12 +53,14 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
               支付类型<span>{payTypeMap?.[info?.pay_type] || "其他"}</span>
             </p>
             <p>
-              支付金额<span>{info?.price}</span>
+              支付金额<span>{info?.price/100}</span>
             </p>
           </>
         )}
 
-        <button onClick={() => setOpen(null)}>已完成支付</button>
+        <button onClick={() => setOpen(null)}>
+        {payStatusMap?.[info?.status]}
+        </button>
       </div>
     </Modal>
   );

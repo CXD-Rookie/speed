@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 
 import payApi from "@/api/pay";
+import loginApi from "@/api/login";
 import "./index.scss";
 import PaymentModal from "../payment";
-
+import { useDispatch, useSelector } from "react-redux";
+// import { openPayModal, closePayModal } from '@/redux/actions/auth';
 interface PayModalProps {
   isModalOpen?: boolean;
   setIsModalOpen?: (e: any) => void;
@@ -35,21 +37,23 @@ interface OrderInfo {
 
 const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {} } = props;
-
+       //@ts-ignore
+  const userInfo = JSON.parse(localStorage.getItem("userInfo")) || '';
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const [userToken, setUserToken] = useState("664c90bbfa7788e5974bb89a" || "");
+        //@ts-ignore
+  const [userToken, setUserToken] = useState(userInfo.id);
   const [paymentStatus, setPaymentStatus] = useState<number | null>(null);
   const [showPopup, setShowPopup] = useState<string | null>(null);
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
 
-  // const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
   // const dispatch = useDispatch();
 
   // const handleClose = () => {
-  //   dispatch(closeRealNameModal());
+  //   dispatch(closePayModal());
   // };
 
   const payTypeMap: { [key: number]: string } = {
@@ -186,7 +190,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   }, [activeTabIndex, commodities, userToken]);
 
   useEffect(() => {
-    const fetchPaymentStatus = async () => {
+    const intervalId = setInterval(async() => {
       try {
         const response = await payApi.getPolling({
           key: pollingKey,
@@ -195,16 +199,19 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
         if (response.error === 0) {
           const status = response.data?.status;
-
-          if (status === 1 || !response.data) {
+          if(status === 2){
+            console.log("支付成功")
+            let jsonResponse = await loginApi.userInfo()
+            localStorage.setItem("userInfo", JSON.stringify(jsonResponse.data.user_info));
+          }
+          if (status !== 1) {
+            
+            const res = await payApi.getCommodityInfo(response.data?.cid);
+            console.log(res, "订单信息----------");
+            
             setPaymentStatus(status);
             setShowPopup(null);
             setOrderInfo(response.data);
-            // 如果订单未支付或者响应数据为空，则继续轮询
-            if (status === 1 || !response.data) {
-              setTimeout(fetchPaymentStatus, 3000);
-            }
-          } else {
             setShowPopup(
               status === 2
                 ? "支付成功"
@@ -214,17 +221,19 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                 ? "支付取消"
                 : status === 5
                 ? "支付超时"
+                : status === 1
+                ? "待支付"
                 : null
             );
+            return () => clearInterval(intervalId);
           }
         }
       } catch (error) {
         console.error("Error fetching payment status:", error);
       }
-    };
+    }, 3000);
 
     if (paymentStatus !== 1) {
-      const intervalId = setInterval(fetchPaymentStatus, 3000);
 
       return () => clearInterval(intervalId);
     }

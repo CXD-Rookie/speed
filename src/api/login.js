@@ -35,6 +35,9 @@ class LoginApi {
     return get(`${this.url}/user/loginout?platform=3`);
   }
 
+  userInfo(params) {
+    return get(`${this.url}/user/info?platform=3`);
+  }
 }
 
 const loginApi = new LoginApi();
