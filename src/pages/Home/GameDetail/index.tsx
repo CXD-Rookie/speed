@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 15:30:29
+ * @LastEditTime: 2024-05-31 18:17:57
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -145,6 +145,7 @@ const GameDetail: React.FC = () => {
   const [regionInfo, setRegionInfo] = useState<any>(); // 当前加速区服
 
   const [count, setCount] = useState(0);
+  const [onCount, setOnCount] = useState(0);
 
   const showModalActive = () => {
     setIsOpen(true);
@@ -185,6 +186,23 @@ const GameDetail: React.FC = () => {
       },
     });
   };
+
+  function formatTime(seconds: any) {
+    // 计算小时数
+    const hours = Math.floor(seconds / 3600);
+    // 计算剩余的分钟数
+    const minutes = Math.floor((seconds % 3600) / 60);
+    // 计算剩余的秒数
+    const remainingSeconds = seconds % 60;
+
+    // 将小时、分钟和秒数格式化为两位数
+    const formattedHours = String(hours).padStart(2, "0");
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(remainingSeconds).padStart(2, "0");
+
+    // 拼接成 HH:MM:SS 格式
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+  }
 
   useEffect(() => {
     let arr = getMyGames();
@@ -275,6 +293,16 @@ const GameDetail: React.FC = () => {
     return () => clearInterval(interval);
   }, [count]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOnCount((prevCount) => prevCount + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <div className="home-module-detail">
       <img className="back-icon" src={backGameIcon} alt="" />
@@ -302,7 +330,7 @@ const GameDetail: React.FC = () => {
               onClick={stopSpeed}
             >
               <img src={cessationIcon} width={18} height={18} alt="" />
-              00:21:22
+              {formatTime(onCount)}
             </Button>
           </div>
           <div className="game-right">
