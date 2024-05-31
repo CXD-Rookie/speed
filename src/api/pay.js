@@ -23,6 +23,10 @@ class PayApi {
     return get(`${this.url}/pay/order/qrcode_key/polling?platform=3&key=${params.key}`);
   }
 
+  getCommodityInfo(params) {
+    // const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/commodity/info?platform=3&cid=${params.cid}`);
+  }
 
 }
 
