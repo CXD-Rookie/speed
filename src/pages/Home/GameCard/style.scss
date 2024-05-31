@@ -83,7 +83,7 @@
           width: 8.2vw;
           height: 4.2vh;
           background: rgba(255, 255, 255, 0.10);
-          border-radius: 18px;
+          border-radius: var(--speed-dominant-border-radius);
           font-size: 1.4vw;
           color: #ffffff;
           text-align: center;
@@ -122,7 +122,7 @@
           height: 5.4vh;
           font-size: var(--speed-dominant-font-size);
           background: #ffffff;
-          border-radius: 2.7vh;
+          border-radius: var(--speed-dominant-border-radius);
           margin-left: calc(50% - 7.5vw);
           cursor: pointer;
           margin-top: 10vh;

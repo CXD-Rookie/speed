@@ -139,7 +139,8 @@ const GameDetail: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
-  const [lostBag, setLostBag] = useState<any>(); // 当前加速游戏数据
+  const [lostBag, setLostBag] = useState<any>(); // 实时延迟
+  const [packetLoss, setPacketLoss] = useState<any>(); // 丢包率
 
   const [regionInfo, setRegionInfo] = useState<any>(); // 当前加速区服
 
@@ -214,7 +215,7 @@ const GameDetail: React.FC = () => {
           jsonResponse
         );
         setLostBag(jsonResponse);
-
+        setPacketLoss(jsonResponse === 9999 ? 25 : 0);
         setDetailData(details_arr?.[0] || {});
         setRegionInfo(region_info?.[0]);
       },
@@ -262,6 +263,7 @@ const GameDetail: React.FC = () => {
             jsonResponse
           );
           setLostBag(jsonResponse);
+          setPacketLoss(jsonResponse === 9999 ? 25 : 0);
         },
         onFailure: (errorCode: any, errorMessage: any) => {
           console.error("Query failed:", errorMessage);
@@ -320,7 +322,8 @@ const GameDetail: React.FC = () => {
               <div className="keep speed-common">
                 丢包率
                 <div>
-                  0<span> %</span>
+                  {packetLoss}
+                  <span> %</span>
                 </div>
               </div>
             </div>
