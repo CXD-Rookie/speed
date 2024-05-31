@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-30 15:47:49
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-05-31 19:31:33
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
@@ -17,7 +17,7 @@ import realSucessIcon from "@/assets/images/common/real-sucess.svg";
 import realErrorIcon from "@/assets/images/common/real_error.svg";
 
 import { useDispatch, useSelector } from "react-redux";
-import { openRealNameModal, closeRealNameModal } from '@/redux/actions/auth';
+import { openRealNameModal, closeRealNameModal } from "@/redux/actions/auth";
 
 interface SettingsModalProps {
   // isRealOpen: boolean;
@@ -157,7 +157,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
           id: true,
         });
         setRealType(1);
-        localStorage.setItem("isRealName","0") //已经实名
+        localStorage.setItem("isRealName", "0"); //已经实名
       } else if (res?.error === 1) {
         // 认证失败
         setIsRankVerify({
@@ -165,9 +165,8 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
           id: false,
         });
         setRealType(0);
-        localStorage.setItem("isRealName","1")//没有实名
+        localStorage.setItem("isRealName", "1"); //没有实名
       }
-      console.log(res?.error);
     } catch (error) {
       console.log(error);
     }
@@ -209,7 +208,11 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
               <div className="error-tootip">你输入的身份证号有误！</div>
             )}
           </div>
-          <Button className="modal-content-btn" onClick={handleSubmit}>
+          <Button
+            className="modal-content-btn"
+            disabled={!isRankVerify?.id || !isRankVerify?.name}
+            onClick={handleSubmit}
+          >
             立即提交
           </Button>
         </div>

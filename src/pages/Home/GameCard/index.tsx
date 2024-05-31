@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 17:50:46
+ * @LastEditTime: 2024-05-31 19:23:53
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -103,8 +103,11 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes.data.executable;
       const { ip, server } = speedListRes.data[0];
+
       localStorage.setItem("speedIp", ip);
       localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
+
+      let obj: any = localStorage.getItem("userInfo");
 
       // 真实拼接
       const jsonResult = {
@@ -116,7 +119,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         ],
         tcp_tunnel_mode: 0,
         udp_tunnel_mode: 1,
-        user_id: localStorage.userInfo.id,
+        user_id: JSON.parse(obj)?.id,
         game_id: t,
         tunnel: {
           address: ip,
@@ -242,6 +245,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
           onSuccess: (response: any) => {
             console.log("校验是否合法文件----------:", response);
             const isCheck = JSON.parse(response);
+            handleSuitDomList(option.id);
+
             if (isCheck.pre_check_status === 0) {
               handleSuitDomList(option.id);
             } else {
