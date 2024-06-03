@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-03 11:52:05
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-03 15:43:27
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -22,8 +22,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
   useEffect(() => {
@@ -47,40 +47,43 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
   const popoverContent = (isVip: boolean) => (
     <div>
       <div className="dropdown-content">
-      <div className="avatar-box">
-        <div>
-          <Avatar
-            size={20}
-            src={
-              userInfo?.avatar ||
-              "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-            }
-          />
-          <span>{userInfo?.nickname}</span>
+        <div className="avatar-box">
+          <div>
+            <Avatar
+              size={20}
+              src={
+                userInfo?.avatar ||
+                "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+              }
+            />
+            <span>{userInfo?.nickname}</span>
+          </div>
+          <span
+            className={isVip ? "vips" : "novips"}
+            onClick={() => setEditOpen(true)}
+          >
+            编辑
+          </span>
         </div>
-        <span className={isVip ? "vips" : "novips"} onClick={() => setEditOpen(true)}>编辑</span>
-      </div>
-      <Button onClick={ () => setIsModalOpenVip(true)} className={isVip ? "vip" : "novip"} type={"primary"}>{isVip ? "续费" : "会员充值"}</Button>
-     
-      {isVip
-          ? <p>会员到期：{formatDate(userInfo.vip_expiration_time)}</p>
-          : <p>解锁全新游戏体验，畅玩游戏从未有过的速度！</p>}
-    </div>
-        {!!isModalOpenVip && (
-        <PayModal
-          isModalOpen={isModalOpenVip}
-          setIsModalOpen={(e) => {
-            console.log(e);
-            setIsModalOpenVip(e);
-          }}
-        />
-      )}
-    </div>
+        <Button
+          onClick={() => setIsModalOpenVip(true)}
+          className={isVip ? "vip" : "novip"}
+          type={"primary"}
+        >
+          {isVip ? "续费" : "会员充值"}
+        </Button>
 
-    
+        {isVip ? (
+          <p>会员到期：{formatDate(userInfo.vip_expiration_time)}</p>
+        ) : (
+          <p>解锁全新游戏体验，畅玩游戏从未有过的速度！</p>
+        )}
+      </div>
+    </div>
   );
 
   return (
@@ -103,46 +106,16 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         </div>
       </Popover>
       <SettingsModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
+      {!!isModalOpenVip && (
+        <PayModal
+          isModalOpen={isModalOpenVip}
+          setIsModalOpen={(e) => {
+            console.log(e);
+            setIsModalOpenVip(e);
+          }}
+        />
+      )}
     </div>
-    // <div className="custom-dropdown">
-    //   {/* vip 的逻辑下面 */}
-    //   <Popover
-    //     placement="bottomRight"
-    //     trigger="click"
-    //     arrow={false}
-    //     content={
-    //       <div className="dropdwon-conent2">
-    //         <div className="avatar-box">
-    //           <div>
-    //             <Avatar
-    //               size={20}
-    //               src={
-    //                 userInfo?.user_info?.avatar ||
-    //                 "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-    //               }
-    //             />
-    //             <span>{userInfo?.user_info?.id}</span>
-    //           </div>
-    //           <span onClick={() => setEditOpen(true)}>编辑</span>
-    //         </div>
-    //         <Button type={"primary"}>续费</Button>
-    //         <p>解锁全新游戏体验，畅玩游戏从未有过的速度！</p>
-    //       </div>
-    //     }
-    //   >
-    //     <div className="user-text">
-    //       <span>{userInfo?.user_info?.nickname}</span>
-    //       <Avatar
-    //         size={20}
-    //         src={
-    //           userInfo?.user_info?.avatar ||
-    //           "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-    //         }
-    //       />
-    //     </div>
-    //   </Popover>
-    //   <SettingsModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
-    // </div>
   );
 };
 
