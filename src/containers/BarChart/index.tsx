@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-23 10:37:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-03 15:20:14
+ * @LastEditTime: 2024-06-03 15:24:11
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\BarChart\index.tsx
@@ -43,17 +43,6 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
         type: "value",
         splitNumber: 3, // 只显示两个刻度值
         interval: "auto",
-        // axisLabel: {
-        //   show: true,
-        //   formatter: (value: number) => {
-        //     const max = Math.max(...data.map((item) => item.value));
-        //     const min = Math.min(...data.map((item) => item.value));
-        //     if (value === min || value === max) {
-        //       return value;
-        //     }
-        //     return "";
-        //   },
-        // },
       },
       series: [
         {
