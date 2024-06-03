@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 19:05:04
+ * @LastEditTime: 2024-06-03 18:03:51
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -101,7 +101,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             <TabPane tab="账户设置" key="account">
               <div className="tab-content">
                 <div className="tab-avatar">
-                  <Avatar size={57} src="path/to/avatar.jpg" />
+                  <Avatar
+                    size={57}
+                    src={
+                      userInfo?.avatar ||
+                      "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                    }
+                  />
                   <div className="avatar-name">{userInfo.nickname}</div>
                 </div>
                 <div className="info-box">
@@ -114,7 +120,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     {isRealNameTag === 1 ? (
                       <div>未认证</div>
                     ) : (
-                      <div>已实名认证通过</div>
+                      <div>已认证</div>
                     )}
                   </div>
                   {isRealNameTag == 1 && (
@@ -132,7 +138,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     {userInfo.isVip ? (
                       <div>非会员</div>
                     ) : (
-                      <div>{formatDate(userInfo.vip_expiration_time)}</div>
+                      <div>{formatDate(userInfo.vip_expiration_time || 0)}</div>
                     )}
                   </div>
                   {userInfo.isVip ? (
