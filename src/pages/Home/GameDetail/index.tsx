@@ -2,11 +2,11 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 18:17:57
+ * @LastEditTime: 2024-06-03 14:10:14
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -29,109 +29,6 @@ import RegionNodeSelector from "@/containers/RegionNodeSelector/index";
 
 declare const CefWebInstance: any;
 
-// 柱形图数据示例
-const data = [
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-  { label: "A", value: 100 },
-  { label: "B", value: 200 },
-  { label: "C", value: 300 },
-];
-
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
 
@@ -146,6 +43,11 @@ const GameDetail: React.FC = () => {
 
   const [count, setCount] = useState(0);
   const [onCount, setOnCount] = useState(0);
+
+  const [chartData, setChartData] = useState<any>([]); // 柱形图数据示例
+
+  // 使用 useMemo 确保只有 data 变化时才会重新计算
+  const memoizedData = useMemo(() => chartData, [chartData]);
 
   const showModalActive = () => {
     setIsOpen(true);
@@ -204,6 +106,25 @@ const GameDetail: React.FC = () => {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   }
 
+  function generateDataEvery10Seconds(value: any) {
+    const result = [];
+    const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
+    const startTime = currentTime - 3 * 60 * 1000; // 获取 3 分钟前的时间戳
+
+    // 以 10 秒为间隔生成数据对象
+    for (let time = startTime; time <= currentTime; time += 10 * 1000) {
+      const data = {
+        timestamp: time, // 时间戳
+        value: 2, // 示例数据，可以根据需要修改
+      };
+      result.push(data);
+    }
+
+    result[result.length - 1].value = value;
+
+    return result;
+  }
+
   useEffect(() => {
     let arr = getMyGames();
     let details_arr = arr.filter((item: any) => item?.is_accelerate);
@@ -215,24 +136,34 @@ const GameDetail: React.FC = () => {
     const speedInfoString = localStorage.getItem("speedInfo");
     const speedInfo = speedInfoString ? JSON.parse(speedInfoString) : null;
 
+    let details_arr_index = arr.findIndex((item: any) => item?.is_accelerate);
+    let elementToMove = arr.splice(details_arr_index, 1)[0]; // splice返回被删除的元素数组，所以我们使用[0]来取出被删除的元素
+
+    // 将取出的元素插入到位置1
+    arr.splice(0, 0, elementToMove);
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+
     console.log("我的游戏总数据", arr);
     console.log("当前加速游戏数据", details_arr);
     console.log("speedInfo全部信息", speedInfo);
-    // const displayValue = lostBag === 0 ? 0 : lostBag - 1;
+
     const requestData = JSON.stringify({
       method: "NativeApi_GetIpDelayByICMP",
       params: { ip: speedIp },
     });
+
     (window as any).cefQuery({
       request: requestData,
       onSuccess: (response: any) => {
         console.log("详情丢包信息=========================:", response);
         const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-        console.log(
-          "详情丢包信息jsonResponse=========================:",
-          jsonResponse
-        );
-        setLostBag(jsonResponse);
+
+        let lost_bag = jsonResponse < 2 ? 2 : jsonResponse;
+        // 示例
+        const dataArray = generateDataEvery10Seconds(lost_bag);
+
+        setChartData(dataArray);
+        setLostBag(lost_bag);
         setPacketLoss(jsonResponse === 9999 ? 25 : 0);
         setDetailData(details_arr?.[0] || {});
         setRegionInfo(region_info?.[0]);
@@ -276,11 +207,23 @@ const GameDetail: React.FC = () => {
         onSuccess: (response: any) => {
           console.log("详情丢包信息=========================:", response);
           const jsonResponse = JSON.parse(response).delay; //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-          console.log(
-            "详情丢包信息jsonResponse=========================:",
-            jsonResponse
-          );
-          setLostBag(jsonResponse);
+
+          let lost_bag = jsonResponse < 2 ? 2 : jsonResponse;
+          setChartData((chart: any) => {
+            chart.shift();
+
+            let lastElement = chart[chart.length - 1];
+            let newData = {
+              timestamp: lastElement.timestamp + 10,
+              value: lost_bag,
+            };
+
+            chart.push(newData);
+
+            return chart;
+          });
+
+          setLostBag(lost_bag);
           setPacketLoss(jsonResponse === 9999 ? 25 : 0);
         },
         onFailure: (errorCode: any, errorMessage: any) => {
@@ -301,7 +244,7 @@ const GameDetail: React.FC = () => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [onCount]);
 
   return (
     <div className="home-module-detail">
@@ -335,7 +278,7 @@ const GameDetail: React.FC = () => {
           </div>
           <div className="game-right">
             <div className="info-switch info-common-style" onClick={showModal}>
-              <span>00:50:21 {regionInfo?.region}</span>
+              <span>{regionInfo?.region}</span>
               <span>切换</span>
             </div>
             <div className="info-speed info-common-style">
@@ -364,7 +307,7 @@ const GameDetail: React.FC = () => {
                 </div>
 
                 <div className="line-box">
-                  {lostBag}ms
+                  {1}ms
                   <div className="line">
                     <div className="animate-line" />
                   </div>
@@ -375,7 +318,7 @@ const GameDetail: React.FC = () => {
                 </div>
 
                 <div className="line-box">
-                  {lostBag}ms
+                  {lostBag - 1}ms
                   <div className="line">
                     <div className="animate-line" />
                   </div>
@@ -388,7 +331,7 @@ const GameDetail: React.FC = () => {
             </div>
             <div className="tendencies info-common-style">
               <div className="title">加速趋势</div>
-              <BarChart data={data} />
+              <BarChart data={memoizedData} />
             </div>
             <RegionNodeSelector
               visible={isModalVisible}
