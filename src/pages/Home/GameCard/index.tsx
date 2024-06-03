@@ -65,12 +65,15 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   } = props;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const token = localStorage.getItem("token");
+  const isRealName = localStorage.getItem("isRealName");
+  const pid = localStorage.getItem("pid");
+  let user_info: any = localStorage.getItem("userInfo");
+  user_info = user_info ? JSON.parse(user_info) : {};
 
   const [accelOpen, setAccelOpen] = useState(false);
   const [isAnimate, setIsAnimate] = useState(false); // 是否开始加速动画
-  const isRealName = localStorage.getItem("isRealName");
-  const pid = localStorage.getItem("pid");
 
   useImperativeHandle(ref, () => ({
     triggerAccelerate: (e: any) => {
@@ -198,7 +201,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
 
   // 立即加速
   const handleAccelerateClick = (option: any) => {
-    if (token) {
+    if (token && user_info?.is_vip) {
       if (isRealName === "1") {
         handleOpen();
       } else {
