@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 19:23:53
+ * @LastEditTime: 2024-06-03 19:42:10
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -16,8 +16,9 @@ import React, {
 } from "react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
-import { message } from "antd";
 import { getMyGames } from "@/common/utils";
+
+import PayModal from "@/containers/Pay";
 import playSuitApi from "@/api/speed";
 import BreakConfirmModal from "@/containers/break-confirm";
 
@@ -69,11 +70,11 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   const token = localStorage.getItem("token");
   const isRealName = localStorage.getItem("isRealName");
   const pid = localStorage.getItem("pid");
-  let user_info: any = localStorage.getItem("userInfo");
-  user_info = user_info ? JSON.parse(user_info) : {};
 
   const [accelOpen, setAccelOpen] = useState(false);
   const [isAnimate, setIsAnimate] = useState(false); // 是否开始加速动画
+
+  const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
   useImperativeHandle(ref, () => ({
     triggerAccelerate: (e: any) => {
@@ -201,7 +202,16 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
 
   // 立即加速
   const handleAccelerateClick = (option: any) => {
-    if (token && user_info?.is_vip) {
+    if (token) {
+      let user_info: any = localStorage.getItem("userInfo");
+      user_info = user_info ? JSON.parse(user_info) : {};
+
+      if (!user_info?.is_vip) {
+        setIsModalOpenVip(true);
+
+        return;
+      }
+
       if (isRealName === "1") {
         handleOpen();
       } else {
@@ -400,6 +410,12 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
           );
         }}
       />
+      {!!isModalOpenVip && (
+        <PayModal
+          isModalOpen={isModalOpenVip}
+          setIsModalOpen={(e) => setIsModalOpenVip(e)}
+        />
+      )}
     </div>
   );
 };
