@@ -269,10 +269,12 @@
             line-height: 8.8vh;
             cursor: pointer;
             margin: 0 auto;
+            cursor: not-allowed;
         }
-
-        .submit-btn:hover {
+        
+        .submit-btn:enabled:hover {
             color: #fff;
+            cursor: pointer;
             background-color: #F86C34;
         }
 
@@ -390,6 +392,8 @@
             });
 
             $('#description').on('input', function () {
+                checkInputs();
+                
                 var maxLength = 500;
                 var currentLength = $(this).val().length;
                 var wordsRemaining = maxLength - currentLength;
@@ -506,6 +510,24 @@
 
                 $('#description-input-num').text(value_len + "/500");
             })
+            
+            function checkInputs() {
+                var type = $('.type-btn.selected').data('type');
+                var description = $('.description').val();
+                let allFilled = true;
+                
+                
+                if (type == undefined || type == '' || type == null || description == 'undefined' ||
+                    description == '' || description == null) {
+
+                    $('.submit-btn').prop('disabled', true);
+                } else {
+                    $('.submit-btn').prop('disabled', false);
+                }
+            }
+
+            // Initial check in case inputs are pre-filled
+            checkInputs();
 
             // 提交表单
             $('.submit-btn').click(function () {
@@ -601,6 +623,8 @@
 
                         });
                         $('.type-btn').click(function () {
+                            checkInputs();
+
                             $('.type-btn').removeClass('selected');
                             $(this).addClass('selected');
 
