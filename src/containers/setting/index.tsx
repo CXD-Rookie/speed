@@ -2,18 +2,18 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-03 18:03:51
+ * @LastEditTime: 2024-06-03 18:39:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { Fragment, useState, useEffect } from "react";
 import { Modal, Tabs, Button, Avatar, Switch, Radio } from "antd";
+import { useDispatch } from "react-redux";
+import { openRealNameModal } from "@/redux/actions/auth";
 
 import "./index.scss";
 import RealNameModal from "../real-name";
-import { useDispatch } from "react-redux";
-import { openRealNameModal } from "@/redux/actions/auth";
 import PayModal from "../Pay";
 const { TabPane } = Tabs;
 
@@ -27,6 +27,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const [userInfo, setUserInfo] = useState<any>({});
   const [isRealNameTag, setRealNameTag] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
+
   const token = localStorage.getItem("token");
 
   const dispatch = useDispatch();
@@ -34,11 +35,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     let user_info = localStorage.getItem("userInfo");
     let isRealName = localStorage.getItem("isRealName");
+
     isRealName = isRealName ? isRealName : "";
     user_info = user_info ? JSON.parse(user_info) : {};
+
     setUserInfo(user_info);
     setRealNameTag(isRealName);
-  }, []);
+  }, [isOpen]);
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
@@ -47,12 +50,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
   return (
     <Fragment>
       <Modal
         className="system-setting"
         open={isOpen}
         onCancel={onClose}
+        destroyOnClose
         title="系统设置"
         width={"67.6vw"}
         centered
