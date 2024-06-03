@@ -136,9 +136,19 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     )}
                   </div>
                   {userInfo.isVip ? (
-                    <div onClick={ () => setIsModalOpenVip(true)} className="real-name-btn">充值</div>
+                    <div
+                      onClick={() => setIsModalOpenVip(true)}
+                      className="real-name-btn"
+                    >
+                      充值
+                    </div>
                   ) : (
-                    <div onClick={ () => setIsModalOpenVip(true)} className="real-name-btn">续费</div>
+                    <div
+                      onClick={() => setIsModalOpenVip(true)}
+                      className="real-name-btn"
+                    >
+                      续费
+                    </div>
                   )}
                 </div>
                 {!!isModalOpenVip && (
