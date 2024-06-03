@@ -245,12 +245,12 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
           onSuccess: (response: any) => {
             console.log("校验是否合法文件----------:", response);
             const isCheck = JSON.parse(response);
-            handleSuitDomList(option.id);
+            // handleSuitDomList(option.id);
 
             if (isCheck.pre_check_status === 0) {
               handleSuitDomList(option.id);
             } else {
-              message.error(`不是合法文件，请重新安装加速器`);
+              console.log(`不是合法文件，请重新安装加速器`);
             }
           },
           onFailure: (errorCode: any, errorMessage: any) => {

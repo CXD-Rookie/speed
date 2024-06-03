@@ -14,7 +14,7 @@ import "./index.scss";
 import RealNameModal from "../real-name";
 import { useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
-
+import PayModal from "../Pay";
 const { TabPane } = Tabs;
 
 interface SettingsModalProps {
@@ -26,7 +26,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("system");
   const [userInfo, setUserInfo] = useState<any>({});
   const [isRealNameTag, setRealNameTag] = useState<any>("");
-
+  const [isModalOpenVip, setIsModalOpenVip] = useState(false);
   const token = localStorage.getItem("token");
 
   const dispatch = useDispatch();
@@ -136,11 +136,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     )}
                   </div>
                   {userInfo.isVip ? (
-                    <div className="real-name-btn">充值</div>
+                    <div onClick={ () => setIsModalOpenVip(true)} className="real-name-btn">充值</div>
                   ) : (
-                    <div className="real-name-btn">续费</div>
+                    <div onClick={ () => setIsModalOpenVip(true)} className="real-name-btn">续费</div>
                   )}
                 </div>
+                {!!isModalOpenVip && (
+                  <PayModal
+                    isModalOpen={isModalOpenVip}
+                    setIsModalOpen={(e) => {
+                      console.log(e);
+                      setIsModalOpenVip(e);
+                    }}
+                  />
+                )}
               </div>
             </TabPane>
           )}

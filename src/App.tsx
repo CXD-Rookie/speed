@@ -104,24 +104,26 @@ const App: React.FC = (props: any) => {
     {
       key: "1",
       label: (
-        <div
-          className="public-style"
-          onClick={() => setShowSettingsModal(true)}
-        >
+        <div className="public-style" onClick={() => setShowSettingsModal(true)}>
           设置
         </div>
       ),
     },
+    // 只有当 token 存在时才显示 "问题反馈" 这一项
+    ...(token
+      ? [
+          {
+            key: "2",
+            label: (
+              <div className="public-style" onClick={() => setShowIssueModal(true)}>
+                问题反馈
+              </div>
+            ),
+          },
+        ]
+      : []),
     {
-      key: "2",
-      label: (
-        <div className="public-style" onClick={() => setShowIssueModal(true)}>
-          问题反馈
-        </div>
-      ),
-    },
-    {
-      type: "divider", // 使用 Menu.Divider
+      type: "divider",
     },
     {
       key: "3",
