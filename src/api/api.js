@@ -31,8 +31,6 @@ instance.interceptors.request.use(
     if(token){
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
-    
-
     return config;
   },
   error => {

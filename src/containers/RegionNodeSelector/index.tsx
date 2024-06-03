@@ -24,38 +24,24 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const [selectedNode, setSelectedNode] = useState("0418 亚洲网20");
+  const [selectedNode, setSelectedNode] = useState<any>();
   const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
+  const [regionDomList, setRegionDomList] = useState(); // 节点列表
+  const [regionDomHistory, setRegionDomHistory] = useState(); // 节点历史
 
   const [regions, setRegions] = useState([]); // 区服列表
   const [selectRegions, setSelectRegions] = useState([]); // 选择过的区服列表
   const [selectValue, setSelectValue] = useState<any>(""); // 当前选择的区服id
   const [selectInfo, setSelectInfo] = useState<any>({}); // 当前选择的区服信息
 
-  const [regionDomList, setRegionDomList] = useState(); // 节点列表
-
   const handleNodeClick = (node: {
     key: string;
     ip: string;
     server: { port: number }[];
   }) => {
-    setSelectedNodeKey(node?.key);
+    setSelectedNodeKey((node as any)?.id);
+    setSelectedNode(node);
     console.log("Selected node:", node);
-    const requestData = JSON.stringify({
-      method: "NativeApi_GetIpDelayByICMP",
-      params: { ip: node.ip },
-    });
-
-    (window as any).cefQuery({
-      request: requestData,
-      onSuccess: (response: any) => {
-        console.log("Response from C++:", response);
-        const jsonResponse = JSON.parse(response); //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-      },
-      onFailure: (errorCode: any, errorMessage: any) => {
-        console.error("Query failed:", errorMessage);
-      },
-    });
   };
 
   // 获取游戏区服列表
@@ -233,8 +219,55 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   // 切换tab
   const handleTabsChange = (e: any) => {
     if (e === "2") {
+      let arr = detailData?.dom_history || [];
+
+      setRegionDomHistory(arr);
       handleSuitDomList();
     }
+  };
+
+  // 开始加速
+  const clickStartOn = () => {
+    // 当前选中的节点 selectedNode
+    let arr: any = getMyGames(); // 我的游戏列表
+    let acc_arr = arr.filter((item: any) => item?.is_accelerate); // 当前加速游戏的数据
+    let region_arr = acc_arr?.[0]?.dom_history || []; // 当前加速游戏的历史区服列表
+
+    console.log("选择节点参数：", selectedNode);
+    // 去重 添加
+    if (!region_arr.some((item: any) => item?.id === selectedNode?.id)) {
+      region_arr.push(selectedNode);
+    }
+
+    // 选择当前节点
+    region_arr = region_arr.map((item: any) => {
+      return { ...item, is_select: item?.id === selectedNode?.id };
+    });
+
+    // 更新当前区服列表
+    acc_arr[0].dom_history = region_arr;
+
+    setRegionDomHistory(region_arr);
+
+    // 更新我的游戏
+    let arr_index = arr.findIndex((item: any) => item?.is_accelerate);
+
+    arr[arr_index] = acc_arr[0];
+    arr = arr.map((item: any) => ({ ...item, is_accelerate: false }));
+
+    // localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+
+    // 跳转到首页并触发自动加速autoAccelerate
+    navigate("/home", {
+      state: {
+        isNav: true,
+        data: {
+          ...detailData,
+          router: "details",
+        },
+        autoAccelerate: true,
+      },
+    });
   };
 
   useEffect(() => {
@@ -309,13 +342,18 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               <div>
                 <span>节点记录:</span>
                 <Select
-                  defaultValue={selectedNode}
                   onChange={(value) => {
-                    setSelectedNode(value);
-                    onCancel();
+                    setSelectedNodeKey(value);
                   }}
                 >
-                  <Option value="0418 亚洲网20">0418 亚洲网20</Option>
+                  {(regionDomHistory as any)?.length > 0 &&
+                    (regionDomHistory as any).map((item: any) => {
+                      return (
+                        <Option key={item?.id} value={item?.id}>
+                          {item?.name}
+                        </Option>
+                      );
+                    })}
                 </Select>
               </div>
 
@@ -346,7 +384,11 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               <Column title="丢包" dataIndex="packetLoss" key="packetLoss" />
               <Column title="模式" dataIndex="mode" key="mode" />
             </Table>
-            <Button type="primary" className="start-button">
+            <Button
+              type="primary"
+              className="start-button"
+              onClick={clickStartOn}
+            >
               开始加速
             </Button>
           </div>
