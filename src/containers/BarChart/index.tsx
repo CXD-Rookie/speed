@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-23 10:37:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-22 18:27:50
+ * @LastEditTime: 2024-06-03 15:20:14
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\BarChart\index.tsx
@@ -11,7 +11,7 @@ import React, { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
 interface BarChartDataItem {
-  label: string;
+  timestamp: number;
   value: number;
 }
 
@@ -30,21 +30,41 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     const options = {
       xAxis: {
         type: "category",
-        show: false,
-        data: data.map((item) => item.label),
+        // show: false,
+        axisLine: { show: true }, // 显示 X 轴的轴线
+        axisLabel: { show: false },
+        axisTick: { show: false },
+        data: data?.map((item) => item.timestamp),
       },
       yAxis: {
-        show: false,
+        axisTick: { show: true }, // 显示 Y 轴的刻度线
+        axisLine: { show: true }, // 显示 Y 轴的轴线
+        splitLine: { show: false }, // 隐藏 Y 轴的网格线
         type: "value",
+        splitNumber: 3, // 只显示两个刻度值
+        interval: "auto",
+        // axisLabel: {
+        //   show: true,
+        //   formatter: (value: number) => {
+        //     const max = Math.max(...data.map((item) => item.value));
+        //     const min = Math.min(...data.map((item) => item.value));
+        //     if (value === min || value === max) {
+        //       return value;
+        //     }
+        //     return "";
+        //   },
+        // },
       },
       series: [
         {
           type: "bar",
-          data: data.map((item) => item.value),
+          data: data?.map((item) => item.value),
           itemStyle: {
-            // 柱子的颜色设置
             color: "#F86C34", // 修改为蓝色
           },
+          barWidth: "20%", // 设置柱子的宽度
+          barGap: "30%", // 设置柱子之间的间距
+          barCategoryGap: "20%", // 设置类别间距
         },
       ],
     };
