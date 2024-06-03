@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-16 14:11:44
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-19 19:12:51
+ * @LastEditTime: 2024-06-03 11:00:19
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\index.tsx
@@ -32,7 +32,6 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
     <HashRouter>
       <ConfigProvider locale={zhCN}>
         <Provider store={store}>
@@ -40,5 +39,4 @@ root.render(
         </Provider>
       </ConfigProvider>
     </HashRouter>
-  </React.StrictMode>
 );

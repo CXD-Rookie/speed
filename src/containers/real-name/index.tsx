@@ -147,7 +147,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
   const handleSubmit = async () => {
     try {
       let res = await loginApi.authenticationUser({
-        platform: 1,
+        platform: 3,
         ...rankRealInfo,
       });
       // 认证成功
