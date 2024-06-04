@@ -116,9 +116,10 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
       title="问题反馈"
       width={"67.6vw"}
       centered
+      maskClosable={false}
       footer={null}
     >
-      <iframe src="http://192.168.111.114:3001/issue.html"></iframe>
+      <iframe src={`http://192.168.111.114:3001/issue.html`}></iframe>
       {/* <div className="feedback-popup">
         <div className="type-buttons" id="btnAll">
           <div className="matter-type">

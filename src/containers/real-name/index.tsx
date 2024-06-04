@@ -180,6 +180,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
       title="实名认证"
       width={"67.6vw"}
       centered
+      maskClosable={false}
       footer={null}
       onCancel={handleClose}
     >

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-03 18:39:44
+ * @LastEditTime: 2024-06-04 14:27:59
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -60,6 +60,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         destroyOnClose
         title="系统设置"
         width={"67.6vw"}
+        maskClosable={false}
         centered
         footer={null}
       >

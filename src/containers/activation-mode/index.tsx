@@ -111,6 +111,7 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
       title="启动方式"
       width={"40vw"}
       centered
+      maskClosable={false}
       footer={null}
     >
       <div className="activation-modal-content">

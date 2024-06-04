@@ -36,6 +36,7 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
       title="会员订单"
       width={"40vw"}
       centered
+      maskClosable={false}
       onCancel={() => setOpen(null)}
       footer={null}
     >
@@ -53,13 +54,13 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
               支付类型<span>{payTypeMap?.[info?.pay_type] || "其他"}</span>
             </p>
             <p>
-              支付金额<span>{info?.price/100}</span>
+              支付金额<span>{info?.price / 100}</span>
             </p>
           </>
         )}
 
         <button onClick={() => setOpen(null)}>
-        {payStatusMap?.[info?.status]}
+          {payStatusMap?.[info?.status]}
         </button>
       </div>
     </Modal>
