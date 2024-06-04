@@ -373,8 +373,8 @@
             // 在页面加载时设置全局的 AJAX 默认选项
             $.ajaxSetup({
                 headers: {
-                   'client_token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY2xpZW50X2lwIjoiMTI3LjAuMC4xIiwiZXhwIjoxNzE5NjMxOTI4fQ.r_n6n8fbRxpSNVr3R5DaHYh5plUu10SXPa6fYstsdRk',
-                   'client_id' : 'rdfgsdf-amfhft-mfmertaa-adfadfgds-gdfsgf',
+                //    'client_token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY2xpZW50X2lwIjoiMTI3LjAuMC4xIiwiZXhwIjoxNzE5NjMxOTI4fQ.r_n6n8fbRxpSNVr3R5DaHYh5plUu10SXPa6fYstsdRk',
+                //    'client_id' : 'rdfgsdf-amfhft-mfmertaa-adfadfgds-gdfsgf',
                    'user_token' :JSON.parse(localStorage.getItem("token"))
                 }
             });
@@ -458,9 +458,10 @@
                         }
                         // 预读本地文件示例，不支持ie8
                         obj.preview(function (index, file, result) {
+                            console.log(result,"result-------")
                             var $imgContainer = $(
                                 '<div class="img-container"></div>');
-                            var $img = $('<img src="' + result + '" alt="' + file
+                            var $img = $('<img src="' +result + '" alt="' + file
                                 .name +
                                 '" style="width: 7.5vw; height: 7.5vw;border-radius: 5px;">'
                                 );
@@ -474,7 +475,7 @@
                     done: function (res) {
                         // 上传完毕
                         if (res.error === 0) {
-                            var imageUrl = res.data.url;
+                            var imageUrl = `${'https://cdn.accessorx.com/'}${res.data.url}`;
                             var $previewImages = $('#upload-demo-preview img');
                             var index = $previewImages.length - 1; // 获取最后一张图片的索引
                             var $lastPreviewImage = $previewImages.eq(index); // 获取最后一张预览图片
@@ -543,7 +544,13 @@
                 }
                 // 获取图片 URL
                 $('#upload-demo-preview img').each(function () {
-                    images.push($(this).attr('src'));
+                    // images.push($(this).attr('src'));
+                    let src = $(this).attr('src');
+                    if (src) {
+                        // Remove the prefix "https://cdn.accessorx.com/"
+                        let filteredSrc = src.replace('https://cdn.accessorx.com/', '');
+                        images.push(filteredSrc);
+                    }
                 });
 
                 // 调用提交反馈的接口
