@@ -86,63 +86,22 @@
       text-align: center;
 
       .game-name {
-        font-size: var(--speed-dominant-font-size);
+        font-size: 1.6vw;
         color: #999;
         margin-top: 8px;
+        white-space: nowrap;    /* 禁止换行 */
+        overflow: hidden;       /* 隐藏溢出内容 */
+        text-overflow: ellipsis;/* 使用省略号表示溢出 */
       }
 
       .game-name-en {
         color: #555555;
-        font-size: 14px;
+        font-size: 1.4vw;
         margin-top: 6px;
+        white-space: nowrap;    /* 禁止换行 */
+        overflow: hidden;       /* 隐藏溢出内容 */
+        text-overflow: ellipsis;/* 使用省略号表示溢出 */
       }
     }
   }
-}
-
-
-.empty-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  /* width: 540px; */
-  /* height: 52px; */
-  font-size: 36px;
-  font-family: Source Han Sans SC, Source Han Sans SC-Bold;
-  font-weight: Bold;
-  text-align: center;
-  color: #ffffff;
-  line-height: 52px;
-}
-
-.empty-page-content {
-  margin-bottom: 20px; /* 可根据需要调整间距 */
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-}
-
-.back-button,
-.browse-button {
-  margin: 0 10px; /* 可根据需要调整按钮之间的间距 */
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.back-button {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.browse-button {
-  background-color: #f86c34;
-  color: #fff;
-  border-radius: 4px;
 }
