@@ -53,11 +53,13 @@ const App: React.FC = (props: any) => {
   const location = useLocation();
   const navigate = useNavigate();
   const routeView = useRoutes(routes); // 获得路由表
+
   const [isRealityLogin, setIsRealityLogin] = useState(false); // 实际是否登录 控制状态
   const token = localStorage.getItem("token");
   const [isLoginModal, setIsLoginModal] = useState(0);
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
+
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -215,7 +217,6 @@ const App: React.FC = (props: any) => {
   }, [location]);
 
   useEffect(() => {
-    console.log(isLogin, "isLogin-----------");
     if (isLogin === "true") {
       // setIsLogin(true);
       dispatch(setIsLogin(true));
@@ -298,12 +299,8 @@ const App: React.FC = (props: any) => {
             <img
               onClick={() => {
                 if (localStorage.getItem("close_window_sign") !== "1") {
-                  console.log(111);
-
                   handleExitProcess();
                 } else {
-                  console.log(222);
-
                   handleMinimize();
                 }
               }}

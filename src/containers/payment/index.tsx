@@ -37,6 +37,7 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
 
     setUserInfo(user_info);
   }, [open]);
+  console.log(info);
 
   return (
     <Modal
