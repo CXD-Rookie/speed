@@ -68,7 +68,7 @@ const GameLibrary: React.FC = () => {
 
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
-        cover_img: `https://jsq-cdn.yuwenlong.cn/${game.cover_img}`,
+        cover_img: `https://cdn.accessorx.com/${game.cover_img}`,
       }));
       setGames(gamesWithFullImgUrl);
     } catch (error) {

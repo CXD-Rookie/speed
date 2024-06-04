@@ -108,7 +108,7 @@ const GameLibrary: React.FC = () => {
       const res = await gameApi.gameList(param);
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
-        cover_img: `https://jsq-cdn.yuwenlong.cn/${game.cover_img}`,
+        cover_img: `https://cdn.accessorx.com/${game.cover_img}`,
       }));
       if (res.data.list.length < 10) {
         hasMore.current = false;
