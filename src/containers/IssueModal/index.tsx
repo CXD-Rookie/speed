@@ -119,7 +119,9 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
       maskClosable={false}
       footer={null}
     >
-      <iframe src="process.env.REACT_APP_ISSUE_IFRAME_URL/issue.html"></iframe>
+      <iframe
+        src={`${process.env.REACT_APP_ISSUE_IFRAME_URL}/issue.html`}
+      ></iframe>
       {/* <div className="feedback-popup">
         <div className="type-buttons" id="btnAll">
           <div className="matter-type">
