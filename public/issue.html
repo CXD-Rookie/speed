@@ -167,6 +167,7 @@
             background-color: #F86C34;
             border-radius: 50%;
             color: #fff;
+            cursor: pointer;
         }
 
         .image-upload {
@@ -430,6 +431,8 @@
 
             // 关闭预览图片
             $('.preview').on('click', 'i.fa-times', function () {
+                var $previewImages = $('#upload-demo-preview .img-container');
+
                 $(this).prev('img').remove();
                 $(this).remove();
             });
@@ -481,6 +484,18 @@
                             var $lastPreviewImage = $previewImages.eq(index); // 获取最后一张预览图片
                             $lastPreviewImage.attr('src', imageUrl); // 替换最后一张预览图片的 src 属性
                             console.log('Upload successful:', imageUrl);
+
+                            var $previewImages = $('#upload-demo-preview .img-container');
+                            
+                            // if ($previewImages.length >= 9 ) {
+                            //     $("#ID-upload-demo-btn-2").css({
+                            //         "display": "none" // 设置背景颜色
+                            //     });
+                            // } else {
+                            //     $("#ID-upload-demo-btn-2").css({
+                            //         "display": "block" // 设置背景颜色
+                            //     });
+                            // }
                         } else {
                             console.error('Upload failed:', res.message);
                         }
