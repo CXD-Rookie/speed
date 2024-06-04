@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
  */
 import React, { useState } from "react";
-import { Modal, Button, Select } from "antd";
+import { Modal, Button, Select, Input } from "antd";
 
 import "./index.scss";
 
@@ -119,15 +119,16 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
         <Select className="content-select" defaultValue={"Steam"}>
           <Option value="Steam">Steam</Option>
         </Select>
-        <div className="content-title">启动路径：{filePath}</div>
-        <div className="btn-box">
+        <div className="content-title">启动路径：</div>
+        <div className="content-path-box">
+          <Input className="content-input" disabled value={filePath} />
           <Button className="content-btn" onClick={handleInputChange}>
             浏览
           </Button>
-          <Button className="content-btn" type="default" onClick={handleSave}>
-            保存
-          </Button>
         </div>
+        <Button className="save-btn" type="default" onClick={handleSave}>
+          保存
+        </Button>
       </div>
     </Modal>
   );

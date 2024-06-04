@@ -54,23 +54,40 @@
       color: #fff;
       background: rgba(255,255,255,0.10);
       border: none;
-      border-radius: var(--speed-dominant-border-radius);
+      border-radius: 0.75vh;
     }
 
-    .btn-box {
-      margin-top: 4.8vh;
+    .content-path-box {
+      display: flex;
+      justify-content: space-between;
+
+      .content-input {
+        width: 31vw;
+      }
 
       .content-btn {
-        width: 9.6vw;
+        width: 5.3vw;
         height: 4.8vh;
-        color: #fff;
-        background: #f86c34;
-        border-radius: 2.4vh;
+        font-size: 1.2vw;
+        color: #f86c34;
+        background: rgba(255,255,255,0.10);
+        border-radius: 0.75vh;
         border: none;
         outline: none;
-        margin-left: 6.8vw;
-        font-size: 1.4vw;
       }
+    }
+
+    .save-btn {
+      width: 9.6vw;
+      height: 4.8vh;
+      color: #fff;
+      background: #f86c34;
+      border-radius: 2.4vh;
+      border: none;
+      outline: none;
+      margin-left: 13.6vw;
+      margin-top: 4.8vh;
+      font-size: 1.4vw;
     }
   }
 }
