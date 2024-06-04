@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-04 15:45:35
+ * @LastEditTime: 2024-06-04 18:03:23
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -41,7 +41,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
     isRealName = isRealName ? isRealName : "";
     user_info = user_info ? JSON.parse(user_info) : {};
-    console.log("系统设置", close_sign);
+
     setCloseWindow(close_sign);
     setUserInfo(user_info);
     setRealNameTag(isRealName);
@@ -53,6 +53,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.currentTarget as HTMLDivElement;
+    const dataTitle = target.dataset.title;
+    (window as any).NativeApi_OpenBrowser(dataTitle);
+    console.log("data-title:", dataTitle);
   };
 
   return (
@@ -108,10 +115,30 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
               <div className="protocols">
-                <span>用户协议</span>
-                <span>隐私协议</span>
-                <span>儿童保护及监护人须知</span>
-                <span>自动续费协议</span>
+                <span
+                  onClick={handleClick}
+                  data-title="https://tc-js.yuwenlong.cn/terms_of_service.html"
+                >
+                  用户协议
+                </span>
+                <span
+                  onClick={handleClick}
+                  data-title="https://tc-js.yuwenlong.cn/terms_of_service.html"
+                >
+                  隐私协议
+                </span>
+                <span
+                  onClick={handleClick}
+                  data-title="https://tc-js.yuwenlong.cn/terms_of_service.html"
+                >
+                  儿童保护及监护人须知
+                </span>
+                <span
+                  onClick={handleClick}
+                  data-title="https://tc-js.yuwenlong.cn/automatic_renewal_agreement.html"
+                >
+                  自动续费协议
+                </span>
               </div>
             </div>
           </TabPane>
