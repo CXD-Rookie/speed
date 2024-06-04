@@ -4,6 +4,10 @@
   height: 91vh;
   position: relative;
 
+  .back {
+    cursor: pointer;
+  }
+  
   .back-icon {
     position: absolute;
     z-index: 2;
