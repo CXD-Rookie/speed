@@ -577,7 +577,7 @@
                                 timestamp: Date.now()
                             };
 
-                            window.parent.postMessage(message, "http://192.168.111.114:3001");
+                            window.parent.postMessage(message, "process.env.REACT_APP_ISSUE_IFRAME_URL");
                         })
                         $('.popup-success-img').click(function () {
                             $('#popup-success').hide();
@@ -594,7 +594,7 @@
                                 timestamp: Date.now()
                             };
 
-                            window.parent.postMessage(message, "http://192.168.111.114:3001");
+                            window.parent.postMessage(message, "process.env.REACT_APP_ISSUE_IFRAME_URL");
                         })
 
                     },
