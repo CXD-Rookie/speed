@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-22 14:58:00
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-03 14:27:40
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-04 16:43:04
  * @FilePath: \speed\src\containers\searchBar\index.scss
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -26,30 +26,59 @@
     font-size: 1.6vw;
   }
 
-  .search-dropdown {
+  .search-dropdown-box {
     position: absolute;
     top: 100%;
     left: 0;
-    max-height: 45vh;
-    overflow-y: auto;
-    // border: 1px solid #ccc;
-    border-top: none;
     z-index: 1000;
     width: 20vw;
+    max-height: 45vh;
     background: #3e3e4a;
     border-radius: 1vw;
     box-shadow: 0px 0px 3vw 0px rgba(0, 0, 0, 0.5);
+    padding: 0.6vw;
   }
 
-  .search-item {
-    padding: 10px;
-    cursor: pointer;
+  .search-dropdown {
+    width: 100%;
+    max-height: 34vh;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      width: 0.6vw;
+    }
+  }
+
+  .search-item, .check-more {
+    width: 17.4vw;
+    height: 4.8vh;
+    display: flex;
+    align-items: center;
     font-size: 1.4vw;
-    font-family: Source Han Sans SC, Source Han Sans SC-Regular;
     font-weight: Regular;
-    text-align: left;
     color: #ffffff;
-    line-height: 2.7vh;
+    cursor: pointer;
+    padding: 0 1vw;
+
+    div {
+      width: 16.2vw;
+      white-space: nowrap;    /* 禁止换行 */
+      overflow: hidden;       /* 隐藏溢出内容 */
+      text-overflow: ellipsis;/* 使用省略号表示溢出 */
+    }
+    
+    img {
+      width: 1.2vw;
+      height: 1.2vw;
+    }
+  }
+
+  .line {
+    width: 15.4vw;
+    height: 0.1vh;
+    opacity: 0.1;
+    background: #ffffff;
+    margin: 1.8vh 1vw;
   }
 
   .search-item:hover {

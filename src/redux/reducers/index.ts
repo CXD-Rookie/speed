@@ -13,6 +13,8 @@ import tigerReducer from './tiger';
 import menuReducer from './menu';
 import searchReducer from './search';  // 导入 search reducer
 import authReducer from './auth';  // 导入 search reducer
+import searchEnterReducer from './search-enter';
+
 // 合并所有 reducers
 export default combineReducers({
   count: countReducer,
@@ -20,5 +22,6 @@ export default combineReducers({
   menu: menuReducer,
   search: searchReducer,  // 添加 search reducer
   auth:authReducer,
+  searchEnter: searchEnterReducer,
 });
 
