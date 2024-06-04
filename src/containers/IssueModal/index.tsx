@@ -95,7 +95,7 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
 
   useEffect(() => {
     window.addEventListener("message", function (event) {
-      if (event.origin !== "process.env.REACT_APP_ISSUE_IFRAME_URL") {
+      if (event.origin !== "http://192.168.111.114:3001") {
         return;
       }
 
@@ -119,9 +119,7 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
       maskClosable={false}
       footer={null}
     >
-      <iframe
-        src={`${process.env.REACT_APP_ISSUE_IFRAME_URL}/issue.html`}
-      ></iframe>
+      <iframe src={`http://192.168.111.114:3001/issue.html`}></iframe>
       {/* <div className="feedback-popup">
         <div className="type-buttons" id="btnAll">
           <div className="matter-type">
