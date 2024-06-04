@@ -29,6 +29,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         onCancel={() => setAccelOpen(false)}
         title="提示"
         centered
+        maskClosable={false}
         footer={
           <div className="accelerate-modal-footer">
             <div className="footer-cancel" onClick={() => setAccelOpen(false)}>

@@ -116,6 +116,7 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
       title="问题反馈"
       width={"67.6vw"}
       centered
+      maskClosable={false}
       footer={null}
     >
       <iframe src="process.env.REACT_APP_ISSUE_IFRAME_URL/issue.html"></iframe>

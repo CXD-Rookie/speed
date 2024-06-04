@@ -206,7 +206,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               "userInfo",
               JSON.stringify(jsonResponse.data.user_info)
             );
-            localStorage.setItem("token", JSON.stringify(jsonResponse.data.token));
+            localStorage.setItem(
+              "token",
+              JSON.stringify(jsonResponse.data.token)
+            );
           }
           if (status !== 1) {
             const res = await payApi.getCommodityInfo(response.data?.cid);
@@ -251,6 +254,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         destroyOnClose
         width={"67.6vw"}
         centered
+        maskClosable={false}
         footer={null}
       >
         <div className="pay-modal">

@@ -286,6 +286,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       destroyOnClose
       width={"67.6vw"}
       centered
+      maskClosable={false}
       footer={null}
       onCancel={onCancel}
     >
