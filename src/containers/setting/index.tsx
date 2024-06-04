@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-04 14:27:59
+ * @LastEditTime: 2024-06-04 15:45:35
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -24,6 +24,8 @@ interface SettingsModalProps {
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("system");
+  const [closeWindow, setCloseWindow] = useState<string>("2");
+
   const [userInfo, setUserInfo] = useState<any>({});
   const [isRealNameTag, setRealNameTag] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
@@ -34,11 +36,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     let user_info = localStorage.getItem("userInfo");
+    let close_sign = localStorage.getItem("close_window_sign") || "2";
     let isRealName = localStorage.getItem("isRealName");
 
     isRealName = isRealName ? isRealName : "";
     user_info = user_info ? JSON.parse(user_info) : {};
-
+    console.log("系统设置", close_sign);
+    setCloseWindow(close_sign);
     setUserInfo(user_info);
     setRealNameTag(isRealName);
   }, [isOpen]);
@@ -83,9 +87,17 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
               <div className="setting-item">
                 <div className="item-title">关闭窗口时</div>
                 <div className="off-item-content">
-                  <Radio.Group>
-                    <Radio value={1}>隐藏任务到托盘</Radio>
-                    <Radio value={2}>关闭程序</Radio>
+                  <Radio.Group
+                    onChange={(e) => {
+                      let value = e.target.value;
+
+                      setCloseWindow(value);
+                      localStorage.setItem("close_window_sign", value);
+                    }}
+                    value={closeWindow}
+                  >
+                    <Radio value={"1"}>隐藏任务到托盘</Radio>
+                    <Radio value={"2"}>关闭程序</Radio>
                   </Radio.Group>
                 </div>
               </div>

@@ -296,7 +296,17 @@ const App: React.FC = (props: any) => {
               alt=""
             />
             <img
-              onClick={handleExitProcess}
+              onClick={() => {
+                if (localStorage.getItem("close_window_sign") !== "1") {
+                  console.log(111);
+
+                  handleExitProcess();
+                } else {
+                  console.log(222);
+
+                  handleMinimize();
+                }
+              }}
               className="closeType"
               src={closeIcon}
               alt=""
