@@ -14,6 +14,7 @@ import menuReducer from './menu';
 import searchReducer from './search';  // 导入 search reducer
 import authReducer from './auth';  // 导入 search reducer
 import searchEnterReducer from './search-enter';
+import accountInfoReducer from './account-info';
 
 // 合并所有 reducers
 export default combineReducers({
@@ -23,5 +24,6 @@ export default combineReducers({
   search: searchReducer,  // 添加 search reducer
   auth:authReducer,
   searchEnter: searchEnterReducer,
+  accountInfo: accountInfoReducer,
 });
 

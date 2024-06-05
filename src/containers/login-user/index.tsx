@@ -2,12 +2,13 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 14:39:21
+ * @LastEditTime: 2024-06-05 16:56:34
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useEffect } from "react";
 import { Button, Popover } from "antd";
+import { useSelector } from "react-redux";
 
 import UserAvatarCom from "./user-avatar";
 import SettingsModal from "../setting";
@@ -17,9 +18,9 @@ import "./index.scss";
 interface CustomDropdownProps {}
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
-  const [userInfo, setUserInfo] = useState<any>({});
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+
   const [editOpen, setEditOpen] = useState(false);
-  const [loginToken, setLoginToken] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
   const formatDate = (timestamp: number) => {
@@ -31,38 +32,16 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
     return `${year}-${month}-${day}`;
   };
 
-  useEffect(() => {
-    const fetchUserInfo = () => {
-      let user_info = localStorage.getItem("userInfo");
-      user_info = user_info ? JSON.parse(user_info) : {};
-      let token = localStorage.getItem("token");
-
-      setLoginToken(token);
-      setUserInfo(user_info);
-    };
-
-    fetchUserInfo();
-
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "userInfo") {
-        fetchUserInfo();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
   const popoverContent = (isVip: boolean) => (
     <div>
       <div className="dropdown-content">
         <div className="avatar-box">
           <div>
-            <UserAvatarCom isVip={userInfo?.is_vip} isLogin={!!loginToken} />
-            <span>{userInfo?.nickname}</span>
+            <UserAvatarCom
+              isVip={accountInfo?.userInfor?.is_vip}
+              isLogin={accountInfo?.isLogin}
+            />
+            <span>{accountInfo?.userInfo?.nickname}</span>
           </div>
           <span
             className={isVip ? "vips" : "novips"}
@@ -80,7 +59,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         </Button>
 
         {isVip ? (
-          <p>会员到期：{formatDate(userInfo.vip_expiration_time)}</p>
+          <p>
+            会员到期：{formatDate(accountInfo?.userInfo.vip_expiration_time)}
+          </p>
         ) : (
           <p>解锁全新游戏体验，畅玩游戏从未有过的速度！</p>
         )}
@@ -94,11 +75,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         placement="bottomRight"
         trigger="click"
         arrow={false}
-        content={popoverContent(userInfo.is_vip)}
+        content={popoverContent(accountInfo?.userInfo.is_vip)}
       >
         <div className="user-text">
-          <span>{userInfo?.nickname}</span>
-          <UserAvatarCom isVip={userInfo?.is_vip} isLogin={!!loginToken} />
+          <span>{accountInfo?.userInfo?.nickname}</span>
+          <UserAvatarCom
+            isVip={accountInfo?.userInfo?.is_vip}
+            isLogin={accountInfo?.isLogin}
+          />
         </div>
       </Popover>
       <SettingsModal

@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 15:06:38
+ * @LastEditTime: 2024-06-05 16:59:17
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -10,7 +10,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { Button } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setIsLogin, openRealNameModal } from "@/redux/actions/auth";
 import PayModal from "../../containers/Pay/index";
 import GameCard from "./GameCard";
@@ -32,6 +32,8 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+
   const [status, setStatus] = useState<any>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -42,7 +44,6 @@ const Home: React.FC = () => {
     null
   );
 
-  const token = localStorage.getItem("token");
   const childRef = useRef<any>();
   const isRealNamel = localStorage.getItem("isRealName");
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const Home: React.FC = () => {
   };
 
   const openModal = () => {
-    if (token) {
+    if (accountInfo?.isLogin) {
       if (isRealNamel === "1") {
         handleOpen();
       } else {

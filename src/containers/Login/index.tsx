@@ -1,15 +1,14 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-05 13:48:43
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-05 16:46:50
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setIsLogin } from "../../redux/actions/auth";
+import { useDispatch } from "react-redux";
+import { setAccountInfo } from "../../redux/actions/account-info";
 
 import Captcha from "./captcha";
 import CustomInput from "./custom-input";
@@ -23,20 +22,8 @@ import challengeIcon from "@/assets/images/common/challenge.svg";
 
 declare const CefWebInstance: any;
 
-export interface LoginProps {
-  setIsLoginModal?: (value: any) => void;
-  isLoginModal?: number;
-  // setIsLogin?: (value: boolean) => void;
-}
-
-const Login: React.FC<LoginProps> = (_props) => {
-  const {
-    setIsLoginModal = () => {},
-    isLoginModal = 0,
-    // setIsLogin = () => {},
-  } = _props;
-
-  const navigate = useNavigate();
+const Login: React.FC = () => {
+  const dispatch: any = useDispatch();
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -47,9 +34,6 @@ const Login: React.FC<LoginProps> = (_props) => {
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
-
-  const dispatch = useDispatch();
-  const isLogin = useSelector((state: any) => state.auth.isLogin);
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
@@ -86,10 +70,7 @@ const Login: React.FC<LoginProps> = (_props) => {
       });
 
       if (res?.error === 0) {
-        console.log(res.data, "111111111111111");
-        localStorage.setItem("userInfo", JSON.stringify(res.data.user_info));
         localStorage.setItem("token", JSON.stringify(res.data.token));
-        localStorage.setItem("isLogin", "true");
 
         if (
           res.data.user_info.user_ext === null ||
@@ -99,8 +80,6 @@ const Login: React.FC<LoginProps> = (_props) => {
         } else {
           localStorage.setItem("isRealName", "0");
         }
-        // 处理登录逻辑
-        setIsLoginModal(isLoginModal + 1);
 
         const loginModal = document.querySelector(
           ".login-modal"
@@ -110,7 +89,8 @@ const Login: React.FC<LoginProps> = (_props) => {
           loginModal.style.display = "none";
         }
 
-        dispatch(setIsLogin(false));
+        // 3个参数 用户信息 是否登录 是否显示登录
+        dispatch(setAccountInfo(res.data.user_info, true, false));
 
         // eslint-disable-next-line no-restricted-globals
         // @ts-ignore
@@ -126,7 +106,7 @@ const Login: React.FC<LoginProps> = (_props) => {
   };
 
   const close = async () => {
-    dispatch(setIsLogin(false));
+    dispatch(setAccountInfo(undefined, undefined, false));
     // eslint-disable-next-line no-restricted-globals
     // @ts-ignore
     window.location.reload();

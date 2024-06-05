@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Modal } from "antd";
 
 import "./index.scss";
@@ -29,14 +30,7 @@ const payStatusMap: { [key: number]: string } = {
 const PaymentModal: React.FC<PayModalProps> = (props) => {
   const { open, info, setOpen = () => {} } = props;
 
-  const [userInfo, setUserInfo] = useState<any>({});
-
-  useEffect(() => {
-    let user_info = localStorage.getItem("userInfo");
-    user_info = user_info ? JSON.parse(user_info) : {};
-
-    setUserInfo(user_info);
-  }, [open]);
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
   return (
     <Modal
@@ -57,7 +51,7 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
               <span>{info?.id}</span>
             </p>
             <p>
-              充值账号<span>{userInfo?.phone}</span>
+              充值账号<span>{accountInfo?.userInfo?.phone}</span>
             </p>
             <p>
               支付类型<span>{payTypeMap?.[info?.type] || "其他"}</span>

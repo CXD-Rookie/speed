@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-03 19:42:10
+ * @LastEditTime: 2024-06-05 17:02:05
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -29,12 +29,8 @@ import cessationIcon from "@/assets/images/common/cessation.svg";
 import arrowIcon from "@/assets/images/common/accel-arrow.svg";
 import closeIcon from "@/assets/images/common/close.svg";
 
-import { useDispatch } from "react-redux";
-import {
-  setIsLogin,
-  openRealNameModal,
-  closeRealNameModal,
-} from "../../../redux/actions/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLogin, openRealNameModal } from "../../../redux/actions/auth";
 
 import "./style.scss";
 
@@ -67,7 +63,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const token = localStorage.getItem("token");
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+
   const isRealName = localStorage.getItem("isRealName");
   const pid = localStorage.getItem("pid");
 
@@ -111,8 +108,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       localStorage.setItem("speedIp", ip);
       localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
 
-      let obj: any = localStorage.getItem("userInfo");
-
       // 真实拼接
       const jsonResult = {
         process: [process[0], process[1], process[2]],
@@ -123,7 +118,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         ],
         tcp_tunnel_mode: 0,
         udp_tunnel_mode: 1,
-        user_id: JSON.parse(obj)?.id,
+        user_id: accountInfo?.userInfo?.id,
         game_id: t,
         tunnel: {
           address: ip,
@@ -202,11 +197,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
 
   // 立即加速
   const handleAccelerateClick = (option: any) => {
-    if (token) {
-      let user_info: any = localStorage.getItem("userInfo");
-      user_info = user_info ? JSON.parse(user_info) : {};
-
-      if (!user_info?.is_vip) {
+    if (accountInfo?.isLogin) {
+      if (!accountInfo?.userInfo?.is_vip) {
         setIsModalOpenVip(true);
 
         return;

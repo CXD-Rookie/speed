@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./index.scss";
 import payApi from "@/api/pay";
@@ -36,14 +38,17 @@ interface OrderInfo {
 
 const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {} } = props;
+
+  const dispatch: any = useDispatch();
   //@ts-ignore
-  const userInfo = JSON.parse(localStorage.getItem("userInfo")) || "";
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
-  const [userToken, setUserToken] = useState(userInfo.id);
+  const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
   const [paymentStatus, setPaymentStatus] = useState<number | null>(null);
   const [showPopup, setShowPopup] = useState<string | null>(null);
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
@@ -193,10 +198,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             console.log("支付成功");
             let jsonResponse = await loginApi.userInfo();
 
-            localStorage.setItem(
-              "userInfo",
-              JSON.stringify(jsonResponse.data.user_info)
+            // 3个参数 用户信息 是否登录 是否显示登录
+            dispatch(
+              setAccountInfo(jsonResponse.data.user_info, undefined, undefined)
             );
+
             localStorage.setItem(
               "token",
               JSON.stringify(jsonResponse.data.token)

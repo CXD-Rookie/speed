@@ -4,16 +4,19 @@ import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
-import { setIsLogin } from "./redux/actions/auth";
+import { setAccountInfo } from "./redux/actions/account-info";
+
+import "@/assets/css/App.scss";
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
 import CustomDropdown from "@/containers/login-user";
 import SettingsModal from "./containers/setting/index";
 import IssueModal from "./containers/IssueModal/index";
-import "@/assets/css/App.scss";
+
 import playSuitApi from "./api/speed";
 import loginApi from "./api/login";
+
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
@@ -48,15 +51,15 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const App: React.FC = (props: any) => {
   const { state, setMenuActive } = props;
-  const dispatch = useDispatch();
-  const isLogin = useSelector((state: any) => state.auth.isLogin);
+
+  const dispatch: any = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+
   const routeView = useRoutes(routes); // 获得路由表
 
-  const [isRealityLogin, setIsRealityLogin] = useState(false); // 实际是否登录 控制状态
-  const token = localStorage.getItem("token");
-  const [isLoginModal, setIsLoginModal] = useState(0);
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
@@ -91,17 +94,18 @@ const App: React.FC = (props: any) => {
   };
 
   const loginOut = async () => {
-    console.log("退出");
-    console.log("stop speed--------------------------");
+    console.log("退出", "stop speed--------------------------");
     let res = await loginApi.loginOut();
     if (res.error === 0) {
       console.log("退出成功");
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
-      localStorage.removeItem("isLogin");
+      // 3个参数 用户信息 是否登录 是否显示登录
+      dispatch(setAccountInfo({}, false, true));
       navigate("/home");
     }
   };
+
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -115,7 +119,7 @@ const App: React.FC = (props: any) => {
       ),
     },
     // 只有当 token 存在时才显示 "问题反馈" 这一项
-    ...(token
+    ...(accountInfo?.isLogin
       ? ([
           {
             key: "2",
@@ -142,9 +146,11 @@ const App: React.FC = (props: any) => {
         ] as any)
       : []),
   ];
+
   // 点击菜单
   const handleChangeTabs = (item: any) => {
     let localtion = item?.router || "home";
+
     setMenuActive(item?.key);
     navigate(localtion, {
       replace: false,
@@ -217,18 +223,6 @@ const App: React.FC = (props: any) => {
   }, [location]);
 
   useEffect(() => {
-    if (isLogin === "true") {
-      // setIsLogin(true);
-      dispatch(setIsLogin(true));
-      setIsRealityLogin(true);
-    } else {
-      localStorage.setItem("isLogin", "false");
-      dispatch(setIsLogin(false));
-      setIsRealityLogin(false);
-    }
-  }, [isLoginModal]);
-
-  useEffect(() => {
     handleSuitDomList();
   }, []);
 
@@ -273,12 +267,14 @@ const App: React.FC = (props: any) => {
             onMouseDown={stopPropagation}
             onMouseUp={stopPropagation}
           >
-            {token ? (
+            {accountInfo?.isLogin ? (
               <CustomDropdown />
             ) : (
               <div
                 className="login-enroll-text"
-                onClick={() => dispatch(setIsLogin(true))}
+                onClick={() =>
+                  dispatch(setAccountInfo(undefined, undefined, true))
+                }
               >
                 登录/注册
               </div>
@@ -315,15 +311,12 @@ const App: React.FC = (props: any) => {
         <Content className="content">{routeView}</Content>
       </Layout>
 
-      {isLogin && (
+      {accountInfo?.isShowLogin && (
         <div
           className="login-mask"
-          style={{ display: isLogin ? "none" : "block" }}
+          style={{ display: accountInfo?.isShowLogin ? "none" : "block" }}
         >
-          <Login
-            isLoginModal={isLoginModal}
-            setIsLoginModal={setIsLoginModal}
-          />
+          <Login />
         </div>
       )}
       <SettingsModal

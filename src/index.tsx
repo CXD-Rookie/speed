@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import "./assets/css/index.css";
 import "dayjs/locale/zh-cn";
 
-import store from "./redux/store";
+import { store } from "./redux/store";
 
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
@@ -32,11 +32,11 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-    <HashRouter>
-      <ConfigProvider locale={zhCN}>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </ConfigProvider>
-    </HashRouter>
+  <HashRouter>
+    <ConfigProvider locale={zhCN}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </ConfigProvider>
+  </HashRouter>
 );

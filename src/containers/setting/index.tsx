@@ -9,7 +9,7 @@
  */
 import React, { Fragment, useState, useEffect } from "react";
 import { Modal, Tabs, Button, Switch, Radio } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 
 import "./index.scss";
@@ -28,14 +28,13 @@ interface SettingsModalProps {
 const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const { isOpen, onClose, type = "default" } = props;
 
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+
   const [activeTab, setActiveTab] = useState("system");
   const [closeWindow, setCloseWindow] = useState<string>("2");
 
-  const [userInfo, setUserInfo] = useState<any>({});
   const [isRealNameTag, setRealNameTag] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
-
-  const token = localStorage.getItem("token");
 
   const dispatch = useDispatch();
 
@@ -55,16 +54,12 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   };
 
   useEffect(() => {
-    let user_info = localStorage.getItem("userInfo");
     let close_sign = localStorage.getItem("close_window_sign") || "2";
     let isRealName = localStorage.getItem("isRealName");
 
     isRealName = isRealName ? isRealName : "";
-    user_info = user_info ? JSON.parse(user_info) : {};
-    console.log(user_info);
 
     setCloseWindow(close_sign);
-    setUserInfo(user_info);
     setRealNameTag(isRealName);
   }, [isOpen, isModalOpenVip]);
 
@@ -154,20 +149,22 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
               </div>
             </div>
           </TabPane>
-          {token && (
+          {accountInfo?.isLogin && (
             <TabPane tab="账户设置" key="account">
               <div className="tab-content">
                 <div className="tab-avatar">
                   <UserAvatarCom
-                    isVip={userInfo?.is_vip}
-                    isLogin={!!token}
+                    isVip={accountInfo?.userInfo?.is_vip}
+                    isLogin={accountInfo?.isLogin}
                     type={"setting"}
                   />
-                  <div className="avatar-name">{userInfo.nickname}</div>
+                  <div className="avatar-name">
+                    {accountInfo?.userInfo.nickname}
+                  </div>
                 </div>
                 <div className="info-box">
                   <label>手机号:</label>
-                  <div>{userInfo.phone}</div>
+                  <div>{accountInfo?.userInfo.phone}</div>
                 </div>
                 <div className="info-box info-flex">
                   <div className="info-left">
@@ -190,13 +187,17 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="info-box info-flex">
                   <div className="info-left">
                     <label>会员到期时间</label>
-                    {userInfo.is_vip ? (
-                      <div>{formatDate(userInfo.vip_expiration_time || 0)}</div>
+                    {accountInfo?.userInfo.is_vip ? (
+                      <div>
+                        {formatDate(
+                          accountInfo?.userInfo.vip_expiration_time || 0
+                        )}
+                      </div>
                     ) : (
                       <div>非会员</div>
                     )}
                   </div>
-                  {userInfo.is_vip ? (
+                  {accountInfo?.userInfo.is_vip ? (
                     <div
                       onClick={() => setIsModalOpenVip(true)}
                       className="real-name-btn"
