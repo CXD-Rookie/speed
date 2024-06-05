@@ -21,7 +21,15 @@ const MyGames: React.FC = () => {
   const [gamesList, setGamesList] = useState([]);
 
   useEffect(() => {
-    setGamesList(getMyGames());
+    let arr = getMyGames();
+    let details_arr_index = arr.findIndex((item: any) => item?.is_accelerate);
+    let elementToMove = arr.splice(details_arr_index, 1)[0]; // splice返回被删除的元素数组，所以我们使用[0]来取出被删除的元素
+
+    // 将取出的元素插入到位置1
+    arr.splice(0, 0, elementToMove);
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+
+    setGamesList(arr);
   }, [status]);
 
   return (
