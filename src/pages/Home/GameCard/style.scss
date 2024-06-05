@@ -184,6 +184,9 @@
     font-size: var(--speed-dominant-font-size);
     color: #999;
     padding: 1.2vw 1vw 0 1vw;
+    white-space: nowrap;    /* 禁止换行 */
+    overflow: hidden;       /* 隐藏溢出内容 */
+    text-overflow: ellipsis;/* 使用省略号表示溢出 */
   }
 }
 
