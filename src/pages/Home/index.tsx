@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 15:32:02
+ * @LastEditTime: 2024-06-05 15:06:38
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -52,16 +52,13 @@ const Home: React.FC = () => {
   };
 
   const openModal = () => {
-    console.log(111111);
     if (token) {
       if (isRealNamel === "1") {
         handleOpen();
       } else {
-        // handleClose();
         setIsModalOpen(true);
       }
     } else {
-      console.log("没登录");
       dispatch(setIsLogin(true));
     }
   };
@@ -69,8 +66,8 @@ const Home: React.FC = () => {
   const updateData = () => {
     let arr = getMyGames();
 
-    setMyGamesNum(arr?.length);
     console.log("查看mygame是否更新-------------------------");
+    setMyGamesNum(arr?.length);
     setHomeList(arr?.slice(0, 4));
   };
 
@@ -101,11 +98,6 @@ const Home: React.FC = () => {
   const handleAccelerateClick = (game: Game) => {
     // 查找对应的游戏卡片并触发其加速逻辑
     console.log("查看game----------", game);
-    // let details_arr_index = arr.findIndex((item: any) => item?.is_accelerate);
-    // let elementToMove = arr.splice(details_arr_index, 1)[0]; // splice返回被删除的元素数组，所以我们使用[0]来取出被删除的元素
-
-    // // 将取出的元素插入到位置1
-    // arr.splice(0, 0, elementToMove);
     if (game) {
       // 将自动加速的游戏数据添加到 homeList 中
       //@ts-ignore
@@ -158,23 +150,17 @@ const Home: React.FC = () => {
             id={`${game.id}`}
           />
         ))}
-        {homeList?.length < 4 &&
-          homeList?.length > 0 &&
-          Array.from(
-            { length: 4 - homeList?.length },
-            (_, index) => index + 1
-          ).map((item) => (
-            <div
-              key={item}
-              className="null-data-card"
-              onClick={() => navigate("/gameLibrary")}
-            >
-              <div className="null-content-card">
-                <img src={addIcon} alt="" />
-                <div>加载更多游戏</div>
-              </div>
+        {homeList?.length < 4 && homeList?.length > 0 && (
+          <div
+            className="null-data-card"
+            onClick={() => navigate("/gameLibrary")}
+          >
+            <div className="null-content-card">
+              <img src={addIcon} alt="" />
+              <div>添加更多游戏</div>
             </div>
-          ))}
+          </div>
+        )}
         {homeList?.length <= 0 && (
           <div className="empty-card">
             <img src={emptyIcon} alt="" />
