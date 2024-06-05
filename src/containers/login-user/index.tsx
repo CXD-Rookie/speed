@@ -2,13 +2,14 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 16:56:34
+ * @LastEditTime: 2024-06-05 17:51:44
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Popover } from "antd";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { openRealNameModal } from "@/redux/actions/auth";
 
 import UserAvatarCom from "./user-avatar";
 import SettingsModal from "../setting";
@@ -18,6 +19,8 @@ import "./index.scss";
 interface CustomDropdownProps {}
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
+  const dispatch = useDispatch();
+
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
   const [editOpen, setEditOpen] = useState(false);
@@ -51,7 +54,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           </span>
         </div>
         <Button
-          onClick={() => setIsModalOpenVip(true)}
+          onClick={() => {
+            const isRealNamel = localStorage.getItem("isRealName");
+            if (isRealNamel === "1") {
+              dispatch(openRealNameModal());
+            } else {
+              setIsModalOpenVip(true);
+            }
+          }}
           className={isVip ? "vip" : "novip"}
           type={"primary"}
         >

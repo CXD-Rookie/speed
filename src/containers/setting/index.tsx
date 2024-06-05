@@ -199,7 +199,15 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   </div>
                   {accountInfo?.userInfo.is_vip ? (
                     <div
-                      onClick={() => setIsModalOpenVip(true)}
+                      onClick={() => {
+                        const isRealNamel = localStorage.getItem("isRealName");
+
+                        if (isRealNamel === "1") {
+                          dispatch(openRealNameModal());
+                        } else {
+                          setIsModalOpenVip(true);
+                        }
+                      }}
                       className="real-name-btn"
                     >
                       续费
