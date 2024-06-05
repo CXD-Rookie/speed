@@ -1,0 +1,55 @@
+.tooltip-com-module {
+  display: inline-block;
+
+  .tips {
+    width: 1.2vw;
+    height: 1.2vh;
+  }
+}
+
+.ant-tooltip {
+  box-shadow: 0px 0px 60px 0px rgba(0,0,0,0.50); 
+}
+
+.ant-tooltip .ant-tooltip-inner {
+  padding: 0 !important;
+}
+
+.ant-tooltip-placement-top .ant-tooltip-arrow::before {
+  background-color: #3e3e4a !important; /* 你希望的颜色 */
+}
+
+.tooltip-com-module-content {
+  width: 21vw;
+  height: 21vh;
+  background: #3e3e4a !important;
+  padding: 1.8vh 1.6vw;
+  border-radius: 0.6vh;
+
+  .title {
+    width: 9.6vw;
+    height: 2.4vh;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    text-align: left;
+    color: #999999;
+    line-height: 2.4vh;
+    margin-bottom: 1.8vh;
+  }
+
+  .value {
+    width: 17.8vw;
+    height: 2.4vh;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    text-align: left;
+    color: #ffffff;
+    line-height: 2.4vh;
+    margin-top: 0.9vh;
+
+    span {
+      color: #905340;
+      cursor: pointer;
+    }
+  }
+}

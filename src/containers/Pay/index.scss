@@ -133,15 +133,14 @@
         transform: translateY(-50%);
         cursor: pointer;
         padding: 10px;
-        border: 0.5px dashed #fff;
       }
 
       .left {
-        left: 17vw;
+        left: 18vw;
       }
 
       .right {
-        right: 17vw;
+        right: 18vw;
       }
 
       .arrow.right::after {
@@ -237,15 +236,18 @@
 
     /* QR Code styles */
     .qrcode {
-      // border: 6px solid #fff;
-      border-radius: 6px;
+      width: 13vw;
+      height: 13vw;
       display: inline-block;
       margin-left: 15px;
+      background-color: #fff;
 
-      .qrcode canvas {
+      .qrcode canvas,
+      img {
         width: 12vw;
         height: 12vw;
         display: block;
+        margin: 0.5vw 0 0 0.5vw;
       }
     }
 

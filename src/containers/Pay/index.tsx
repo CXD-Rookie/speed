@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
-import { Modal } from "antd";
+import { Modal, Popover } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./index.scss";
+import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
 import loginApi from "@/api/login";
 import PaymentModal from "../payment";
@@ -285,9 +286,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             <div className="arrow right"></div>
           </div>
           <div className="line"></div>
-          <div className="qrcode">
-            <img className="header-icon" src={qrCodeUrl} alt="" />
-          </div>
+          {qrCodeUrl && (
+            <div className="qrcode">
+              <img className="header-icon" src={qrCodeUrl} alt="" />
+            </div>
+          )}
           <div className="carousel">
             {commodities.map((item, index) => (
               <div
@@ -322,8 +325,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                       >
                         自动续费协议
                       </div>
-                      》到期按每月29元自动续费，可随时取消{" "}
-                      <i className="tips">?</i>
+                      》到期按每月29元自动续费，可随时取消 <TooltipCom />
                     </li>
                   </ul>
                 </div>
