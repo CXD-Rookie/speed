@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "antd";
 
+import "./index.scss";
 import payApi from "@/api/pay";
 import loginApi from "@/api/login";
-import "./index.scss";
 import PaymentModal from "../payment";
-import { useDispatch, useSelector } from "react-redux";
 // import { openPayModal, closePayModal } from '@/redux/actions/auth';
+
 interface PayModalProps {
   isModalOpen?: boolean;
   setIsModalOpen?: (e: any) => void;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 
 import "./index.scss";
@@ -20,7 +20,7 @@ const payTypeMap: { [key: number]: string } = {
 };
 const payStatusMap: { [key: number]: string } = {
   1: "待支付",
-  2: "支付成功",
+  2: "已完成支付",
   3: "支付失败",
   4: "支付取消",
   5: "支付超时",
@@ -28,6 +28,16 @@ const payStatusMap: { [key: number]: string } = {
 
 const PaymentModal: React.FC<PayModalProps> = (props) => {
   const { open, info, setOpen = () => {} } = props;
+
+  const [userInfo, setUserInfo] = useState<any>({});
+
+  useEffect(() => {
+    let user_info = localStorage.getItem("userInfo");
+    user_info = user_info ? JSON.parse(user_info) : {};
+
+    setUserInfo(user_info);
+  }, [open]);
+  console.log(info);
 
   return (
     <Modal
@@ -48,7 +58,7 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
               <span>{info?.id}</span>
             </p>
             <p>
-              充值账号<span>{"18888888888888"}</span>
+              充值账号<span>{userInfo?.phone}</span>
             </p>
             <p>
               支付类型<span>{payTypeMap?.[info?.pay_type] || "其他"}</span>
@@ -59,7 +69,7 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
           </>
         )}
 
-        <button onClick={() => setOpen(null)}>
+        <button style={{ cursor: "pointer" }} onClick={() => setOpen(null)}>
           {payStatusMap?.[info?.status]}
         </button>
       </div>

@@ -111,7 +111,11 @@
           color: #fff !important;
           margin-inline-end: 3.8vw !important;
         }
-
+        
+        .ant-radio-inner {
+          background: transparent;
+        }
+          
         .ant-radio-checked .ant-radio-inner {
           font-size: 1.4vw;
           background-color: #f86c34;

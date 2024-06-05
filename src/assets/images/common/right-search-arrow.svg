@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>箭头</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="首页-导入中" transform="translate(-1144, -148)" stroke="#FFFFFF" stroke-width="2.5">
+            <g id="编组-3" transform="translate(800, 116)">
+                <g id="编组-2" transform="translate(12, 12)">
+                    <g id="编组" transform="translate(332, 20)">
+                        <polyline id="箭头" points="8 3 16 12 8 21"></polyline>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

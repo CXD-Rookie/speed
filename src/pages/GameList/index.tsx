@@ -42,6 +42,7 @@ const GameLibrary: React.FC = () => {
 
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
+  const enterSign = useSelector((state: any) => state.searchEnter);
 
   const clickAddGame = (option: any) => {
     let arr = getMyGames();
@@ -86,7 +87,7 @@ const GameLibrary: React.FC = () => {
       }));
       setGames(gamesWithFullImgUrl);
     }
-  }, [searchResults]);
+  }, [enterSign]);
 
   return (
     <div className="game-list-module-container">
