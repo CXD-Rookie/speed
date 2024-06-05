@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 11:01:39
+ * @LastEditTime: 2024-06-05 11:13:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -60,6 +60,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
     isRealName = isRealName ? isRealName : "";
     user_info = user_info ? JSON.parse(user_info) : {};
+    console.log(user_info);
 
     setCloseWindow(close_sign);
     setUserInfo(user_info);
@@ -190,25 +191,25 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="info-box info-flex">
                   <div className="info-left">
                     <label>会员到期时间</label>
-                    {userInfo.isVip ? (
-                      <div>非会员</div>
-                    ) : (
+                    {userInfo.is_vip ? (
                       <div>{formatDate(userInfo.vip_expiration_time || 0)}</div>
+                    ) : (
+                      <div>非会员</div>
                     )}
                   </div>
-                  {userInfo.isVip ? (
+                  {userInfo.is_vip ? (
                     <div
                       onClick={() => setIsModalOpenVip(true)}
                       className="real-name-btn"
                     >
-                      充值
+                      续费
                     </div>
                   ) : (
                     <div
                       onClick={() => setIsModalOpenVip(true)}
                       className="real-name-btn"
                     >
-                      续费
+                      充值
                     </div>
                   )}
                 </div>
