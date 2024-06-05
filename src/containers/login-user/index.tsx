@@ -2,25 +2,24 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 11:28:21
+ * @LastEditTime: 2024-06-05 14:39:21
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useEffect } from "react";
-import { Button, Avatar, Popover } from "antd";
+import { Button, Popover } from "antd";
 
+import UserAvatarCom from "./user-avatar";
 import SettingsModal from "../setting";
 import PayModal from "../Pay";
 import "./index.scss";
-
-import defaultAvatarIcon from "@/assets/images/common/default-avatar.svg";
-import avatarVipIcon from "@/assets/images/common/avatar-vip.svg";
 
 interface CustomDropdownProps {}
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [userInfo, setUserInfo] = useState<any>({});
   const [editOpen, setEditOpen] = useState(false);
+  const [loginToken, setLoginToken] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
   const formatDate = (timestamp: number) => {
@@ -36,7 +35,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
     const fetchUserInfo = () => {
       let user_info = localStorage.getItem("userInfo");
       user_info = user_info ? JSON.parse(user_info) : {};
+      let token = localStorage.getItem("token");
 
+      setLoginToken(token);
       setUserInfo(user_info);
     };
 
@@ -60,13 +61,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       <div className="dropdown-content">
         <div className="avatar-box">
           <div>
-            <Avatar
-              size={20}
-              src={
-                userInfo?.avatar ||
-                "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-              }
-            />
+            <UserAvatarCom isVip={userInfo?.is_vip} isLogin={!!loginToken} />
             <span>{userInfo?.nickname}</span>
           </div>
           <span
@@ -103,7 +98,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       >
         <div className="user-text">
           <span>{userInfo?.nickname}</span>
-          <Avatar size={20} src={userInfo?.avatar || defaultAvatarIcon} />
+          <UserAvatarCom isVip={userInfo?.is_vip} isLogin={!!loginToken} />
         </div>
       </Popover>
       <SettingsModal

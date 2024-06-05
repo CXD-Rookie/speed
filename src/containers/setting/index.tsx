@@ -2,17 +2,18 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 11:13:47
+ * @LastEditTime: 2024-06-05 14:41:13
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { Fragment, useState, useEffect } from "react";
-import { Modal, Tabs, Button, Avatar, Switch, Radio } from "antd";
+import { Modal, Tabs, Button, Switch, Radio } from "antd";
 import { useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 
 import "./index.scss";
+import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
 import PayModal from "../Pay";
 
@@ -157,13 +158,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
             <TabPane tab="账户设置" key="account">
               <div className="tab-content">
                 <div className="tab-avatar">
-                  <Avatar
-                    size={57}
-                    src={
-                      userInfo?.avatar ||
-                      "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-                    }
-                  />
+                  <UserAvatarCom isVip={userInfo?.is_vip} isLogin={!!token} />
                   <div className="avatar-name">{userInfo.nickname}</div>
                 </div>
                 <div className="info-box">
