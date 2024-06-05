@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "antd";
 
 import "./index.scss";
 import payApi from "@/api/pay";
 import loginApi from "@/api/login";
 import PaymentModal from "../payment";
-// import { openPayModal, closePayModal } from '@/redux/actions/auth';
 
 interface PayModalProps {
   isModalOpen?: boolean;
@@ -56,15 +54,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   // const handleClose = () => {
   //   dispatch(closePayModal());
   // };
-
-  const payTypeMap: { [key: number]: string } = {
-    1: "包月",
-    2: "包季",
-    3: "包年",
-    4: "连续包月",
-    5: "连续包季",
-    6: "连续包年",
-  };
 
   const guid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -203,6 +192,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           if (status === 2) {
             console.log("支付成功");
             let jsonResponse = await loginApi.userInfo();
+
             localStorage.setItem(
               "userInfo",
               JSON.stringify(jsonResponse.data.user_info)
@@ -218,7 +208,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
             setPaymentStatus(status);
             setShowPopup(null);
-            setOrderInfo(response.data);
+            setOrderInfo({ ...response, ...res.data });
             setShowPopup(
               status === 2
                 ? "支付成功"

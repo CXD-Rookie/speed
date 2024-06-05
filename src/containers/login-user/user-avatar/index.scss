@@ -6,11 +6,6 @@
   .ant-avatar {
     width: 2vw !important;
     height: 2vw !important;
-
-    img {
-      width: 4vw !important;
-      height: 4vw !important;
-    }
   }
 
   .vip-icon {
@@ -19,5 +14,20 @@
     position: absolute;
     left: 0.9vw;
     top: 0.8vw;
+  }
+}
+
+.setting-user-avatar-com-module {
+  .ant-avatar {
+    width: 5.7vw !important;
+    height: 5.7vw !important;
+  }
+
+  .vip-icon {
+    width: 1.2vw !important;
+    height: 1.3vw !important;
+    position: absolute;
+    left: 2.7vw;
+    top: 2.7vw;
   }
 }

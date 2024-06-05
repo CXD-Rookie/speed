@@ -37,7 +37,6 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
 
     setUserInfo(user_info);
   }, [open]);
-  console.log(info);
 
   return (
     <Modal
@@ -61,7 +60,7 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
               充值账号<span>{userInfo?.phone}</span>
             </p>
             <p>
-              支付类型<span>{payTypeMap?.[info?.pay_type] || "其他"}</span>
+              支付类型<span>{payTypeMap?.[info?.type] || "其他"}</span>
             </p>
             <p>
               支付金额<span>{info?.price / 100}</span>

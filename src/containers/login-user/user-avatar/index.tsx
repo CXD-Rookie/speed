@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 14:31:34
+ * @LastEditTime: 2024-06-05 15:23:47
  * @FilePath: \speed\src\containers\login-user\user-avatar\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -25,15 +25,24 @@ const UserAvatarCom: React.FC<UserAvatarComProps> = (props) => {
   const { isVip = false, isLogin = false, type = "default" } = props;
 
   return (
-    <div className="user-avatar-com-module">
+    <div
+      className={`user-avatar-com-module ${
+        type === "setting" && "setting-user-avatar-com-module"
+      }`}
+    >
       <Avatar
-        style={{
-          border: isVip ? "0.1vw solid #ffe3b6" : "none",
-        }}
-        size={40}
+        style={
+          type === "setting"
+            ? {}
+            : {
+                border: isVip ? "0.2vw solid #ffe3b6" : "none",
+              }
+        }
         src={isLogin ? defaultAvatarIcon : noLoginIcon}
       />
-      {isVip && <img className="vip-icon" src={avatarVipIcon} alt="" />}
+      {type === "default" && isVip && (
+        <img className="vip-icon" src={avatarVipIcon} alt="" />
+      )}
     </div>
   );
 };

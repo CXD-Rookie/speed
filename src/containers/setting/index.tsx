@@ -66,7 +66,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     setCloseWindow(close_sign);
     setUserInfo(user_info);
     setRealNameTag(isRealName);
-  }, [isOpen]);
+  }, [isOpen, isModalOpenVip]);
 
   useEffect(() => {
     if (type === "edit") {
@@ -158,7 +158,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
             <TabPane tab="账户设置" key="account">
               <div className="tab-content">
                 <div className="tab-avatar">
-                  <UserAvatarCom isVip={userInfo?.is_vip} isLogin={!!token} />
+                  <UserAvatarCom
+                    isVip={userInfo?.is_vip}
+                    isLogin={!!token}
+                    type={"setting"}
+                  />
                   <div className="avatar-name">{userInfo.nickname}</div>
                 </div>
                 <div className="info-box">
@@ -208,20 +212,17 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                     </div>
                   )}
                 </div>
-                {!!isModalOpenVip && (
-                  <PayModal
-                    isModalOpen={isModalOpenVip}
-                    setIsModalOpen={(e) => {
-                      console.log(e);
-                      setIsModalOpenVip(e);
-                    }}
-                  />
-                )}
               </div>
             </TabPane>
           )}
         </Tabs>
       </Modal>
+      {!!isModalOpenVip && (
+        <PayModal
+          isModalOpen={isModalOpenVip}
+          setIsModalOpen={(e) => setIsModalOpenVip(e)}
+        />
+      )}
       <RealNameModal />
     </Fragment>
   );
