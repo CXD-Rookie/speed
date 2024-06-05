@@ -90,11 +90,14 @@ const Login: React.FC<LoginProps> = (_props) => {
         localStorage.setItem("userInfo", JSON.stringify(res.data.user_info));
         localStorage.setItem("token", JSON.stringify(res.data.token));
         localStorage.setItem("isLogin", "true");
-        
-        if(res.data.user_info.user_ext === null || res.data.user_info.user_ext.idcard === ""){
-          localStorage.setItem("isRealName","1")
-        }else{
-          localStorage.setItem("isRealName","0")
+
+        if (
+          res.data.user_info.user_ext === null ||
+          res.data.user_info.user_ext.idcard === ""
+        ) {
+          localStorage.setItem("isRealName", "1");
+        } else {
+          localStorage.setItem("isRealName", "0");
         }
         // 处理登录逻辑
         setIsLoginModal(isLoginModal + 1);
@@ -102,19 +105,14 @@ const Login: React.FC<LoginProps> = (_props) => {
         const loginModal = document.querySelector(
           ".login-modal"
         ) as HTMLElement | null;
+
         if (loginModal) {
           loginModal.style.display = "none";
         }
-        dispatch(setIsLogin(false))
 
-        // navigate("/home")
-
-        //   CefWebInstance.call('jsCallPushClientInfo', res.data, (_AError: any, AResult: any) => {
-        //     console.log('return jsCallStartSpeed');
-        //     console.log(AResult);
-        // })
+        dispatch(setIsLogin(false));
+        navigate("/home");
       } else {
-        console.log(res, "111111111");
         setVeryCode(false);
         setVeryCodeErr(true);
       }
