@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-04 18:03:23
+ * @LastEditTime: 2024-06-05 11:01:39
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -15,14 +15,18 @@ import { openRealNameModal } from "@/redux/actions/auth";
 import "./index.scss";
 import RealNameModal from "../real-name";
 import PayModal from "../Pay";
+
 const { TabPane } = Tabs;
 
 interface SettingsModalProps {
   isOpen: boolean;
+  type?: string;
   onClose: () => void;
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
+const SettingsModal: React.FC<SettingsModalProps> = (props) => {
+  const { isOpen, onClose, type = "default" } = props;
+
   const [activeTab, setActiveTab] = useState("system");
   const [closeWindow, setCloseWindow] = useState<string>("2");
 
@@ -33,19 +37,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const token = localStorage.getItem("token");
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    let user_info = localStorage.getItem("userInfo");
-    let close_sign = localStorage.getItem("close_window_sign") || "2";
-    let isRealName = localStorage.getItem("isRealName");
-
-    isRealName = isRealName ? isRealName : "";
-    user_info = user_info ? JSON.parse(user_info) : {};
-
-    setCloseWindow(close_sign);
-    setUserInfo(user_info);
-    setRealNameTag(isRealName);
-  }, [isOpen]);
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
@@ -61,6 +52,25 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     (window as any).NativeApi_OpenBrowser(dataTitle);
     console.log("data-title:", dataTitle);
   };
+
+  useEffect(() => {
+    let user_info = localStorage.getItem("userInfo");
+    let close_sign = localStorage.getItem("close_window_sign") || "2";
+    let isRealName = localStorage.getItem("isRealName");
+
+    isRealName = isRealName ? isRealName : "";
+    user_info = user_info ? JSON.parse(user_info) : {};
+
+    setCloseWindow(close_sign);
+    setUserInfo(user_info);
+    setRealNameTag(isRealName);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (type === "edit") {
+      setActiveTab("account");
+    }
+  }, [type]);
 
   return (
     <Fragment>
