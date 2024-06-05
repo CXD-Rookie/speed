@@ -11,7 +11,7 @@ interface InfoState {
 const initialState: InfoState = {
   userInfo: {},
   isLogin: false,
-  isShowLogin: true,
+  isShowLogin: false,
 };
 
 const accountInfoReducer = (state = initialState, action: any) => {

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { getMyGames } from "@/common/utils";
 import gameApi from "@/api/gamelist";
 import "./style.scss";
@@ -74,9 +73,6 @@ const GameLibrary: React.FC = () => {
   const hasMore = useRef<boolean>(true);
   const gameListRef = useRef<HTMLDivElement>(null);
 
-  const searchBarValue = useSelector((state: any) => state.search.query);
-  const searchResults = useSelector((state: any) => state.search.results);
-
   const clickAddGame = (option: any) => {
     let arr = getMyGames();
     let is_true =
@@ -97,10 +93,11 @@ const GameLibrary: React.FC = () => {
   const fetchGames = async (pageNum: number, tParam: string | null) => {
     if (isFetching.current || !hasMore.current) return;
     isFetching.current = true;
+
     try {
       const param: any = {
         page: pageNum,
-        pagesize: 10,
+        pagesize: 20,
       };
       if (tParam) {
         param.t = tParam;
@@ -110,7 +107,8 @@ const GameLibrary: React.FC = () => {
         ...game,
         cover_img: `https://cdn.accessorx.com/${game.cover_img}`,
       }));
-      if (res.data.list.length < 10) {
+
+      if (res.data.list.length < 20) {
         hasMore.current = false;
       }
       setGames((prevGames) => [...prevGames, ...gamesWithFullImgUrl]);

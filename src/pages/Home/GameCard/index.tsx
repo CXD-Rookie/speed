@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 17:02:05
+ * @LastEditTime: 2024-06-05 17:35:45
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -30,7 +30,8 @@ import arrowIcon from "@/assets/images/common/accel-arrow.svg";
 import closeIcon from "@/assets/images/common/close.svg";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setIsLogin, openRealNameModal } from "../../../redux/actions/auth";
+import { openRealNameModal } from "../../../redux/actions/auth";
+import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./style.scss";
 
@@ -61,7 +62,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
     id,
   } = props;
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
@@ -217,8 +218,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         }
       }
     } else {
-      console.log("没登录--------------------------");
-      dispatch(setIsLogin(true));
+      dispatch(setAccountInfo(undefined, undefined, true));
     }
   };
 
