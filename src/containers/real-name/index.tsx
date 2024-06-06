@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 15:07:57
+ * @LastEditTime: 2024-06-06 16:17:38
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
@@ -107,10 +107,7 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
   // 提交
   const handleSubmit = async () => {
     try {
-      if (
-        validateName(rankRealInfo?.name) ||
-        validateIDCard(rankRealInfo?.id)
-      ) {
+      if (!rankRealInfo?.name || !validateIDCard(rankRealInfo?.id)) {
         setIsRankVerify({
           name: false,
           id: false,

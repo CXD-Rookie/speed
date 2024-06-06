@@ -64,13 +64,14 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
     setCloseWindow(close_sign);
     setRealNameTag(isRealName);
-  }, [isOpen, isModalOpenVip]);
+  }, [isOpen, isModalOpenVip, isRealOpen]);
 
   useEffect(() => {
     if (type === "edit") {
       setActiveTab("account");
     }
   }, [type]);
+
   return (
     <Fragment>
       <Modal
