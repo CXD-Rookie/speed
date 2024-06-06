@@ -14,6 +14,7 @@ const TooltipCom: React.FC = () => {
   return (
     <div className="tooltip-com-module">
       <Tooltip
+        placement="topRight"
         title={
           <div className="tooltip-com-module-content">
             <div className="title">自动续费服务声明</div>
