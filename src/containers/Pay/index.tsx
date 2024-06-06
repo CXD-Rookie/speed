@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
-import { Modal, Popover } from "antd";
+import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
@@ -309,6 +309,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                     <li>
                       我已同意《
                       <div
+                        style={{ cursor: "pointer" }}
                         className="txt"
                         onClick={handleClick}
                         ref={divRef}
@@ -318,6 +319,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                       </div>
                       》及《
                       <div
+                        style={{ cursor: "pointer" }}
                         className="txt"
                         onClick={handleClick}
                         ref={divRef}

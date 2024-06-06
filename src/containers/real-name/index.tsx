@@ -154,9 +154,13 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
       return;
     }
 
-    // is_adult false 未成年
+    // is_adult false 未成年 recharge充值 acceleration 加速
     if (!isAdult?.is_adult) {
-      setRealType(isAdult?.type === "recharge" ? 3 : 2); // recharge充值 acceleration 加速
+      if (isAdult?.type === "recharge") {
+        setRealType(3);
+      } else if (isAdult?.type === "acceleration") {
+        setRealType(2);
+      }
     }
   }, [isAdult]);
 
