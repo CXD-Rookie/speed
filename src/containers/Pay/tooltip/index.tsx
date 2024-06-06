@@ -24,7 +24,7 @@ const TooltipCom: React.FC = () => {
               4、点击查看
               <span
                 onClick={handleClick}
-                data-title="https://tc-js.yuwenlong.cn/automatic_renewal_agreement.html"
+                data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
               >
                 自动续费协议
               </span>
