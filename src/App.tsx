@@ -21,6 +21,7 @@ import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
 import logoIcon from "@/assets/images/common/logo.svg";
+import { getMyGames } from "./common/utils";
 
 const { Header, Content } = Layout;
 
@@ -98,6 +99,14 @@ const App: React.FC = (props: any) => {
     let res = await loginApi.loginOut();
     if (res.error === 0) {
       console.log("退出成功");
+      let arr = getMyGames();
+
+      arr = arr.map((item: any) => ({
+        ...item,
+        is_accelerate: false,
+      }));
+
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
       // 3个参数 用户信息 是否登录 是否显示登录
