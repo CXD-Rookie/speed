@@ -127,25 +127,25 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
               <div className="protocols">
                 <span
                   onClick={handleClick}
-                  data-title="https://tc-js.yuwenlong.cn/terms_of_service.html"
+                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
                 >
                   用户协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://tc-js.yuwenlong.cn/terms_of_service.html"
+                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
                 >
                   隐私协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://tc-js.yuwenlong.cn/terms_of_service.html"
+                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
                 >
                   儿童保护及监护人须知
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://tc-js.yuwenlong.cn/automatic_renewal_agreement.html"
+                  data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
                 >
                   自动续费协议
                 </span>
