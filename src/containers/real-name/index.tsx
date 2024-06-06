@@ -45,13 +45,10 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
   function validateName(name: any) {
     // 正则表达式验证姓名
     const namePattern = /^[\u4e00-\u9fa5·]{2,30}$/;
-    console.log(name);
 
     if (!namePattern.test(name)) {
-      console.log(222);
       return false;
     } else {
-      console.log(111);
       return true;
     }
   }
