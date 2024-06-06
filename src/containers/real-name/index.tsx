@@ -2,12 +2,12 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 14:09:39
+ * @LastEditTime: 2024-06-06 15:07:57
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
  */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input, Modal } from "antd";
 
 import "./index.scss";
@@ -19,9 +19,11 @@ import realErrorIcon from "@/assets/images/common/real_error.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { closeRealNameModal } from "@/redux/actions/auth";
 
-interface SettingsModalProps {}
+interface SettingsModalProps {
+  isAdult?: { is_adult: boolean; type: string };
+}
 
-const RealNameModal: React.FC<SettingsModalProps> = (props) => {
+const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
   // 认证类型 假设 0 - 未填写 1 - 成功 2 - 加速时未成年 3 - 充值时未成年
   const [realType, setRealType] = useState<any>(0);
   const [isRankVerify, setIsRankVerify] = useState({
@@ -144,6 +146,20 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     }
   };
 
+  useEffect(() => {
+    const isRealNamel = localStorage.getItem("isRealName");
+
+    if (isRealNamel === "1") {
+      setRealType(0);
+      return;
+    }
+
+    // is_adult false 未成年
+    if (!isAdult?.is_adult) {
+      setRealType(isAdult?.type === "recharge" ? 3 : 2); // recharge充值 acceleration 加速
+    }
+  }, [isAdult]);
+
   return isRealOpen ? (
     <Modal
       className="real-name-modal"
@@ -208,7 +224,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
             {realType === 3 && "充值"}
             服务，感谢您的理解！
           </p>
-          <Button className="real-sueccess-btn" onClick={() => setRealType(0)}>
+          <Button className="real-sueccess-btn" onClick={handleClose}>
             好的
           </Button>
         </div>

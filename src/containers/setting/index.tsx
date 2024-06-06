@@ -31,6 +31,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
+  const [isAdult, setIsAdult] = useState<any>({}); // 是否成年 类型充值还是加速
+
   const [activeTab, setActiveTab] = useState("system");
   const [closeWindow, setCloseWindow] = useState<string>("2");
 
@@ -204,6 +206,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
                         if (isRealNamel === "1") {
                           dispatch(openRealNameModal());
+                          return;
+                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+                          dispatch(openRealNameModal());
+                          setIsAdult({ is_adult: false, type: "recharge" });
+                          return;
                         } else {
                           setIsModalOpenVip(true);
                         }
@@ -219,6 +226,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
                         if (isRealNamel === "1") {
                           dispatch(openRealNameModal());
+                          return;
+                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+                          dispatch(openRealNameModal());
+                          setIsAdult({ is_adult: false, type: "recharge" });
+                          return;
                         } else {
                           setIsModalOpenVip(true);
                         }
@@ -240,7 +252,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
           setIsModalOpen={(e) => setIsModalOpenVip(e)}
         />
       )}
-      {isRealOpen ? <RealNameModal /> : null}
+      {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
     </Fragment>
   );
 };

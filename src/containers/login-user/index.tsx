@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 14:44:50
+ * @LastEditTime: 2024-06-06 15:06:28
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,6 +27,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   const [editOpen, setEditOpen] = useState(false);
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
+
+  const [isAdult, setIsAdult] = useState<any>({}); // 是否成年 类型充值还是加速
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
@@ -58,10 +60,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         <Button
           onClick={() => {
             const isRealNamel = localStorage.getItem("isRealName");
-            console.log(isRealNamel);
 
             if (isRealNamel === "1") {
               dispatch(openRealNameModal());
+              return;
+            } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+              dispatch(openRealNameModal());
+              setIsAdult({ is_adult: false, type: "recharge" });
+              return;
             } else {
               setIsModalOpenVip(true);
             }
@@ -112,7 +118,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           setIsModalOpen={(e) => setIsModalOpenVip(e)}
         />
       )}
-      {isRealOpen ? <RealNameModal /> : null}
+      {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
     </div>
   );
 };
