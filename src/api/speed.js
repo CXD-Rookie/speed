@@ -2,7 +2,7 @@ import { get } from "./api";
 
 class PlaySuit {
 
-  url = `https://rm-mga-dev.yuwenlong.cn/api/v1`;
+  url = `https://test-api.accessorx.com/api/v1`;
 
   speedInfo (params) {
     const queryString = new URLSearchParams(params).toString();

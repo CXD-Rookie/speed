@@ -9,7 +9,7 @@
 import { get, post } from "./api";
 
 class LoginApi {
-  url = `https://rm-mga-dev.yuwenlong.cn/api/v1`
+  url = `https://test-api.accessorx.com/api/v1`
   // url = `/api/v1`
 
   getPhoneCode (parmas) {
@@ -35,7 +35,7 @@ class LoginApi {
     return get(`${this.url}/user/loginout?platform=3`);
   }
 
-  userInfo(params) {
+  userInfo (params) {
     return get(`${this.url}/user/info?platform=3`);
   }
 }

@@ -1,8 +1,8 @@
-import { get,post } from "./api";
+import { get, post } from "./api";
 
 class Feedback {
 
-  url = `https://rm-mga-dev.yuwenlong.cn/api/v1`;
+  url = `https://test-api.accessorx.com/api/v1`;
 
   feedback_type (params) {
     const queryString = new URLSearchParams(params).toString();
@@ -10,7 +10,7 @@ class Feedback {
   }
 
   feedback_upload_image (params) {
-    return post(`${this.url}/feedback_upload_image?platform=3`,params);
+    return post(`${this.url}/feedback_upload_image?platform=3`, params);
   }
 
   feedback (parmas) {

@@ -11,7 +11,7 @@ import { message } from 'antd';
 
 const instance = axios.create({
   // baseURL: 'http://192.168.111.119:8002', // 根据实际情况设置基础 URL
-  // baseURL: 'https://rm-mga-dev.yuwenlong.cn',
+  // baseURL: 'https://test-api.accessorx.com',
   headers: {
     "Content-Type": "application/json",
   },
@@ -28,7 +28,7 @@ instance.interceptors.request.use(
 
     // config.headers.client_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY2xpZW50X2lwIjoiMTI3LjAuMC4xIiwiZXhwIjoxNzE5NjMxOTI4fQ.r_n6n8fbRxpSNVr3R5DaHYh5plUu10SXPa6fYstsdRk';
     // config.headers.client_id = 'rdfgsdf-amfhft-mfmertaa-adfadfgds-gdfsgf';
-    if(token){
+    if (token) {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
     return config;

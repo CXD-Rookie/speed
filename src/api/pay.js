@@ -1,12 +1,12 @@
 // /pay/qrcode
 
-import { get,post } from "./api";
+import { get, post } from "./api";
 
 class PayApi {
 
-  url = `https://rm-mga-dev.yuwenlong.cn/api/v1`;
+  url = `https://test-api.accessorx.com/api/v1`;
 
-  getPayTypeList(params){
+  getPayTypeList (params) {
     const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/pay/type/list?platform=3`);
   }
@@ -14,18 +14,18 @@ class PayApi {
     const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/commodity/list?platform=3`);
   }
-  getQrCodeUrl(params) {
+  getQrCodeUrl (params) {
     // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/pay/qrcode?cid=${params.cid}&user_id=${params.user_id}&key=${params.key}`);
   }
-  getPolling(params) {
+  getPolling (params) {
     // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/pay/order/qrcode_key/polling?platform=3&key=${params.key}`);
   }
 
-  getCommodityInfo(params) {
+  getCommodityInfo (params) {
     // const queryString = new URLSearchParams(params).toString();
-    console.log(params,"params------------")
+    console.log(params, "params------------")
     return get(`${this.url}/commodity/info?platform=3&cid=${params}`);
   }
 

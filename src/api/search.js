@@ -2,9 +2,9 @@
 import { get } from "./api";
 
 class Search {
-  url = `https://rm-mga-dev.yuwenlong.cn/api/v1`;
+  url = `https://test-api.accessorx.com/api/v1`;
 
-  search(params) {
+  search (params) {
     const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/game/list?${queryString}`);
   }

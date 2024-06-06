@@ -12,7 +12,7 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = function (app) {
   app.use(
     createProxyMiddleware("/apiProxy", {
-      target: "https://rm-mga-dev.yuwenlong.cn",
+      target: "https://test-api.accessorx.com",
       changeOrigin: true,
       pathRewrite: { "^/apiProxy": "" },
       logLevel: "debug"
