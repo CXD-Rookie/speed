@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 16:58:35
+ * @LastEditTime: 2024-06-06 18:55:17
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -17,6 +17,7 @@ import React, {
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
+import StopConfirmModal from "@/containers/stop-confirm";
 
 import PayModal from "@/containers/Pay";
 import playSuitApi from "@/api/speed";
@@ -64,6 +65,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   } = props;
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
+
+  const [stopModalOpen, setStopModalOpen] = useState(false);
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
@@ -359,7 +362,9 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
                 </div>
                 <div
                   className="down-accelerate"
-                  onClick={() => handleStopClick(gameData)}
+                  onClick={() => {
+                    setStopModalOpen(true);
+                  }}
                 >
                   <img src={cessationIcon} width={18} height={18} alt="" />
                   停止加速
@@ -417,6 +422,16 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         />
       )}
       {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
+      {stopModalOpen ? (
+        <StopConfirmModal
+          accelOpen={stopModalOpen}
+          setAccelOpen={setStopModalOpen}
+          onConfirm={() => {
+            setStopModalOpen(false);
+            handleStopClick(gameData);
+          }}
+        />
+      ) : null}
     </div>
   );
 };

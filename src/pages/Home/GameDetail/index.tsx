@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 18:33:45
+ * @LastEditTime: 2024-06-06 18:58:47
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -16,6 +16,7 @@ import { updateDelay, stopAccelerate } from "@/redux/actions/auth";
 
 import "./style.scss";
 import ActivationModal from "@/containers/activation-mode";
+import StopConfirmModal from "@/containers/stop-confirm";
 
 import backGameIcon from "@/assets/images/common/back-game.svg";
 import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
@@ -37,6 +38,8 @@ const GameDetail: React.FC = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const [stopModalOpen, setStopModalOpen] = useState(false);
 
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(); // 实时延迟
@@ -278,7 +281,7 @@ const GameDetail: React.FC = () => {
             <Button
               className="down-game game-btn"
               type="default"
-              onClick={stopSpeed}
+              onClick={() => setStopModalOpen(true)}
             >
               <img src={cessationIcon} width={18} height={18} alt="" />
               {formatTime(onCount)}
@@ -356,6 +359,16 @@ const GameDetail: React.FC = () => {
           </div>
         </div>
       </div>
+      {stopModalOpen ? (
+        <StopConfirmModal
+          accelOpen={stopModalOpen}
+          setAccelOpen={setStopModalOpen}
+          onConfirm={() => {
+            setStopModalOpen(false);
+            stopSpeed();
+          }}
+        />
+      ) : null}
     </div>
   );
 };
