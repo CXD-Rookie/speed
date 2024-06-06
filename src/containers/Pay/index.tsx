@@ -209,7 +209,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               JSON.stringify(jsonResponse.data.token)
             );
           }
-          if (status !== 1) {
+          if (status !== 1 && response.data?.cid) {
             const res = await payApi.getCommodityInfo(response.data?.cid);
             console.log(res, "订单信息----------", response);
 
