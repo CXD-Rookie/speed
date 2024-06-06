@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./index.scss";
+import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
 import loginApi from "@/api/login";
@@ -53,6 +54,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [paymentStatus, setPaymentStatus] = useState<number | null>(null);
   const [showPopup, setShowPopup] = useState<string | null>(null);
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
+
+  const [payErrorModalOpen, setPayErrorModalOpen] = useState(false);
 
   // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
   // const dispatch = useDispatch();
@@ -216,19 +219,15 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             setPaymentStatus(status);
             setShowPopup(null);
             setOrderInfo({ ...res.data, ...response.data });
+
+            if (status === 5 || status === 3 || status === 4) {
+              setPayErrorModalOpen(true);
+            }
+
             setShowPopup(
-              status === 2
-                ? "支付成功"
-                : status === 3
-                ? "支付失败"
-                : status === 4
-                ? "支付取消"
-                : status === 5
-                ? "支付超时"
-                : status === 1
-                ? "待支付"
-                : null
+              status === 2 ? "支付成功" : status === 1 ? "待支付" : null
             );
+
             return () => clearInterval(intervalId);
           }
         }
@@ -344,6 +343,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           setShowPopup(e);
         }}
       />
+      {payErrorModalOpen ? (
+        <PayErrorModal
+          accelOpen={payErrorModalOpen}
+          setAccelOpen={setPayErrorModalOpen}
+        />
+      ) : null}
     </Fragment>
   );
 };

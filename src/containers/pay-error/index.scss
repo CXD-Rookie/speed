@@ -1,0 +1,62 @@
+.pay-error-module {
+  .ant-modal-content {
+    width: 32vw;
+    // height: 25.6vh;
+    background-color: #3e3e4a;
+    font-size: 1.3vw;
+    color: #fff;
+    background: #3e3e4a;
+    border-radius: 1vw;
+    padding: 1.8vh 1.6vw;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.8vh;
+    right: 1.2vw;
+    top: 1.8vh;
+  }
+
+  .ant-modal-title,
+  .ant-modal-close-x {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  .real-error-icon {
+    width: 4vw;
+    height: 4vw;
+    margin-left: calc(50% - 2vw);
+  };
+
+  .accelerate-modal {
+    width: 100%;
+    text-align: center;
+    font-size: 1.3vw;
+  }
+
+  .box {
+    width: 100%;
+    height: 2vh;
+  }
+
+  .footer-cancel {
+    width: 21.6vw;
+    height: 4.8vh;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2.4vh;
+    text-align: center;
+    line-height: 4.8vh;
+    margin: 0 auto;
+    cursor: pointer;
+    margin-top: 4vh;
+    margin-bottom: 2vh;
+  }
+}
