@@ -11,7 +11,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsLogin, openRealNameModal } from "@/redux/actions/auth";
+import { openRealNameModal } from "@/redux/actions/auth";
+import { setAccountInfo } from "@/redux/actions/account-info";
+
 import PayModal from "../../containers/Pay/index";
 import GameCard from "./GameCard";
 import addIcon from "@/assets/images/common/add.svg";
@@ -46,7 +48,7 @@ const Home: React.FC = () => {
 
   const childRef = useRef<any>();
   const isRealNamel = localStorage.getItem("isRealName");
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   const handleOpen = () => {
     dispatch(openRealNameModal());
@@ -60,7 +62,8 @@ const Home: React.FC = () => {
         setIsModalOpen(true);
       }
     } else {
-      dispatch(setIsLogin(true));
+      // 3个参数 用户信息 是否登录 是否显示登录
+      dispatch(setAccountInfo(undefined, true, undefined));
     }
   };
 
