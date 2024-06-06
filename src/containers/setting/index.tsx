@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 14:41:13
+ * @LastEditTime: 2024-06-06 10:18:25
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -64,6 +64,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   }, [isOpen, isModalOpenVip]);
 
   useEffect(() => {
+    console.log(type);
+
     if (type === "edit") {
       setActiveTab("account");
     }

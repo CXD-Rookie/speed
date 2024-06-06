@@ -95,11 +95,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           />
         </div>
       </Popover>
-      <SettingsModal
-        type="edit"
-        isOpen={editOpen}
-        onClose={() => setEditOpen(false)}
-      />
+      {editOpen ? (
+        <SettingsModal
+          type="edit"
+          isOpen={editOpen}
+          onClose={() => setEditOpen(false)}
+        />
+      ) : null}
       {!!isModalOpenVip && (
         <PayModal
           isModalOpen={isModalOpenVip}
