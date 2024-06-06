@@ -8,13 +8,12 @@
 }
 
 .ant-tooltip {
-  box-shadow: 0px 0px 60px 0px rgba(0,0,0,0.50); 
+  // box-shadow: 0px 0px 60px 0px rgba(0,0,0,0.50); 
 }
 
 .ant-tooltip .ant-tooltip-inner {
   padding: 0 !important;
 }
-
 .ant-tooltip-placement-topRight .ant-tooltip-arrow::before {
   background-color: #3e3e4a !important; /* 你希望的颜色 */
 }
@@ -25,6 +24,7 @@
   background: #3e3e4a !important;
   padding: 1.8vh 1.6vw;
   border-radius: 0.6vh;
+  box-shadow: 0px 0px 60px 0px rgba(0,0,0,0.50); 
 
   .title {
     width: 9.6vw;
