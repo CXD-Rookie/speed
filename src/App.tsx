@@ -319,14 +319,18 @@ const App: React.FC = (props: any) => {
           <Login />
         </div>
       )}
-      <SettingsModal
-        isOpen={showSettingsModal}
-        onClose={() => setShowSettingsModal(false)}
-      />
-      <IssueModal
-        showIssueModal={showIssueModal}
-        onClose={() => setShowIssueModal(false)}
-      />
+      {showSettingsModal ? (
+        <SettingsModal
+          isOpen={showSettingsModal}
+          onClose={() => setShowSettingsModal(false)}
+        />
+      ) : null}
+      {showIssueModal ? (
+        <IssueModal
+          showIssueModal={showIssueModal}
+          onClose={() => setShowIssueModal(false)}
+        />
+      ) : null}
     </Layout>
   );
 };
