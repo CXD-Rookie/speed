@@ -85,16 +85,22 @@
       border-radius: 3.3vh;
       border: none;
 
-      &:hover, &:active {
-        background-color: rgba(255,255,255,0.10);
+      &:enabled:hover, &:enabled:active {
+        color: #fff;
+        background-color: #F86C34;
       }
+    }
+
+    .modal-content-btn:enabled {
+      color: #fff;
+      background-color: #F86C34;
     }
   }
 
   .real-sueccess-modal-content {
     width: 100%;
     text-align: center;
-    padding-top: 135px;
+    padding-top: 20.75vh;
 
     & p {
       opacity: 0.5;
@@ -116,6 +122,11 @@
       border-radius: 3.3vh;
       border: none;
       margin-top: 5.5vh;
+
+      &:hover, &:active {
+        color: #ffffff;
+        background: #f86c34;
+      }
     }
   }
 

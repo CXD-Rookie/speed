@@ -21,6 +21,7 @@ import { getMyGames } from "@/common/utils";
 import PayModal from "@/containers/Pay";
 import playSuitApi from "@/api/speed";
 import BreakConfirmModal from "@/containers/break-confirm";
+import RealNameModal from "@/containers/real-name";
 
 import rightArrow from "@/assets/images/common/right-arrow.svg";
 import accelerateIcon from "@/assets/images/common/accelerate.svg";
@@ -65,6 +66,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   const dispatch: any = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
   const isRealName = localStorage.getItem("isRealName");
   const pid = localStorage.getItem("pid");
@@ -73,6 +75,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   const [isAnimate, setIsAnimate] = useState(false); // 是否开始加速动画
 
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
+
+  const [isAdult, setIsAdult] = useState<any>({}); // 是否成年 类型充值还是加速
 
   useImperativeHandle(ref, () => ({
     triggerAccelerate: (e: any) => {
@@ -192,21 +196,21 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
     }
   };
 
-  const handleOpen = () => {
-    dispatch(openRealNameModal());
-  };
-
   // 立即加速
   const handleAccelerateClick = (option: any) => {
     if (accountInfo?.isLogin) {
-      if (!accountInfo?.userInfo?.is_vip) {
-        setIsModalOpenVip(true);
+      const isRealNamel = localStorage.getItem("isRealName");
 
+      if (isRealNamel === "1") {
+        dispatch(openRealNameModal());
         return;
-      }
-
-      if (isRealName === "1") {
-        handleOpen();
+      } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+        dispatch(openRealNameModal());
+        setIsAdult({ is_adult: false, type: "acceleration" });
+        return;
+      } else if (!accountInfo?.userInfo?.is_vip) {
+        setIsModalOpenVip(true);
+        return;
       } else {
         console.log("option 游戏数据", option);
         let is_true = getMyGames().some((item: any) => item?.is_accelerate);
@@ -408,6 +412,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
           setIsModalOpen={(e) => setIsModalOpenVip(e)}
         />
       )}
+      {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
     </div>
   );
 };

@@ -2,12 +2,12 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 11:03:41
+ * @LastEditTime: 2024-06-06 15:07:57
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
  */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input, Modal } from "antd";
 
 import "./index.scss";
@@ -19,9 +19,11 @@ import realErrorIcon from "@/assets/images/common/real_error.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { closeRealNameModal } from "@/redux/actions/auth";
 
-interface SettingsModalProps {}
+interface SettingsModalProps {
+  isAdult?: { is_adult: boolean; type: string };
+}
 
-const RealNameModal: React.FC<SettingsModalProps> = (props) => {
+const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
   // 认证类型 假设 0 - 未填写 1 - 成功 2 - 加速时未成年 3 - 充值时未成年
   const [realType, setRealType] = useState<any>(0);
   const [isRankVerify, setIsRankVerify] = useState({
@@ -45,13 +47,10 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
   function validateName(name: any) {
     // 正则表达式验证姓名
     const namePattern = /^[\u4e00-\u9fa5·]{2,30}$/;
-    console.log(name);
 
     if (!namePattern.test(name)) {
-      console.log(222);
       return false;
     } else {
-      console.log(111);
       return true;
     }
   }
@@ -97,10 +96,10 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     let value = e.target.value;
 
     if (type === "name") {
-      setIsRankVerify({ ...isRankVerify, name: validateName(value) });
+      // setIsRankVerify({ ...isRankVerify, name: validateName(value) });
       setRankRealInfo({ ...rankRealInfo, name: value });
     } else {
-      setIsRankVerify({ ...isRankVerify, id: validateIDCard(value) });
+      // setIsRankVerify({ ...isRankVerify, id: validateIDCard(value) });
       setRankRealInfo({ ...rankRealInfo, id: value });
     }
   };
@@ -108,10 +107,23 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
   // 提交
   const handleSubmit = async () => {
     try {
+      if (
+        validateName(rankRealInfo?.name) ||
+        validateIDCard(rankRealInfo?.id)
+      ) {
+        setIsRankVerify({
+          name: false,
+          id: false,
+        });
+
+        return;
+      }
+
       let res = await loginApi.authenticationUser({
         platform: 3,
         ...rankRealInfo,
       });
+
       // 认证成功
       if (res?.error === 0) {
         setIsRankVerify({
@@ -133,6 +145,24 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const isRealNamel = localStorage.getItem("isRealName");
+
+    if (isRealNamel === "1") {
+      setRealType(0);
+      return;
+    }
+
+    // is_adult false 未成年 recharge充值 acceleration 加速
+    if (!isAdult?.is_adult) {
+      if (isAdult?.type === "recharge") {
+        setRealType(3);
+      } else if (isAdult?.type === "acceleration") {
+        setRealType(2);
+      }
+    }
+  }, [isAdult]);
 
   return isRealOpen ? (
     <Modal
@@ -173,7 +203,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
           </div>
           <Button
             className="modal-content-btn"
-            disabled={!isRankVerify?.id || !isRankVerify?.name}
+            disabled={!rankRealInfo?.id || !rankRealInfo?.name}
             onClick={handleSubmit}
           >
             立即提交
@@ -198,7 +228,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
             {realType === 3 && "充值"}
             服务，感谢您的理解！
           </p>
-          <Button className="real-sueccess-btn" onClick={() => setRealType(0)}>
+          <Button className="real-sueccess-btn" onClick={handleClose}>
             好的
           </Button>
         </div>

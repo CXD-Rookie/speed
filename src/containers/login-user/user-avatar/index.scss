@@ -1,4 +1,5 @@
 .user-avatar-com-module {
+  all: initial;
   width: min-content;
   height: min-content;
   position: relative;
@@ -13,7 +14,7 @@
     height: 1.3vw !important;
     position: absolute;
     left: 0.9vw;
-    top: 0.8vw;
+    top: -0.1vw;
   }
 }
 

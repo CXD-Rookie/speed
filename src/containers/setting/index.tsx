@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 10:18:25
+ * @LastEditTime: 2024-06-06 14:48:33
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -29,6 +29,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const { isOpen, onClose, type = "default" } = props;
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+
+  const [isAdult, setIsAdult] = useState<any>({}); // 是否成年 类型充值还是加速
 
   const [activeTab, setActiveTab] = useState("system");
   const [closeWindow, setCloseWindow] = useState<string>("2");
@@ -64,13 +67,10 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   }, [isOpen, isModalOpenVip]);
 
   useEffect(() => {
-    console.log(type);
-
     if (type === "edit") {
       setActiveTab("account");
     }
   }, [type]);
-
   return (
     <Fragment>
       <Modal
@@ -171,13 +171,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="info-box info-flex">
                   <div className="info-left">
                     <label>实名认证</label>
-                    {isRealNameTag === 1 ? (
+                    {isRealNameTag === "1" ? (
                       <div>未认证</div>
                     ) : (
                       <div>已认证</div>
                     )}
                   </div>
-                  {isRealNameTag == 1 && (
+                  {isRealNameTag === "1" && (
                     <div
                       className="real-name-btn"
                       onClick={() => dispatch(openRealNameModal())}
@@ -206,6 +206,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
                         if (isRealNamel === "1") {
                           dispatch(openRealNameModal());
+                          return;
+                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+                          dispatch(openRealNameModal());
+                          setIsAdult({ is_adult: false, type: "recharge" });
+                          return;
                         } else {
                           setIsModalOpenVip(true);
                         }
@@ -216,7 +221,20 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                     </div>
                   ) : (
                     <div
-                      onClick={() => setIsModalOpenVip(true)}
+                      onClick={() => {
+                        const isRealNamel = localStorage.getItem("isRealName");
+
+                        if (isRealNamel === "1") {
+                          dispatch(openRealNameModal());
+                          return;
+                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+                          dispatch(openRealNameModal());
+                          setIsAdult({ is_adult: false, type: "recharge" });
+                          return;
+                        } else {
+                          setIsModalOpenVip(true);
+                        }
+                      }}
                       className="real-name-btn"
                     >
                       充值
@@ -234,7 +252,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
           setIsModalOpen={(e) => setIsModalOpenVip(e)}
         />
       )}
-      <RealNameModal />
+      {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
     </Fragment>
   );
 };
