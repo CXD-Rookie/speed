@@ -211,11 +211,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           }
           if (status !== 1) {
             const res = await payApi.getCommodityInfo(response.data?.cid);
-            console.log(res, "订单信息----------");
+            console.log(res, "订单信息----------", response);
 
             setPaymentStatus(status);
             setShowPopup(null);
-            setOrderInfo({ ...response, ...res.data });
+            setOrderInfo({ ...res.data, ...response.data });
             setShowPopup(
               status === 2
                 ? "支付成功"
