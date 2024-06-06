@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 11:03:41
+ * @LastEditTime: 2024-06-06 14:09:39
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
@@ -97,10 +97,10 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     let value = e.target.value;
 
     if (type === "name") {
-      setIsRankVerify({ ...isRankVerify, name: validateName(value) });
+      // setIsRankVerify({ ...isRankVerify, name: validateName(value) });
       setRankRealInfo({ ...rankRealInfo, name: value });
     } else {
-      setIsRankVerify({ ...isRankVerify, id: validateIDCard(value) });
+      // setIsRankVerify({ ...isRankVerify, id: validateIDCard(value) });
       setRankRealInfo({ ...rankRealInfo, id: value });
     }
   };
@@ -108,10 +108,23 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
   // 提交
   const handleSubmit = async () => {
     try {
+      if (
+        validateName(rankRealInfo?.name) ||
+        validateIDCard(rankRealInfo?.id)
+      ) {
+        setIsRankVerify({
+          name: false,
+          id: false,
+        });
+
+        return;
+      }
+
       let res = await loginApi.authenticationUser({
         platform: 3,
         ...rankRealInfo,
       });
+
       // 认证成功
       if (res?.error === 0) {
         setIsRankVerify({
@@ -173,7 +186,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
           </div>
           <Button
             className="modal-content-btn"
-            disabled={!isRankVerify?.id || !isRankVerify?.name}
+            disabled={!rankRealInfo?.id || !rankRealInfo?.name}
             onClick={handleSubmit}
           >
             立即提交

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 10:18:25
+ * @LastEditTime: 2024-06-06 13:59:49
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -185,6 +185,12 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                       实名认证
                     </div>
                   )}
+                  <div
+                    className="real-name-btn"
+                    onClick={() => dispatch(openRealNameModal())}
+                  >
+                    实名认证
+                  </div>
                 </div>
                 <div className="info-box info-flex">
                   <div className="info-left">

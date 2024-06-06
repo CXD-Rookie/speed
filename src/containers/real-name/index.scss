@@ -85,8 +85,9 @@
       border-radius: 3.3vh;
       border: none;
 
-      &:hover, &:active {
-        background-color: rgba(255,255,255,0.10);
+      &:enabled:hover, &:enabled:active {
+        color: #fff;
+        background-color: #F86C34;
       }
     }
   }
