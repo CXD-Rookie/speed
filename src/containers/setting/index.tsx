@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 14:24:00
+ * @LastEditTime: 2024-06-06 14:48:33
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -214,7 +214,15 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                     </div>
                   ) : (
                     <div
-                      onClick={() => setIsModalOpenVip(true)}
+                      onClick={() => {
+                        const isRealNamel = localStorage.getItem("isRealName");
+
+                        if (isRealNamel === "1") {
+                          dispatch(openRealNameModal());
+                        } else {
+                          setIsModalOpenVip(true);
+                        }
+                      }}
                       className="real-name-btn"
                     >
                       充值

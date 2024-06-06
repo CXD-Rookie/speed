@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 14:28:25
+ * @LastEditTime: 2024-06-06 14:44:50
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,6 +11,7 @@ import { Button, Popover } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 
+import RealNameModal from "../real-name";
 import UserAvatarCom from "./user-avatar";
 import SettingsModal from "../setting";
 import PayModal from "../Pay";
@@ -22,6 +23,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const dispatch = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
   const [editOpen, setEditOpen] = useState(false);
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
@@ -56,6 +58,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         <Button
           onClick={() => {
             const isRealNamel = localStorage.getItem("isRealName");
+            console.log(isRealNamel);
+
             if (isRealNamel === "1") {
               dispatch(openRealNameModal());
             } else {
@@ -108,6 +112,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           setIsModalOpen={(e) => setIsModalOpenVip(e)}
         />
       )}
+      {isRealOpen ? <RealNameModal /> : null}
     </div>
   );
 };
