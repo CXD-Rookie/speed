@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-31 19:31:33
+ * @LastEditTime: 2024-06-06 11:03:41
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
@@ -17,16 +17,11 @@ import realSucessIcon from "@/assets/images/common/real-sucess.svg";
 import realErrorIcon from "@/assets/images/common/real_error.svg";
 
 import { useDispatch, useSelector } from "react-redux";
-import { openRealNameModal, closeRealNameModal } from "@/redux/actions/auth";
+import { closeRealNameModal } from "@/redux/actions/auth";
 
-interface SettingsModalProps {
-  // isRealOpen: boolean;
-  // setIsRealOpen?: (value: boolean) => void;
-}
+interface SettingsModalProps {}
 
 const RealNameModal: React.FC<SettingsModalProps> = (props) => {
-  // const { isRealOpen, setIsRealOpen = () => {} } = props;
-
   // 认证类型 假设 0 - 未填写 1 - 成功 2 - 加速时未成年 3 - 充值时未成年
   const [realType, setRealType] = useState<any>(0);
   const [isRankVerify, setIsRankVerify] = useState({
@@ -98,39 +93,6 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     }
   }
 
-  // 是否未成年
-  function validateAge(id: any) {
-    const idCard = id;
-
-    // 提取出生日期
-    const birthDateStr = idCard.substring(6, 14);
-    const birthYear = parseInt(birthDateStr.substring(0, 4), 10);
-    const birthMonth = parseInt(birthDateStr.substring(4, 6), 10) - 1; // 月份从0开始
-    const birthDay = parseInt(birthDateStr.substring(6, 8), 10);
-
-    const birthDate = new Date(birthYear, birthMonth, birthDay);
-    const today = new Date();
-
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    const dayDifference = today.getDate() - birthDate.getDate();
-
-    // 如果生日还没到，今年还未满年龄
-    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-      age--;
-    }
-
-    if (age < 18) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  // const onClose = () => {
-  //   setIsRealOpen(false);
-  // };
-
   const handleInputChange = (e: any, type: string) => {
     let value = e.target.value;
 
@@ -172,7 +134,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
     }
   };
 
-  return (
+  return isRealOpen ? (
     <Modal
       className="real-name-modal"
       open={isRealOpen}
@@ -242,7 +204,7 @@ const RealNameModal: React.FC<SettingsModalProps> = (props) => {
         </div>
       )}
     </Modal>
-  );
+  ) : null;
 };
 
 export default RealNameModal;
