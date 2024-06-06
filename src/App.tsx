@@ -5,6 +5,7 @@ import type { MenuProps } from "antd";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
+import { stopAccelerate } from "./redux/actions/auth";
 
 import "@/assets/css/App.scss";
 import routes from "./routes/index";
@@ -59,6 +60,7 @@ const App: React.FC = (props: any) => {
 
   const routeView = useRoutes(routes); // 获得路由表
 
+  const isStop = useSelector((state: any) => state.auth.isStop);
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
@@ -109,6 +111,9 @@ const App: React.FC = (props: any) => {
       localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
+      dispatch(stopAccelerate(false));
+      window.clearInterval((window as any)?.delayInterval);
+      (window as any).delayInterval = null;
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");

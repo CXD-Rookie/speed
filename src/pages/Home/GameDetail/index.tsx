@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-03 14:10:14
+ * @LastEditTime: 2024-06-06 18:33:45
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,7 +10,9 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { getMyGames } from "@/common/utils";
+import { updateDelay, stopAccelerate } from "@/redux/actions/auth";
 
 import "./style.scss";
 import ActivationModal from "@/containers/activation-mode";
@@ -31,6 +33,7 @@ declare const CefWebInstance: any;
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -80,6 +83,9 @@ const GameDetail: React.FC = () => {
           is_accelerate: false,
         }));
 
+        dispatch(stopAccelerate(false));
+        window.clearInterval((window as any).delayInterval);
+        (window as any).delayInterval = null;
         localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
         navigate("/home");
       },
@@ -164,6 +170,7 @@ const GameDetail: React.FC = () => {
 
         setChartData(dataArray);
         setLostBag(lost_bag);
+        dispatch(updateDelay(lost_bag));
         setPacketLoss(jsonResponse === 9999 ? 25 : 0);
         setDetailData(details_arr?.[0] || {});
         setRegionInfo(region_info?.[0]);
@@ -195,7 +202,7 @@ const GameDetail: React.FC = () => {
     // @ts-ignore
 
     // 每隔 10 秒增加计数器的值
-    const interval = setInterval(() => {
+    window.delayInterval = window.setInterval(() => {
       setCount((prevCount) => prevCount + 1);
       console.log("ip---------------------------", speedIp);
       const requestData = JSON.stringify({
@@ -225,6 +232,7 @@ const GameDetail: React.FC = () => {
 
           setLostBag(lost_bag);
           setPacketLoss(jsonResponse === 9999 ? 25 : 0);
+          dispatch(updateDelay(lost_bag));
         },
         onFailure: (errorCode: any, errorMessage: any) => {
           console.error("Query failed:", errorMessage);
@@ -233,7 +241,7 @@ const GameDetail: React.FC = () => {
     }, 10000);
 
     // 返回一个清理函数，在组件卸载时清除定时器
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, [count]);
 
   useEffect(() => {

@@ -1,6 +1,25 @@
+/*
+ * @Author: zhangda
+ * @Date: 2024-05-28 20:53:18
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-06 17:33:39
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\src\redux\reducers\auth.ts
+ */
 // reducers/auth.ts
 
-import { LOGIN_SUCCESS, LOGOUT, SET_IS_LOGIN, OPEN_REAL_NAME_MODAL, CLOSE_REAL_NAME_MODAL,OPEN_PAY_MODAL,CLOSE_PAY_MODAL} from '../actions/auth';
+import { 
+  LOGIN_SUCCESS, 
+  LOGOUT, 
+  SET_IS_LOGIN, 
+  OPEN_REAL_NAME_MODAL, 
+  CLOSE_REAL_NAME_MODAL,
+  OPEN_PAY_MODAL,
+  CLOSE_PAY_MODAL, 
+  UPDATE_DELAY,
+  STOP_ACCELERATE,
+} from '../actions/auth';
 
 const initialState = {
   isAuthenticated: false,
@@ -8,6 +27,8 @@ const initialState = {
   isLogin:false,
   isRealOpen: false,
   isPayOpen:false,
+  delay: 2,
+  isStop: true,
 };
 
 const authReducer = (state = initialState, action:any) => {
@@ -48,6 +69,16 @@ const authReducer = (state = initialState, action:any) => {
       return {
         ...state,
         isPayOpen: false,
+      };
+    case UPDATE_DELAY:
+      return {
+        ...state,
+        delay: action.payload,
+      };
+    case STOP_ACCELERATE:
+      return {
+        ...state,
+        delay: action.payload,
       };
     default:
       return state;

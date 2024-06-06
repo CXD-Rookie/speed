@@ -5,6 +5,9 @@ export const OPEN_REAL_NAME_MODAL = 'OPEN_REAL_NAME_MODAL';
 export const CLOSE_REAL_NAME_MODAL = 'CLOSE_REAL_NAME_MODAL';
 export const OPEN_PAY_MODAL = 'OPEN_PAY_MODAL';
 export const CLOSE_PAY_MODAL = 'CLOSE_PAY_MODAL';
+export const UPDATE_DELAY = 'UPDATE_DELAY';
+export const STOP_ACCELERATE = 'STOP_ACCELERATE';
+
 export const loginSuccess = (token: string) => ({
   type: LOGIN_SUCCESS,
   payload: token,
@@ -15,8 +18,8 @@ export const logout = () => ({
 });
 
 export const setIsLogin = (isLogin:any) => ({
-    type: 'SET_IS_LOGIN',
-    payload: isLogin,
+  type: 'SET_IS_LOGIN',
+  payload: isLogin,
 });
 
 export const openRealNameModal = () => ({
@@ -35,3 +38,12 @@ export const closePayModal = () => ({
   type: CLOSE_PAY_MODAL,
 });
 
+export const updateDelay = (delay: any) => ({
+  type: UPDATE_DELAY,
+  payload: delay,
+});
+
+export const stopAccelerate = (isStop: any) => ({
+  type: STOP_ACCELERATE,
+  payload: isStop,
+});

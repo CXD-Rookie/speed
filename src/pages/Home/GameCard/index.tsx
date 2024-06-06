@@ -31,7 +31,7 @@ import arrowIcon from "@/assets/images/common/accel-arrow.svg";
 import closeIcon from "@/assets/images/common/close.svg";
 
 import { useDispatch, useSelector } from "react-redux";
-import { openRealNameModal } from "../../../redux/actions/auth";
+import { openRealNameModal, stopAccelerate } from "../../../redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./style.scss";
@@ -67,8 +67,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  const accDelay = useSelector((state: any) => state.auth.delay);
 
-  const isRealName = localStorage.getItem("isRealName");
   const pid = localStorage.getItem("pid");
 
   const [accelOpen, setAccelOpen] = useState(false);
@@ -212,7 +212,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         setIsModalOpenVip(true);
         return;
       } else {
-        console.log("option 游戏数据", option);
         let is_true = getMyGames().some((item: any) => item?.is_accelerate);
 
         if (is_true) {
@@ -256,6 +255,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
             const isCheck = JSON.parse(response);
             // handleSuitDomList(option.id);
 
+            dispatch(stopAccelerate(true));
             if (isCheck.pre_check_status === 0) {
               handleSuitDomList(option.id);
             } else {
@@ -293,6 +293,9 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       onSuccess: (response: any) => {
         console.log("停止加速----------:", response);
         handleExpedite(option, "off");
+        dispatch(stopAccelerate(false));
+        window.clearInterval((window as any)?.delayInterval);
+        (window as any).delayInterval = null;
       },
       onFailure: (errorCode: any, errorMessage: any) => {
         console.error("加速失败 failed:", errorMessage);
@@ -335,7 +338,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
                   <>
                     <div className="instant-delay">即时延迟</div>
                     <div className="speed">
-                      98<span>ms</span>
+                      {accDelay}
+                      <span>ms</span>
                     </div>
                   </>
                 )}
