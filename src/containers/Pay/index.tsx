@@ -347,6 +347,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         <PayErrorModal
           accelOpen={payErrorModalOpen}
           setAccelOpen={setPayErrorModalOpen}
+          onConfirm={(e) => {
+            setIsModalOpen(false);
+            setPayErrorModalOpen(false);
+          }}
         />
       ) : null}
     </Fragment>

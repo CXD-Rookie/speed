@@ -32,7 +32,7 @@ const PayErrorModal: React.FC<SettingsModalProps> = (props) => {
         centered
         maskClosable={false}
         footer={
-          <div className="footer-cancel" onClick={() => setAccelOpen(false)}>
+          <div className="footer-cancel" onClick={() => onConfirm(false)}>
             好的
           </div>
         }
