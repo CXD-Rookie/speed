@@ -107,10 +107,13 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
   // 提交
   const handleSubmit = async () => {
     try {
-      if (!rankRealInfo?.name || !validateIDCard(rankRealInfo?.id)) {
+      if (
+        !validateName(rankRealInfo?.name) ||
+        !validateIDCard(rankRealInfo?.id)
+      ) {
         setIsRankVerify({
-          name: false,
-          id: false,
+          name: validateName(rankRealInfo?.name),
+          id: validateIDCard(rankRealInfo?.id),
         });
 
         return;
