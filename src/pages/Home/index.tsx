@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
+import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
 import GameCard from "./GameCard";
@@ -48,7 +49,8 @@ const Home: React.FC = () => {
     null
   );
 
-  const [isAdult, setIsAdult] = useState<any>({}); // 是否成年 类型充值还是加速
+  const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
+  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const childRef = useRef<any>();
   const isRealNamel = localStorage.getItem("isRealName");
@@ -60,8 +62,8 @@ const Home: React.FC = () => {
         dispatch(openRealNameModal());
         return;
       } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-        dispatch(openRealNameModal());
-        setIsAdult({ is_adult: false, type: "recharge" });
+        setIsMinorOpen(true);
+        setMinorType("recharge");
         return;
       } else {
         setIsModalOpen(true);
@@ -200,7 +202,14 @@ const Home: React.FC = () => {
           setIsModalOpen={(e) => setIsModalOpen(e)}
         />
       )}
-      {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
+      {isRealOpen ? <RealNameModal /> : null}
+      {isMinorOpen ? (
+        <MinorModal
+          isMinorOpen={isMinorOpen}
+          setIsMinorOpen={setIsMinorOpen}
+          type={minorType}
+        />
+      ) : null}
     </div>
   );
 };

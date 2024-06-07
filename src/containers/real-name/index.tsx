@@ -2,19 +2,18 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 16:17:38
+ * @LastEditTime: 2024-06-07 12:00:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
  */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Input, Modal } from "antd";
 
 import "./index.scss";
 import loginApi from "@/api/login";
 
 import realSucessIcon from "@/assets/images/common/real-sucess.svg";
-import realErrorIcon from "@/assets/images/common/real_error.svg";
 
 import { useDispatch, useSelector } from "react-redux";
 import { closeRealNameModal } from "@/redux/actions/auth";
@@ -24,7 +23,7 @@ interface SettingsModalProps {
 }
 
 const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
-  // 认证类型 假设 0 - 未填写 1 - 成功 2 - 加速时未成年 3 - 充值时未成年
+  // 认证类型 假设 0 - 未填写 1 - 成功
   const [realType, setRealType] = useState<any>(0);
   const [isRankVerify, setIsRankVerify] = useState({
     name: true,
@@ -96,10 +95,8 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
     let value = e.target.value;
 
     if (type === "name") {
-      // setIsRankVerify({ ...isRankVerify, name: validateName(value) });
       setRankRealInfo({ ...rankRealInfo, name: value });
     } else {
-      // setIsRankVerify({ ...isRankVerify, id: validateIDCard(value) });
       setRankRealInfo({ ...rankRealInfo, id: value });
     }
   };
@@ -145,24 +142,6 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    const isRealNamel = localStorage.getItem("isRealName");
-
-    if (isRealNamel === "1") {
-      setRealType(0);
-      return;
-    }
-
-    // is_adult false 未成年 recharge充值 acceleration 加速
-    if (!isAdult?.is_adult) {
-      if (isAdult?.type === "recharge") {
-        setRealType(3);
-      } else if (isAdult?.type === "acceleration") {
-        setRealType(2);
-      }
-    }
-  }, [isAdult]);
 
   return isRealOpen ? (
     <Modal
@@ -214,20 +193,6 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
         <div className="real-sueccess-modal-content">
           <img src={realSucessIcon} width={69} height={69} alt="" />
           <p>恭喜，实名认证成功</p>
-          <Button className="real-sueccess-btn" onClick={handleClose}>
-            好的
-          </Button>
-        </div>
-      )}
-      {(realType === 2 || realType === 3) && (
-        <div className="real-sueccess-modal-content real-error-modal-content">
-          <img src={realErrorIcon} width={69} height={69} alt="" />
-          <p>
-            抱歉，根据国家相关法律法规要求，暂不支持未成年人使用
-            {realType === 2 && "加速"}
-            {realType === 3 && "充值"}
-            服务，感谢您的理解！
-          </p>
           <Button className="real-sueccess-btn" onClick={handleClose}>
             好的
           </Button>

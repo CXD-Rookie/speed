@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 10:44:55
+ * @LastEditTime: 2024-06-07 12:00:35
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -17,8 +17,9 @@ import React, {
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
-import StopConfirmModal from "@/containers/stop-confirm";
 
+import MinorModal from "@/containers/minor";
+import StopConfirmModal from "@/containers/stop-confirm";
 import PayModal from "@/containers/Pay";
 import playSuitApi from "@/api/speed";
 import BreakConfirmModal from "@/containers/break-confirm";
@@ -79,7 +80,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
 
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
-  const [isAdult, setIsAdult] = useState<any>({}); // 是否成年 类型充值还是加速
+  const [minorType, setMinorType] = useState<string>("acceleration"); // 是否成年 类型充值还是加速
+  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   useImperativeHandle(ref, () => ({
     triggerAccelerate: (e: any) => {
@@ -208,8 +210,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         dispatch(openRealNameModal());
         return;
       } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-        dispatch(openRealNameModal());
-        setIsAdult({ is_adult: false, type: "acceleration" });
+        setIsMinorOpen(true);
+        setMinorType("acceleration");
         return;
       } else if (!accountInfo?.userInfo?.is_vip) {
         setIsModalOpenVip(true);
@@ -424,7 +426,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
           setIsModalOpen={(e) => setIsModalOpenVip(e)}
         />
       )}
-      {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
+      {isRealOpen ? <RealNameModal /> : null}
       {stopModalOpen ? (
         <StopConfirmModal
           accelOpen={stopModalOpen}
@@ -433,6 +435,13 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
             setStopModalOpen(false);
             handleStopClick(gameData);
           }}
+        />
+      ) : null}
+      {isMinorOpen ? (
+        <MinorModal
+          isMinorOpen={isMinorOpen}
+          setIsMinorOpen={setIsMinorOpen}
+          type={minorType}
         />
       ) : null}
     </div>

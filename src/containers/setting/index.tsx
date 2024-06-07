@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 20:31:37
+ * @LastEditTime: 2024-06-07 11:47:09
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 
 import "./index.scss";
+import MinorModal from "../minor";
 import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
 import PayModal from "../Pay";
@@ -31,7 +32,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
-  const [isAdult, setIsAdult] = useState<any>({}); // 是否成年 类型充值还是加速
+  const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
+  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const [activeTab, setActiveTab] = useState("system");
   const [closeWindow, setCloseWindow] = useState<string>("2");
@@ -208,9 +210,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                         if (isRealNamel === "1") {
                           dispatch(openRealNameModal());
                           return;
-                        } else if (accountInfo?.userInfo?.user_ext?.is_adult) {
-                          dispatch(openRealNameModal());
-                          setIsAdult({ is_adult: false, type: "recharge" });
+                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+                          setIsMinorOpen(true);
+                          setMinorType("recharge");
                           return;
                         } else {
                           setIsModalOpenVip(true);
@@ -229,8 +231,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                           dispatch(openRealNameModal());
                           return;
                         } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-                          dispatch(openRealNameModal());
-                          setIsAdult({ is_adult: false, type: "recharge" });
+                          setIsMinorOpen(true);
+                          setMinorType("recharge");
                           return;
                         } else {
                           setIsModalOpenVip(true);
@@ -253,7 +255,14 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
           setIsModalOpen={(e) => setIsModalOpenVip(e)}
         />
       )}
-      {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
+      {isRealOpen ? <RealNameModal /> : null}
+      {isMinorOpen ? (
+        <MinorModal
+          isMinorOpen={isMinorOpen}
+          setIsMinorOpen={setIsMinorOpen}
+          type={minorType}
+        />
+      ) : null}
     </Fragment>
   );
 };

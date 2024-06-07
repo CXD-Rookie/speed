@@ -11,6 +11,7 @@ import { Button, Popover } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 
+import MinorModal from "../minor";
 import RealNameModal from "../real-name";
 import UserAvatarCom from "./user-avatar";
 import SettingsModal from "../setting";
@@ -28,7 +29,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [editOpen, setEditOpen] = useState(false);
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
-  const [isAdult, setIsAdult] = useState<any>(); // 是否成年 类型充值还是加速
+  const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
+  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
@@ -65,8 +67,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
               dispatch(openRealNameModal());
               return;
             } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-              dispatch(openRealNameModal());
-              setIsAdult({ is_adult: false, type: "recharge" });
+              setIsMinorOpen(true);
+              setMinorType("recharge");
               return;
             } else {
               setIsModalOpenVip(true);
@@ -118,7 +120,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           setIsModalOpen={(e) => setIsModalOpenVip(e)}
         />
       )}
-      {isRealOpen ? <RealNameModal isAdult={isAdult} /> : null}
+      {isRealOpen ? <RealNameModal /> : null}
+      {isMinorOpen ? (
+        <MinorModal
+          isMinorOpen={isMinorOpen}
+          setIsMinorOpen={setIsMinorOpen}
+          type={minorType}
+        />
+      ) : null}
     </div>
   );
 };
