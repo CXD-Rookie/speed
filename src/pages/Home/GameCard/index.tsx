@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 18:55:17
+ * @LastEditTime: 2024-06-07 10:44:55
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -408,11 +408,14 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         accelOpen={accelOpen}
         setAccelOpen={setAccelOpen}
         onConfirm={() => {
-          onClear(true);
+          console.log(accelTag, gameData);
+          let tag_len = Object?.keys(accelTag || {})?.length > 0;
 
-          handleExpedite(
-            Object?.keys(accelTag || {})?.length > 0 ? accelTag : gameData
-          );
+          if (tag_len) {
+            onClear(true);
+          }
+
+          handleExpedite(tag_len ? accelTag : gameData);
         }}
       />
       {!!isModalOpenVip && (

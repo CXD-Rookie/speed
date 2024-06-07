@@ -227,6 +227,26 @@
       border-radius: var(--speed-dominant-border-radius);
     }
 
+    .animate-box { 
+      height: 32vh;
+
+      .animate-text {
+        width: 100%;
+        font-size: 1.8vw;
+        line-height: 32vh;
+      }
+
+      .accelerate-animate {
+        position: absolute;
+        top: 31.5vh;
+        left: 10px;
+        width: 0%;
+        height: 0.5vh;
+        background-color: #F86C34;
+        border-radius: var(--speed-dominant-border-radius);
+      }
+    }
+
     .accelerate-content {
       img {
         width: 100%;
@@ -240,7 +260,7 @@
           margin-left: calc(50% - 6vw) !important;
 
           img {
-            margin-top: 0.2vh;
+            margin-top: 0.4vh;
           }
         }
 
