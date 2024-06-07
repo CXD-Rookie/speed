@@ -170,21 +170,21 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    const updateQrCode = async () => {
-      if (commodities.length > 0) {
-        try {
-          const newKey = guid();
-          setPollingKey(newKey);
-          setQrCodeUrl(
-            `https://test-api.accessorx.com/api/v1/pay/qrcode?cid=${commodities[activeTabIndex].id}&user_id=${userToken}&key=${newKey}`
-          );
-        } catch (error) {
-          console.error("Error updating QR code", error);
-        }
+  const updateQrCode = async () => {
+    if (commodities.length > 0) {
+      try {
+        const newKey = guid();
+        setPollingKey(newKey);
+        setQrCodeUrl(
+          `https://test-api.accessorx.com/api/v1/pay/qrcode?cid=${commodities[activeTabIndex].id}&user_id=${userToken}&key=${newKey}`
+        );
+      } catch (error) {
+        console.error("Error updating QR code", error);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     updateQrCode();
   }, [activeTabIndex, commodities, userToken]);
 
@@ -348,7 +348,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           accelOpen={payErrorModalOpen}
           setAccelOpen={setPayErrorModalOpen}
           onConfirm={(e) => {
-            setIsModalOpen(false);
+            updateQrCode();
             setPayErrorModalOpen(false);
           }}
         />
