@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 16:22:10
+ * @LastEditTime: 2024-06-07 16:53:59
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -190,6 +190,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
       (window as any).cefQuery({
         request: requestData,
         onSuccess: (response: any) => {
+          handleDetails();
           console.log("开启真实加速中----------:", response);
         },
         onFailure: (errorCode: any, errorMessage: any) => {
@@ -268,21 +269,19 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
           onSuccess: (response: any) => {
             const isCheck = JSON.parse(response);
             console.log("校验是否合法文件----------:", response, isCheck);
-            // handleSuitDomList(option.id);
+            handleSuitDomList(option.id);
 
             dispatch(stopAccelerate(true));
-            if (isCheck.pre_check_status === 0) {
-              handleSuitDomList(option.id);
-            } else {
-              console.log(`不是合法文件，请重新安装加速器`);
-            }
+            // if (isCheck.pre_check_status === 0) { 暂时注释 实际生成打开
+            //   handleSuitDomList(option.id);
+            // } else {
+            //   console.log(`不是合法文件，请重新安装加速器`);
+            // }
           },
           onFailure: (errorCode: any, errorMessage: any) => {
             console.error("加速失败 failed:", errorMessage);
           },
         });
-
-        handleDetails();
       }, 5000);
     }
 

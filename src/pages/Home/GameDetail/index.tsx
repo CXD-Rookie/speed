@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 15:55:08
+ * @LastEditTime: 2024-06-07 16:48:38
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -206,7 +206,7 @@ const GameDetail: React.FC = () => {
     // @ts-ignore
 
     // 每隔 10 秒增加计数器的值
-    delayInterval = setInterval(() => {
+    const delayInterval = setInterval(() => {
       setCount((prevCount) => prevCount + 1);
       console.log("ip---------------------------", speedIp);
       const requestData = JSON.stringify({
