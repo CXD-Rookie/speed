@@ -87,8 +87,6 @@ const GameDetail: React.FC = () => {
         }));
 
         dispatch(stopAccelerate(false));
-        window.clearInterval((window as any).delayInterval);
-        (window as any).delayInterval = null;
         localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
         navigate("/home");
       },

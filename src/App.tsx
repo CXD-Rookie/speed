@@ -112,10 +112,9 @@ const App: React.FC = (props: any) => {
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
       dispatch(stopAccelerate(false));
-      window.clearInterval((window as any)?.delayInterval);
-      (window as any).delayInterval = null;
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
+      window.location.reload();
       navigate("/home");
     }
   };

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 16:53:59
+ * @LastEditTime: 2024-06-07 17:09:58
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -247,7 +247,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
     }));
 
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
-    console.log(location);
 
     if (location?.pathname === "/home") {
       onClear(true);
@@ -282,7 +281,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
             console.error("加速失败 failed:", errorMessage);
           },
         });
-      }, 5000);
+      }, 4500);
     }
 
     if (type === "off") {
@@ -308,8 +307,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         console.log("停止加速----------:", response);
         handleExpedite(option, "off");
         dispatch(stopAccelerate(false));
-        window.clearInterval((window as any)?.delayInterval);
-        (window as any).delayInterval = null;
       },
       onFailure: (errorCode: any, errorMessage: any) => {
         console.error("加速失败 failed:", errorMessage);

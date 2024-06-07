@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 15:37:25
+ * @LastEditTime: 2024-06-07 17:14:54
  * @FilePath: \speed\src\pages\Home\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE;
  */
@@ -40,6 +40,7 @@ const Home: React.FC = () => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  const isLogin = useSelector((state: any) => state.auth.isLogin);
 
   const [status, setStatus] = useState<any>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,14 +81,13 @@ const Home: React.FC = () => {
   const updateData = () => {
     let arr = getMyGames();
 
-    console.log("查看mygame是否更新-------------------------");
     setMyGamesNum(arr?.length);
     setHomeList(arr?.slice(0, 4));
   };
 
   useEffect(() => {
     updateData();
-  }, [status]);
+  }, [status, isLogin]);
 
   useEffect(() => {
     if (location.state?.autoAccelerate && location.state?.data) {
