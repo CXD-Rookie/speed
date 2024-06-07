@@ -14,10 +14,12 @@ interface PayModalProps {
 const payTypeMap: { [key: number]: string } = {
   1: "包月",
   2: "包季",
-  3: "包年",
-  4: "连续包月",
-  5: "连续包季",
-  6: "连续包年",
+  3: "包半年",
+  4: "包年",
+  5: "连续包月",
+  6: "连续包季",
+  7: "连续包半年",
+  8: "连续包年",
 };
 const payStatusMap: { [key: number]: string } = {
   1: "待支付",
