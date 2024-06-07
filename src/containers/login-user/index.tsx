@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 20:38:46
+ * @LastEditTime: 2024-06-07 14:49:05
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -26,11 +26,21 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
+  const [open, setOpen] = useState(false);
+
   const [editOpen, setEditOpen] = useState(false);
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
+
+  const hide = () => {
+    setOpen(false);
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+  };
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
@@ -54,7 +64,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           </div>
           <span
             className={isVip ? "vips" : "novips"}
-            onClick={() => setEditOpen(true)}
+            onClick={() => {
+              hide();
+              setEditOpen(true);
+            }}
           >
             编辑
           </span>
@@ -62,6 +75,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         <Button
           onClick={() => {
             const isRealNamel = localStorage.getItem("isRealName");
+
+            hide();
 
             if (isRealNamel === "1") {
               dispatch(openRealNameModal());
@@ -97,6 +112,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         placement="bottomRight"
         trigger="click"
         arrow={false}
+        open={open}
+        onOpenChange={handleOpenChange}
         content={popoverContent(accountInfo?.userInfo.is_vip)}
       >
         <div className="user-text">
