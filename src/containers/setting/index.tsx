@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 11:47:09
+ * @LastEditTime: 2024-06-07 16:04:37
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -11,6 +11,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Modal, Tabs, Button, Switch, Radio } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
+import { useHandleUserInfo } from "@/common/useHandleUserInfo";
 
 import "./index.scss";
 import MinorModal from "../minor";
@@ -28,6 +29,8 @@ interface SettingsModalProps {
 
 const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const { isOpen, onClose, type = "default" } = props;
+
+  const { handleUserInfo } = useHandleUserInfo();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
@@ -73,6 +76,12 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       setActiveTab("account");
     }
   }, [type]);
+
+  useEffect(() => {
+    if (activeTab === "account") {
+      handleUserInfo();
+    }
+  }, [activeTab]);
 
   return (
     <Fragment>

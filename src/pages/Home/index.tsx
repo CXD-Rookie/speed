@@ -13,6 +13,7 @@ import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
+import { useHandleUserInfo } from "@/common/useHandleUserInfo";
 
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
@@ -35,6 +36,7 @@ interface Game {
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleUserInfo } = useHandleUserInfo();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
@@ -57,6 +59,7 @@ const Home: React.FC = () => {
   const dispatch: any = useDispatch();
 
   const openModal = () => {
+    handleUserInfo();
     if (accountInfo?.isLogin) {
       if (isRealNamel === "1") {
         dispatch(openRealNameModal());

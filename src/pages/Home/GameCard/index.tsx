@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 12:00:35
+ * @LastEditTime: 2024-06-07 16:12:29
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -17,6 +17,7 @@ import React, {
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
+import { useHandleUserInfo } from "@/common/useHandleUserInfo";
 
 import MinorModal from "@/containers/minor";
 import StopConfirmModal from "@/containers/stop-confirm";
@@ -66,6 +67,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   } = props;
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
+
+  const { handleUserInfo } = useHandleUserInfo();
 
   const [stopModalOpen, setStopModalOpen] = useState(false);
 
@@ -203,6 +206,7 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
 
   // 立即加速
   const handleAccelerateClick = (option: any) => {
+    handleUserInfo();
     if (accountInfo?.isLogin) {
       const isRealNamel = localStorage.getItem("isRealName");
 
@@ -256,8 +260,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         (window as any).cefQuery({
           request: requestDataStep,
           onSuccess: (response: any) => {
-            console.log("校验是否合法文件----------:", response);
             const isCheck = JSON.parse(response);
+            console.log("校验是否合法文件----------:", response, isCheck);
             // handleSuitDomList(option.id);
 
             dispatch(stopAccelerate(true));
