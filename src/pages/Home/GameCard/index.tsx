@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-22 14:17:10
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 16:12:29
+ * @LastEditTime: 2024-06-07 16:22:10
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -15,7 +15,7 @@ import React, {
   forwardRef,
 } from "react";
 import { Fragment } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { useHandleUserInfo } from "@/common/useHandleUserInfo";
 
@@ -66,6 +66,8 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
     id,
   } = props;
   const navigate = useNavigate();
+  const location = useLocation();
+
   const dispatch: any = useDispatch();
 
   const { handleUserInfo } = useHandleUserInfo();
@@ -237,7 +239,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
   // 加速逻辑
   const handleExpedite = (option: any, type: any = "on") => {
     let game_arr = getMyGames();
-    console.log(type, game_arr);
 
     game_arr = game_arr.map((item: any) => ({
       ...item,
@@ -245,6 +246,11 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
     }));
 
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_arr));
+    console.log(location);
+
+    if (location?.pathname === "/home") {
+      onClear(true);
+    }
 
     setAccelOpen(false);
 
@@ -414,7 +420,6 @@ const GameCard: React.ForwardRefRenderFunction<any, GameCardProps> = (
         accelOpen={accelOpen}
         setAccelOpen={setAccelOpen}
         onConfirm={() => {
-          console.log(accelTag, gameData);
           let tag_len = Object?.keys(accelTag || {})?.length > 0;
 
           if (tag_len) {
