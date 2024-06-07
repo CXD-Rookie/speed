@@ -1,0 +1,140 @@
+.real-name-modal {
+  .ant-modal-content {
+    width: 67.6vw;
+    height: 75vh;
+    background-color: #3e3e4a;
+    padding: 1.2vw 2.4vh;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
+  }
+
+  .ant-modal-title,
+  .ant-modal-close-x {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  .real-modal-content {
+    margin-top: 1.35vh;
+    padding: 2.4vh 1.8vw;
+    position: relative;
+
+    .modal-content-text {
+      font-size: 1.4vw;
+      font-weight: Regular;
+      color: #999999;
+    }
+
+    .modal-content-input-box {
+      margin-top: 4.9vh;
+      position: relative;
+
+      & div {
+        font-size: 1.4vw;
+        font-weight: Regular;
+        color: #999999;
+        line-height: 3vh;
+      }
+
+      & input {
+        width: 36.8vw;
+        height: 4.8vh;
+        font-size: 1.2vw;
+        color: #fff;
+        background: rgba(255,255,255,0.10);
+        border: none;
+        border-radius: 0.75vh;
+        margin-top: 0.8vh;
+
+        &::placeholder {
+          font-size: 1.2vw;
+          color: #fff;
+        }
+      }
+
+      .error-tootip {
+        font-size: 1vw;
+        font-weight: Regular;
+        color: #ff0000;
+        line-height: 18px;
+        position: absolute;
+        left: 0.4vw;
+        top: 9.3vh;
+      }
+    }
+
+    .modal-content-btn {
+      width: 18.5vw;
+      height: 6.6vh;
+      font-size: 1.8vw;
+      color: #fff;
+      background: rgba(255,255,255,0.10);
+      margin: 15vw 0 0 31.5vh;
+      border-radius: 3.3vh;
+      border: none;
+
+      &:enabled:hover, &:enabled:active {
+        color: #fff;
+        background-color: #F86C34;
+      }
+    }
+
+    .modal-content-btn:enabled {
+      color: #fff;
+      background-color: #F86C34;
+    }
+  }
+
+  .real-sueccess-modal-content {
+    width: 100%;
+    text-align: center;
+    padding-top: 20.75vh;
+
+    & p {
+      opacity: 0.5;
+      font-size: 1.4vw;
+      font-weight: Regular;
+      text-align: center;
+      color: #ffffff;
+      line-height: 3vh;
+      margin-top: 1.8vh;
+    }
+
+    .real-sueccess-btn {
+      width: 18.5vw;
+      height: 6.6vh;
+      font-size: 1.6vw;
+      font-weight: Regular;
+      color: #ffffff;
+      background: #f86c34;
+      border-radius: 3.3vh;
+      border: none;
+      margin-top: 5.5vh;
+
+      &:hover, &:active {
+        color: #ffffff;
+        background: #f86c34;
+      }
+    }
+  }
+
+  .real-error-modal-content {
+    & p {
+      width: 32vw;
+      text-align: center;
+      margin: 0 auto;
+    }
+  }
+}
