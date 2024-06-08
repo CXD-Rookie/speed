@@ -1,306 +1,306 @@
-.home-module-game-card {
-  position: relative;
-  border-radius: var(--speed-dominant-border-radius);
-  overflow: hidden; /* 用于隐藏按钮溢出部分 */
+// .home-module-game-card {
+//   position: relative;
+//   border-radius: var(--speed-dominant-border-radius);
+//   overflow: hidden; /* 用于隐藏按钮溢出部分 */
 
-  .content-box {
-    img {
-      object-fit: cover;
-      border-radius: var(--speed-dominant-border-radius);
-    }
+//   .content-box {
+//     img {
+//       object-fit: cover;
+//       border-radius: var(--speed-dominant-border-radius);
+//     }
 
-    .animate-box {
-      position: absolute;
-      width: 100%;
-      height: 49vh;
-      top: 0;
-      left: 0;
-      background-color: rgba($color: #000000, $alpha: 0.6);
-      border-radius: var(--speed-dominant-border-radius);
+//     .animate-box {
+//       position: absolute;
+//       width: 100%;
+//       height: 49vh;
+//       top: 0;
+//       left: 0;
+//       background-color: rgba($color: #000000, $alpha: 0.6);
+//       border-radius: var(--speed-dominant-border-radius);
 
-      .animate-text {
-        width: 100%;
-        color: rgba(255,255,255,0.60);
-        font-size: 2.2vw;
-        cursor: pointer;
-        text-align: center;
-        line-height: 49vh;
-        z-index: 3;
-      }
+//       .animate-text {
+//         width: 100%;
+//         color: rgba(255,255,255,0.60);
+//         font-size: 2.2vw;
+//         cursor: pointer;
+//         text-align: center;
+//         line-height: 49vh;
+//         z-index: 3;
+//       }
 
-      .accelerate-animate {
-        position: absolute;
-        top: 48.5vh;
-        left: 10px;
-        width: 0%;
-        height: 0.5vh;
-        background-color: #F86C34;
-        border-radius: var(--speed-dominant-border-radius);
-      }
+//       .accelerate-animate {
+//         position: absolute;
+//         top: 48.5vh;
+//         left: 10px;
+//         width: 0%;
+//         height: 0.5vh;
+//         background-color: #F86C34;
+//         border-radius: var(--speed-dominant-border-radius);
+//       }
       
-      .accelerate-animate-start {
-        animation: moveRight 5s cubic-bezier(0.42, 0, 0.58, 1) normal 1;
-      }
+//       .accelerate-animate-start {
+//         animation: moveRight 5s cubic-bezier(0.42, 0, 0.58, 1) normal 1;
+//       }
 
-      @keyframes moveRight {
-        from {
-          width: 0%;
-        }
-        to {
-          width: calc(100% - 20px);
-        }
-      }
-    }
+//       @keyframes moveRight {
+//         from {
+//           width: 0%;
+//         }
+//         to {
+//           width: calc(100% - 20px);
+//         }
+//       }
+//     }
 
-    .accelerate-content {
-      width: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 2;
-      display: none;
-      border-radius: var(--speed-dominant-border-radius);
+//     .accelerate-content {
+//       width: 100%;
+//       position: absolute;
+//       top: 0;
+//       left: 0;
+//       z-index: 2;
+//       display: none;
+//       border-radius: var(--speed-dominant-border-radius);
 
-      img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 49vh;
-        width: 100%;
-        object-fit: cover;
-        border-radius: var(--speed-dominant-border-radius);
-        z-index: 1;
-      }
+//       img {
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         height: 49vh;
+//         width: 100%;
+//         object-fit: cover;
+//         border-radius: var(--speed-dominant-border-radius);
+//         z-index: 1;
+//       }
 
-      .accelerated-content {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        z-index: 2;
-        text-align: center;
+//       .accelerated-content {
+//         position: absolute;
+//         width: 100%;
+//         height: 100%;
+//         z-index: 2;
+//         text-align: center;
 
-        .instant-delay {
-          width: 8.2vw;
-          height: 4.2vh;
-          background: rgba(255, 255, 255, 0.10);
-          border-radius: var(--speed-dominant-border-radius);
-          font-size: 1.4vw;
-          color: #ffffff;
-          text-align: center;
-          line-height: 4.2vh;
-          margin: 6vh 0 0 calc(50% - 4.1vw);
-        }
+//         .instant-delay {
+//           width: 8.2vw;
+//           height: 4.2vh;
+//           background: rgba(255, 255, 255, 0.10);
+//           border-radius: var(--speed-dominant-border-radius);
+//           font-size: 1.4vw;
+//           color: #ffffff;
+//           text-align: center;
+//           line-height: 4.2vh;
+//           margin: 6vh 0 0 calc(50% - 4.1vw);
+//         }
 
-        .speed {
-          font-size: 5vw;
-          color: #ffffff;
-          line-height: 8.8vh;
-          margin-top: 1.8vh;
+//         .speed {
+//           font-size: 5vw;
+//           color: #ffffff;
+//           line-height: 8.8vh;
+//           margin-top: 1.8vh;
 
-          span {
-            font-size: var(--speed-dominant-font-size);
-          }
-        }
+//           span {
+//             font-size: var(--speed-dominant-font-size);
+//           }
+//         }
 
-        .go-deteils {
-          font-size: 1.6vw;
-          color: #ffffff;
-          margin-top: 4.2vh;
-          margin-left: calc(50% - 10vw);
-          cursor: pointer;
+//         .go-deteils {
+//           font-size: 1.6vw;
+//           color: #ffffff;
+//           margin-top: 4.2vh;
+//           margin-left: calc(50% - 10vw);
+//           cursor: pointer;
 
-          img {
-            width: 1.2vw;
-            height: 1.8vh;
-            position: unset;
-            margin-left: 0.8vw;
-          }
-        }
+//           img {
+//             width: 1.2vw;
+//             height: 1.8vh;
+//             position: unset;
+//             margin-left: 0.8vw;
+//           }
+//         }
 
-        .down-accelerate {
-          width: 15vw;
-          height: 5.4vh;
-          font-size: var(--speed-dominant-font-size);
-          background: #ffffff;
-          border-radius: var(--speed-dominant-border-radius);
-          margin-left: calc(50% - 7.5vw);
-          cursor: pointer;
-          margin-top: 10vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+//         .down-accelerate {
+//           width: 15vw;
+//           height: 5.4vh;
+//           font-size: var(--speed-dominant-font-size);
+//           background: #ffffff;
+//           border-radius: var(--speed-dominant-border-radius);
+//           margin-left: calc(50% - 7.5vw);
+//           cursor: pointer;
+//           margin-top: 10vh;
+//           display: flex;
+//           align-items: center;
+//           justify-content: center;
 
-          img {
-            width: 1.8vw;
-            height: 2.7vh;
-            position: static;
-            margin-right: 8px;
-          }
-        }
-      };
+//           img {
+//             width: 1.8vw;
+//             height: 2.7vh;
+//             position: static;
+//             margin-right: 8px;
+//           }
+//         }
+//       };
 
-      .clear-game {
-        width: 1.8vw;
-        height: 2.7vh;
-        position: absolute;
-        z-index: 2;
-        top: 1.8vh;
-        left: auto !important;
-        right: 1.3vw !important;
-        cursor: pointer;
-      };
+//       .clear-game {
+//         width: 1.8vw;
+//         height: 2.7vh;
+//         position: absolute;
+//         z-index: 2;
+//         top: 1.8vh;
+//         left: auto !important;
+//         right: 1.3vw !important;
+//         cursor: pointer;
+//       };
 
-      .accelerate-button {
-        height: 2.7vh;
-        position: relative;
-        color: #F86C34;
-        font-size: 2.2vw;
-        cursor: pointer;
-        margin: 40vh 0 0 calc(50% - 5vw) !important;
-        z-index: 2;
+//       .accelerate-button {
+//         height: 2.7vh;
+//         position: relative;
+//         color: #F86C34;
+//         font-size: 2.2vw;
+//         cursor: pointer;
+//         margin: 40vh 0 0 calc(50% - 5vw) !important;
+//         z-index: 2;
 
-        img {
-          width: 1.8vw;
-          height: 2.7vh;
-          position: absolute;
-          top: 0.7vh;
-          left: 9.6vw;
-          cursor: pointer;
-        }
-      }
-    }
-  }
+//         img {
+//           width: 1.8vw;
+//           height: 2.7vh;
+//           position: absolute;
+//           top: 0.7vh;
+//           left: 9.6vw;
+//           cursor: pointer;
+//         }
+//       }
+//     }
+//   }
 
-  .content-box:hover .accelerate-content {
-    display: block;
-  };
+//   .content-box:hover .accelerate-content {
+//     display: block;
+//   };
   
-  .no-hover .content-box:hover .accelerate-content {
-    display: none !important;
-  }
+//   .no-hover .content-box:hover .accelerate-content {
+//     display: none !important;
+//   }
 
-  .card-text-box {
-    text-align: center;
-    font-size: var(--speed-dominant-font-size);
-    color: #999;
-    padding: 1.2vw 1vw 0 1vw;
-    white-space: nowrap;    /* 禁止换行 */
-    overflow: hidden;       /* 隐藏溢出内容 */
-    text-overflow: ellipsis;/* 使用省略号表示溢出 */
-  }
-}
+//   .card-text-box {
+//     text-align: center;
+//     font-size: var(--speed-dominant-font-size);
+//     color: #999;
+//     padding: 1.2vw 1vw 0 1vw;
+//     white-space: nowrap;    /* 禁止换行 */
+//     overflow: hidden;       /* 隐藏溢出内容 */
+//     text-overflow: ellipsis;/* 使用省略号表示溢出 */
+//   }
+// }
 
-.home-module-game-card-home {
-  width: calc(25% - 9px);
+// .home-module-game-card-home {
+//   width: calc(25% - 9px);
 
-  .content-box {
-    img {
-      width: 100%;
-      height: 49vh;
-      object-fit: cover;
-      border-radius: var(--speed-dominant-border-radius);
-    }
+//   .content-box {
+//     img {
+//       width: 100%;
+//       height: 49vh;
+//       object-fit: cover;
+//       border-radius: var(--speed-dominant-border-radius);
+//     }
 
-    .accelerate-content {
-      img {
-        width: 100%;
-        height: 49vh;
-      }
-    }
-  }
+//     .accelerate-content {
+//       img {
+//         width: 100%;
+//         height: 49vh;
+//       }
+//     }
+//   }
 
-  .card-text-box {
-    width: 100% !important;
-    height: 7.6vh;
-    word-break: break-all;
-  }
-}
+//   .card-text-box {
+//     width: 100% !important;
+//     height: 7.6vh;
+//     word-break: break-all;
+//   }
+// }
 
-.home-module-game-card-my-game {
-  width: 14vw;
+// .home-module-game-card-my-game {
+//   width: 14vw;
 
-  .content-box {
-    img {
-      width: 100%;
-      height: 32vh;
-      object-fit: cover;
-      border-radius: var(--speed-dominant-border-radius);
-    }
+//   .content-box {
+//     img {
+//       width: 100%;
+//       height: 32vh;
+//       object-fit: cover;
+//       border-radius: var(--speed-dominant-border-radius);
+//     }
 
-    .animate-box { 
-      height: 32vh;
+//     .animate-box { 
+//       height: 32vh;
 
-      .animate-text {
-        width: 100%;
-        font-size: 1.8vw;
-        line-height: 32vh;
-      }
+//       .animate-text {
+//         width: 100%;
+//         font-size: 1.8vw;
+//         line-height: 32vh;
+//       }
 
-      .accelerate-animate {
-        position: absolute;
-        top: 31.5vh;
-        left: 10px;
-        width: 0%;
-        height: 0.5vh;
-        background-color: #F86C34;
-        border-radius: var(--speed-dominant-border-radius);
-      }
-    }
+//       .accelerate-animate {
+//         position: absolute;
+//         top: 31.5vh;
+//         left: 10px;
+//         width: 0%;
+//         height: 0.5vh;
+//         background-color: #F86C34;
+//         border-radius: var(--speed-dominant-border-radius);
+//       }
+//     }
 
-    .accelerate-content {
-      img {
-        width: 100%;
-        height: 32vh;
-      }
+//     .accelerate-content {
+//       img {
+//         width: 100%;
+//         height: 32vh;
+//       }
 
-      .accelerated-content {
-        .go-deteils {
-          font-size: 1.4vw !important;
-          margin-top: 8vh !important;
-          margin-left: calc(50% - 6vw) !important;
+//       .accelerated-content {
+//         .go-deteils {
+//           font-size: 1.4vw !important;
+//           margin-top: 8vh !important;
+//           margin-left: calc(50% - 6vw) !important;
 
-          img {
-            margin-top: 0.4vh;
-          }
-        }
+//           img {
+//             margin-top: 0.4vh;
+//           }
+//         }
 
-        .down-accelerate {
-          width: 12vw !important;
-          height: 4.8vh !important;
-          font-size: 1.6vw !important;
-          background: #ffffff;
-          border-radius: 1.6vw !important;
-          margin-left: calc(50% - 6vw) !important;
-          line-height: 32px !important;
-          margin-top: 14.7vh !important;
+//         .down-accelerate {
+//           width: 12vw !important;
+//           height: 4.8vh !important;
+//           font-size: 1.6vw !important;
+//           background: #ffffff;
+//           border-radius: 1.6vw !important;
+//           margin-left: calc(50% - 6vw) !important;
+//           line-height: 32px !important;
+//           margin-top: 14.7vh !important;
 
-          img {
-            width: 1.8vw;
-            height: 2.7vh;
-          }
-        }
-      };
+//           img {
+//             width: 1.8vw;
+//             height: 2.7vh;
+//           }
+//         }
+//       };
 
-      .accelerate-button {
-        margin: 24.3vh 0 0 calc(50% - 4.2vw) !important;
-        font-size: var(--speed-dominant-font-size);
+//       .accelerate-button {
+//         margin: 24.3vh 0 0 calc(50% - 4.2vw) !important;
+//         font-size: var(--speed-dominant-font-size);
 
-        img {
-          width: 1.8vw !important;
-          height: 2.4vh !important;
-          top: 0.5vh;
-          left: 8vw;
-        }
-      }
+//         img {
+//           width: 1.8vw !important;
+//           height: 2.4vh !important;
+//           top: 0.5vh;
+//           left: 8vw;
+//         }
+//       }
 
-      .on-accel-img {
-        right: 1.2vw !important;
-      }
-    }
-  }
+//       .on-accel-img {
+//         right: 1.2vw !important;
+//       }
+//     }
+//   }
 
-  .card-text-box {
-    font-size: var(--speed-dominant-font-size) !important;
-    padding-top: 1.2vh !important;
-  }
-}
+//   .card-text-box {
+//     font-size: var(--speed-dominant-font-size) !important;
+//     padding-top: 1.2vh !important;
+//   }
+// }

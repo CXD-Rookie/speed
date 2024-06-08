@@ -94,7 +94,7 @@ const Login: React.FC = () => {
 
         // eslint-disable-next-line no-restricted-globals
         // @ts-ignore
-        window.location.reload();
+        // window.location.reload();
         console.log("关闭跳转");
       } else {
         setVeryCode(false);
@@ -109,7 +109,7 @@ const Login: React.FC = () => {
     dispatch(setAccountInfo(undefined, undefined, false));
     // eslint-disable-next-line no-restricted-globals
     // @ts-ignore
-    window.location.reload();
+    // window.location.reload();
     console.log("关闭跳转");
   };
 
