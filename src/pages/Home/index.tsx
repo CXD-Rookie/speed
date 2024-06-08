@@ -97,6 +97,7 @@ const Home: React.FC = () => {
       <GameCardCopy
         options={homeList}
         locationType={"home"}
+        customAccelerationData={accelTag}
         triggerDataUpdate={() => setStatus((status: number) => status + 1)}
       />
       {homeList?.length <= 0 && (

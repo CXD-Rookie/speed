@@ -1,3 +1,12 @@
+/*
+ * @Author: zhangda
+ * @Date: 2024-06-08 13:30:02
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-08 22:34:25
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
+ */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -5,6 +14,7 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import useCefQuery from "@/hooks/useCefQuery";
 
 import "./style.scss";
 import RealNameModal from "@/containers/real-name";
@@ -12,6 +22,8 @@ import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";
 import BreakConfirmModal from "@/containers/break-confirm";
 import StopConfirmModal from "@/containers/stop-confirm";
+
+import playSuitApi from "@/api/speed";
 
 import addIcon from "@/assets/images/common/add.svg";
 import closeIcon from "@/assets/images/common/close.svg";
@@ -24,6 +36,7 @@ import cessationIcon from "@/assets/images/common/cessation.svg";
 interface GameCardProps {
   options: any;
   locationType: string;
+  customAccelerationData?: any;
   triggerDataUpdate?: () => void;
 }
 
@@ -31,6 +44,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const {
     options = [],
     locationType = "home",
+    customAccelerationData = {},
     triggerDataUpdate = () => {},
   } = props;
 
@@ -41,8 +55,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
 
-  const { getGameList, identifyAccelerationData, removeGameList } =
-    useGamesInitialize();
+  const sendMessageToBackend = useCefQuery();
+
+  const {
+    getGameList,
+    identifyAccelerationData,
+    removeGameList,
+    accelerateGameToList,
+  } = useGamesInitialize();
+
   const { handleUserInfo } = useHandleUserInfo();
 
   const [minorType, setMinorType] = useState<string>("acceleration"); // 是否成年 类型充值还是加速
@@ -63,9 +84,82 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
 
   // 停止加速
-  const stop = () => {
+  const stopAcceleration = () => {
     setStopModalOpen(false);
-    // handleStopClick(gameData);
+    // 停止加速
+    sendMessageToBackend(
+      JSON.stringify({
+        method: "NativeApi_StopProxy",
+        params: null,
+      }),
+      (response: any) => {
+        console.log("Success response from 停止加速:", response);
+        removeGameList("initialize"); // 更新我的游戏
+        triggerDataUpdate(); // 更新显示数据
+      },
+      (errorCode: any, errorMessage: any) => {
+        console.error("Failure response from 停止加速:", errorCode);
+      }
+    );
+  };
+
+  // 通知客户端进行游戏加速
+  const handleSuitDomList = async (t: any) => {
+    try {
+      const pid = localStorage.getItem("pid");
+      const [speedInfoRes, speedListRes] = await Promise.all([
+        playSuitApi.speedInfo({ platform: 3, gid: t, pid }), // 游戏加速信息
+        playSuitApi.playSpeedList({ platform: 3, gid: t, pid }), // 游戏加速节点列表
+      ]);
+
+      console.log("获取游戏加速用的信息", speedInfoRes);
+      console.log("获取游戏加速列表的信息", speedListRes);
+
+      // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
+      const process = speedInfoRes.data.executable;
+      const { ip, server } = speedListRes.data[0];
+
+      localStorage.setItem("speedIp", ip);
+      localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
+
+      // 真实拼接
+      const jsonResult = {
+        process: [process[0], process[1], process[2]],
+        black_ip: ["42.201.128.0/17"],
+        black_domain: [
+          "re:.+\\.steamcommunity\\.com",
+          "steamcdn-a.akamaihd.net",
+        ],
+        tcp_tunnel_mode: 0,
+        udp_tunnel_mode: 1,
+        user_id: accountInfo?.userInfo?.id,
+        game_id: t,
+        tunnel: {
+          address: ip,
+          server: server,
+        },
+      };
+
+      // 真实加速
+      sendMessageToBackend(
+        JSON.stringify({
+          method: "NativeApi_StartProcessProxy",
+          params: jsonResult,
+        }),
+        (response: any) => {
+          console.log("Success response from 开启真实加速中:", response);
+        },
+        (errorCode: any, errorMessage: any) => {
+          console.error(
+            "Failure response from 加速失败:",
+            errorCode,
+            errorMessage
+          );
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // 加速实际操作
@@ -74,10 +168,35 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
 
+    // 校验是否合法文件
+    sendMessageToBackend(
+      JSON.stringify({
+        method: "NativeApi_PreCheckEnv",
+      }),
+      (response: any) => {
+        console.log("Success response from 校验是否合法文件:", response);
+        const isCheck = JSON.parse(response);
+
+        handleSuitDomList(option.id); // 通知客户端进行加速
+        accelerateGameToList(option); // 加速完后更新我的游戏
+        // 暂时注释 实际生产打开
+        // if (isCheck?.pre_check_status === 0) {
+        //   handleSuitDomList(option.id);
+        // } else {
+        //   console.log(`不是合法文件，请重新安装加速器`);
+        // }
+      },
+      (errorCode: any, errorMessage: any) => {
+        console.error("Failure response from 校验是否合法文件:", errorCode);
+      }
+    );
+
     setTimeout(() => {
       setIsAllowAcceleration(true); // 启用立即加速
       setIsAllowShowAccelerating(true); // 启用显示加速中
       setIsStartAnimate(false); // 结束加速动画
+
+      navigate("/gameDetail");
     }, 5000);
   };
 
@@ -124,13 +243,20 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         setSelectAccelerateOption(option);
         return;
       } else {
+        accelerateProcessing(option);
       }
     } else {
       dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
     }
   };
 
-  useEffect(() => {}, []);
+  // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
+  useEffect(() => {
+    if (Object.keys(customAccelerationData)?.length > 0) {
+      setSelectAccelerateOption(customAccelerationData);
+      accelerateDataHandling(customAccelerationData);
+    }
+  }, [customAccelerationData]);
 
   return (
     <div
@@ -262,7 +388,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         <StopConfirmModal
           accelOpen={stopModalOpen}
           setAccelOpen={setStopModalOpen}
-          onConfirm={stop}
+          onConfirm={stopAcceleration}
         />
       ) : null}
     </div>

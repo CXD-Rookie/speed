@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-08 20:47:59
+ * @LastEditTime: 2024-06-08 22:31:30
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
@@ -37,8 +37,8 @@ export const useGamesInitialize = () => {
   };
 
   // 游戏进行排序
-  const sortGameList = () => {
-    let arr = getGameList();
+  const sortGameList = (option = getGameList()) => {
+    let arr = [...option];
 
     if (arr?.length > 0) {
       let accelerate_index = arr.findIndex((item) => item?.is_accelerate);
@@ -61,6 +61,17 @@ export const useGamesInitialize = () => {
       let find_index = game_list.findIndex(item => item?.id === option?.id);
 
       game_list.splice(find_index, 1);
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
+
+      return game_list;
+    }
+
+    if (option instanceof String && game_list?.length > 0 && option === "initialize") {
+      game_list.map(item => ({
+        ...item,
+        is_accelerate: false
+      }))
+
       localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
 
       return game_list;
@@ -88,5 +99,29 @@ export const useGamesInitialize = () => {
     return sort_list;
   }
 
-  return { getGameList, appendGameToList, identifyAccelerationData, removeGameList };
+  // 加速我的游戏
+  const accelerateGameToList = (option) => {
+    let game_list = getGameList()
+
+    if (game_list?.length > 0) {
+      game_list = game_list.map(item => ({
+        ...item,
+        is_accelerate: option?.id === item?.id
+      }))
+    }
+
+    let sort_list = sortGameList(game_list)
+
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(sort_list));
+
+    return sort_list;
+  }
+
+  return {
+    getGameList,
+    appendGameToList,
+    identifyAccelerationData,
+    removeGameList,
+    accelerateGameToList,
+  };
 };
