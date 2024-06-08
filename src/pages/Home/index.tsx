@@ -1,4 +1,13 @@
 /*
+ * @Author: zhangda
+ * @Date: 2024-05-21 21:05:55
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-08 13:37:03
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\src\pages\Home\index.tsx
+ */
+/*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
@@ -18,7 +27,7 @@ import { useGamesInitialize } from "@/common/useGamesInitialize";
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
-import GameCardCopy from "./GameCard copy";
+import GameCardCopy from "./GameCard";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
 import emptyIcon from "@/assets/images/home/empty.svg";

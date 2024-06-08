@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 
 import "./style.scss";
-import GameCard from "../GameCard";
+// import GameCard from "../GameCard";
 
 const MyGames: React.FC = () => {
   const navigate = useNavigate();
@@ -46,12 +46,13 @@ const MyGames: React.FC = () => {
       <div className="game-list">
         {gamesList?.length > 0 &&
           gamesList.map((game, index) => (
-            <GameCard
-              key={index}
-              gameData={game}
-              type={"my-game"}
-              onClear={() => setStatus(status + 1)}
-            />
+            <div></div>
+            // <GameCard
+            //   key={index}
+            //   gameData={game}
+            //   type={"my-game"}
+            //   onClear={() => setStatus(status + 1)}
+            // />
           ))}
       </div>
     </div>
