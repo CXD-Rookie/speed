@@ -136,7 +136,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     <div
       className={`game-card-module ${
         locationType === "home" && "home-game-card-module"
-      }`}
+      } ${locationType === "my-game" && "my-game-card-module"}`}
     >
       {options?.map((option: any) => {
         return (
