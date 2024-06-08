@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getMyGames } from "@/common/utils";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./style.scss";
+
 import gameApi from "@/api/gamelist";
+
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 
@@ -38,26 +40,16 @@ interface Game {
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
 
-  const [games, setGames] = useState<Game[]>([]);
+  const { appendGameToList } = useGamesInitialize();
 
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
   const enterSign = useSelector((state: any) => state.searchEnter);
 
+  const [games, setGames] = useState<Game[]>([]);
+
   const clickAddGame = (option: any) => {
-    let arr = getMyGames();
-    let is_true =
-      arr.filter((item: any) => item?.id === option?.id)?.length > 0;
-
-    if (!is_true) {
-      if (arr?.length >= 4) {
-        arr = [option, ...arr];
-      } else {
-        arr.push(option);
-      }
-    }
-
-    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+    appendGameToList(option);
     navigate("/home");
   };
 

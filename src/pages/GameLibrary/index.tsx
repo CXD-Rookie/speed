@@ -1,8 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getMyGames } from "@/common/utils";
-import gameApi from "@/api/gamelist";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+
 import "./style.scss";
+
+import gameApi from "@/api/gamelist";
+
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 
@@ -64,6 +67,9 @@ const gamesTitle: GamesTitleProps[] = [
 
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
+
+  const { appendGameToList } = useGamesInitialize();
+
   const [games, setGames] = useState<Game[]>([]);
   const [gameActiveType, setGameActiveType] = useState<string>("1");
   const [page, setPage] = useState<number>(1);
@@ -74,19 +80,7 @@ const GameLibrary: React.FC = () => {
   const gameListRef = useRef<HTMLDivElement>(null);
 
   const clickAddGame = (option: any) => {
-    let arr = getMyGames();
-    let is_true =
-      arr.filter((item: any) => item?.id === option?.id)?.length > 0;
-
-    if (!is_true) {
-      if (arr?.length >= 4) {
-        arr = [option, ...arr];
-      } else {
-        arr.push(option);
-      }
-    }
-
-    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+    appendGameToList(option);
     navigate("/home");
   };
 

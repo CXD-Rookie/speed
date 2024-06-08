@@ -13,7 +13,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchSearchResults } from "../../redux/actions/search";
 import { setEnterSign } from "@/redux/actions/search-enter";
-import { getMyGames } from "@/common/utils";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./index.scss";
 
@@ -30,6 +30,8 @@ const SearchBar: React.FC = () => {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
   const navigate = useNavigate();
 
+  const { appendGameToList } = useGamesInitialize();
+
   const enterSign = useSelector((state: any) => state.searchEnter);
   const query = useSelector((state: RootState) => state.search.query);
   const results = useSelector((state: RootState) => state.search.results) || [];
@@ -44,21 +46,7 @@ const SearchBar: React.FC = () => {
   };
 
   const handleSearchResultClick = (option: any) => {
-    console.log("触发游戏添加--------------");
-    // 获取当前的我的游戏列表
-    let myGames = getMyGames();
-
-    // 检查是否已经包含了当前选中的游戏
-    const isAlreadyAdded = myGames.some((game: any) => game.id === option.id);
-
-    // 如果游戏没有被添加过，将其添加到我的游戏列表的开头
-    if (!isAlreadyAdded) {
-      myGames.unshift(option);
-
-      // 更新本地存储
-      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(myGames));
-    }
-
+    appendGameToList(option);
     // 跳转到首页并触发自动加速autoAccelerate
     navigate("/home", {
       state: { isNav: true, data: option, autoAccelerate: true },

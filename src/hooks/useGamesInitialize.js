@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-08 17:25:50
+ * @LastEditTime: 2024-06-08 20:47:59
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
@@ -36,6 +36,7 @@ export const useGamesInitialize = () => {
     return find_result;
   };
 
+  // 游戏进行排序
   const sortGameList = () => {
     let arr = getGameList();
 
@@ -66,5 +67,26 @@ export const useGamesInitialize = () => {
     }
   }
 
-  return { getGameList, sortGameList, identifyAccelerationData, removeGameList };
+  // 添加游戏到我的游戏
+  const appendGameToList = (option) => {
+    let sort_list = sortGameList()
+    let find_index = sort_list.findIndex((item) => item?.id === option?.id);
+    let is_accelerate = sort_list.some((item) => item?.is_accelerate);
+
+    if (find_index !== -1) {
+      sort_list.splice(find_index, 1);
+    }
+
+    if (is_accelerate) {
+      sort_list.splice(1, 0, option)
+    } else {
+      sort_list.splice(0, 0, option)
+    }
+
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(sort_list));
+
+    return sort_list;
+  }
+
+  return { getGameList, appendGameToList, identifyAccelerationData, removeGameList };
 };

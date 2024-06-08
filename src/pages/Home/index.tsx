@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-08 13:37:03
+ * @LastEditTime: 2024-06-08 20:04:24
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
   const location = useLocation();
 
   const { handleUserInfo } = useHandleUserInfo();
-  const { sortGameList } = useGamesInitialize();
+  const { getGameList } = useGamesInitialize();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
@@ -77,17 +77,17 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    setHomeList(sortGameList()?.slice(0, 4));
+    setHomeList(getGameList()?.slice(0, 4));
   }, [status]);
 
   useEffect(() => {
-    console.log("查看updata是否更新");
     if (location.state?.autoAccelerate && location.state?.data) {
+      console.log("其他页面携带游戏进入首页");
       setAccelTag(location?.state?.data);
 
       window.history.replaceState({}, document.title); // Remove state from history
 
-      sortGameList()?.slice(0, 4);
+      setStatus(status + 1);
       setAccelTag(location?.state?.data);
     }
   }, [location]);
@@ -119,7 +119,7 @@ const Home: React.FC = () => {
           onClick={() => navigate("/myGames")}
         >
           <img src={gamesIcon} alt="" />
-          我的游戏 ({sortGameList()?.length})
+          我的游戏 ({getGameList()?.length})
         </div>
       </div>
       {!!isModalOpen && (
