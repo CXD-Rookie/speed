@@ -7,8 +7,6 @@ export const USER_INFO = 'USER_INFO';
 
 export const setAccountInfo = (userInfo?: Object, isLogin?: boolean, isShowLogin?: boolean) => {
   return (dispatch: Dispatch) => {
-    console.log(userInfo, isLogin, isShowLogin);
-    
     if (isShowLogin !== undefined) {
       dispatch({ type: IS_SHOW_LOGIN, payload: isShowLogin });
     }

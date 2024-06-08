@@ -1,3 +1,12 @@
+/*
+ * @Author: zhangda
+ * @Date: 2024-06-07 15:06:47
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-08 15:48:38
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\src\hooks\useHandleUserInfo.js
+ */
 import { useDispatch } from 'react-redux';
 import { setAccountInfo } from '@/redux/actions/account-info';
 

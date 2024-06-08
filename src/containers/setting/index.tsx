@@ -11,7 +11,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Modal, Tabs, Button, Switch, Radio } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
-import { useHandleUserInfo } from "@/common/useHandleUserInfo";
+import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 
 import "./index.scss";
 import MinorModal from "../minor";

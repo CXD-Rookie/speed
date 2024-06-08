@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Popover } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
-import { useHandleUserInfo } from "@/common/useHandleUserInfo";
+import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 
 import MinorModal from "../minor";
 import RealNameModal from "../real-name";

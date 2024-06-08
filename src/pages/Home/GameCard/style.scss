@@ -1,22 +1,141 @@
 .game-card-module {
-  // display: flex;
-  // margin: 0 auto;
-  // column-gap: 1.6vw;
+  display: flex;
+  column-gap: 1.6vw;
 
-  // & .game-card {
-  //   width: 25% !important;
+  & .game-card {
+    height: auto;
+    position: relative;
 
-  //   .background-img {
-  //     width: 25%;
-  //   }
-  // }
+    & .background-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: var(--speed-dominant-border-radius);
+    }
+
+    & .background-img:hover + .accelerate-immediately-card {
+      display: block;
+      cursor: pointer;
+    }
+
+    & .accelerate-immediately-card:hover {
+      display: block;
+    }
+
+    & .accelerate-immediately-card {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      display: none;
+
+      & .mask-layer-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: calc(var(--speed-dominant-border-radius) - 0.5vw);
+      }
+
+      & .clear-game-img {
+        position: absolute;
+        top: 1.2vw;
+        right: 1.2vw;
+        z-index: 2;
+        width: 1.8vw;
+        height: 2.7vh;
+        cursor: pointer;
+      }
+
+      & .accelerate-immediately-button {
+        position: absolute;
+        left: 0;
+        bottom: 10%;
+        z-index: 2;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 0.8vw;
+
+        & .accelerate-immediately-text {
+          color: #F86C34;
+          cursor: pointer;
+        }
+
+        & .accelerate-immediately-img {
+          cursor: pointer;
+        }
+      }
+    }
+
+    & .game-card-text {
+      font-size: var(--speed-dominant-font-size);
+      color: #999;
+      text-align: center;
+      padding: 1.8vh 1vw 0 1vw;
+      white-space: nowrap;    /* 禁止换行 */
+      overflow: hidden;       /* 隐藏溢出内容 */
+      text-overflow: ellipsis;/* 使用省略号表示溢出 */
+    }
+  }
 }
 
 .home-game-card-module {
   width: 92vw;
-  height: 49vh;
+  height: auto;
 
-  .home-null-card {
-    
+  & .game-card {
+    width: 25%;
+
+    & .background-img {
+      height: 49vh;
+    }
+
+    & .accelerate-immediately-card {
+      height: 49vh;
+
+      & .accelerate-immediately-button {
+        & .accelerate-immediately-text {
+          font-size: 2.2vw;
+        }
+
+        & .accelerate-immediately-img {
+          width: 1.6vw;
+          height: 1.6vw;
+          margin-top: 0.6vh;
+        }
+      }
+    }
+
+    & .game-card-text {
+      padding: 1.8vh 1vw 2.4vh 1vw;
+    }
+  }
+  
+  & .home-null-card {
+    width: 25%;
+    height: 49vh;
+    color: #999;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--speed-dominant-border-radius);
+    font-size: var(--speed-dominant-font-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    .null-content-card {
+      img {
+        width: 10vw;
+        height: 15vh;
+      }
+
+      div {
+        font-size: 1.8vw;
+        margin-top: 3.3vh;
+      }
+    }
   }
 }

@@ -21,8 +21,8 @@ import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import { useHandleUserInfo } from "@/common/useHandleUserInfo";
-import { useGamesInitialize } from "@/common/useGamesInitialize";
+import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
@@ -44,7 +44,7 @@ const Home: React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
-  const [status, setStatus] = useState<any>(0);
+  const [status, setStatus] = useState<number>(0); // 触发首页展示数据更新的状态
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [homeList, setHomeList] = useState([]);
@@ -94,7 +94,11 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-module">
-      <GameCardCopy options={homeList} locationType={"home"} />
+      <GameCardCopy
+        options={homeList}
+        locationType={"home"}
+        triggerDataUpdate={() => setStatus((status: number) => status + 1)}
+      />
       {homeList?.length <= 0 && (
         <div className="empty-card">
           <img src={emptyIcon} alt="" />
