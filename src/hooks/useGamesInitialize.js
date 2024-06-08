@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-08 22:31:30
+ * @LastEditTime: 2024-06-08 22:40:16
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
@@ -66,8 +66,8 @@ export const useGamesInitialize = () => {
       return game_list;
     }
 
-    if (option instanceof String && game_list?.length > 0 && option === "initialize") {
-      game_list.map(item => ({
+    if (game_list?.length > 0 && option === "initialize") {
+      game_list = game_list.map(item => ({
         ...item,
         is_accelerate: false
       }))

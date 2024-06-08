@@ -294,9 +294,11 @@
 .my-game-card-module {
   width: 100%;
   height: auto;
+  flex-wrap: wrap;
+  row-gap: 3.6vh;
 
   & .game-card {
-    width: 16%;
+    width: calc(16% - 1.5vw);
 
     & .background-img {
       height: 31vh;
