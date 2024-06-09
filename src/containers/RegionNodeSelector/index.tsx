@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Select, Button, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
+
 const { TabPane } = Tabs;
 const { Option } = Select;
 const { Column } = Table;
@@ -23,6 +25,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   onSelect,
 }) => {
   const navigate = useNavigate();
+
+  const { getGameList, identifyAccelerationData } = useGamesInitialize();
 
   const [selectedNode, setSelectedNode] = useState<any>();
   const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
@@ -48,7 +52,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const handleSuitList = async () => {
     try {
       let res = await playSuitApi.playSuitList();
-      console.log("获取游戏区服列表", res);
+
       setRegions(res?.data || []);
     } catch (error) {
       console.log(error);
@@ -57,40 +61,41 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 更新游戏默认选择区服
   const updateGamesRegion = () => {
-    let arr: any = getMyGames(); // 我的游戏列表
+    let game_list: any = getGameList(); // 我的游戏列表
 
-    arr = arr.map((item: any) => {
-      let select_arr = item?.select_region || [];
+    if (game_list?.length > 0 && game_list instanceof Array) {
+      game_list = game_list.map((game: any) => {
+        let region = game?.select_region || [];
 
-      if (select_arr.some((item: any) => item?.id === "2")) {
-        if (!select_arr.some((item: any) => item?.is_select)) {
-          select_arr.map((child: any) => ({
-            ...child,
-            is_select: child?.id === "2",
-          }));
+        if (region?.length < 1) {
+          region = [{ id: "2", region: "国服", is_select: true }];
+        } else {
+          let find_index = region.findIndex((select: any) => select?.is_select);
+
+          if (find_index === -1) {
+            region = region.map((item: any) => ({
+              ...item,
+              is_select: item?.id === "2",
+            }));
+          }
         }
 
         return {
-          ...item,
-          select_region: select_arr,
+          ...game,
+          select_region: region,
         };
-      } else {
-        return {
-          ...item,
-          select_region: [{ id: "2", region: "国服", is_select: true }],
-        };
-      }
-    });
+      });
+    }
 
-    let select_arr = arr.filter((item: any) => item?.is_accelerate)[0]
-      .select_region;
+    let accel_obj = identifyAccelerationData(game_list)?.[1] || {};
+    let select_arr = accel_obj?.select_region || [];
     let result = select_arr.filter((item: any) => item?.is_select);
 
-    setSelectValue(result[0]?.id);
-    setSelectInfo(result[0]);
+    setSelectValue(result?.[0]?.id);
+    setSelectInfo(result?.[0]);
     setSelectRegions(select_arr);
 
-    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
   };
 
   // 选择区服

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-08 22:40:16
+ * @LastEditTime: 2024-06-09 15:36:31
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
@@ -16,7 +16,7 @@ export const useGamesInitialize = () => {
   }
 
   // 查找是否有加速数据 返回数组 
-  const identifyAccelerationData = (data) => {
+  const identifyAccelerationData = (data = getGameList()) => {
     let find_result = [];
 
     if (data?.length > 0 && data instanceof Array) {
@@ -117,11 +117,25 @@ export const useGamesInitialize = () => {
     return sort_list;
   }
 
+  // 选择当前游戏默认选中节点 区服
+  const chooseDefaultNode = (option = {}) => {
+    let region = option?.select_region;
+    let result_region = {}
+
+    if (region?.length > 0 && region instanceof Array) {
+      let find_index = region.findIndex(item => item?.is_select);
+      result_region = region?.[find_index];
+    }
+
+    return result_region;
+  }
+
   return {
     getGameList,
     appendGameToList,
     identifyAccelerationData,
     removeGameList,
     accelerateGameToList,
+    chooseDefaultNode,
   };
 };

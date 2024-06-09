@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-23 10:37:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-03 15:24:11
+ * @LastEditTime: 2024-06-09 15:57:57
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\BarChart\index.tsx
