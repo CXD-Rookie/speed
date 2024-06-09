@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-08 22:34:25
+ * @LastEditTime: 2024-06-09 14:40:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -164,6 +164,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
+    console.log(option);
+
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
@@ -244,6 +246,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         return;
       } else {
         accelerateProcessing(option);
+        setSelectAccelerateOption(option);
       }
     } else {
       dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
