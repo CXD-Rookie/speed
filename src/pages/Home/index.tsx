@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-08 20:04:24
+ * @LastEditTime: 2024-06-11 14:15:31
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -105,7 +105,11 @@ const Home: React.FC = () => {
           <img src={emptyIcon} alt="" />
           <div className="title">未发现本地游戏</div>
           <div className="text">去游戏库添加或者试试搜索游戏吧～</div>
-          <Button type="primary" onClick={() => navigate("/gameLibrary")}>
+          <Button
+            className="to-games-check"
+            type="primary"
+            onClick={() => navigate("/gameLibrary")}
+          >
             去游戏库看看
           </Button>
         </div>

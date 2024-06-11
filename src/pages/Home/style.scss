@@ -43,8 +43,8 @@
       margin-top: 4.2vh;
       cursor: pointer;
 
-      &:hover {
-        background: #f86c34;
+      & button:hover {
+        background: #f86c34 !important;
       }
     }
   }
