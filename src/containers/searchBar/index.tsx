@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-22 14:34:24
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-04 17:17:18
+ * @LastEditTime: 2024-06-11 13:24:07
  * @FilePath: \speed\src\containers\searchBar\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -41,8 +41,8 @@ const SearchBar: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
 
-    dispatch(fetchSearchResults(searchQuery));
     setShowDropdown(!!searchQuery);
+    dispatch(fetchSearchResults(searchQuery));
   };
 
   const handleSearchResultClick = (option: any) => {
@@ -54,7 +54,7 @@ const SearchBar: React.FC = () => {
   };
 
   const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && query?.length > 0) {
       dispatch(setEnterSign(enterSign));
       navigate("/gamelist"); // 在输入框按下回车键时跳转到搜索结果页面
     }

@@ -5,7 +5,6 @@ import type { MenuProps } from "antd";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
-import { stopAccelerate } from "./redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import useCefQuery from "./hooks/useCefQuery";
 
@@ -24,7 +23,6 @@ import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
 import logoIcon from "@/assets/images/common/logo.svg";
-import { getMyGames } from "./common/utils";
 
 const { Header, Content } = Layout;
 
@@ -65,7 +63,6 @@ const App: React.FC = (props: any) => {
 
   const routeView = useRoutes(routes); // 获得路由表
 
-  const isStop = useSelector((state: any) => state.auth.isStop);
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示

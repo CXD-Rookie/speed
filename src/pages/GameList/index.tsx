@@ -46,7 +46,8 @@ const GameLibrary: React.FC = () => {
   const searchResults = useSelector((state: any) => state.search.results);
   const enterSign = useSelector((state: any) => state.searchEnter);
 
-  const [games, setGames] = useState<Game[]>([]);
+  const [oldSearchBarValue, setOldSearchBarValue] = useState();
+  const [games, setGames] = useState<any>([]);
 
   const clickAddGame = (option: any) => {
     appendGameToList(option);
@@ -70,6 +71,8 @@ const GameLibrary: React.FC = () => {
   };
 
   useEffect(() => {
+    let result_game = [];
+
     if (searchResults.length === 0) {
       setGames([]); // 清空游戏列表
     } else {
@@ -77,7 +80,13 @@ const GameLibrary: React.FC = () => {
         ...game,
         cover_img: `${game.cover_img}`,
       }));
+
+      result_game = gamesWithFullImgUrl;
       setGames(gamesWithFullImgUrl);
+    }
+
+    if (result_game?.length === 0) {
+      setOldSearchBarValue(searchBarValue);
     }
   }, [enterSign]);
 
@@ -85,7 +94,7 @@ const GameLibrary: React.FC = () => {
     <div className="game-list-module-container">
       {games.length > 0 ? (
         <div className="game-list">
-          {games.map((game) => (
+          {games.map((game: any) => (
             <div key={game.id} className="game-card">
               <div className="content-box">
                 <img
@@ -117,7 +126,7 @@ const GameLibrary: React.FC = () => {
       ) : (
         <div className="empty-page">
           <div className="empty-page-content">
-            抱歉，没有找到"{searchBarValue}"的相关游戏
+            抱歉，没有找到"{oldSearchBarValue}"的相关游戏
           </div>
           <div className="button-container">
             {/* <button className="back-button" onClick={() => navigate(-1)}>
