@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { LeftOutlined } from "@ant-design/icons";
 
 import "./style.scss";
 
@@ -9,6 +10,7 @@ import gameApi from "@/api/gamelist";
 
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
+import emptyIcon from "@/assets/images/home/empty.svg";
 
 interface Game {
   id: string;
@@ -125,13 +127,16 @@ const GameLibrary: React.FC = () => {
         </div>
       ) : (
         <div className="empty-page">
-          <div className="empty-page-content">
-            抱歉，没有找到"{oldSearchBarValue}"的相关游戏
-          </div>
-          <div className="button-container">
-            {/* <button className="back-button" onClick={() => navigate(-1)}>
-              返回
-            </button> */}
+          <button className="back-button" onClick={() => navigate(-1)}>
+            <LeftOutlined />
+            <span>返回</span>
+          </button>
+          <div className="empty-content">
+            <img src={emptyIcon} alt="" />
+            <div className="empty-null-text">
+              抱歉，没有找到“{oldSearchBarValue}”的相关游戏
+            </div>
+            <div className="empty-text">您可进行反馈，以便我们及时更新</div>
             <button className="browse-button" onClick={() => fetchGames()}>
               浏览其他游戏
             </button>
