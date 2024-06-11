@@ -346,7 +346,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       {payErrorModalOpen ? (
         <PayErrorModal
           accelOpen={payErrorModalOpen}
-          setAccelOpen={setPayErrorModalOpen}
+          setAccelOpen={(e) => {
+            updateQrCode();
+            setPayErrorModalOpen(e);
+          }}
           onConfirm={(e) => {
             updateQrCode();
             setPayErrorModalOpen(false);
