@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-09 15:36:31
+ * @LastEditTime: 2024-06-11 12:50:45
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
@@ -71,6 +71,17 @@ export const useGamesInitialize = () => {
         ...item,
         is_accelerate: false
       }))
+
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
+
+      return game_list;
+    }
+
+    if (game_list?.length > 0 && option === "all") {
+      game_list = game_list.map((item) => ({
+        ...item,
+        is_accelerate: false,
+      }));
 
       localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
 

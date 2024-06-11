@@ -6,6 +6,8 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
 import { stopAccelerate } from "./redux/actions/auth";
+import { useGamesInitialize } from "./hooks/useGamesInitialize";
+import useCefQuery from "./hooks/useCefQuery";
 
 import "@/assets/css/App.scss";
 import routes from "./routes/index";
@@ -58,6 +60,9 @@ const App: React.FC = (props: any) => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const sendMessageToBackend = useCefQuery();
+  const { removeGameList } = useGamesInitialize();
+
   const routeView = useRoutes(routes); // 获得路由表
 
   const isStop = useSelector((state: any) => state.auth.isStop);
@@ -80,38 +85,29 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStop = async () => {
-    const requestData = JSON.stringify({
-      method: "NativeApi_StopProxy",
-      params: null,
-    });
-    (window as any).cefQuery({
-      request: requestData,
-      onSuccess: (response: any) => {
-        console.log("停止加速----------:", response);
+    sendMessageToBackend(
+      JSON.stringify({
+        method: "NativeApi_StopProxy",
+        params: null,
+      }),
+      (response: any) => {
+        console.log("Success response from 停止加速:", response);
+        removeGameList("initialize"); // 更新我的游戏
         loginOut();
       },
-      onFailure: (errorCode: any, errorMessage: any) => {
-        console.error("加速失败 failed:", errorMessage);
-      },
-    });
+      (errorCode: any, errorMessage: any) => {
+        console.error("Failure response from 停止加速:", errorCode);
+      }
+    );
   };
 
   const loginOut = async () => {
-    console.log("退出", "stop speed--------------------------");
     let res = await loginApi.loginOut();
+
     if (res.error === 0) {
-      console.log("退出成功");
-      let arr = getMyGames();
-
-      arr = arr.map((item: any) => ({
-        ...item,
-        is_accelerate: false,
-      }));
-
-      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
-      dispatch(stopAccelerate(false));
+
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       window.location.reload();
@@ -175,27 +171,20 @@ const App: React.FC = (props: any) => {
 
   // 定义退出程序的处理函数
   const handleExitProcess = () => {
-    console.log("stop speed--------------------------");
-    const requestData = JSON.stringify({
-      method: "NativeApi_StopProxy",
-      params: null,
-    });
-    (window as any).cefQuery({
-      request: requestData,
-      onSuccess: (response: any) => {
-        console.log("停止加速----------:", response);
+    sendMessageToBackend(
+      JSON.stringify({
+        method: "NativeApi_StopProxy",
+        params: null,
+      }),
+      (response: any) => {
+        console.log("Success response from 停止加速:", response);
+        removeGameList("initialize"); // 更新我的游戏
         (window as any).NativeApi_ExitProcess();
-
-        // if ((window as any).NativeApi_ExitProcess) {
-        //   (window as any).NativeApi_ExitProcess();
-        // } else {
-        //   console.warn("NativeApi_ExitProcess is not defined");
-        // }
       },
-      onFailure: (errorCode: any, errorMessage: any) => {
-        console.error("加速失败 failed:", errorMessage);
-      },
-    });
+      (errorCode: any, errorMessage: any) => {
+        console.error("Failure response from 停止加速:", errorCode);
+      }
+    );
   };
 
   const handleMinimize = () => {
