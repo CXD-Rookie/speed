@@ -96,6 +96,11 @@ const GameLibrary: React.FC = () => {
 
   return (
     <div className="game-list-module-container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+        <LeftOutlined />
+        <span>返回</span>
+      </button>
+      <span className="num-search">共{games?.length}个搜索结果</span>
       {games.length > 0 ? (
         <div className="game-list">
           {games.map((game: any) => (
@@ -129,10 +134,6 @@ const GameLibrary: React.FC = () => {
         </div>
       ) : (
         <div className="empty-page">
-          <button className="back-button" onClick={() => navigate(-1)}>
-            <LeftOutlined />
-            <span>返回</span>
-          </button>
           <div className="empty-content">
             <img src={emptyIcon} alt="" />
             <div className="empty-null-text">

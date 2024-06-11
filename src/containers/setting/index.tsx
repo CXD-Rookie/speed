@@ -204,7 +204,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                     {accountInfo?.userInfo.is_vip ? (
                       <div>
                         {formatDate(
-                          accountInfo?.userInfo.vip_expiration_time || 0
+                          accountInfo?.userInfo.vip_expiration_time - 86400 || 0
                         )}
                       </div>
                     ) : (

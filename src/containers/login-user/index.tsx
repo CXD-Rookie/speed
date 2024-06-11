@@ -106,7 +106,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
         {isVip ? (
           <p>
-            会员到期：{formatDate(accountInfo?.userInfo.vip_expiration_time)}
+            会员到期：
+            {formatDate(accountInfo?.userInfo.vip_expiration_time - 86400)}
           </p>
         ) : (
           <p>解锁全新游戏体验，畅玩游戏从未有过的速度！</p>
