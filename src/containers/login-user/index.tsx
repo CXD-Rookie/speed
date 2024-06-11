@@ -55,8 +55,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   };
 
   useEffect(() => {
-    handleUserInfo();
-  }, []);
+    if (open) {
+      handleUserInfo();
+    }
+  }, [open]);
 
   const popoverContent = (isVip: boolean) => (
     <div>
@@ -82,7 +84,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         <Button
           onClick={() => {
             const isRealNamel = localStorage.getItem("isRealName");
-            handleUserInfo();
+
             hide();
 
             if (isRealNamel === "1") {

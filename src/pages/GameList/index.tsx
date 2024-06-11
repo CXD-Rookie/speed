@@ -7,7 +7,7 @@ import { LeftOutlined } from "@ant-design/icons";
 import "./style.scss";
 
 import gameApi from "@/api/gamelist";
-
+import IssueModal from "@/containers/IssueModal/index";
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 import emptyIcon from "@/assets/images/home/empty.svg";
@@ -47,6 +47,8 @@ const GameLibrary: React.FC = () => {
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
   const enterSign = useSelector((state: any) => state.searchEnter);
+
+  const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
   const [oldSearchBarValue, setOldSearchBarValue] = useState();
   const [games, setGames] = useState<any>([]);
@@ -136,13 +138,21 @@ const GameLibrary: React.FC = () => {
             <div className="empty-null-text">
               抱歉，没有找到“{oldSearchBarValue}”的相关游戏
             </div>
-            <div className="empty-text">您可进行反馈，以便我们及时更新</div>
+            <div className="empty-text" onClick={() => setShowIssueModal(true)}>
+              您可进行反馈，以便我们及时更新
+            </div>
             <button className="browse-button" onClick={() => fetchGames()}>
               浏览其他游戏
             </button>
           </div>
         </div>
       )}
+      {showIssueModal ? (
+        <IssueModal
+          showIssueModal={showIssueModal}
+          onClose={() => setShowIssueModal(false)}
+        />
+      ) : null}
     </div>
   );
 };
