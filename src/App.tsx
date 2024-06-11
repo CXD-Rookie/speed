@@ -98,7 +98,7 @@ const App: React.FC = (props: any) => {
     );
   };
 
-  const loginOut = async () => {
+  const loginOut = async (type = "default") => {
     let res = await loginApi.loginOut();
 
     if (res.error === 0) {

@@ -1,17 +1,20 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-30 19:35:39
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-11 17:11:07
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import axios from 'axios';
+import { store } from '@/redux/store';
+
 import { message } from 'antd';
+import { setAccountInfo } from '@/redux/actions/account-info';
+import { getMyGames } from '@/common/utils';
 
 const instance = axios.create({
-  // baseURL: 'http://192.168.111.119:8002', // 根据实际情况设置基础 URL
-  // baseURL: 'https://test-api.accessorx.com',
+  // baseURL: 'https://test-api.accessorx.com', // 根据实际情况设置基础 URL
   headers: {
     "Content-Type": "application/json",
   },
@@ -41,6 +44,40 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   response => {
+    let code = response?.data?.error
+    if (code > 0) {
+      let erroeCode = [110001]
+
+      // token验证失败 退出登录
+      if (erroeCode.includes(code)) {
+        let game_list = getMyGames()
+
+        window.cefQuery({
+          request: JSON.stringify({
+            method: "NativeApi_StopProxy",
+            params: null,
+          }),
+          onSuccess: function (response) {
+            console.error("Success response from 停止加速:", response);
+            localStorage.removeItem("token");
+            localStorage.removeItem("isRealName");
+
+            game_list = game_list.map(item => ({
+              ...item,
+              is_accelerate: false
+            }))
+
+            localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
+            // 3个参数 用户信息 是否登录 是否显示登录
+            store.dispatch(setAccountInfo({}, false, true));
+            // window.location.reload();
+          },
+          onFailure: function (errorCode, errorMessage) {
+            console.error("Failure response from 停止加速:", errorCode);
+          }
+        });
+      }
+    }
     return response.data;
   },
   error => {
