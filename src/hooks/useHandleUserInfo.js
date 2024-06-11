@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 15:06:47
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-08 15:48:38
+ * @LastEditTime: 2024-06-11 18:46:45
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useHandleUserInfo.js
@@ -21,6 +21,8 @@ export const useHandleUserInfo = () => {
 
       dispatch(setAccountInfo(res?.data?.user_info, undefined, undefined));
       localStorage.setItem("token", JSON.stringify(res?.data?.token));
+
+      return res
     } catch (error) {
       console.log("useHandleUserInfo", error)
     }

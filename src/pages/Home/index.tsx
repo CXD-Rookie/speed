@@ -15,6 +15,7 @@ import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { store } from "@/redux/store";
 
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
@@ -48,23 +49,27 @@ const Home: React.FC = () => {
   const dispatch: any = useDispatch();
   const isRealNamel = localStorage.getItem("isRealName");
 
-  const openModal = () => {
-    handleUserInfo();
+  const openModal = async () => {
+    let res = await handleUserInfo();
 
-    if (accountInfo?.isLogin) {
-      if (isRealNamel === "1") {
-        dispatch(openRealNameModal());
-        return;
-      } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-        setIsMinorOpen(true);
-        setMinorType("recharge");
-        return;
+    if (res) {
+      const latestAccountInfo = store.getState().accountInfo;
+
+      if (accountInfo?.isLogin) {
+        if (isRealNamel === "1") {
+          dispatch(openRealNameModal());
+          return;
+        } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
+          setIsMinorOpen(true);
+          setMinorType("recharge");
+          return;
+        } else {
+          setIsModalOpen(true);
+        }
       } else {
-        setIsModalOpen(true);
+        // 3个参数 用户信息 是否登录 是否显示登录
+        dispatch(setAccountInfo(undefined, undefined, true));
       }
-    } else {
-      // 3个参数 用户信息 是否登录 是否显示登录
-      dispatch(setAccountInfo(undefined, undefined, true));
     }
   };
 
