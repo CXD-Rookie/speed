@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-11 16:05:11
+ * @LastEditTime: 2024-06-11 19:04:19
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,6 +11,7 @@ import { Button, Popover } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
+import { store } from "@/redux/store";
 
 import MinorModal from "../minor";
 import RealNameModal from "../real-name";
@@ -26,7 +27,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   const { handleUserInfo } = useHandleUserInfo();
 
-  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  // const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
   const [open, setOpen] = useState(false);
@@ -36,6 +37,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
+
+  const [accountInfo, setAccountInfo] = useState<any>();
 
   const hide = () => {
     setOpen(false);
@@ -56,7 +59,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   useEffect(() => {
     if (open) {
-      handleUserInfo();
+      handleUserInfo().then((res) => {
+        if (res) {
+          // 重新获取最新的 accountInfo
+          const latestAccountInfo = store.getState().accountInfo;
+          setAccountInfo(latestAccountInfo);
+        }
+      });
     }
   }, [open]);
 

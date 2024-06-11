@@ -12,6 +12,7 @@ import { Modal, Tabs, Button, Switch, Radio } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
+import { store } from "@/redux/store";
 
 import "./index.scss";
 import MinorModal from "../minor";
@@ -32,7 +33,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const { handleUserInfo } = useHandleUserInfo();
 
-  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  // const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
@@ -43,6 +44,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const [isRealNameTag, setRealNameTag] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
+
+  const [accountInfo, setAccountInfo] = useState<any>();
 
   const dispatch = useDispatch();
 
@@ -79,7 +82,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   useEffect(() => {
     if (activeTab === "account") {
-      handleUserInfo();
+      handleUserInfo().then((res) => {
+        if (res) {
+          // 重新获取最新的 accountInfo
+          const latestAccountInfo = store.getState().accountInfo;
+          setAccountInfo(latestAccountInfo);
+        }
+      });
     }
   }, [activeTab]);
 
