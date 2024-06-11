@@ -72,6 +72,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
     setCloseWindow(close_sign);
     setRealNameTag(isRealName);
+    handleUserInfo().then((res) => {
+      if (res) {
+        // 重新获取最新的 accountInfo
+        const latestAccountInfo = store.getState().accountInfo;
+        setAccountInfo(latestAccountInfo);
+      }
+    });
   }, [isOpen, isModalOpenVip, isRealOpen]);
 
   useEffect(() => {
@@ -79,18 +86,6 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       setActiveTab("account");
     }
   }, [type]);
-
-  useEffect(() => {
-    if (activeTab === "account") {
-      handleUserInfo().then((res) => {
-        if (res) {
-          // 重新获取最新的 accountInfo
-          const latestAccountInfo = store.getState().accountInfo;
-          setAccountInfo(latestAccountInfo);
-        }
-      });
-    }
-  }, [activeTab]);
 
   return (
     <Fragment>
