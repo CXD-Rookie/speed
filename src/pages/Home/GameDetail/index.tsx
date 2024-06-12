@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-09 16:17:56
+ * @LastEditTime: 2024-06-12 15:08:43
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,7 +10,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateDelay } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import useCefQuery from "@/hooks/useCefQuery";
@@ -34,9 +34,15 @@ const GameDetail: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+
   const sendMessageToBackend = useCefQuery();
-  const { identifyAccelerationData, chooseDefaultNode, removeGameList } =
-    useGamesInitialize();
+  const {
+    identifyAccelerationData,
+    chooseDefaultNode,
+    removeGameList,
+    forceStopAcceleration,
+  } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -173,6 +179,8 @@ const GameDetail: React.FC = () => {
           //{"delay":32(这个是毫秒,9999代表超时与丢包)}
           const delay = JSON.parse(response)?.delay;
           const lost_bag = delay < 2 ? 2 : delay;
+          // 10秒比较一次是否到期，到期后停止加速
+          forceStopAcceleration(accountInfo, stopSpeed);
 
           setChartData((chart: any) => {
             let chart_list = [...chart];

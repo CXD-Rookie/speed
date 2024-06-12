@@ -2,12 +2,16 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-11 12:50:45
+ * @LastEditTime: 2024-06-12 15:09:27
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
  */
+import { useHandleUserInfo } from "./useHandleUserInfo";
+
 export const useGamesInitialize = () => {
+  const { handleUserInfo } = useHandleUserInfo();
+
   const getGameList = () => {
     let local_games = localStorage.getItem("speed-1.0.0.1-games");
     let result_games = local_games ? JSON.parse(local_games) : [];
@@ -141,6 +145,32 @@ export const useGamesInitialize = () => {
     return result_region;
   }
 
+  // 判断会员是否到期 true 到期
+  const isExpire = (option) => {
+    let vip_time = option?.userInfo?.vip_expiration_time
+    let time = new Date().getTime() / 1000;
+
+    if (time >= vip_time) {
+      return true
+    }
+
+    return false
+  }
+
+  // 强制停止加速
+  const forceStopAcceleration = async (option, customFun = () => { }) => {
+    let is_expire = isExpire(option);
+
+    if (is_expire) {
+      let res = await handleUserInfo();
+      let data = res?.data?.user_info
+
+      if (isExpire(data)) {
+        customFun()
+      }
+    }
+  }
+
   return {
     getGameList,
     appendGameToList,
@@ -148,5 +178,6 @@ export const useGamesInitialize = () => {
     removeGameList,
     accelerateGameToList,
     chooseDefaultNode,
+    forceStopAcceleration
   };
 };

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-11 14:15:31
+ * @LastEditTime: 2024-06-12 15:07:02
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -75,7 +75,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     setHomeList(getGameList()?.slice(0, 4));
-  }, [status]);
+  }, [status, location]);
 
   useEffect(() => {
     if (location.state?.autoAccelerate && location.state?.data) {
