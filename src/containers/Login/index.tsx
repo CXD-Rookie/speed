@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-05 16:46:50
+ * @LastEditTime: 2024-06-12 15:26:18
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -54,6 +54,8 @@ const Login: React.FC = () => {
     if (!isPhoneNumberValid) {
       setIsPhone(true);
       return;
+    } else {
+      setIsPhone(false);
     }
 
     if (!verificationCode) {
@@ -135,7 +137,9 @@ const Login: React.FC = () => {
             value={phoneNumber}
             onChange={handlePhoneNumberChange}
           />
-          {isPhone && <div className="ercode">请输入正确的手机号码</div>}
+          {isPhone ? (
+            <div className="ercode">手机号无效，请重新输入</div>
+          ) : null}
         </div>
         <div className="computing-input-group public-input-group">
           <CustomInput
@@ -157,7 +161,7 @@ const Login: React.FC = () => {
                 {countdown > 0 ? (
                   `${countdown}s后重新获取`
                 ) : !isPhoneNumberValid ? (
-                  "发送验证码"
+                  "获取验证码"
                 ) : (
                   <Captcha
                     phoneNumber={phoneNumber}
@@ -170,9 +174,9 @@ const Login: React.FC = () => {
             value={verificationCode}
             onChange={handleVerificationCodeChange}
           />
-          {isVeryCode && <div className="ercode">请输入正确的验证码</div>}
+          {isVeryCode && <div className="ercode">请先获取验证码</div>}
           {isVeryCodeErr && (
-            <div className="ercode">对不起，验证码错误，请重新输入</div>
+            <div className="ercode">验证码错误，请重新输入</div>
           )}
         </div>
         <div className="login-btn-box">

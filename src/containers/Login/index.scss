@@ -39,9 +39,10 @@ body {
 }
 
 .login-logo {
-  text-align: center;
-  margin-bottom: 20px;
+  text-align: left;
+  margin-bottom: 1vh;
   margin-top: 2vh;
+  margin-left: 0.8vw;
 
   img {
     width: 4vw;
@@ -50,9 +51,10 @@ body {
 }
 
 .login-text {
-  text-align: center;
-  font-size: 1.8vw;
-  margin-bottom: 3vh;
+  text-align: left;
+  font-size: 2vw;
+  margin-bottom: 4.2vh;
+  margin-left: 0.4vw;
 }
 
 /* 自定义输入框外层样式 */

@@ -83,7 +83,7 @@ const Captcha: React.FC<CaptchaProps> = (props) => {
   return (
     <div className="captcha-a">
       <div id={"captcha-button"} className={`verification-code`}>
-        发送验证码
+        获取验证码
       </div>
       {isPhoneNumberValid && <div id="captcha-element"></div>}
     </div>
