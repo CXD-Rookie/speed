@@ -169,6 +169,11 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           type={minorType}
         />
       ) : null}
+      <MinorModal
+        isMinorOpen={true}
+        setIsMinorOpen={setIsMinorOpen}
+        type={minorType}
+      />
     </div>
   );
 };
