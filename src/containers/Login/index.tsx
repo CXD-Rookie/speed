@@ -2,13 +2,14 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 15:26:18
+ * @LastEditTime: 2024-06-12 15:46:13
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { setAccountInfo } from "../../redux/actions/account-info";
+import { debounce } from "@/common/utils";
 
 import Captcha from "./captcha";
 import CustomInput from "./custom-input";
@@ -35,13 +36,21 @@ const Login: React.FC = () => {
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
 
+  // 使用 useCallback 包装 debounced 函数
+  const debouncedChangeHandler = useCallback(
+    debounce((value: any) => {
+      let phoneNumberRegex = /^1[3456789]\d{9}$/; // 检查手机号格式是否正确
+
+      setIsPhoneNumberValid(phoneNumberRegex.test(value));
+    }, 300),
+    []
+  );
+
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    // 检查手机号格式是否正确
-    const phoneNumberRegex = /^1[3456789]\d{9}$/;
-    setIsPhoneNumberValid(phoneNumberRegex.test(value));
 
     setPhoneNumber(value);
+    debouncedChangeHandler(value);
   };
 
   const handleVerificationCodeChange = (
