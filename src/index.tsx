@@ -11,6 +11,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
+import { HistoryProvider } from "./hooks/usePreviousRoute";
 import { ConfigProvider } from "antd";
 
 // 语言汉化
@@ -33,10 +34,12 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <HashRouter>
-    <ConfigProvider locale={zhCN}>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </ConfigProvider>
+    <HistoryProvider>
+      <ConfigProvider locale={zhCN}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </ConfigProvider>
+    </HistoryProvider>
   </HashRouter>
 );

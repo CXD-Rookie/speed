@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { LeftOutlined } from "@ant-design/icons";
+import { useHistoryContext } from "@/hooks/usePreviousRoute";
 
 import "./style.scss";
 
@@ -41,6 +42,7 @@ interface Game {
 
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
+  const history = useHistoryContext();
 
   const { appendGameToList } = useGamesInitialize();
 
@@ -74,6 +76,21 @@ const GameLibrary: React.FC = () => {
     }
   };
 
+  const handleGoBack = () => {
+    const currentPath = window.location.pathname;
+    const previousPath = history
+      .slice(0, -1)
+      .reverse()
+      .find((path) => path !== currentPath);
+
+    if (previousPath) {
+      navigate(previousPath);
+    } else {
+      console.log("No previous path found.");
+      navigate("/home");
+    }
+  };
+
   useEffect(() => {
     let result_game = [];
 
@@ -96,7 +113,7 @@ const GameLibrary: React.FC = () => {
 
   return (
     <div className="game-list-module-container">
-      <button className="back-button" onClick={() => navigate(-1)}>
+      <button className="back-button" onClick={handleGoBack}>
         <LeftOutlined />
         <span>返回</span>
       </button>
