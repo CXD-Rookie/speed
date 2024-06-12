@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 16:04:37
+ * @LastEditTime: 2024-06-12 13:58:30
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -33,7 +33,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const { handleUserInfo } = useHandleUserInfo();
 
-  // const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
+  const isLogin = useSelector((state: any) => state.isLogin);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
@@ -45,7 +46,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const [isRealNameTag, setRealNameTag] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
-  const [accountInfo, setAccountInfo] = useState<any>();
+  const [accountInfo, setAccountInfo] = useState<any>(accountInfoRedux);
 
   const dispatch = useDispatch();
 
@@ -72,13 +73,16 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
     setCloseWindow(close_sign);
     setRealNameTag(isRealName);
-    handleUserInfo().then((res) => {
-      if (res) {
-        // 重新获取最新的 accountInfo
-        const latestAccountInfo = store.getState().accountInfo;
-        setAccountInfo(latestAccountInfo);
-      }
-    });
+
+    if (isLogin) {
+      handleUserInfo().then((res) => {
+        if (res) {
+          // 重新获取最新的 accountInfo
+          const latestAccountInfo = store.getState().accountInfo;
+          setAccountInfo(latestAccountInfo);
+        }
+      });
+    }
   }, [isOpen, isModalOpenVip, isRealOpen]);
 
   useEffect(() => {
