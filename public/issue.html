@@ -272,7 +272,8 @@
             margin: 0 auto;
             cursor: not-allowed;
         }
-        
+
+        .submit-btn:enabled,
         .submit-btn:enabled:hover {
             color: #fff;
             cursor: pointer;
@@ -342,9 +343,9 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-upload">
+            <div class="layui-upload" id="uploadButton">
                 <blockquote class="layui-elem-quote layui-quote-nm">
-                    <div class="layui-upload-list" id="upload-demo-preview"></div>
+                    <div class="layui-upload-list" id="upload-demo-preview" aria-disabled="true"></div>
                 </blockquote>
                 <label for="file-input" id="ID-upload-demo-btn-2"><i class="fas fa-plus"></i></label>
             </div>
@@ -551,7 +552,9 @@
 
                 var type = $('.type-btn.selected').data('type');
                 var description = $('.description').val();
+                var contact = $('#contact-input-num').val();
                 var images = [];
+
                 if (type == undefined || type == '' || type == null || description == 'undefined' ||
                     description == '' || description == null) {
                     layer.msg('请选择问题类型或者填写问题描述');
@@ -576,7 +579,7 @@
                         feedback_type: type,
                         content: description,
                         image_url: images,
-                        contact_way: '' // 你的联系方式
+                        contact_way: contact // 你的联系方式
                     }),
                     contentType: 'application/json',
                     success: function (response) {
@@ -584,6 +587,32 @@
                         console.log('Feedback submitted successfully.');
 
                         $('#popup-success').show();
+                        $('.submit-btn').prop('disabled', true);
+                        $('.description').prop('disabled', true);
+                        $('#upload-demo-preview').prop('disabled', true);
+                        $('.type-btn').prop('disabled', true);
+                        $('#contact-input').prop('disabled', true);
+                        $('.fa-plus').prop('disabled', true);
+
+                         // 禁用上传按钮
+                        $('.fa-plus').on('click', function() {
+                            uploadInst.config.elem.prop('disabled', true);
+                        });
+
+                        // 禁用上传组件的方法
+                        // layui.use('upload', function(){
+                        //     var upload = layui.upload;
+
+                        //     // 执行禁用操作
+                        //     upload.render({
+                        //         elem: '#ID-upload-demo-btn-2',
+                        //         // 禁用状态下的样式
+                        //     });
+
+                        //     // 禁用上传组件的方法
+                        //     upload.diabled('#ID-upload-demo-btn-2');
+                        // });
+
                         $('.sucess-btn').click(function () {
                             $('#popup-success').hide();
                             // 清空表单，关闭弹窗等
