@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-11 19:04:19
+ * @LastEditTime: 2024-06-12 11:18:10
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -38,7 +38,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
-  const [accountInfo, setAccountInfo] = useState<any>();
+  const [accountInfo, setAccountInfo] = useState<any>(); // 用户信息
+  const [isFirst, setIsFirst] = useState(1);
 
   const hide = () => {
     setOpen(false);
@@ -58,14 +59,18 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   };
 
   useEffect(() => {
-    if (open) {
-      handleUserInfo().then((res) => {
-        if (res) {
-          // 重新获取最新的 accountInfo
-          const latestAccountInfo = store.getState().accountInfo;
-          setAccountInfo(latestAccountInfo);
-        }
-      });
+    const updateInfo = async () => {
+      let res = await handleUserInfo();
+
+      if (res) {
+        // 重新获取最新的 accountInfo
+        setAccountInfo(store.getState().accountInfo);
+      }
+    };
+
+    if (isFirst === 1 || open) {
+      updateInfo();
+      setIsFirst(isFirst + 1);
     }
   }, [open]);
 
