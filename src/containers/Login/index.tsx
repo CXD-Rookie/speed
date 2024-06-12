@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 15:46:13
+ * @LastEditTime: 2024-06-12 17:46:11
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { setAccountInfo } from "../../redux/actions/account-info";
 import { debounce } from "@/common/utils";
 
-import Captcha from "./captcha";
+import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
 import loginApi from "@/api/login";
 import "./index.scss";
@@ -105,7 +105,7 @@ const Login: React.FC = () => {
 
         // eslint-disable-next-line no-restricted-globals
         // @ts-ignore
-        window.location.reload();
+        // window.location.reload();
         console.log("关闭跳转");
       } else {
         setVeryCode(false);
@@ -120,7 +120,7 @@ const Login: React.FC = () => {
     dispatch(setAccountInfo(undefined, undefined, false));
     // eslint-disable-next-line no-restricted-globals
     // @ts-ignore
-    window.location.reload();
+    // window.location.reload();
     console.log("关闭跳转");
   };
 
