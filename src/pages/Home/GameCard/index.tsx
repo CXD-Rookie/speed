@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-11 18:45:27
+ * @LastEditTime: 2024-06-13 18:41:09
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -23,7 +23,6 @@ import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";
 import BreakConfirmModal from "@/containers/break-confirm";
-import StopConfirmModal from "@/containers/stop-confirm";
 
 import playSuitApi from "@/api/speed";
 
@@ -389,13 +388,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       {/* 确认加速弹窗 */}
       <BreakConfirmModal
         accelOpen={accelOpen}
+        type={"accelerate"}
         setAccelOpen={setAccelOpen}
         onConfirm={confirmStartAcceleration}
       />
       {/* 停止加速确认弹窗 */}
       {stopModalOpen ? (
-        <StopConfirmModal
+        <BreakConfirmModal
           accelOpen={stopModalOpen}
+          type={"stopAccelerate"}
           setAccelOpen={setStopModalOpen}
           onConfirm={stopAcceleration}
         />

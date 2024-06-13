@@ -17,6 +17,7 @@ import Login from "./containers/Login/index";
 import CustomDropdown from "@/containers/login-user";
 import SettingsModal from "./containers/setting/index";
 import IssueModal from "./containers/IssueModal/index";
+import BreakConfirmModal from "@/containers/break-confirm";
 
 import playSuitApi from "./api/speed";
 import loginApi from "./api/login";
@@ -70,6 +71,8 @@ const App: React.FC = (props: any) => {
 
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
+
+  const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
 
   const menuList: CustomMenuProps[] = [
     {
@@ -148,7 +151,7 @@ const App: React.FC = (props: any) => {
           {
             key: "3",
             label: (
-              <div className="public-style" onClick={loginOutStop}>
+              <div className="public-style" onClick={() => setAccelOpen(true)}>
                 退出登录
               </div>
             ),
@@ -342,6 +345,13 @@ const App: React.FC = (props: any) => {
           onClose={() => setShowIssueModal(false)}
         />
       ) : null}
+      {/* 确认退出弹窗 */}
+      <BreakConfirmModal
+        accelOpen={accelOpen}
+        type={"loginOut"}
+        setAccelOpen={setAccelOpen}
+        onConfirm={loginOutStop}
+      />
     </Layout>
   );
 };

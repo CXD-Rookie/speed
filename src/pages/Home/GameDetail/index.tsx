@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-13 17:52:33
+ * @LastEditTime: 2024-06-13 18:54:16
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,7 +20,7 @@ import "./style.scss";
 import BarChart from "@/containers/BarChart/index";
 import RegionNodeSelector from "@/containers/RegionNodeSelector/index";
 import ActivationModal from "@/containers/activation-mode";
-import StopConfirmModal from "@/containers/stop-confirm";
+import BreakConfirmModal from "@/containers/break-confirm";
 
 import backGameIcon from "@/assets/images/common/back-game.svg";
 import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
@@ -322,7 +322,8 @@ const GameDetail: React.FC = () => {
         </div>
       </div>
       {stopModalOpen ? (
-        <StopConfirmModal
+        <BreakConfirmModal
+          type={"stopAccelerate"}
           accelOpen={stopModalOpen}
           setAccelOpen={setStopModalOpen}
           onConfirm={stopSpeed}
