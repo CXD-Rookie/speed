@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 15:08:43
+ * @LastEditTime: 2024-06-13 14:42:36
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -35,6 +35,9 @@ const GameDetail: React.FC = () => {
   const dispatch = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  const accelerateTime = useSelector(
+    (state: any) => state?.auth?.accelerateTime
+  );
 
   const sendMessageToBackend = useCefQuery();
   const {
@@ -217,6 +220,8 @@ const GameDetail: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    console.log(accelerateTime);
+
     const interval = setInterval(() => {
       setCount((prevCount) => prevCount + 1);
     }, 1000);

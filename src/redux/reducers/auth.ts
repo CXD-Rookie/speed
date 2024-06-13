@@ -19,6 +19,7 @@ import {
   CLOSE_PAY_MODAL, 
   UPDATE_DELAY,
   STOP_ACCELERATE,
+  ACCELERATE_TIME,
 } from '../actions/auth';
 
 const initialState = {
@@ -29,10 +30,16 @@ const initialState = {
   isPayOpen:false,
   delay: 2,
   isStop: true,
+  accelerateTime: 0
 };
 
 const authReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case ACCELERATE_TIME:
+      return {
+        ...state,
+        accelerateTime: action.payload,
+      };
     case LOGIN_SUCCESS:
       return {
         ...state,
@@ -78,7 +85,7 @@ const authReducer = (state = initialState, action:any) => {
     case STOP_ACCELERATE:
       return {
         ...state,
-        delay: action.payload,
+        isStop: action.payload,
       };
     default:
       return state;

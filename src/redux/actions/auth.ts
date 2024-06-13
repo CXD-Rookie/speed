@@ -7,6 +7,12 @@ export const OPEN_PAY_MODAL = 'OPEN_PAY_MODAL';
 export const CLOSE_PAY_MODAL = 'CLOSE_PAY_MODAL';
 export const UPDATE_DELAY = 'UPDATE_DELAY';
 export const STOP_ACCELERATE = 'STOP_ACCELERATE';
+export const ACCELERATE_TIME = 'ACCELERATE_TIME';
+
+export const AccelerateTime = (accelerateTime: any) => ({
+  type: STOP_ACCELERATE,
+  payload: accelerateTime,
+});
 
 export const loginSuccess = (token: string) => ({
   type: LOGIN_SUCCESS,
