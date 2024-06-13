@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-13 14:42:36
+ * @LastEditTime: 2024-06-13 17:44:56
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDelay } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import useCefQuery from "@/hooks/useCefQuery";
 
 import "./style.scss";
@@ -35,11 +36,9 @@ const GameDetail: React.FC = () => {
   const dispatch = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-  const accelerateTime = useSelector(
-    (state: any) => state?.auth?.accelerateTime
-  );
 
   const sendMessageToBackend = useCefQuery();
+  const historyContext: any = useHistoryContext();
   const {
     identifyAccelerationData,
     chooseDefaultNode,
@@ -57,8 +56,6 @@ const GameDetail: React.FC = () => {
   const [packetLoss, setPacketLoss] = useState<any>(); // 丢包率
 
   const [regionInfo, setRegionInfo] = useState<any>(); // 当前加速区服
-
-  const [count, setCount] = useState(0);
 
   const [chartData, setChartData] = useState<any>([]); // 柱形图数据示例
 
@@ -136,7 +133,9 @@ const GameDetail: React.FC = () => {
     let ip = localStorage.getItem("speedIp"); // 存储的ip
     let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
     let select_region = chooseDefaultNode(find_accel); // 当前选择区服
-
+    
+    historyContext?.accelerateTime?.startTimer();
+    
     // 查看加速详情，获取延迟
     sendMessageToBackend(
       JSON.stringify({
@@ -219,18 +218,6 @@ const GameDetail: React.FC = () => {
     // return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    console.log(accelerateTime);
-
-    const interval = setInterval(() => {
-      setCount((prevCount) => prevCount + 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
   return (
     <div className="home-module-detail">
       <img className="back-icon" src={backGameIcon} alt="" />
@@ -258,7 +245,7 @@ const GameDetail: React.FC = () => {
               onClick={() => setStopModalOpen(true)}
             >
               <img src={cessationIcon} width={18} height={18} alt="" />
-              {formatTime(count)}
+              {formatTime(historyContext?.accelerateTime?.count)}
             </Button>
           </div>
           <div className="game-right">

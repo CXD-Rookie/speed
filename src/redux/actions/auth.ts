@@ -9,8 +9,8 @@ export const UPDATE_DELAY = 'UPDATE_DELAY';
 export const STOP_ACCELERATE = 'STOP_ACCELERATE';
 export const ACCELERATE_TIME = 'ACCELERATE_TIME';
 
-export const AccelerateTime = (accelerateTime: any) => ({
-  type: STOP_ACCELERATE,
+export const updateAccelerateTime = (accelerateTime: any) => ({
+  type: ACCELERATE_TIME,
   payload: accelerateTime,
 });
 

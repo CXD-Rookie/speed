@@ -42,7 +42,7 @@ interface Game {
 
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
-  const history = useHistoryContext();
+  const historyContext: any = useHistoryContext();
 
   const { appendGameToList } = useGamesInitialize();
 
@@ -78,10 +78,12 @@ const GameLibrary: React.FC = () => {
 
   const handleGoBack = () => {
     const currentPath = window.location.pathname;
+    const history = historyContext?.history;
+
     const previousPath = history
       .slice(0, -1)
       .reverse()
-      .find((path) => path !== currentPath);
+      .find((path: any) => path !== currentPath);
 
     if (previousPath) {
       navigate(previousPath);
