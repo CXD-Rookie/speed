@@ -161,7 +161,10 @@ const GameLibrary: React.FC = () => {
             <div className="empty-text" onClick={() => setShowIssueModal(true)}>
               您可进行反馈，以便我们及时更新
             </div>
-            <button className="browse-button" onClick={() => fetchGames()}>
+            <button
+              className="browse-button"
+              onClick={() => navigate("/gameLibrary")}
+            >
               浏览其他游戏
             </button>
           </div>
