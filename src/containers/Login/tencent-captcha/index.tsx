@@ -1,4 +1,5 @@
 import "./index.scss";
+import loginApi from "@/api/login";
 
 export interface CaptchaProps {
   onSend?: (value: any) => void;
@@ -8,17 +9,39 @@ export interface CaptchaProps {
 }
 
 const TencentCatcha: React.FC<CaptchaProps> = (props) => {
-  const { isPhoneNumberValid } = props;
+  const { phoneNumber, setCountdown = () => {} } = props;
 
-  const codeCallback = (res: any) => {
-    console.log(res);
-    if (res.ret === 0) {
+  const codeCallback = async (captcha_verify_param: any) => {
+    try {
+      if (captcha_verify_param?.ret !== 0) {
+        return;
+      }
+
+      let res = await loginApi.getPhoneCode({
+        phone: phoneNumber,
+        captcha_verify_param,
+        scene_id: 1,
+      });
+
+      if (res?.error === 0) {
+        setCountdown(60);
+
+        const interval = setInterval(() => {
+          setCountdown((prevCountdown) => prevCountdown - 1);
+        }, 1000);
+
+        setTimeout(() => {
+          clearInterval(interval);
+        }, 121000); // 120秒后清除定时器
+      }
+    } catch (error) {
+      console.log("验证码错误", error);
     }
   };
 
   // 定义验证码js加载错误处理函数
   const loadErrorCallback = () => {
-    let appid = "193511179"; // 生成容灾票据或自行做其它处理
+    let appid = "195013408"; // 生成容灾票据或自行做其它处理
     let ticket =
       "terror_1001_" + appid + Math.floor(new Date().getTime() / 1000);
 
@@ -34,7 +57,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
   const handleVerifyCode = () => {
     try {
       let captcha = new (window as any).TencentCaptcha(
-        "193511179",
+        "195013408",
         codeCallback,
         {
           userLanguage: "zh",
