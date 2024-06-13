@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 13:58:30
+ * @LastEditTime: 2024-06-13 18:33:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -172,7 +172,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
             </div>
           </TabPane>
           {accountInfo?.isLogin && (
-            <TabPane tab="账户设置" key="account">
+            <TabPane tab="账号设置" key="account">
               <div className="tab-content">
                 <div className="tab-avatar">
                   <UserAvatarCom
