@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 15:38:01
+ * @LastEditTime: 2024-06-13 18:22:15
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -42,61 +42,58 @@ instance.interceptors.request.use(
 );
 
 // 响应拦截器
-instance.interceptors.response.use(
-  response => {
-    let code = response?.data?.error
-    if (code > 0) {
-      let erroeCode = [110001]
 
-      // token验证失败 退出登录
-      if (erroeCode.includes(code)) {
-        let game_list = getMyGames()
+export const setupInterceptors = (hooks) => {
+  instance.interceptors.response.use(
+    response => {
+      let code = response?.data?.error
+      if (code > 0) {
+        let erroeCode = [110001]
 
-        window.cefQuery({
-          request: JSON.stringify({
-            method: "NativeApi_StopProxy",
-            params: null,
-          }),
-          onSuccess: function (response) {
-            console.error("Success response from 停止加速:", response);
-            localStorage.removeItem("token");
-            localStorage.removeItem("isRealName");
+        // token验证失败 退出登录
+        if (erroeCode.includes(code)) {
+          window.cefQuery({
+            request: JSON.stringify({
+              method: "NativeApi_StopProxy",
+              params: null,
+            }),
+            onSuccess: function (response) {
+              console.error("Success response from 停止加速:", response);
+              localStorage.removeItem("token");
+              localStorage.removeItem("isRealName");
 
-            game_list = game_list.map(item => ({
-              ...item,
-              is_accelerate: false
-            }))
-
-            localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
-            // 3个参数 用户信息 是否登录 是否显示登录
-
-            store.dispatch(setAccountInfo({}, false, true));
-            window.location.reload();
-          },
-          onFailure: function (errorCode, errorMessage) {
-            console.error("Failure response from 停止加速:", errorCode);
-          }
-        });
+              hooks.removeGameList("initialize");
+              hooks.historyContext?.accelerateTime?.stopTimer();
+              // 3个参数 用户信息 是否登录 是否显示登录
+              store.dispatch(setAccountInfo({}, false, true));
+              window.location.reload();
+            },
+            onFailure: function (errorCode, errorMessage) {
+              console.error("Failure response from 停止加速:", errorCode);
+            }
+          });
+        }
       }
-    }
-    return response.data;
-  },
-  error => {
-    console.log(error, 1111);
-    if (error.response) {
-      if (error.response.status === 401) {
-        message.error('登录过期，请重新登录');
+      return response.data;
+    },
+    error => {
+      console.log(error, 1111);
+      if (error.response) {
+        if (error.response.status === 401) {
+          message.error('登录过期，请重新登录');
+        } else {
+          message.error('网络错误，请稍后再试');
+        }
+      } else if (error.request) {
+        console.log('网络错误，请检查您的网络连接');
       } else {
-        message.error('网络错误，请稍后再试');
+        console.log('请求失败，请稍后再试');
       }
-    } else if (error.request) {
-      console.log('网络错误，请检查您的网络连接');
-    } else {
-      console.log('请求失败，请稍后再试');
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
-);
+  );
+
+};
 
 // 封装 get 请求
 export const get = (url, params = {}) => {

@@ -32,6 +32,7 @@ export const HistoryProvider = ({ children }) => {
   // 加速时长计时器 停止
   const stopTimer = useCallback(() => {
     setIsTimerRunning(false);
+    setCount(0)
   }, [])
 
   // 加速时长计时器 开始

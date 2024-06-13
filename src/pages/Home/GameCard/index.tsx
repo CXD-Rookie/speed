@@ -14,6 +14,7 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
 import useCefQuery from "@/hooks/useCefQuery";
 
@@ -57,6 +58,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
 
   const sendMessageToBackend = useCefQuery();
+  const historyContext: any = useHistoryContext();
 
   const {
     getGameList,
@@ -96,6 +98,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       (response: any) => {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
+        historyContext?.accelerateTime?.stopTimer();
         triggerDataUpdate(); // 更新显示数据
       },
       (errorCode: any, errorMessage: any) => {

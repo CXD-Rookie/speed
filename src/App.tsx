@@ -6,6 +6,8 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
+import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import { setupInterceptors } from "./api/api";
 import useCefQuery from "./hooks/useCefQuery";
 
 import "@/assets/css/App.scss";
@@ -59,6 +61,7 @@ const App: React.FC = (props: any) => {
   const navigate = useNavigate();
 
   const sendMessageToBackend = useCefQuery();
+  const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
 
   const routeView = useRoutes(routes); // 获得路由表
@@ -89,6 +92,7 @@ const App: React.FC = (props: any) => {
       }),
       (response: any) => {
         console.log("Success response from 停止加速:", response);
+        historyContext?.accelerateTime?.stopTimer();
         removeGameList("initialize"); // 更新我的游戏
         loginOut();
       },
@@ -176,6 +180,7 @@ const App: React.FC = (props: any) => {
       (response: any) => {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
+        historyContext?.accelerateTime?.stopTimer();
         (window as any).NativeApi_ExitProcess();
       },
       (errorCode: any, errorMessage: any) => {
@@ -224,6 +229,13 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     handleSuitDomList();
   }, []);
+
+  useEffect(() => {
+    setupInterceptors({
+      historyContext,
+      removeGameList,
+    });
+  }, [historyContext, removeGameList]);
 
   return (
     <Layout className="app-module">

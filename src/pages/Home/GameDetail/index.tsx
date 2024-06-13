@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-13 17:44:56
+ * @LastEditTime: 2024-06-13 17:52:33
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -84,6 +84,7 @@ const GameDetail: React.FC = () => {
       }),
       (response: any) => {
         console.log("Success response from 停止加速:", response);
+        historyContext?.accelerateTime?.stopTimer();
         removeGameList("initialize"); // 更新我的游戏
         navigate("/home");
       },
@@ -133,9 +134,9 @@ const GameDetail: React.FC = () => {
     let ip = localStorage.getItem("speedIp"); // 存储的ip
     let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
     let select_region = chooseDefaultNode(find_accel); // 当前选择区服
-    
+
     historyContext?.accelerateTime?.startTimer();
-    
+
     // 查看加速详情，获取延迟
     sendMessageToBackend(
       JSON.stringify({
