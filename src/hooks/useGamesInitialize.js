@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 15:09:27
+ * @LastEditTime: 2024-06-13 10:31:42
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
@@ -163,7 +163,9 @@ export const useGamesInitialize = () => {
 
     if (is_expire) {
       let res = await handleUserInfo();
-      let data = res?.data?.user_info
+      let data = {
+        userInfo: res?.data?.user_info
+      }
 
       if (isExpire(data)) {
         customFun()

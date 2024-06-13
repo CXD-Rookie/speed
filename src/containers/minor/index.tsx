@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 11:45:19
+ * @LastEditTime: 2024-06-12 18:28:28
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
@@ -51,7 +51,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
         <div className="real-sueccess-modal-content real-error-modal-content">
           <img src={realErrorIcon} width={69} height={69} alt="" />
           <p>
-            抱歉，根据国家相关法律法规要求，暂不支持未成年人 使用
+            抱歉，根据国家相关法律法规要求，暂不支持未成年人使用
             {realType === 2 && "加速"}
             {realType === 3 && "充值"}
             服务，感谢您的理解！
