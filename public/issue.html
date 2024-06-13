@@ -381,8 +381,8 @@
                 }
             });
 
-
             init()
+
             // 打开反馈弹窗
             $('.open-popup-btn').click(function () {
                 $('.overlay').fadeIn();
@@ -405,6 +405,7 @@
                     $(this).val($(this).val().substring(0, maxLength));
                 }
             });
+            
             $('#contact-input').on('input', function () {
                 var maxLength = 50;
                 var currentLength = $(this).val().length;
@@ -528,15 +529,13 @@
                 $('#description-input-num').text(value_len + "/500");
             })
             
-            function checkInputs() {
-                var type = $('.type-btn.selected').data('type');
+            function checkInputs(type) {
+                var type = $('.type-btn.selected').data('type') || type;
                 var description = $('.description').val();
                 let allFilled = true;
                 
-                
                 if (type == undefined || type == '' || type == null || description == 'undefined' ||
                     description == '' || description == null) {
-
                     $('.submit-btn').prop('disabled', true);
                 } else {
                     $('.submit-btn').prop('disabled', false);
@@ -544,7 +543,7 @@
             }
 
             // Initial check in case inputs are pre-filled
-            checkInputs();
+            // checkInputs();
 
             // 提交表单
             $('.submit-btn').click(function () {
@@ -663,26 +662,22 @@
                     type: 'get',
                     contentType: 'application/json',
                     success: function (response) {
-
                         var jsonData = response.data.types;
                         // 遍历JSON数据
                         $.each(jsonData, function (index, item) {
-
                             var $tab = $('#btnAll');
 
                             $tab.append('<button class="type-btn" data-type="' + item.id +
                                 '">' + item.value + '</button>');
-
-
                         });
-                        $('.type-btn').click(function () {
-                            checkInputs();
 
+                        $('.type-btn').click(function () {
                             $('.type-btn').removeClass('selected');
                             $(this).addClass('selected');
 
                             var selectedType = $(this).data('type');
-                            console.log(selectedType);
+                            
+                            checkInputs(selectedType);
                         });
                     },
                     error: function (error) {
