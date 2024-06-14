@@ -221,11 +221,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     if (res) {
       const latestAccountInfo = store.getState().accountInfo;
+      const userInfo = latestAccountInfo?.userInfo; // 用户信息
 
-      if (accountInfo?.isLogin) {
+      if (userInfo?.isLogin) {
         // 是否登录
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
-        const userInfo = latestAccountInfo?.userInfo; // 用户信息
 
         let game_list = getGameList(); // 获取当前我的游戏列表
         let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
