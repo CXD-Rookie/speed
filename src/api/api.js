@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 15:38:01
+ * @LastEditTime: 2024-06-13 19:06:57
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,7 +11,6 @@ import { store } from '@/redux/store';
 
 import { message } from 'antd';
 import { setAccountInfo } from '@/redux/actions/account-info';
-import { getMyGames } from '@/common/utils';
 
 const instance = axios.create({
   // baseURL: 'https://test-api.accessorx.com', // 根据实际情况设置基础 URL
@@ -21,6 +20,13 @@ const instance = axios.create({
   timeout: 10000, // 请求超时时间（毫秒）
 });
 
+let default_hooks = {};
+
+export const setupInterceptors = (hooks) => {
+  default_hooks = hooks
+};
+
+setupInterceptors();
 // 请求拦截器
 instance.interceptors.request.use(
   config => {
@@ -44,14 +50,13 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   response => {
+    console.log(default_hooks);
     let code = response?.data?.error
     if (code > 0) {
       let erroeCode = [110001]
 
       // token验证失败 退出登录
       if (erroeCode.includes(code)) {
-        let game_list = getMyGames()
-
         window.cefQuery({
           request: JSON.stringify({
             method: "NativeApi_StopProxy",
@@ -62,14 +67,9 @@ instance.interceptors.response.use(
             localStorage.removeItem("token");
             localStorage.removeItem("isRealName");
 
-            game_list = game_list.map(item => ({
-              ...item,
-              is_accelerate: false
-            }))
-
-            localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
+            default_hooks.removeGameList("initialize");
+            default_hooks.historyContext?.accelerateTime?.stopTimer();
             // 3个参数 用户信息 是否登录 是否显示登录
-
             store.dispatch(setAccountInfo({}, false, true));
             window.location.reload();
           },

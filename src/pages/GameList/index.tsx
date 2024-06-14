@@ -42,7 +42,7 @@ interface Game {
 
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
-  const history = useHistoryContext();
+  const historyContext: any = useHistoryContext();
 
   const { appendGameToList } = useGamesInitialize();
 
@@ -78,10 +78,12 @@ const GameLibrary: React.FC = () => {
 
   const handleGoBack = () => {
     const currentPath = window.location.pathname;
+    const history = historyContext?.history;
+
     const previousPath = history
       .slice(0, -1)
       .reverse()
-      .find((path) => path !== currentPath);
+      .find((path: any) => path !== currentPath);
 
     if (previousPath) {
       navigate(previousPath);
@@ -159,7 +161,10 @@ const GameLibrary: React.FC = () => {
             <div className="empty-text" onClick={() => setShowIssueModal(true)}>
               您可进行反馈，以便我们及时更新
             </div>
-            <button className="browse-button" onClick={() => fetchGames()}>
+            <button
+              className="browse-button"
+              onClick={() => navigate("/gameLibrary")}
+            >
               浏览其他游戏
             </button>
           </div>

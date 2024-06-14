@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-28 20:32:39
+ * @LastEditTime: 2024-06-13 18:48:21
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -14,12 +14,24 @@ import "./index.scss";
 
 interface SettingsModalProps {
   accelOpen?: boolean;
+  type: string;
   setAccelOpen?: (e: boolean) => void;
   onConfirm?: (e: any) => void;
 }
 
 const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
-  const { accelOpen, setAccelOpen = () => {}, onConfirm = () => {} } = props;
+  const {
+    accelOpen,
+    type,
+    setAccelOpen = () => {},
+    onConfirm = () => {},
+  } = props;
+
+  const textContentObj: any = {
+    accelerate: "启动加速将断开现有游戏加速，是否确认？",
+    stopAccelerate: "停止加速可能导致游戏重连，是否要继续？",
+    loginOut: "确定退出当前账号登录吗？",
+  };
 
   return (
     <Fragment>
@@ -41,9 +53,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           </div>
         }
       >
-        <div className="accelerate-modal">
-          启动加速将断开现有游戏加速，是否确认？
-        </div>
+        <div className="accelerate-modal">{textContentObj?.[type]}</div>
       </Modal>
     </Fragment>
   );

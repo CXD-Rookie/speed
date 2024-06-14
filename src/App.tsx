@@ -6,6 +6,8 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
+import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import { setupInterceptors } from "./api/api";
 import useCefQuery from "./hooks/useCefQuery";
 
 import "@/assets/css/App.scss";
@@ -15,6 +17,7 @@ import Login from "./containers/Login/index";
 import CustomDropdown from "@/containers/login-user";
 import SettingsModal from "./containers/setting/index";
 import IssueModal from "./containers/IssueModal/index";
+import BreakConfirmModal from "@/containers/break-confirm";
 
 import playSuitApi from "./api/speed";
 import loginApi from "./api/login";
@@ -59,6 +62,7 @@ const App: React.FC = (props: any) => {
   const navigate = useNavigate();
 
   const sendMessageToBackend = useCefQuery();
+  const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
 
   const routeView = useRoutes(routes); // 获得路由表
@@ -67,6 +71,8 @@ const App: React.FC = (props: any) => {
 
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
+
+  const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
 
   const menuList: CustomMenuProps[] = [
     {
@@ -89,6 +95,7 @@ const App: React.FC = (props: any) => {
       }),
       (response: any) => {
         console.log("Success response from 停止加速:", response);
+        historyContext?.accelerateTime?.stopTimer();
         removeGameList("initialize"); // 更新我的游戏
         loginOut();
       },
@@ -144,7 +151,7 @@ const App: React.FC = (props: any) => {
           {
             key: "3",
             label: (
-              <div className="public-style" onClick={loginOutStop}>
+              <div className="public-style" onClick={() => setAccelOpen(true)}>
                 退出登录
               </div>
             ),
@@ -176,6 +183,7 @@ const App: React.FC = (props: any) => {
       (response: any) => {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
+        historyContext?.accelerateTime?.stopTimer();
         (window as any).NativeApi_ExitProcess();
       },
       (errorCode: any, errorMessage: any) => {
@@ -224,6 +232,13 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     handleSuitDomList();
   }, []);
+
+  useEffect(() => {
+    setupInterceptors({
+      historyContext,
+      removeGameList,
+    });
+  }, [historyContext, removeGameList]);
 
   return (
     <Layout className="app-module">
@@ -330,6 +345,13 @@ const App: React.FC = (props: any) => {
           onClose={() => setShowIssueModal(false)}
         />
       ) : null}
+      {/* 确认退出弹窗 */}
+      <BreakConfirmModal
+        accelOpen={accelOpen}
+        type={"loginOut"}
+        setAccelOpen={setAccelOpen}
+        onConfirm={loginOutStop}
+      />
     </Layout>
   );
 };

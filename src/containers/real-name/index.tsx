@@ -2,21 +2,19 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 12:00:01
+ * @LastEditTime: 2024-06-14 10:49:13
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
  */
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Button, Input, Modal } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { closeRealNameModal } from "@/redux/actions/auth";
 
 import "./index.scss";
 import loginApi from "@/api/login";
-
-import realSucessIcon from "@/assets/images/common/real-sucess.svg";
-
-import { useDispatch, useSelector } from "react-redux";
-import { closeRealNameModal } from "@/redux/actions/auth";
+import MinorModal from "@/containers/minor";
 
 interface SettingsModalProps {
   isAdult?: { is_adult: boolean; type: string };
@@ -24,7 +22,6 @@ interface SettingsModalProps {
 
 const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
   // 认证类型 假设 0 - 未填写 1 - 成功
-  const [realType, setRealType] = useState<any>(0);
   const [isRankVerify, setIsRankVerify] = useState({
     name: true,
     id: true,
@@ -34,6 +31,8 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
     name: "",
     id: "",
   }); // 身份认证信息
+
+  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const dispatch = useDispatch();
@@ -127,7 +126,8 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           name: true,
           id: true,
         });
-        setRealType(1);
+        handleClose();
+        setIsMinorOpen(true);
         localStorage.setItem("isRealName", "0"); //已经实名
       } else if (res?.error === 1) {
         // 认证失败
@@ -135,7 +135,7 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           name: false,
           id: false,
         });
-        setRealType(0);
+        setIsMinorOpen(false);
         localStorage.setItem("isRealName", "1"); //没有实名
       }
     } catch (error) {
@@ -144,18 +144,18 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
   };
 
   return isRealOpen ? (
-    <Modal
-      className="real-name-modal"
-      open={isRealOpen}
-      destroyOnClose
-      title="实名认证"
-      width={"67.6vw"}
-      centered
-      maskClosable={false}
-      footer={null}
-      onCancel={handleClose}
-    >
-      {realType === 0 && (
+    <Fragment>
+      <Modal
+        className="real-name-modal"
+        open={isRealOpen}
+        destroyOnClose
+        title="实名认证"
+        width={"67.6vw"}
+        centered
+        maskClosable={false}
+        footer={null}
+        onCancel={handleClose}
+      >
         <div className="real-modal-content">
           <p className="modal-content-text">
             根据国家相关法律法规要求，网络平台服务需实名认证，为了不影响您的使用体验，请尽快完善信息。此信息仅用于验证，严格保证您的隐私安全。
@@ -188,17 +188,13 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
             立即提交
           </Button>
         </div>
-      )}
-      {realType === 1 && (
-        <div className="real-sueccess-modal-content">
-          <img src={realSucessIcon} width={69} height={69} alt="" />
-          <p>恭喜，实名认证成功</p>
-          <Button className="real-sueccess-btn" onClick={handleClose}>
-            好的
-          </Button>
-        </div>
-      )}
-    </Modal>
+      </Modal>
+      <MinorModal
+        type="success"
+        isMinorOpen={isMinorOpen}
+        setIsMinorOpen={setIsMinorOpen}
+      />
+    </Fragment>
   ) : null;
 };
 

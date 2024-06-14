@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-11 18:45:27
+ * @LastEditTime: 2024-06-13 18:41:09
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -14,6 +14,7 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
 import useCefQuery from "@/hooks/useCefQuery";
 
@@ -22,7 +23,6 @@ import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";
 import BreakConfirmModal from "@/containers/break-confirm";
-import StopConfirmModal from "@/containers/stop-confirm";
 
 import playSuitApi from "@/api/speed";
 
@@ -57,6 +57,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
 
   const sendMessageToBackend = useCefQuery();
+  const historyContext: any = useHistoryContext();
 
   const {
     getGameList,
@@ -96,6 +97,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       (response: any) => {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
+        historyContext?.accelerateTime?.stopTimer();
         triggerDataUpdate(); // 更新显示数据
       },
       (errorCode: any, errorMessage: any) => {
@@ -219,11 +221,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     if (res) {
       const latestAccountInfo = store.getState().accountInfo;
+      const userInfo = latestAccountInfo?.userInfo; // 用户信息
 
-      if (accountInfo?.isLogin) {
+      if (userInfo?.isLogin) {
         // 是否登录
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
-        const userInfo = latestAccountInfo?.userInfo; // 用户信息
 
         let game_list = getGameList(); // 获取当前我的游戏列表
         let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
@@ -386,13 +388,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       {/* 确认加速弹窗 */}
       <BreakConfirmModal
         accelOpen={accelOpen}
+        type={"accelerate"}
         setAccelOpen={setAccelOpen}
         onConfirm={confirmStartAcceleration}
       />
       {/* 停止加速确认弹窗 */}
       {stopModalOpen ? (
-        <StopConfirmModal
+        <BreakConfirmModal
           accelOpen={stopModalOpen}
+          type={"stopAccelerate"}
           setAccelOpen={setStopModalOpen}
           onConfirm={stopAcceleration}
         />
