@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 17:07:21
+ * @LastEditTime: 2024-06-14 17:48:41
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -70,7 +70,10 @@ instance.interceptors.response.use(
             default_hooks.historyContext?.accelerateTime?.stopTimer();
             // 3个参数 用户信息 是否登录 是否显示登录
             store.dispatch(setAccountInfo({}, false, true));
-            window.location.reload();
+            // window.location.reload();
+            // navigate("/home");
+            const url = new URL(window.location.origin + "/home");
+            window.location.href = url.toString();
           },
           onFailure: function (errorCode, errorMessage) {
             console.error("Failure response from 停止加速:", errorCode);
