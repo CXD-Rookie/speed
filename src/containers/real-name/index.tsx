@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 10:49:13
+ * @LastEditTime: 2024-06-14 15:40:51
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\real-name\index.tsx
@@ -143,7 +143,7 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
     }
   };
 
-  return isRealOpen ? (
+  return isRealOpen || isMinorOpen ? (
     <Fragment>
       <Modal
         className="real-name-modal"

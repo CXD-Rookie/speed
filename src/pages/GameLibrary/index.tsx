@@ -14,6 +14,7 @@ interface Game {
   name: string;
   name_en: string;
   cover_img: string;
+  background_img: string;
   note: string;
   screen_shot: string[];
   system_id: number[];
@@ -99,7 +100,9 @@ const GameLibrary: React.FC = () => {
       const res = await gameApi.gameList(param);
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
-        cover_img: `https://cdn.accessorx.com/${game.cover_img}`,
+        cover_img: `https://cdn.accessorx.com/${
+          game.cover_img ? game.cover_img : game.background_img
+        }`,
       }));
 
       if (res.data.list.length < 20) {
