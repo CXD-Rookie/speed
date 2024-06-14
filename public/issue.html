@@ -337,7 +337,7 @@
                 </div>
                 <div class="description-input-box">
                     <textarea id="description" class="description"
-                        placeholder="请描述您所遇到的问题，上传图片格式支持JPG/PNG/JPEG，大小<5MB"></textarea>
+                        placeholder="请描述您所遇到的问题，上传图片格式支持JPG/JPEG/PNG/GIF/BMP，大小<5MB"></textarea>
                     <div id="description-input-num" class="description-input-num">
                         0/500
                     </div>
@@ -382,6 +382,7 @@
             });
 
             init()
+            checkInputs()
 
             // 打开反馈弹窗
             $('.open-popup-btn').click(function () {
@@ -393,6 +394,7 @@
                 $('.overlay').fadeOut();
             });
 
+            // 问题描述
             $('#description').on('input', function () {
                 checkInputs();
                 
@@ -406,16 +408,39 @@
                 }
             });
             
+            // 问题描述数量限制
+            $("#description").on("input", function (e) {
+                var inputValue = $(this).val();
+
+                inputValue = inputValue.slice(0, 500);
+
+                var value_len = inputValue.length;
+
+                $('#description-input-num').text(value_len + "/500");
+            })
+
+            // 联系方式数量限制
             $('#contact-input').on('input', function () {
                 var maxLength = 50;
                 var currentLength = $(this).val().length;
                 var wordsRemaining = maxLength - currentLength;
 
-                // 如果输入超过500字，截取字符串至500字
+                // 如果输入超过50字，截取字符串至50字
                 if (currentLength > maxLength) {
                     $(this).val($(this).val().substring(0, maxLength));
                 }
             });
+
+            // 联系方式 展示数量
+            $("#contact-input").on("input", function (e) {
+                var inputValue = $(this).val();
+
+                inputValue = inputValue.slice(0, 50);
+
+                var value_len = inputValue.length;
+
+                $('#contact-input-num').text(value_len + "/50");
+            })
 
             // 图片预览
             $('#file-input').change(function () {
@@ -454,13 +479,23 @@
                     url: 'https://test-api.accessorx.com/api/v1/feedback_upload_image?platform=3', // 实际使用时改成您自己的上传接口即可。
                     multiple: false,
                     number: 1,
-                    acceptMime: 'image/jpeg, image/png',
+                    accept: "images",
+                    acceptMime: 'image/png, image/jpeg, image/jpg, image/gif, image/bmp',
+                    exts: "png|jpeg|jpg|gif|bmp",
+                    size: 5120,
                     before: function (obj) {
                         var $previewImages = $('#upload-demo-preview .img-container');
+                        var isDisabled = $('.description').is(':disabled');
+                        console.log(obj);
+                        if (isDisabled) {
+                            return false;
+                        }
+
                         if ($previewImages.length >= maxImages) {
                             layer.msg('最多只能上传 ' + maxImages + ' 张图片');
                             return false; // 阻止上传
                         }
+
                         // 预读本地文件示例，不支持ie8
                         obj.preview(function (index, file, result) {
                             console.log(result,"result-------")
@@ -478,6 +513,7 @@
                         });
                     },
                     done: function (res) {
+                        console.log(res);
                         // 上传完毕
                         if (res.error === 0) {
                             var imageUrl = `${'https://cdn.accessorx.com/'}${res.data.url}`;
@@ -508,27 +544,8 @@
                     $(this).parent('.img-container').remove();
                 });
             });
-
-            $("#contact-input").on("input", function (e) {
-                var inputValue = $(this).val();
-
-                inputValue = inputValue.slice(0, 50);
-
-                var value_len = inputValue.length;
-
-                $('#contact-input-num').text(value_len + "/50");
-            })
-
-            $("#description").on("input", function (e) {
-                var inputValue = $(this).val();
-
-                inputValue = inputValue.slice(0, 500);
-
-                var value_len = inputValue.length;
-
-                $('#description-input-num').text(value_len + "/500");
-            })
             
+            // 判断必选项是否填写 未填写提交按钮禁用
             function checkInputs(type) {
                 var type = $('.type-btn.selected').data('type') || type;
                 var description = $('.description').val();
@@ -542,8 +559,33 @@
                 }
             }
 
-            // Initial check in case inputs are pre-filled
-            // checkInputs();
+            // 禁用 表单项 
+            function disabledFrom() {
+                $('.submit-btn').prop('disabled', true);
+                $('.description').prop('disabled', true);
+                $('#upload-demo-preview').prop('disabled', true);
+                $('.type-btn').prop('disabled', true);
+                $('#contact-input').prop('disabled', true);
+            }
+
+            // 清空 表单项 
+            function clearFrom() {
+                $('.description').val('');
+                $('#upload-demo-preview').empty();
+                $('.type-btn').removeClass('selected');
+                $('#contact-input').val('');
+            }
+
+            // 提交信息成功iframe 通讯
+            function iframeStory() {
+                const message = {
+                    type: "GREETING",
+                    text: "关闭问题反馈",
+                    timestamp: Date.now()
+                };
+
+                window.parent.postMessage(message, "http://192.168.111.114:3001");
+            }
 
             // 提交表单
             $('.submit-btn').click(function () {
@@ -561,8 +603,8 @@
                 }
                 // 获取图片 URL
                 $('#upload-demo-preview img').each(function () {
-                    // images.push($(this).attr('src'));
                     let src = $(this).attr('src');
+
                     if (src) {
                         // Remove the prefix "https://cdn.accessorx.com/"
                         let filteredSrc = src.replace('https://cdn.accessorx.com/', '');
@@ -586,65 +628,20 @@
                         console.log('Feedback submitted successfully.');
 
                         $('#popup-success').show();
-                        $('.submit-btn').prop('disabled', true);
-                        $('.description').prop('disabled', true);
-                        $('#upload-demo-preview').prop('disabled', true);
-                        $('.type-btn').prop('disabled', true);
-                        $('#contact-input').prop('disabled', true);
-                        $('.fa-plus').prop('disabled', true);
 
-                         // 禁用上传按钮
-                        $('.fa-plus').on('click', function() {
-                            uploadInst.config.elem.prop('disabled', true);
-                        });
-
-                        // 禁用上传组件的方法
-                        // layui.use('upload', function(){
-                        //     var upload = layui.upload;
-
-                        //     // 执行禁用操作
-                        //     upload.render({
-                        //         elem: '#ID-upload-demo-btn-2',
-                        //         // 禁用状态下的样式
-                        //     });
-
-                        //     // 禁用上传组件的方法
-                        //     upload.diabled('#ID-upload-demo-btn-2');
-                        // });
+                        disabledFrom()
 
                         $('.sucess-btn').click(function () {
                             $('#popup-success').hide();
-                            // 清空表单，关闭弹窗等
-                            $('.description').val('');
-                            $('#upload-demo-preview').empty();
-                            $('.type-btn').removeClass('selected');
-                            $('#contact-input').val('');
-                            // $('.overlay').fadeOut();
 
-                            const message = {
-                                type: "GREETING",
-                                text: "关闭问题反馈",
-                                timestamp: Date.now()
-                            };
-
-                            window.parent.postMessage(message, "http://192.168.111.114:3001");
+                            clearFrom()
+                            iframeStory()
                         })
                         $('.popup-success-img').click(function () {
                             $('#popup-success').hide();
-                            // 清空表单，关闭弹窗等
-                            $('.description').val('');
-                            $('#upload-demo-preview').empty();
-                            $('.type-btn').removeClass('selected');
-                            $('#contact-input').val('');
-                            // $('.overlay').fadeOut();
 
-                            const message = {
-                                type: "GREETING",
-                                text: "关闭问题反馈",
-                                timestamp: Date.now()
-                            };
-
-                            window.parent.postMessage(message, "http://192.168.111.114:3001");
+                            clearFrom()
+                            iframeStory()
                         })
 
                     },
@@ -688,7 +685,5 @@
             }
         });
     </script>
-
 </body>
-
 </html>
