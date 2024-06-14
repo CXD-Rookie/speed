@@ -350,7 +350,10 @@ const App: React.FC = (props: any) => {
         accelOpen={accelOpen}
         type={"loginOut"}
         setAccelOpen={setAccelOpen}
-        onConfirm={loginOutStop}
+        onConfirm={() => {
+          setAccelOpen(false);
+          loginOutStop();
+        }}
       />
     </Layout>
   );

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-27 11:46:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 16:17:42
+ * @LastEditTime: 2024-06-14 18:24:29
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\IssueModal\index.tsx
@@ -34,6 +34,14 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
         onClose();
       }
     });
+  }, []);
+
+  useEffect(() => {
+    function sendMessage() {
+      const iframe = document.getElementById("myIframe");
+      const message = { type: "greeting", text: "Hello from parent" };
+      // iframe.contentWindow.postMessage(message, "https://example.com");
+    }
   }, []);
 
   return (
