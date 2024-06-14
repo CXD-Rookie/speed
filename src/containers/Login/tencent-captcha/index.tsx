@@ -19,8 +19,11 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
 
       let res = await loginApi.getPhoneCode({
         phone: phoneNumber,
-        captcha_verify_param,
-        scene_id: 1,
+        ticket: captcha_verify_param.ticket,
+        randstr: captcha_verify_param.randstr,
+        source: "login",
+        // captcha_verify_param,
+        // scene_id: 1,
       });
 
       if (res?.error === 0) {
@@ -41,7 +44,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
 
   // 定义验证码js加载错误处理函数
   const loadErrorCallback = () => {
-    let appid = "195013408"; // 生成容灾票据或自行做其它处理
+    let appid = "193511179"; // 生成容灾票据或自行做其它处理
     let ticket =
       "terror_1001_" + appid + Math.floor(new Date().getTime() / 1000);
 
@@ -57,7 +60,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
   const handleVerifyCode = () => {
     try {
       let captcha = new (window as any).TencentCaptcha(
-        "195013408",
+        "193511179",
         codeCallback,
         {
           userLanguage: "zh",
