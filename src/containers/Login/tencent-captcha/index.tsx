@@ -21,9 +21,6 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
         phone: phoneNumber,
         ticket: captcha_verify_param.ticket,
         randstr: captcha_verify_param.randstr,
-        source: "login",
-        // captcha_verify_param,
-        // scene_id: 1,
       });
 
       if (res?.error === 0) {

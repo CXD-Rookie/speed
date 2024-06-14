@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-13 14:37:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 16:50:39
+ * @LastEditTime: 2024-06-14 17:19:14
  * @FilePath: \speed\src\api\login.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,7 +20,7 @@ class LoginApi {
 
   getPhoneCode (parmas) {
     return get(
-      `${this.url1}/rm_passport/v1/speed_verification_code/${parmas?.phone}?ticket=${parmas.ticket}&randstr=${parmas.randstr}&source=${parmas?.source}`
+      `${this.url}/send_sms/${parmas?.phone}?ticket=${parmas.ticket}&randstr=${parmas.randstr}`
     );
   }
 
