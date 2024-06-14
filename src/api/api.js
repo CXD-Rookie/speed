@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-13 19:06:57
+ * @LastEditTime: 2024-06-14 17:07:21
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -50,7 +50,6 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   response => {
-    console.log(default_hooks);
     let code = response?.data?.error
     if (code > 0) {
       let erroeCode = [110001]
