@@ -31,7 +31,7 @@ export const fetchSearchResults = (query: string, tag?: string, page: number = 1
       let results = response.data.list || []; // 如果 data.list 为 null，则使用空数组
       
       results = results.map((item: any) => ({...item, 
-        cover_img: `https://cdn.accessorx.com/${item?.cover_img}`,
+        cover_img: `https://cdn.accessorx.com/${item.cover_img ? item.cover_img : item.background_img}`,
       }))
 
       dispatch({

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-13 18:41:09
+ * @LastEditTime: 2024-06-14 15:30:41
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -223,7 +223,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const latestAccountInfo = store.getState().accountInfo;
       const userInfo = latestAccountInfo?.userInfo; // 用户信息
 
-      if (userInfo?.isLogin) {
+      if (accountInfo?.isLogin) {
         // 是否登录
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
