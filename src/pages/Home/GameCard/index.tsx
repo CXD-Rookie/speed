@@ -98,6 +98,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
+        console.log(window, window as any);
+        (window as any).stopDelayTimer();
         triggerDataUpdate(); // 更新显示数据
       },
       (errorCode: any, errorMessage: any) => {
@@ -180,6 +182,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
 
+        stopAcceleration();
         accelerateGameToList(option); // 加速完后更新我的游戏
         handleSuitDomList(option.id); // 通知客户端进行加速
         // 暂时注释 实际生产打开

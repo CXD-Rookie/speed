@@ -96,6 +96,8 @@ const App: React.FC = (props: any) => {
       (response: any) => {
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();
+        console.log(window, window as any);
+        (window as any).stopDelayTimer();
         removeGameList("initialize"); // 更新我的游戏
         loginOut();
       },
@@ -184,6 +186,8 @@ const App: React.FC = (props: any) => {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
+        console.log(window, window as any);
+        (window as any).stopDelayTimer();
         (window as any).NativeApi_ExitProcess();
       },
       (errorCode: any, errorMessage: any) => {
