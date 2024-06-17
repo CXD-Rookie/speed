@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 15:30:41
+ * @LastEditTime: 2024-06-17 10:51:20
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -98,8 +98,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
-        console.log(window, window as any);
-        (window as any).stopDelayTimer();
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
         triggerDataUpdate(); // 更新显示数据
       },
       (errorCode: any, errorMessage: any) => {

@@ -85,8 +85,11 @@ const GameDetail: React.FC = () => {
       (response: any) => {
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();
-        console.log(window, window as any);
-        (window as any).stopDelayTimer();
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
         removeGameList("initialize"); // 更新我的游戏
         navigate("/home");
       },

@@ -68,8 +68,11 @@ instance.interceptors.response.use(
 
             default_hooks.removeGameList("initialize");
             default_hooks.historyContext?.accelerateTime?.stopTimer();
-            console.log(window);
-            window.stopDelayTimer();
+
+            if (window.stopDelayTimer) {
+              window.stopDelayTimer();
+            }
+
             // 3个参数 用户信息 是否登录 是否显示登录
             store.dispatch(setAccountInfo({}, false, true));
             // window.location.reload();
