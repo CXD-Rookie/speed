@@ -327,7 +327,7 @@
         }
 
 
-        .layui-layer-dialog {
+        .custom-layer {
             width: 48vw;
             height: 26vh;
             font-size: 1.95vw;
@@ -345,19 +345,19 @@
             bottom: 0;
         }
 
-        .layui-layer-btn {
+        .custom-layer .layui-layer-btn {
             text-align: center;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             flex-direction: row-reverse;
         }
-        .layui-layer-content {
+        .custom-layer .layui-layer-content {
             font-size: 1.5vw !important;
             padding: 2vw !important;
         }
 
-        .layui-layer-btn a {
+        .custom-layer .layui-layer-btn a {
             width: 14.4vw;
             height: 6.4vh;
             line-height:6.4vh;
@@ -371,7 +371,7 @@
             background: #f86c34 !important;
         }
 
-        .layui-layer-shade {
+       .layui-layer-shade {
             opacity: 0 !important;
         }
 
@@ -379,12 +379,12 @@
             background-color: darkred !important;
         } */
 
-        .layui-layer-setwin .layui-layer-close {
+        .custom-layer .layui-layer-setwin .layui-layer-close {
             cursor: pointer;
             color: #ccc;
         }
 
-        .layui-layer-title {
+        .custom-layer .layui-layer-title {
             border:0;
             text-align: left;
             color: white !important;
@@ -735,7 +735,8 @@
                                 $('#popup-success').hide();
                                 clearFrom();
                                 iframeStory();
-                            }
+                            },
+                            skin: 'custom-layer' // 添加自定义类名
                         });
 
                         disabledFrom()
