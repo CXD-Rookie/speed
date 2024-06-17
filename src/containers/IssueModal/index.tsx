@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-27 11:46:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 18:24:29
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-17 14:51:49
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\IssueModal\index.tsx
@@ -23,7 +23,7 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
 
   useEffect(() => {
     window.addEventListener("message", function (event) {
-      if (event.origin !== "http://192.168.111.114:3001") {
+      if (event.origin !== "http://192.168.111.119:3001") {
         return;
       }
 
@@ -57,7 +57,7 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
     >
       <iframe
         id="myIframe"
-        src={`http://192.168.111.114:3001/issue.html`}
+        src={`http://192.168.111.119:3001/issue.html`}
       ></iframe>
     </Modal>
   );

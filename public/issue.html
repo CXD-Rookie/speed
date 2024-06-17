@@ -317,6 +317,79 @@
             outline: none;
             cursor: pointer;
         }
+
+        #ID-upload-demo-btn-2 {
+            display: block; /* 默认显示 */
+        }
+
+        #ID-upload-demo-btn-2.hide {
+            display: none; /* 隐藏 */
+        }
+
+
+        .layui-layer-dialog {
+            width: 48vw;
+            height: 26vh;
+            font-size: 1.95vw;
+            color: #fff;
+            background: #3e3e4a;
+            border-radius: 2vh;
+            box-shadow: 0px 0px 6vh 0px rgba(0, 0, 0, 0.50);
+            padding: 2vh 1.8vw;
+            text-align: center;
+            position: fixed;
+            margin: auto;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .layui-layer-btn {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
+        }
+        .layui-layer-content {
+            font-size: 1.5vw !important;
+            padding: 2vw !important;
+        }
+
+        .layui-layer-btn a {
+            width: 14.4vw;
+            height: 6.4vh;
+            line-height:6.4vh;
+            font-size: 1.4vw;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.10);
+            border-radius: 3.2vh;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            background: #f86c34 !important;
+        }
+
+        .layui-layer-shade {
+            opacity: 0 !important;
+        }
+
+        /* .layui-layer-btn a:hover {
+            background-color: darkred !important;
+        } */
+
+        .layui-layer-setwin .layui-layer-close {
+            cursor: pointer;
+            color: #ccc;
+        }
+
+        .layui-layer-title {
+            border:0;
+            text-align: left;
+            color: white !important;
+        }
+
     </style>
     <title>问题反馈</title>
 </head>
@@ -347,6 +420,7 @@
                 <blockquote class="layui-elem-quote layui-quote-nm">
                     <div class="layui-upload-list" id="upload-demo-preview" aria-disabled="true"></div>
                 </blockquote>
+                <!-- <label for="file-input" id="ID-upload-demo-btn-2"><i class="fas fa-plus"></i></label> -->
                 <label for="file-input" id="ID-upload-demo-btn-2"><i class="fas fa-plus"></i></label>
             </div>
             <div class="contact">
@@ -524,6 +598,8 @@
                             console.log('Upload successful:', imageUrl);
 
                             var $previewImages = $('#upload-demo-preview .img-container');
+
+                            checkImageCount();
                             
                             // if ($previewImages.length >= 9 ) {
                             //     $("#ID-upload-demo-btn-2").css({
@@ -542,8 +618,19 @@
                 // 点击删除图标删除预览图片
                 $('#upload-demo-preview').on('click', '.delete-icon', function () {
                     $(this).parent('.img-container').remove();
+                    checkImageCount();
                 });
             });
+                // 检查图片数量
+            function checkImageCount() {
+                var $previewImages = $('#upload-demo-preview .img-container');
+                if ($previewImages.length >= 9) {
+                    $('#ID-upload-demo-btn-2').addClass('hide');
+                } else {
+                    $('#ID-upload-demo-btn-2').removeClass('hide');
+                }
+            }
+
             
             // 判断必选项是否填写 未填写提交按钮禁用
             function checkInputs(type) {
@@ -584,7 +671,7 @@
                     timestamp: Date.now()
                 };
 
-                window.parent.postMessage(message, "http://192.168.111.114:3001");
+                window.parent.postMessage(message, "http://192.168.111.119:3001");
             }
 
             // 提交表单
@@ -627,22 +714,44 @@
                         // 处理提交成功后的逻辑
                         console.log('Feedback submitted successfully.');
 
-                        $('#popup-success').show();
+                        // $('#popup-success').show();
+                        // layer.alert('提交成功，感谢您的反馈！');
+                        layer.open({
+                            title: '提示', // 自定义标题
+                            offset: "lt",
+                            content: '提交成功，感谢您的反馈！',
+                            btn: ['确定'],
+                            yes: function(index) {
+                                // layer.msg('第一个回调', { icon: 1 });
+                                // layer.close(index);
+                                $('#popup-success').hide();
+                                clearFrom();
+                                iframeStory();
+                            },
+                            cancel: function(index) {
+                                // 处理右上角关闭按钮事件的逻辑
+                                // layer.msg('取消操作', { icon: 0 });
+                                // layer.close(index);
+                                $('#popup-success').hide();
+                                clearFrom();
+                                iframeStory();
+                            }
+                        });
 
                         disabledFrom()
 
-                        $('.sucess-btn').click(function () {
-                            $('#popup-success').hide();
+                        // $('.sucess-btn').click(function () {
+                        //     $('#popup-success').hide();
 
-                            clearFrom()
-                            iframeStory()
-                        })
-                        $('.popup-success-img').click(function () {
-                            $('#popup-success').hide();
+                        //     clearFrom()
+                        //     iframeStory()
+                        // })
+                        // $('.popup-success-img').click(function () {
+                        //     $('#popup-success').hide();
 
-                            clearFrom()
-                            iframeStory()
-                        })
+                        //     clearFrom()
+                        //     iframeStory()
+                        // })
 
                     },
                     error: function (error) {
