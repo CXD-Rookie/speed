@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-17 10:51:20
+ * @LastEditTime: 2024-06-17 17:49:12
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -175,6 +175,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
+    stopAcceleration(); // 停止加速
 
     // 校验是否合法文件
     sendMessageToBackend(
@@ -185,7 +186,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
 
-        stopAcceleration();
         accelerateGameToList(option); // 加速完后更新我的游戏
         handleSuitDomList(option.id); // 通知客户端进行加速
         // 暂时注释 实际生产打开
