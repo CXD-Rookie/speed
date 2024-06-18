@@ -109,7 +109,8 @@ const App: React.FC = (props: any) => {
       }
     );
   };
-
+// 挂载到 window 对象上
+  (window as any).loginOutStop = loginOutStop;
   const loginOut = async (type = "default") => {
     let res = await loginApi.loginOut();
 
@@ -235,6 +236,25 @@ const App: React.FC = (props: any) => {
     }
   };
 
+  const throttle = (func: (...args: any[]) => void, limit: number) => {
+    let lastFunc: number;
+    let lastRan: number;
+    return function (...args: any[]) {
+      if (!lastRan) {
+        func.apply(null, args);
+        lastRan = Date.now();
+      } else {
+        clearTimeout(lastFunc);
+        lastFunc = window.setTimeout(function () {
+          if (Date.now() - lastRan >= limit) {
+            func.apply(null, args);
+            lastRan = Date.now();
+          }
+        }, limit - (Date.now() - lastRan));
+      }
+    };
+  };
+  
   useEffect(() => {
     setMenuActive(location?.pathname);
   }, [location]);
@@ -249,6 +269,25 @@ const App: React.FC = (props: any) => {
       removeGameList,
     });
   }, [historyContext, removeGameList]);
+
+  useEffect(() => {
+    const handleWheel = throttle((event: WheelEvent) => {
+      if (event.deltaY > 0) {
+        // 滑轮向下滑动，跳转到 A 页面
+        navigate('/myGames');
+      } else if (event.deltaY < 0) {
+        // 滑轮向上滑动，返回上一页
+        navigate('/home');
+      }
+    }, 500); // 设置节流间隔时间为500ms
+
+    window.addEventListener('wheel', handleWheel);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, [navigate]);
+  
 
   return (
     <Layout className="app-module">
