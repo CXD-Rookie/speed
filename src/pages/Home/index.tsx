@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 15:07:02
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-18 14:49:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -73,6 +73,25 @@ const Home: React.FC = () => {
     }
   };
 
+  const throttle = (func: (...args: any[]) => void, limit: number) => {
+    let lastFunc: number;
+    let lastRan: number;
+    return function (...args: any[]) {
+      if (!lastRan) {
+        func.apply(null, args);
+        lastRan = Date.now();
+      } else {
+        clearTimeout(lastFunc);
+        lastFunc = window.setTimeout(function () {
+          if (Date.now() - lastRan >= limit) {
+            func.apply(null, args);
+            lastRan = Date.now();
+          }
+        }, limit - (Date.now() - lastRan));
+      }
+    };
+  };
+
   useEffect(() => {
     setHomeList(getGameList()?.slice(0, 4));
   }, [status, location]);
@@ -88,6 +107,26 @@ const Home: React.FC = () => {
       setAccelTag(location?.state?.data);
     }
   }, [location]);
+
+  useEffect(() => {
+    const handleWheel = throttle((event: WheelEvent) => {
+      if (event.deltaY > 0) {
+        // 滑轮向下滑动，跳转到 A 页面
+
+        navigate('/myGames');
+      } else if (event.deltaY < 0) {
+        // 滑轮向上滑动，返回上一页
+
+        navigate('/home');
+      }
+    }, 500); // 设置节流间隔时间为500ms
+
+    window.addEventListener('wheel', handleWheel);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, [navigate]);
 
   return (
     <div className="home-module">
