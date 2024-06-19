@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-27 11:46:17
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-17 14:51:49
+ * @LastEditTime: 2024-06-19 14:23:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\IssueModal\index.tsx
@@ -10,7 +10,7 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import React, { useEffect } from "react";
 import { Modal } from "antd";
-
+import FeedbackForm from "./issue"
 import "./index.scss";
 
 interface FeedbackTypeProps {
@@ -20,6 +20,9 @@ interface FeedbackTypeProps {
 
 const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
   const { showIssueModal = false, onClose = () => {} } = props;
+  const closeFeedbackForm = () => {
+    console.log(1)
+  };
 
   useEffect(() => {
     window.addEventListener("message", function (event) {
@@ -55,10 +58,14 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
       maskClosable={false}
       footer={null}
     >
-      <iframe
+      <>
+      <FeedbackForm onClose={closeFeedbackForm} />
+      </>
+        {/* <iframe
         id="myIframe"
         src={`http://192.168.111.119:3001/issue.html`}
-      ></iframe>
+      ></iframe> */}
+    
     </Modal>
   );
 };

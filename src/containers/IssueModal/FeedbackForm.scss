@@ -1,0 +1,390 @@
+.type-buttons, .matter-description {
+    // margin-top: 5.6vh;
+    // margin-left: 1.6vw;
+}
+
+.type-buttons, .matter-description {
+    margin-top: 3.6vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.matter-description .matter-text,
+.type-buttons .matter-type {
+    font-size: 2vw;
+    color: #999999;
+    line-height: 4vh;
+}
+
+.matter-description .matter-text span,
+.type-buttons .matter-type span {
+    color: #F86C34;
+}
+
+div#btnAll {
+    width: 80%;
+    margin-left: 1.05vw;
+}
+
+.type-btn {
+    width: 8vw;
+    height: 6.4vh;
+    font-size: 1.19vw;
+    font-weight: Regular;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.10);
+    text-align: center;
+    line-height: 6.4vh;
+    border-radius: 1vh;
+    border: 1px solid transparent;
+    // margin: 1.6vh 1.5vw 0 0;
+    cursor: pointer;
+    position: relative;
+    /* 添加默认边框 */
+}
+
+.type-btn:nth-of-type(1) {
+    // margin-left: 1.05vw;
+}
+
+.type-btn.selected {
+    border-color: #F86C34;
+    /* 选中状态下边框颜色 */
+    color: #F86C34;
+    /* 选中状态下文字颜色 */
+}
+
+.type-btn.selected::before {
+    content: "\2713";
+    /* 对号的 Unicode */
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0.6vw;
+    width: 1vw;
+    height: 1.5vh;
+    color: #fff;
+    line-height: 3vh;
+    text-align: center;
+    z-index: 2;
+}
+
+.type-btn.selected::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    border-left: 1.8vw solid transparent;
+    border-bottom: 1.8vw solid transparent;
+    border-right: 1.8vw solid #F86C34;
+    border-top: 1.8vw solid #F86C34;
+}
+
+.description-input-box {
+    color: #fff;
+    margin: 1.6vh 1.05vw 0 1.05vw;
+}
+
+.description {
+    width: 60vw;
+    min-height: 13vh;
+    font-size: 1.8vw;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.10);
+    padding: 1.6vh 1.8vw;
+    border: none;
+    border-radius: 1vh;
+    resize: none;
+    vertical-align: middle;
+}
+
+.description::-webkit-scrollbar {
+    width: 0px;
+}
+
+.description::placeholder {
+    font-weight: Regular;
+    font-size: 1.8vw;
+    color: #999999;
+    margin: 1.6vh 1.8vw;
+}
+
+.description-input-num {
+    width: 90vw;
+    font-size: 1.8vw;
+    color: #999;
+    background: rgba(255, 255, 255, 0.10);
+    text-align: right;
+    padding: 1.6vh 1.8vw;
+    border-bottom-left-radius: 1vh;
+    border-bottom-right-radius: 1vh;
+    vertical-align: middle;
+}
+
+.layui-upload {
+    display: flex;
+    margin-left: 1.05vw;
+    margin-top: 3.2vh;
+}
+
+.layui-elem-quote {
+    width: 7.5vw;
+    height: 7.5vw;
+    border: none;
+}
+
+.fa-plus {
+    width: 7.5vw;
+    height: 7.5vw;
+    font-size: 3vw;
+    color: #fff;
+    background-color: #52525c;
+    border: 0.5px dashed #fff;
+    text-align: center;
+    line-height: 7.5vw;
+    cursor: pointer;
+}
+
+.img-container {
+    position: relative;
+    margin-right: 2vw;
+}
+
+.fa-times-circle:before {
+    content: "\00D7";
+    position: absolute;
+    width: 2.4vw;
+    height: 2.4vw;
+    font-size: 2vw;
+    top: -1.2vw;
+    right: -1.2vw;
+    text-align: center;
+    line-height: 2.4vw;
+    background-color: #F86C34;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+}
+
+.image-upload {
+    position: relative;
+}
+
+.layui-elem-quote {
+    width: auto;
+    border: none;
+    padding: 0;
+    margin-left: 1.3vw;
+}
+
+.layui-upload-list {
+    display: flex;
+    margin: 0;
+}
+
+.fa-plus:before {
+    content: "\002b";
+}
+
+#file-input {
+    display: none;
+}
+
+#file-input+label {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 6vw;
+    height: 6vw;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+.preview {
+    margin-top: 1.5vh;
+}
+
+.preview img {
+    width: 15vw;
+    height: 15vw;
+    margin-right: 2vw;
+    display: inline-block;
+}
+
+.contact {
+    font-size: 2.1vw;
+    color: #999;
+    margin: 2.6vh 1.35vw;
+    padding-left: 1.05vw;
+}
+
+.contact-input-box {
+    display: flex;
+    align-items: flex-end;
+}
+
+.contact .contact-input {
+    width: 54vw;
+    height: 4vh;
+    font-size: 1.8vw;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border-top-left-radius: 1vh;
+    border-bottom-left-radius: 1vh;
+    border: none;
+    padding: 1.2vh 0.6vw 1.2vh 2.4vw;
+    margin-top: 1.4vh;
+}
+
+.contact .contact-input::placeholder {
+    font-weight: Regular;
+    font-size: 1.8vw;
+}
+
+.contact-input-num {
+    display: inline-block;
+    width: 7.5vw;
+    height: 6.4vh;
+    background: rgba(255, 255, 255, 0.10);
+    border-top-right-radius: 1vh;
+    border-bottom-right-radius: 1vh;
+    text-align: center;
+    line-height: 6.4vh;
+}
+
+.submit-btn {
+    display: block;
+    width: 17.55vw;
+    height: 6.8vh;
+    font-size: 1.8vw;
+    color: #999;
+    background-color: #52525c;
+    border: none;
+    outline: none;
+    border-radius: 4.4vh;
+    text-align: center;
+    // line-height: 8.8vh;
+    cursor: pointer;
+    margin: 0 auto;
+    cursor: not-allowed;
+}
+
+.submit-btn:enabled,
+.submit-btn:enabled:hover {
+    color: #fff;
+    cursor: pointer;
+    background-color: #F86C34;
+}
+
+.popup-success {
+    width: 48vw;
+    height: 26vh;
+    font-size: 1.95vw;
+    color: #fff;
+    background: #3e3e4a;
+    border-radius: 2vh;
+    box-shadow: 0px 0px 6vh 0px rgba(0, 0, 0, 0.50);
+    padding: 2vh 1.8vw;
+    text-align: center;
+    position: fixed;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.popup-success img {
+    margin-left: 45vw;
+}
+
+.sucess-text {
+    margin: 6.4vh 0 5.6vh 0;
+}
+
+.sucess-btn {
+    width: 14.4vw;
+    height: 6.4vh;
+    font-size: 1.4vw;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.10);
+    border-radius: 3.2vh;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#ID-upload-demo-btn-2 {
+    display: block; /* 默认显示 */
+}
+
+#ID-upload-demo-btn-2.hide {
+    display: none; /* 隐藏 */
+}
+
+
+.custom-layer {
+    width: 48vw;
+    height: 26vh;
+    font-size: 1.95vw;
+    color: #fff;
+    background: #3e3e4a;
+    border-radius: 2vh;
+    box-shadow: 0px 0px 6vh 0px rgba(0, 0, 0, 0.50);
+    padding: 2vh 1.8vw;
+    text-align: center;
+    position: fixed;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.custom-layer .layui-layer-btn {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+}
+.custom-layer .layui-layer-content {
+    font-size: 1.5vw !important;
+    padding: 2vw !important;
+}
+
+.custom-layer .layui-layer-btn a {
+    width: 14.4vw;
+    height: 6.4vh;
+    line-height:6.4vh;
+    font-size: 1.4vw;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.10);
+    border-radius: 3.2vh;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: #f86c34 !important;
+}
+
+.layui-layer-shade {
+    opacity: 0 !important;
+}
+
+/* .layui-layer-btn a:hover {
+    background-color: darkred !important;
+} */
+
+.custom-layer .layui-layer-setwin .layui-layer-close {
+    cursor: pointer;
+    color: #ccc;
+}
+
+.custom-layer .layui-layer-title {
+    border:0;
+    text-align: left;
+    color: white !important;
+}

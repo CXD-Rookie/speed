@@ -1,11 +1,18 @@
+/*
+ * @Author: steven libo@rongma.com
+ * @Date: 2024-05-27 11:19:48
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-18 18:46:25
+ * @FilePath: \speed\src\api\issue.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { get, post } from "./api";
 
 class Feedback {
 
   url = `https://test-api.accessorx.com/api/v1`;
 
-  feedback_type (params) {
-    const queryString = new URLSearchParams(params).toString();
+  feedback_type () {
     return get(`${this.url}/feedback_type?platform=3`);
   }
 
