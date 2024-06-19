@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-19 14:21:29
+ * @LastEditTime: 2024-06-19 14:55:25
  * @FilePath: \speed\src\pages\Home\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,7 +18,7 @@ const MyGames: React.FC = () => {
 
   const [status, setStatus] = useState<any>(0);
   const [gamesList, setGamesList] = useState([]);
-
+  const [scrollCount, setScrollCount] = useState(0)
   useEffect(() => {
     setGamesList(getMyGames());
   }, [status]);
@@ -31,48 +31,32 @@ const MyGames: React.FC = () => {
         const isAtTop = divElement.scrollTop === 0 && divElement.clientTop === 0;
         if (isAtTop) {
           console.log('滚动条已经滚动到顶部');
-          //@ts-ignore
-          setTimeout(() => {
-            navigate('/home');
-          }, 500);
-          
-          // 执行你想要的操作，例如跳转到其他页面
+          setScrollCount((prevCount) => prevCount + 1);
         }
       }
     };
-  
+
     const divElement = document.getElementById('myScrollableDiv');
     if (divElement) {
       divElement.addEventListener('scroll', handleScroll);
     }
-  
+
     return () => {
       if (divElement) {
         divElement.removeEventListener('scroll', handleScroll);
       }
     };
-  }, []);
-  
+  }, []); 
 
-  // useEffect(() => {
-  //   const handleWheel = throttle((event: WheelEvent) => {
-  //     if (event.deltaY > 0) {
-  //       // 滑轮向下滑动，跳转到 A 页面
-
-  //       navigate('/myGames');
-  //     } else if (event.deltaY < 0) {
-  //       // 滑轮向上滑动，返回上一页
-
-  //       navigate('/home');
-  //     }
-  //   }, 500); // 设置节流间隔时间为500ms
-
-  //   window.addEventListener('wheel', handleWheel);
-
-  //   return () => {
-  //     window.removeEventListener('wheel', handleWheel);
-  //   };
-  // }, [navigate]);
+  useEffect(() => {
+    
+    if (scrollCount>1) {
+      setTimeout(() => {
+        console.log('执行跳转到首页的逻辑');
+        navigate('/home');
+      }, 500);
+    }
+  }, [scrollCount]); 
 
   return (
     <div className="my-games-module">
