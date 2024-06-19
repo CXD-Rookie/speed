@@ -109,9 +109,10 @@
     .region-buttons {
       margin-top: 6vh;
       display: flex;
-      column-gap: 0.6vw;
+      column-gap: 1.1vw;
       row-gap: 0.9vh;
-
+      justify-content: flex-start;
+      flex-wrap: wrap;
       .region-button {
         width: 11.3vw;
         height: 6vh;

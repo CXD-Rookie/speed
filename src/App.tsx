@@ -109,8 +109,8 @@ const App: React.FC = (props: any) => {
       }
     );
   };
-// 挂载到 window 对象上
-  (window as any).loginOutStop = loginOutStop;
+// // 挂载到 window 对象上
+//   (window as any).loginOutStop = loginOutStop;
   const loginOut = async (type = "default") => {
     let res = await loginApi.loginOut();
 

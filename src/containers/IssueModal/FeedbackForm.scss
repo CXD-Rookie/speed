@@ -13,9 +13,17 @@
 
 .matter-description .matter-text,
 .type-buttons .matter-type {
-    font-size: 2vw;
+    font-size: 1.5vw;
     color: #999999;
     line-height: 4vh;
+}
+.matter-type {
+    font-size: 1.5vw;
+    color: #999999;
+    line-height: 4vh;
+}
+.matter-type span {
+    color: #F86C34;
 }
 
 .matter-description .matter-text span,
@@ -81,6 +89,7 @@ div#btnAll {
     border-bottom: 1.8vw solid transparent;
     border-right: 1.8vw solid #F86C34;
     border-top: 1.8vw solid #F86C34;
+    border-top-right-radius: 10px;
 }
 
 .description-input-box {
@@ -318,7 +327,8 @@ div#btnAll {
 }
 
 #ID-upload-demo-btn-2 {
-    display: block; /* 默认显示 */
+    display: flex; /* 默认显示 */
+    margin-top: 1.8vw;
 }
 
 #ID-upload-demo-btn-2.hide {
@@ -387,4 +397,14 @@ div#btnAll {
     border:0;
     text-align: left;
     color: white !important;
+}
+
+
+// new
+.ant-upload.ant-upload-select {
+    margin-left: 1.8vw;
+}
+.ant-upload-list-item-container {
+    width: 7.5vw;
+    height: 7.5vw;
 }
