@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-19 15:13:17
+ * @LastEditTime: 2024-06-19 16:40:29
  * @FilePath: \speed\src\pages\Home\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,6 +27,7 @@ const MyGames: React.FC = () => {
   useEffect(() => {
     // 初始监听滚轮事件的处理函数
     const handleWheel = (event: WheelEvent) => {
+console.log(scrollCount)
       if (event.deltaY < 0) {
         console.log('初始滚轮向上滑动');
         // 执行你想要的操作，例如跳转到首页
@@ -42,16 +43,9 @@ const MyGames: React.FC = () => {
       if (divElement) {
         const isAtTop = divElement.scrollTop === 0 && divElement.clientTop === 0;
         if (isAtTop) {
+          window.addEventListener('wheel', handleWheel); // 移除初始滚轮事件监听器
           setScrollCount((prevCount) => prevCount + 1);
         }
-      }
-    };
-
-    // 处理窗口大小改变事件
-    const handleResize = () => {
-      const divElement = document.getElementById('myScrollableDiv');
-      if (divElement) {
-        console.log('Div size changed:', divElement.clientWidth, divElement.clientHeight);
       }
     };
 
@@ -62,7 +56,6 @@ const MyGames: React.FC = () => {
     const divElement = document.getElementById('myScrollableDiv');
     if (divElement) {
       divElement.addEventListener('scroll', handleScroll);
-      window.addEventListener('resize', handleResize);
     }
 
     // 返回清理函数，移除所有监听器
@@ -71,9 +64,8 @@ const MyGames: React.FC = () => {
       if (divElement) {
         divElement.removeEventListener('scroll', handleScroll); // 移除 myScrollableDiv 的滚动事件监听器
       }
-      window.removeEventListener('resize', handleResize); // 移除窗口大小改变事件监听器
     };
-  }, []); // 空数组确保只注册一次事件
+  }, []); 
 
   useEffect(() => {
     console.log(scrollCount,"scrollCount-------------")
