@@ -33,12 +33,12 @@
     color: #F86C34;
 }
 
-div#btnAll {
+.feedback-popup div#btnAll {
     width: 80%;
     margin-left: 1.05vw;
 }
 
-.type-btn {
+.feedback-popup .type-btn {
     width: 8vw;
     height: 5.3vh;
     font-size: 1.19vw;
@@ -55,18 +55,18 @@ div#btnAll {
     /* 添加默认边框 */
 }
 
-.type-btn:nth-of-type(1) {
+.feedback-popup .type-btn:nth-of-type(1) {
     // margin-left: 1.05vw;
 }
 
-.type-btn.selected {
+.feedback-popup .type-btn.selected {
     border-color: #F86C34;
     /* 选中状态下边框颜色 */
     color: #F86C34;
     /* 选中状态下文字颜色 */
 }
 
-.type-btn.selected::before {
+.feedback-popup .type-btn.selected::before {
     content: "\2713";
     /* 对号的 Unicode */
     display: inline-block;
@@ -81,7 +81,7 @@ div#btnAll {
     z-index: 2;
 }
 
-.type-btn.selected::after {
+.feedback-popup .type-btn.selected::after {
     content: "";
     display: inline-block;
     position: absolute;
@@ -94,12 +94,12 @@ div#btnAll {
     border-top-right-radius: 10px;
 }
 
-.description-input-box {
+.feedback-popup .description-input-box {
     color: #fff;
     margin: 1.6vh 1.05vw 0 1.05vw;
 }
 
-.description {
+.feedback-popup .description {
     width: 60vw;
     min-height: 13vh;
     font-size: 1.3vw;
@@ -149,8 +149,8 @@ div#btnAll {
 }
 
 .fa-plus {
-    width: 6.5vw;
-    height: 6.5vw;
+    width: 4.5vw;
+    height: 4.5vw;
     font-size: 3vw;
     color: #fff;
     background-color: #52525c;
@@ -466,10 +466,14 @@ div#btnAll {
 // new
 #uploadButton .ant-upload.ant-upload-select {
     margin-left: 0.3vw;
+    border: 0;
+    width: 4.5vw;
+    height: 4.5vw;
 }
+
 #uploadButton .ant-upload-list-item-container {
-    width: 6.5vw;
-    height: 6.5vw;
+    width: 4.5vw;
+    height: 4.5vw;
 }
 
 #uploadButton .anticon.anticon-close {
@@ -478,5 +482,5 @@ div#btnAll {
 }
 
 #uploadButton .ant-upload-list-item-container {
-    margin: 0 10px;
+    // margin: 0 10px;
 }

@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-19 16:40:29
+ * @LastEditTime: 2024-06-20 17:56:12
  * @FilePath: \speed\src\pages\Home\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -69,7 +69,7 @@ console.log(scrollCount)
 
   useEffect(() => {
     console.log(scrollCount,"scrollCount-------------")
-    if (scrollCount>1) {
+    if (scrollCount>0) {
       setTimeout(() => {
         console.log('执行跳转到首页的逻辑');
         navigate('/home');

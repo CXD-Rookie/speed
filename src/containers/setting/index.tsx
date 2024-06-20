@@ -1,14 +1,14 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 10:50:40
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-20 17:42:42
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { Fragment, useState, useEffect } from "react";
-import { Modal, Tabs, Button, Switch, Radio } from "antd";
+import { Modal, Tabs, Button, Switch, Radio,Card } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
@@ -19,7 +19,11 @@ import MinorModal from "../minor";
 import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
 import PayModal from "../Pay";
-
+import fixImg from "@/assets/images/fixUtils/fix@2x.png";
+import fixImg_1 from "@/assets/images/fixUtils/fix1@2x.png";
+import fixImg_2 from "@/assets/images/fixUtils/fix2@2x.png";
+import fixImg_3 from "@/assets/images/fixUtils/fix3@2x.png";
+import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
 const { TabPane } = Tabs;
 
 interface SettingsModalProps {
@@ -65,6 +69,59 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     console.log("data-title:", dataTitle);
   };
 
+  const repairToolDetails = {
+    '安全自我修复': {
+      content: '您的问题已成功修复。',
+      okText: '好的',
+      icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
+    },
+    '修复系统代理': {
+      content: '修复成功，需要重启加速器生效',
+      okText: '立即重启',
+      cancelText: '稍后重启',
+      icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
+    },
+    'Host清理': {
+      content: '无法修复加速器的安全问题，请重启加速器后重试。如果问题仍然存在，请使用问题反馈联系技术支持。',
+      okText: '立即重启',
+      cancelText: '稍后重启',
+      icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
+    },
+    '修复本地DNS': {
+      content: '修复系统代理：无法修复系统代理设置导致的问题，请检查您的代理设置或使用问题反馈联系技术支持。',
+      okText: '好的',
+      icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
+    },
+  };
+  
+
+  const openModal = (title:string) => {
+    //@ts-ignore
+    const { content, okText, cancelText, icon } = repairToolDetails[title] || {};
+    Modal.confirm({
+      title: (
+        <div className="modal-header">
+          <div className="modal-subtitle">{'提示'}</div>
+        </div>
+      ),
+      content: (
+        <div className="fix-modal-content">
+          <img src={fixImg_success} alt=""/>
+          <p>{content}</p>
+        </div>
+      ),
+      okText,
+      cancelText,
+      className: 'popup-success-fix',
+      onOk: () => {
+        console.log('Modal closed')
+      }, // 替换为你的关闭逻辑
+      onCancel: () => {
+        console.log('Modal cancelled')
+      }, // 替换为你的取消逻辑
+    });
+  };
+
   useEffect(() => {
     let close_sign = localStorage.getItem("close_window_sign") || "2";
     let isRealName = localStorage.getItem("isRealName");
@@ -104,7 +161,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
         centered
         footer={null}
       >
-        <Tabs activeKey={activeTab} onChange={setActiveTab}>
+        <Tabs className="tabActive" activeKey={activeTab} onChange={setActiveTab}>
           <TabPane tab="系统设置" key="system">
             <div className="tab-content">
               <div className="setting-item">
@@ -264,6 +321,67 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
               </div>
             </TabPane>
           )}
+          <TabPane tab="修复工具" key="fix">
+        <div className="repair-tool-container">
+          <Card
+            className="repair-tool"
+            onClick={() => openModal('安全自我修复')}
+            bordered={false}
+            hoverable
+          >
+            <div className="icon-placeholder">
+              <img src={fixImg} alt="安全自我修复" />
+            </div>
+            <div className="cardName">
+              <div className="repair-tool-title">安全自我修复</div>
+              <p className="repair-tool-description">修复病毒感染或被劫持导致的加速器安全问题</p>
+            </div>
+          </Card>
+          <Card
+            className="repair-tool"
+            onClick={() => openModal('修复系统代理')}
+            bordered={false}
+            hoverable
+          >
+            <div className="icon-placeholder">
+              <img src={fixImg_1} alt="修复系统代理" />
+            </div>
+            <div className="cardName">
+              <div className="repair-tool-title">修复系统代理</div>
+              <p className="repair-tool-description">修复系统配置代理导致无法加速等问题</p>
+            </div>
+          </Card>
+          <Card
+            className="repair-tool"
+            onClick={() => openModal('Host清理')}
+            bordered={false}
+            hoverable
+          >
+            <div className="icon-placeholder">
+              <img src={fixImg_2} alt="Host清理" />
+            </div>
+            <div className="cardName">
+              <div className="repair-tool-title">Host清理</div>
+              <p className="repair-tool-description">修复因Host文件篡改导致的应用访问失败问题</p>
+            </div>
+            
+          </Card>
+          <Card
+            className="repair-tool"
+            onClick={() => openModal('修复本地DNS')}
+            bordered={false}
+            hoverable
+          >
+            <div className="icon-placeholder">
+              <img src={fixImg_3} alt="修复本地DNS" />
+            </div>
+            <div className="cardName">
+              <div className="repair-tool-title">修复本地DNS</div>
+              <p className="repair-tool-description">修复因本地DNS设置错误导致的网络连接问题</p>
+            </div>
+          </Card>
+        </div>
+      </TabPane>
         </Tabs>
       </Modal>
       {!!isModalOpenVip && (

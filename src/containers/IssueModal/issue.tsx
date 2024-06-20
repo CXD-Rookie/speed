@@ -153,7 +153,7 @@ message.config({
   
     const itemRender = (originNode: any, file: any, fileList: any, actions: any) => {
       return (
-        <div style={{ position: 'relative', display: 'inline-block', width: '6.5vw', height: '6.5vw',margin:'0px' }}>
+        <div style={{ position: 'relative', display: 'inline-block', width: '4.5vw', height: '4.5vw',margin:'0px' }}>
           <img
             src={file.thumbUrl || file.url}
             alt={file.name}
