@@ -89,13 +89,9 @@ message.config({
       }
       const imagesArr: string[] = []
   
-
-    //   formData.append('feedback_type', String(selectedType));
-    //   formData.append('content', description);
-    //   formData.append('contact_way', contact);
-  
       images.forEach((image) => {
-        imagesArr.push(image.url);
+        let filteredSrc = image.url.replace('https://cdn.accessorx.com/', '');
+        imagesArr.push(filteredSrc);
       });
 
       const params = {
@@ -115,7 +111,6 @@ message.config({
             onOk: onClose, // 点击确定后关闭表单
             className: 'popup-success', // 添加自定义类名
             okText: '确定', // 修改按钮文本
-            // style: { top: '50%', transform: 'translateY(-50%)' }, // 垂直居中
           });
       } catch (error) {
         console.error('Failed to submit feedback:', error);
