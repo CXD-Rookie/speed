@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-27 11:46:17
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-19 14:23:04
+ * @LastEditTime: 2024-06-20 11:28:36
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\IssueModal\index.tsx
@@ -21,7 +21,7 @@ interface FeedbackTypeProps {
 const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
   const { showIssueModal = false, onClose = () => {} } = props;
   const closeFeedbackForm = () => {
-    console.log(1)
+    onClose();
   };
 
   useEffect(() => {

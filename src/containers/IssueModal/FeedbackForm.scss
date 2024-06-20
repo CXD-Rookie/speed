@@ -4,7 +4,7 @@
 }
 
 .type-buttons, .matter-description {
-    margin-top: 3.6vh;
+    margin-top: 1.6vh;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -16,11 +16,13 @@
     font-size: 1.5vw;
     color: #999999;
     line-height: 4vh;
+    margin-left: 1.05vw;
 }
 .matter-type {
     font-size: 1.5vw;
     color: #999999;
     line-height: 4vh;
+    margin-left: 1.05vw;
 }
 .matter-type span {
     color: #F86C34;
@@ -38,13 +40,13 @@ div#btnAll {
 
 .type-btn {
     width: 8vw;
-    height: 6.4vh;
+    height: 5.3vh;
     font-size: 1.19vw;
     font-weight: Regular;
     color: #ffffff;
     background: rgba(255, 255, 255, 0.10);
     text-align: center;
-    line-height: 6.4vh;
+    line-height: 5.3vh;
     border-radius: 1vh;
     border: 1px solid transparent;
     // margin: 1.6vh 1.5vw 0 0;
@@ -100,7 +102,7 @@ div#btnAll {
 .description {
     width: 60vw;
     min-height: 13vh;
-    font-size: 1.8vw;
+    font-size: 1.3vw;
     color: #fff;
     background: rgba(255, 255, 255, 0.10);
     padding: 1.6vh 1.8vw;
@@ -108,6 +110,7 @@ div#btnAll {
     border-radius: 1vh;
     resize: none;
     vertical-align: middle;
+    outline: none;
 }
 
 .description::-webkit-scrollbar {
@@ -116,7 +119,7 @@ div#btnAll {
 
 .description::placeholder {
     font-weight: Regular;
-    font-size: 1.8vw;
+    font-size: 1.3vw;
     color: #999999;
     margin: 1.6vh 1.8vw;
 }
@@ -146,8 +149,8 @@ div#btnAll {
 }
 
 .fa-plus {
-    width: 7.5vw;
-    height: 7.5vw;
+    width: 6.5vw;
+    height: 6.5vw;
     font-size: 3vw;
     color: #fff;
     background-color: #52525c;
@@ -155,6 +158,9 @@ div#btnAll {
     text-align: center;
     line-height: 7.5vw;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .img-container {
@@ -226,8 +232,8 @@ div#btnAll {
 .contact {
     font-size: 2.1vw;
     color: #999;
-    margin: 2.6vh 1.35vw;
-    padding-left: 1.05vw;
+    margin: 2.6vh 0;
+    // padding-left: 1.05vw;
 }
 
 .contact-input-box {
@@ -238,7 +244,7 @@ div#btnAll {
 .contact .contact-input {
     width: 54vw;
     height: 4vh;
-    font-size: 1.8vw;
+    font-size: 1.3vw;
     color: #fff;
     background: rgba(255, 255, 255, 0.1);
     border-top-left-radius: 1vh;
@@ -246,11 +252,13 @@ div#btnAll {
     border: none;
     padding: 1.2vh 0.6vw 1.2vh 2.4vw;
     margin-top: 1.4vh;
+    margin-left: 1.05vw;
 }
 
 .contact .contact-input::placeholder {
     font-weight: Regular;
-    font-size: 1.8vw;
+    font-size: 1.3vw;
+    color: #999999;
 }
 
 .contact-input-num {
@@ -269,8 +277,8 @@ div#btnAll {
     width: 17.55vw;
     height: 6.8vh;
     font-size: 1.8vw;
-    color: #999;
-    background-color: #52525c;
+    color: #999 !important;
+    background-color: #52525c !important;
     border: none;
     outline: none;
     border-radius: 4.4vh;
@@ -283,14 +291,52 @@ div#btnAll {
 
 .submit-btn:enabled,
 .submit-btn:enabled:hover {
-    color: #fff;
+    color: #fff !important;
     cursor: pointer;
-    background-color: #F86C34;
+    background-color: #F86C34 !important;
 }
 
 .popup-success {
-    width: 48vw;
-    height: 26vh;
+    border-radius: 2vh;
+    width: 30vw !important;
+    /* height: 22vh; */
+    padding: 0;
+    // box-shadow: 0px 0px 6vh 0px rgba(0, 0, 0, 0.50);
+    text-align: center;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    // position: fixed;
+    // margin: auto;
+    // top: 0;
+    // left: 0;
+    // right: 0;
+    // bottom: 0;
+}
+.popup-success .ant-modal-confirm-body {
+    justify-content: space-evenly;
+}
+.popup-success .ant-btn-primary {
+    background: #f86c34;
+    width: 7.5vw;
+    font-size: 1.05vw;
+    height: 2.5vw;
+    border-radius: 16px;
+}
+
+.popup-success .ant-modal-confirm-title {
+    font-size: 1.5vw !important;
+    color: #fff !important;
+}
+.popup-success .ant-modal-confirm-content{
+    font-size: 1vw !important;
+    color: #fff !important;
+}
+.popup-success .anticon-check-circle {
+    display: none;
+}
+.popup-success .ant-modal-content {
+    width: 30vw;
+    height: 22vh;
     font-size: 1.95vw;
     color: #fff;
     background: #3e3e4a;
@@ -298,12 +344,26 @@ div#btnAll {
     box-shadow: 0px 0px 6vh 0px rgba(0, 0, 0, 0.50);
     padding: 2vh 1.8vw;
     text-align: center;
-    position: fixed;
-    margin: auto;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.popup-success .ant-modal-confirm-btns {
+    display: flex;
+    text-align: center;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2vw;
+}
+  
+.popup-success .ant-modal-title {
+    color: white;
+}
+
+.popup-successcustom-modal .ant-modal-footer .ant-btn-primary {
+    background-color: white;
+    color: black;
 }
 
 .popup-success img {
@@ -328,13 +388,16 @@ div#btnAll {
 
 #ID-upload-demo-btn-2 {
     display: flex; /* 默认显示 */
-    margin-top: 1.8vw;
+    // margin-top: 1.8vw;
 }
 
 #ID-upload-demo-btn-2.hide {
     display: none; /* 隐藏 */
 }
 
+.feedback-popup {
+    margin-top: 1.3vw;
+}
 
 .custom-layer {
     width: 48vw;
@@ -401,10 +464,19 @@ div#btnAll {
 
 
 // new
-.ant-upload.ant-upload-select {
-    margin-left: 1.8vw;
+#uploadButton .ant-upload.ant-upload-select {
+    margin-left: 0.3vw;
 }
-.ant-upload-list-item-container {
-    width: 7.5vw;
-    height: 7.5vw;
+#uploadButton .ant-upload-list-item-container {
+    width: 6.5vw;
+    height: 6.5vw;
+}
+
+#uploadButton .anticon.anticon-close {
+    background: #F86C34 !important;
+    color: #fff !important;
+}
+
+#uploadButton .ant-upload-list-item-container {
+    margin: 0 10px;
 }

@@ -6,9 +6,14 @@ import feedbackApi from "../../api/issue";
 import './FeedbackForm.scss'; // 自定义的样式文件
 
 interface FeedbackFormProps {
-    onClose: () => void; // 用于关闭表单的回调函数
-  }
-  
+        onClose: () => void; // 用于关闭表单的回调函数
+    }
+    // 配置全局 message 样式
+message.config({
+        top: 100, // 距离顶部的距离，默认是 24px
+        duration: 2, // 自动关闭的延时，单位秒，默认 3 秒
+        maxCount: 1, // 最大显示数，超过限制时，最早的消息会被自动关闭，默认值为 1
+    });
   const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose }) => {
     const [types, setTypes] = useState<any[]>([]); // 反馈类型
     const [selectedType, setSelectedType] = useState<number | null>(null); // 当前选择的问题类型
@@ -105,13 +110,16 @@ interface FeedbackFormProps {
         console.log('Feedback submitted successfully:', response);
         // 提交成功后的处理逻辑
         Modal.success({
-          title: '反馈成功',
-          content: '感谢您的反馈，我们会尽快处理！',
-          onOk: onClose, // 点击确定后关闭表单
-        });
+            title: '反馈成功',
+            content: '感谢您的反馈，我们会尽快处理！',
+            onOk: onClose, // 点击确定后关闭表单
+            className: 'popup-success', // 添加自定义类名
+            okText: '确定', // 修改按钮文本
+            // style: { top: '50%', transform: 'translateY(-50%)' }, // 垂直居中
+          });
       } catch (error) {
         console.error('Failed to submit feedback:', error);
-        message.error('反馈提交失败，请稍后重试！');
+        // message.error('反馈提交失败，请稍后重试！');
       }
     };
   
@@ -130,21 +138,27 @@ interface FeedbackFormProps {
   
         // 处理上传成功的逻辑
         console.log('上传成功：', response.data.data.url);
-        message.success('上传成功');
+        // message.success('上传成功');
         const imageUrl = `${'https://cdn.accessorx.com/'}`+response.data.data.url; // 获取服务器返回的图片 URL
         setImages((prevImages) => [...prevImages, { url: imageUrl, uid: file.uid }]); // 更新图片列表
         // onSuccess(response.data, file);
       } catch (error) {
         // 处理上传失败的逻辑
         console.error('上传失败：', error);
-        message.error('上传失败');
+        // message.error({
+        //     content: '上传失败：',
+        //     duration: 2,
+        //     style: {
+        //       marginTop: '20vh',
+        //     },
+        //   });
         // onError(error);
       }
     };
   
     const itemRender = (originNode: any, file: any, fileList: any, actions: any) => {
       return (
-        <div style={{ position: 'relative', display: 'inline-block', width: '7.5vw', height: '7.5vw',margin:'0px' }}>
+        <div style={{ position: 'relative', display: 'inline-block', width: '6.5vw', height: '6.5vw',margin:'0px' }}>
           <img
             src={file.thumbUrl || file.url}
             alt={file.name}
@@ -167,6 +181,34 @@ interface FeedbackFormProps {
         </div>
       );
     };
+
+    const beforeUpload = (file:any) => {
+        const isValidFormat = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'].includes(file.type);
+        if (!isValidFormat) {
+          message.error({
+            content: '只能上传 JPG/JPEG/PNG/GIF/BMP 格式的图片',
+            duration: 2,
+            style: {
+              marginTop: '20vh',
+            },
+          });
+          return false;
+        }
+    
+        const isLessThan5MB = file.size / 1024 / 1024 < 5;
+        if (!isLessThan5MB) {
+            message.error({
+                content: '图片大小必须小于 5MB',
+                duration: 2,
+                style: {
+                    marginTop: '20vh',
+                },
+            });
+          return false;
+        }
+    
+        return true;
+      };
   
     return (
       <div className="overlay">
@@ -204,6 +246,7 @@ interface FeedbackFormProps {
               customRequest={customRequest}
               listType="picture-card"
               itemRender={itemRender}
+              beforeUpload={beforeUpload}
               fileList={images}
               onRemove={(file) => {
                 const newImages = images.filter((img) => img.uid !== file.uid);
@@ -213,13 +256,13 @@ interface FeedbackFormProps {
               {images.length < 9 && (
                 <div>
                   <label id="ID-upload-demo-btn-2"><i className="fas fa-plus"></i></label>
-                  <div style={{ marginTop: 8 }}></div>
+                  {/* <div style={{ marginTop: 8 }}></div> */}
                 </div>
               )}
             </Upload>
           </div>
           <div className="contact">
-            <div>联系方式（选填）</div>
+            <div className='matter-type'>联系方式（选填）</div>
             <div className="contact-input-box">
               <Input
                 className="contact-input"
