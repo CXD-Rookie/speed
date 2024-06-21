@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
+import webSocketService from './common/webSocketService';
 import type { MenuProps } from "antd";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
@@ -10,7 +11,6 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
 import eventBus from './api/eventBus';
 import useCefQuery from "./hooks/useCefQuery";
-
 import "@/assets/css/App.scss";
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
@@ -75,6 +75,8 @@ const App: React.FC = (props: any) => {
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
   
+  const userInfo = useSelector((state: any) => state.accountInfo.user_info); // 替换为你的 state 结构
+
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -264,7 +266,28 @@ const App: React.FC = (props: any) => {
     };
   }, [navigate]);
  
-  
+  useEffect(() => {
+    const handleWebSocketMessage = (event: MessageEvent) => {
+      const data = JSON.parse(event.data);
+      if(data.code === '110001' || data.code === 110001){
+        loginOutStop()
+      }else if(data.code === 0 || data.code === '0') {
+        dispatch(setAccountInfo(data.data.user_info));
+        console.log('更新登录信息:', event.data);
+      }
+    };
+
+    const url = 'wss://test-api.accessorx.com/ws/v1/user/info';
+    webSocketService.connect(url, handleWebSocketMessage, dispatch);
+
+    return () => {
+      webSocketService.close();
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log('Redux 中的 user_info 更新为:', userInfo);
+  }, [userInfo]);
 
   return (
     <Layout className="app-module">
