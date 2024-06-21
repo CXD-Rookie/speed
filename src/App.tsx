@@ -8,6 +8,7 @@ import { setAccountInfo } from "./redux/actions/account-info";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
+import eventBus from './api/eventBus';
 import useCefQuery from "./hooks/useCefQuery";
 
 import "@/assets/css/App.scss";
@@ -73,7 +74,7 @@ const App: React.FC = (props: any) => {
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
-
+  
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -251,6 +252,17 @@ const App: React.FC = (props: any) => {
     });
   }, [historyContext, removeGameList]);
 
+  useEffect(() => {
+    const handleNavigateToHome = () => {
+      navigate('/home');
+    };
+
+    eventBus.on('navigateToHome', handleNavigateToHome);
+
+    return () => {
+      eventBus.off('navigateToHome', handleNavigateToHome);
+    };
+  }, [navigate]);
  
   
 

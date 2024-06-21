@@ -1,17 +1,16 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 19:30:17
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-21 11:05:38
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import axios from 'axios';
 import { store } from '@/redux/store';
-
 import { message } from 'antd';
 import { setAccountInfo } from '@/redux/actions/account-info';
-
+import eventBus from './eventBus';
 const instance = axios.create({
   // baseURL: 'https://test-api.accessorx.com', // 根据实际情况设置基础 URL
   headers: {
@@ -50,9 +49,9 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   response => {
-    let code = response?.data?.error
+    let code = response?.data?.error;
     if (code > 0) {
-      let erroeCode = [110001]
+      let erroeCode = [110001];
 
       // token验证失败 退出登录
       if (erroeCode.includes(code)) {
@@ -62,7 +61,7 @@ instance.interceptors.response.use(
             params: null,
           }),
           onSuccess: function (response) {
-            console.error("Success response from 停止加速:", response);
+            console.log("Success response from 停止加速:", response);
             localStorage.removeItem("token");
             localStorage.removeItem("isRealName");
 
@@ -75,10 +74,9 @@ instance.interceptors.response.use(
 
             // 3个参数 用户信息 是否登录 是否显示登录
             store.dispatch(setAccountInfo({}, false, true));
-            // window.location.reload();
-            // navigate("/home");
-            const url = new URL(window.location.origin + "/home");
-            window.location.href = url.toString();
+            
+             // 触发导航事件
+            eventBus.emit('navigateToHome');
           },
           onFailure: function (errorCode, errorMessage) {
             console.error("Failure response from 停止加速:", errorCode);
