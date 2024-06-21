@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Tabs, Select, Button, Table } from "antd";
+import { Modal, Tabs, Select, Button, Table, Menu, Dropdown } from "antd";
+import { DownOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -34,6 +35,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const [regionDomHistory, setRegionDomHistory] = useState(); // 节点历史
 
   const [regions, setRegions] = useState([]); // 区服列表
+  //@ts-ignore
+  const [subRegions, setSubRegions] = useState<{ [key: string]: SubRegion[] }>({});
   const [selectRegions, setSelectRegions] = useState([]); // 选择过的区服列表
   const [selectValue, setSelectValue] = useState<any>(""); // 当前选择的区服id
   const [selectInfo, setSelectInfo] = useState<any>({}); // 当前选择的区服信息
@@ -48,12 +51,43 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     console.log("Selected node:", node);
   };
 
-  // 获取游戏区服列表
+  // // 获取游戏区服列表
+  // const handleSuitList = async () => {
+  //   try {
+  //     let res = await playSuitApi.playSuitList();
+
+  //     setRegions(res?.data || []);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // 获取区服列表
   const handleSuitList = async () => {
     try {
       let res = await playSuitApi.playSuitList();
+      const regionsData = res?.data || {};
+      setRegions(regionsData);
 
-      setRegions(res?.data || []);
+      // 在获取区服列表后，依次获取每个区服的子区服列表
+      for (const key in regionsData) {
+        if (regionsData.hasOwnProperty(key)) {
+          handleSubRegions(key);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 获取每个区服的子区服列表
+  const handleSubRegions = async (key: string) => {
+    try {
+      let res = await playSuitApi.playSuitInfo({ fu_id: key,system_id:3,gid:localStorage.getItem('speedGid') });
+      setSubRegions((prevState) => ({
+        ...prevState,
+        [key]: res?.data || [],
+      }));
     } catch (error) {
       console.log(error);
     }
@@ -97,54 +131,57 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
   };
-
-  // 选择区服
-  const handleSelectRegion = (region: any) => {
-    let arr: any = getMyGames(); // 我的游戏列表
-    let acc_arr = arr.filter((item: any) => item?.is_accelerate); // 当前加速游戏的数据
-    let region_arr = acc_arr?.[0]?.select_region || []; // 当前加速游戏的历史区服列表
-
-    console.log("选择区服参数：", region);
-    // 去重 添加
-    if (!region_arr.some((item: any) => item?.id === region?.id)) {
-      region_arr.push(region);
-    }
-
-    // 选择当前区服
-    region_arr = region_arr.map((item: any) => {
-      return { ...item, is_select: item?.id === region?.id };
-    });
-
-    // 更新当前区服列表
-    acc_arr[0].select_region = region_arr;
-
-    setSelectRegions(region_arr);
-    setSelectValue(region?.id);
-    setSelectInfo(region);
-    onSelect(region); // 将选中数据返回上级
-
-    // 更新我的游戏
-    let arr_index = arr.findIndex((item: any) => item?.is_accelerate);
-
-    arr[arr_index] = acc_arr[0];
-    arr = arr.map((item: any) => ({ ...item, is_accelerate: false }));
-
-    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
-
-    onCancel();
-
-    // 跳转到首页并触发自动加速autoAccelerate
-    navigate("/home", {
-      state: {
-        isNav: true,
-        data: {
-          ...acc_arr[0],
-          router: "details",
-        },
-        autoAccelerate: true,
-      },
-    });
+// 选择区服
+  const handleSelectRegion = ({ id, region }: { id: string | number; region: string }) => {
+    console.log('Selected region:', id, region);
   };
+  // 选择区服旧逻辑
+  // const handleSelectRegion = (region: any) => {
+  //   let arr: any = getMyGames(); // 我的游戏列表
+  //   let acc_arr = arr.filter((item: any) => item?.is_accelerate); // 当前加速游戏的数据
+  //   let region_arr = acc_arr?.[0]?.select_region || []; // 当前加速游戏的历史区服列表
+
+  //   console.log("选择区服参数：", region);
+  //   // 去重 添加
+  //   if (!region_arr.some((item: any) => item?.id === region?.id)) {
+  //     region_arr.push(region);
+  //   }
+
+  //   // 选择当前区服
+  //   region_arr = region_arr.map((item: any) => {
+  //     return { ...item, is_select: item?.id === region?.id };
+  //   });
+
+  //   // 更新当前区服列表
+  //   acc_arr[0].select_region = region_arr;
+
+  //   setSelectRegions(region_arr);
+  //   setSelectValue(region?.id);
+  //   setSelectInfo(region);
+  //   onSelect(region); // 将选中数据返回上级
+
+  //   // 更新我的游戏
+  //   let arr_index = arr.findIndex((item: any) => item?.is_accelerate);
+
+  //   arr[arr_index] = acc_arr[0];
+  //   arr = arr.map((item: any) => ({ ...item, is_accelerate: false }));
+
+  //   localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
+
+  //   onCancel();
+
+  //   // 跳转到首页并触发自动加速autoAccelerate
+  //   navigate("/home", {
+  //     state: {
+  //       isNav: true,
+  //       data: {
+  //         ...acc_arr[0],
+  //         router: "details",
+  //       },
+  //       autoAccelerate: true,
+  //     },
+  //   });
+  // };
 
   //   const handleSuitDomList = async () => {
   //     try {
@@ -325,16 +362,27 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
             </div>
 
             <div className="region-buttons">
-              {Object.entries(regions).map(([key, value]) => (
-                <Button
-                  key={key}
-                  className="region-button"
-                  onClick={() => handleSelectRegion({ id: key, region: value })}
-                >
-                  {value}
-                </Button>
-              ))}
-            </div>
+            {Object.entries(regions).map(([key, value]) => {
+              const subRegionList = subRegions[key] || [];
+              const menu = (
+                <Menu>
+                  {subRegionList.map((subRegion) => (
+                    <Menu.Item key={subRegion.qu} onClick={() => handleSelectRegion({ id: subRegion.qu, region: subRegion.qu.toString() })}>
+                      {subRegion.qu}
+                    </Menu.Item>
+                  ))}
+                </Menu>
+              );
+
+              return (
+                <Dropdown overlay={menu} key={key}>
+                  <Button className="region-button" onClick={() => handleSelectRegion({ id: key, region: value })}>
+                    {value} <DownOutlined />
+                  </Button>
+                </Dropdown>
+              );
+            })}
+          </div>
 
             <div className="not-have-region">没有找到区服？</div>
           </div>

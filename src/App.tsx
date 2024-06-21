@@ -273,7 +273,7 @@ const App: React.FC = (props: any) => {
         loginOutStop()
       }else if(data.code === 0 || data.code === '0') {
         dispatch(setAccountInfo(data.data.user_info));
-        console.log('更新登录信息:', event.data);
+        // console.log('更新登录信息:', event.data);
       }
     };
 

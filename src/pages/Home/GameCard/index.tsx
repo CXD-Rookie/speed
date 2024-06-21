@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-17 17:49:12
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-21 18:36:08
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -127,7 +127,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const process = speedInfoRes.data.executable;
       const { ip, server } = speedListRes.data[0];
 
-      localStorage.setItem("speedIp", ip);
+      localStorage.setItem("speedGid", t);
       localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
 
       // 真实拼接
