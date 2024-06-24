@@ -83,7 +83,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   // 获取每个区服的子区服列表
   const handleSubRegions = async (key: string) => {
     try {
-      let res = await playSuitApi.playSuitInfo({ fu_id: key,system_id:3,gid:localStorage.getItem('speedGid') });
+      let res = await playSuitApi.playSuitInfo({ system_id:3,gid:localStorage.getItem('speedGid') });
       setSubRegions((prevState) => ({
         ...prevState,
         [key]: res?.data || [],

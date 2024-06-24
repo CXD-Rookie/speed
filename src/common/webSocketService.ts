@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-24 17:00:18
+ * @LastEditTime: 2024-06-24 18:04:18
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,10 +18,10 @@ class WebSocketService {
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     const token = localStorage.getItem('token');
-    if (!token) {
-      console.log('Token not found in localStorage. WebSocket connection skipped.');
-      return;
-    }
+    // if (!token) {
+    //   console.log('Token not found in localStorage. WebSocket connection skipped.');
+    //   return;
+    // }
     let userToken = '';
     try {
       userToken = token ? JSON.parse(token) : '';
