@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-24 15:45:14
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 15:50:08
+ * @LastEditTime: 2024-06-24 16:08:43
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\ThirdPartyLogin\index.tsx
@@ -22,7 +22,7 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
     console.log(location, searchParams.get("code"), "进入第三方登录页");
   }, []);
 
-  return <div className="visitor-login">登录成功</div>;
+  return <div className="third-party-login">登录成功</div>;
 };
 
 export default ThirdPartyLogin;
