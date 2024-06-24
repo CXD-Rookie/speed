@@ -1,13 +1,14 @@
 import React, { Fragment, useState } from "react";
 import { Modal } from "antd";
+
 import "./index.scss";
+
+import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
 
 interface VisitorLoginProps {}
 
 const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
   const {} = props;
-
-  const redirectUri = "http://192.168.111.114:3001/#/home"; // 登录成功回调地址
 
   const [open, setOpen] = useState(false);
 
@@ -26,10 +27,11 @@ const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
   return (
     <Fragment>
       <div
-        className="visitor-login"
+        className="visitor-login-text"
         onClick={handlevisitorLogin}
         data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
       >
+        <img src={visitorLoginIcon} alt="" />
         游侠登录
       </div>
       {open ? (
