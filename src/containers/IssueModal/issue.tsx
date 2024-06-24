@@ -189,7 +189,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose }) => {
     const isValidFormat = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'].includes(file.type);
     if (!isValidFormat) {
       message.error({
-        content: '提示：抱歉，图片格式不支持，请上传JPG/JPEG/PNG/GIF/BMP格式的图片。',
+        content: '抱歉，图片格式不支持，请上传JPG/JPEG/PNG/GIF/BMP格式的图片。',
         duration: 2,
         style: {
           marginTop: '20vh',
@@ -200,7 +200,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose }) => {
     const isLessThan5MB = file.size / 1024 / 1024 < 5;
     if (!isLessThan5MB) {
       message.error({
-        content: '提示：抱歉，图片尺寸过大（图片大小必须小于5MB），请尝试压缩文件或选择较小文件',
+        content: '抱歉，图片尺寸过大（图片大小必须小于5MB），请尝试压缩文件或选择较小文件',
         duration: 2,
         style: {
           marginTop: '20vh',
