@@ -47,6 +47,15 @@
         height: 2.7vh;
         cursor: pointer;
       }
+      & .select-game-img {
+        position: absolute;
+        top: 1.2vw;
+        right: 3.8vw;
+        z-index: 2;
+        width: 1.8vw;
+        height: 2.7vh;
+        cursor: pointer;
+      }
 
       & .accelerate-immediately-button {
         position: absolute;

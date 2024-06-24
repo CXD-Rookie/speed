@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-21 18:36:08
+ * @LastEditTime: 2024-06-24 14:45:32
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -17,7 +17,7 @@ import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
 import useCefQuery from "@/hooks/useCefQuery";
-
+import RegionNodeSelector from "@/containers/RegionNodeSelector/index";
 import "./style.scss";
 import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
@@ -27,6 +27,7 @@ import BreakConfirmModal from "@/containers/break-confirm";
 import playSuitApi from "@/api/speed";
 
 import addIcon from "@/assets/images/common/add.svg";
+import select from "@/assets/images/home/select@2x.png";
 import closeIcon from "@/assets/images/common/close.svg";
 import arrowIcon from "@/assets/images/common/accel-arrow.svg";
 import accelerateIcon from "@/assets/images/common/accelerate.svg";
@@ -55,7 +56,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
 
@@ -126,7 +127,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes.data.executable;
       const { ip, server } = speedListRes.data[0];
-
+      localStorage.setItem("speedIp", ip);
       localStorage.setItem("speedGid", t);
       localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
 
@@ -221,6 +222,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     triggerDataUpdate();
   };
 
+  const openSelect = (option: object) => {
+    console.log("打开 区服列表")
+    showModal();
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const hideModal = () => {
+    setIsModalVisible(false);
+  };
+
   // 点击立即加速
   const accelerateDataHandling = async (option: object) => {
     let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
@@ -290,6 +304,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isAllowAcceleration ? (
               <div className="accelerate-immediately-card">
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
+                <img
+                  className="select-game-img"
+                  src={select}
+                  alt=""
+                  onClick={() => openSelect(option)}
+                />
                 <img
                   className="clear-game-img"
                   src={closeIcon}
@@ -407,6 +427,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           onConfirm={stopAcceleration}
         />
       ) : null}
+
+      <RegionNodeSelector
+        visible={isModalVisible}
+        // detailData={detailData}
+        onCancel={hideModal}
+        // onSelect={(e) => setRegionInfo(e)}
+      />
     </div>
   );
 };
