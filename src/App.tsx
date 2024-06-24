@@ -105,7 +105,8 @@ const App: React.FC = (props: any) => {
         }
 
         removeGameList("initialize"); // 更新我的游戏
-        loginOut();
+        // loginOut();
+        (window as any).loginOut();
       },
       (errorCode: any, errorMessage: any) => {
         console.error("Failure response from 停止加速:", errorCode);
@@ -113,7 +114,7 @@ const App: React.FC = (props: any) => {
     );
   };
 // // 挂载到 window 对象上
-//   (window as any).loginOutStop = loginOutStop;
+(window as any).loginOutStop = loginOutStop;
   const loginOut = async (type = "default") => {
     let res = await loginApi.loginOut();
 
@@ -127,6 +128,7 @@ const App: React.FC = (props: any) => {
       navigate("/home");
     }
   };
+  (window as any).loginOut = loginOut;
 
   const items: MenuProps["items"] = [
     {
