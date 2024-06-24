@@ -2,6 +2,7 @@
   "name": "antd-demo-tss",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/web",
   "dependencies": {
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",

@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-21 20:47:13
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-05-22 19:18:50
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-24 16:14:25
  * @FilePath: \speed\src\routes\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -16,8 +16,13 @@ import GameDetail from "@/pages/Home/GameDetail";
 import MyGames from "@/pages/Home/MyGames";
 import Login from "@/containers/Login";
 import PrivateRoute from "./PrivateRoute";
+import ThirdPartyLogin from "@/pages/ThirdPartyLogin";
 
 export default [
+  {
+    path: "/thirdPartyLogin",
+    element: <ThirdPartyLogin />,
+  },
   {
     path: "/gameLibrary",
     element: (

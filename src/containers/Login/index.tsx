@@ -13,6 +13,7 @@ import { debounce } from "@/common/utils";
 
 import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
+import VisitorLogin from "../visitor-login";
 import loginApi from "@/api/login";
 import "./index.scss";
 
@@ -191,6 +192,7 @@ const Login: React.FC = () => {
         <div className="login-btn-box">
           <button onClick={handleLogin}>登录</button>
         </div>
+        <VisitorLogin />
       </div>
     </div>
   );

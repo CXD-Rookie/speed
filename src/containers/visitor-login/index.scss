@@ -1,0 +1,52 @@
+.visitor-login-text {
+  font-size: 1vw;
+  color:#F86C34;
+  margin: 2vh 0 0 11.2vw;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  column-gap: 0.4vw;
+
+  img {
+    width: 1.2vw;
+    height: 1.2vw;
+  }
+}
+
+.visitor-login {
+  .ant-modal-content {
+    // width: 32vw;
+    width: 67.7vw;
+    height: 55vh;
+    background-color: #3e3e4a;
+    // background-color: #fff;
+    padding: 1.8vh 1.8vw;
+    overflow: hidden;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
+  }
+
+  // .ant-modal-title,
+  .ant-modal-close-x {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  iframe {
+    width: 100%;
+    height: 70vh;
+    margin-top: 4vh;
+  }
+}
