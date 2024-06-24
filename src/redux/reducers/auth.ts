@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:53:18
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-06 17:33:39
+ * @LastEditTime: 2024-06-24 20:04:54
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\redux\reducers\auth.ts
@@ -20,6 +20,7 @@ import {
   UPDATE_DELAY,
   STOP_ACCELERATE,
   ACCELERATE_TIME,
+  BIND_PHONE,
 } from '../actions/auth';
 
 const initialState = {
@@ -30,11 +31,17 @@ const initialState = {
   isPayOpen:false,
   delay: 2,
   isStop: true,
-  accelerateTime: 0
+  accelerateTime: 0,
+  isBindPhone: false,
 };
 
 const authReducer = (state = initialState, action:any) => {
   switch (action.type) {
+     case BIND_PHONE:
+      return {
+        ...state,
+        isBindPhone: action.payload,
+      };
     case ACCELERATE_TIME:
       return {
         ...state,

@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
-import webSocketService from './common/webSocketService';
+import webSocketService from "./common/webSocketService";
 import type { MenuProps } from "antd";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
+import { updateBindPhoneState } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
-import eventBus from './api/eventBus';
+
+import eventBus from "./api/eventBus";
 import useCefQuery from "./hooks/useCefQuery";
 import "@/assets/css/App.scss";
 import routes from "./routes/index";
@@ -19,6 +21,7 @@ import CustomDropdown from "@/containers/login-user";
 import SettingsModal from "./containers/setting/index";
 import IssueModal from "./containers/IssueModal/index";
 import BreakConfirmModal from "@/containers/break-confirm";
+import VisitorLogin from "./containers/visitor-login";
 
 import playSuitApi from "./api/speed";
 import loginApi from "./api/login";
@@ -74,7 +77,7 @@ const App: React.FC = (props: any) => {
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
-  
+
   const userInfo = useSelector((state: any) => state.accountInfo.user_info); // 替换为你的 state 结构
 
   const menuList: CustomMenuProps[] = [
@@ -113,8 +116,8 @@ const App: React.FC = (props: any) => {
       }
     );
   };
-// // 挂载到 window 对象上
-// (window as any).loginOutStop = loginOutStop;
+  // // 挂载到 window 对象上
+  // (window as any).loginOutStop = loginOutStop;
   const loginOut = async (type = "default") => {
     let res = await loginApi.loginOut();
 
@@ -240,7 +243,7 @@ const App: React.FC = (props: any) => {
       console.log(error);
     }
   };
-  
+
   useEffect(() => {
     setMenuActive(location?.pathname);
   }, [location]);
@@ -258,28 +261,36 @@ const App: React.FC = (props: any) => {
 
   useEffect(() => {
     const handleNavigateToHome = () => {
-      navigate('/home');
+      navigate("/home");
     };
 
-    eventBus.on('navigateToHome', handleNavigateToHome);
+    eventBus.on("navigateToHome", handleNavigateToHome);
 
     return () => {
-      eventBus.off('navigateToHome', handleNavigateToHome);
+      eventBus.off("navigateToHome", handleNavigateToHome);
     };
   }, [navigate]);
- 
+
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      if(data.code === '110001' || data.code === 110001){
-        loginOutStop()
-      }else if(data.code === 0 || data.code === '0') {
-        dispatch(setAccountInfo(data.data.user_info));
-        // console.log('更新登录信息:', event.data);
-      }
+      console.log(data);
+      // if (data.code === "110001" || data.code === 110001) {
+      //   loginOutStop();
+      // } else if (data.code === 0 || data.code === "0") {
+      //   let userInfo = data?.data?.user_info || {};
+
+      //   if (String(userInfo?.phone)?.length > 1) {
+      //     dispatch(setAccountInfo(data.data.user_info));
+      //     // 3个参数 用户信息 是否登录 是否显示登录
+      //     dispatch(setAccountInfo({}, true, false));
+      //   } else {
+      //     // dispatch(updateBindPhoneState(true));
+      //   }
+      // }
     };
 
-    const url = 'wss://test-api.accessorx.com/ws/v1/user/info';
+    const url = "wss://test-api.accessorx.com/ws/v1/user/info";
     webSocketService.connect(url, handleWebSocketMessage, dispatch);
 
     return () => {
@@ -288,7 +299,7 @@ const App: React.FC = (props: any) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log('Redux 中的 user_info 更新为:', userInfo);
+    console.log("Redux 中的 user_info 更新为:", userInfo);
   }, [userInfo]);
 
   return (
@@ -406,6 +417,7 @@ const App: React.FC = (props: any) => {
           loginOutStop();
         }}
       />
+      <VisitorLogin />
     </Layout>
   );
 };

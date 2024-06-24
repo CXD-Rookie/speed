@@ -132,3 +132,18 @@ body {
 .custom-input::placeholder {
   color: #bbbcc4;
 }
+
+.visitor-login-text {
+  font-size: 1vw;
+  color:#F86C34;
+  margin: 2vh 0 0 11.2vw;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  column-gap: 0.4vw;
+
+  img {
+    width: 1.2vw;
+    height: 1.2vw;
+  }
+}

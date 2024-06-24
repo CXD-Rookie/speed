@@ -2,18 +2,18 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 17:46:11
+ * @LastEditTime: 2024-06-24 21:07:08
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { setAccountInfo } from "../../redux/actions/account-info";
+import { updateBindPhoneState } from "@/redux/actions/auth";
 import { debounce } from "@/common/utils";
 
 import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
-import VisitorLogin from "../visitor-login";
 import loginApi from "@/api/login";
 import "./index.scss";
 
@@ -21,6 +21,7 @@ import clotureIcon from "@/assets/images/common/cloture.svg";
 import logoIcon from "@/assets/images/common/logo.svg";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
+import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
 
 declare const CefWebInstance: any;
 
@@ -37,6 +38,8 @@ const Login: React.FC = () => {
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
 
+  const [bindVisitorOpen, setBindVisitorOpen] = useState(false);
+
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
     debounce((value: any) => {
@@ -52,6 +55,14 @@ const Login: React.FC = () => {
 
     setPhoneNumber(value);
     debouncedChangeHandler(value);
+  };
+
+  // 游侠登录 跳转浏览器
+  const handlevisitorLogin = async (event: any) => {
+    const target = event.currentTarget as HTMLDivElement;
+    const dataTitle = target.dataset.title;
+
+    (window as any).NativeApi_OpenBrowser(dataTitle);
   };
 
   const handleVerificationCodeChange = (
@@ -191,8 +202,24 @@ const Login: React.FC = () => {
         </div>
         <div className="login-btn-box">
           <button onClick={handleLogin}>登录</button>
+          <button
+            onClick={() => {
+              setBindVisitorOpen(true);
+              dispatch(setAccountInfo(undefined, false, false));
+              dispatch(updateBindPhoneState(true));
+            }}
+          >
+            登录
+          </button>
         </div>
-        <VisitorLogin />
+        <div
+          className="visitor-login-text"
+          onClick={handlevisitorLogin}
+          data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
+        >
+          <img src={visitorLoginIcon} alt="" />
+          游侠登录
+        </div>
       </div>
     </div>
   );
