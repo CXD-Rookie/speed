@@ -274,20 +274,20 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      console.log(data);
-      // if (data.code === "110001" || data.code === 110001) {
-      //   loginOutStop();
-      // } else if (data.code === 0 || data.code === "0") {
-      //   let userInfo = data?.data?.user_info || {};
 
-      //   if (String(userInfo?.phone)?.length > 1) {
-      //     dispatch(setAccountInfo(data.data.user_info));
-      //     // 3个参数 用户信息 是否登录 是否显示登录
-      //     dispatch(setAccountInfo({}, true, false));
-      //   } else {
-      //     // dispatch(updateBindPhoneState(true));
-      //   }
-      // }
+      if (data.code === "110001" || data.code === 110001) {
+        loginOutStop();
+      } else if (data.code === 0 || data.code === "0") {
+        let userInfo = data?.data?.user_info || {};
+
+        if (String(userInfo?.phone)?.length > 1) {
+          dispatch(setAccountInfo(data.data.user_info));
+          // 3个参数 用户信息 是否登录 是否显示登录
+          dispatch(setAccountInfo({}, true, false));
+        } else {
+          dispatch(updateBindPhoneState(true));
+        }
+      }
     };
 
     const url = "wss://test-api.accessorx.com/ws/v1/user/info";

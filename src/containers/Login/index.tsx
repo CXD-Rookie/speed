@@ -202,7 +202,7 @@ const Login: React.FC = () => {
         </div>
         <div className="login-btn-box">
           <button onClick={handleLogin}>登录</button>
-          <button
+          {/* <button
             onClick={() => {
               setBindVisitorOpen(true);
               dispatch(setAccountInfo(undefined, false, false));
@@ -210,7 +210,7 @@ const Login: React.FC = () => {
             }}
           >
             登录
-          </button>
+          </button> */}
         </div>
         <div
           className="visitor-login-text"
