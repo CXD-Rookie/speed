@@ -1,0 +1,37 @@
+.visitor-login {
+  .ant-modal-content {
+    // width: 32vw;
+    width: 67.7vw;
+    height: 55vh;
+    // background-color: #3e3e4a;
+    background-color: #fff;
+    padding: 1.8vh 1.8vw;
+    overflow: hidden;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
+  }
+
+  // .ant-modal-title,
+  .ant-modal-close-x {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  iframe {
+    width: 100%;
+    height: 70vh;
+    margin-top: 4vh;
+  }
+}
