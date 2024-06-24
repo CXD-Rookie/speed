@@ -16,7 +16,7 @@ interface RegionNodeSelectorProps {
   visible: boolean;
   detailData?: any;
   onCancel: () => void;
-  onSelect: (value: any) => void;
+  onSelect?: (value: any) => void;
 }
 
 const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
