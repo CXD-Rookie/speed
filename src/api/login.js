@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-13 14:37:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 17:19:14
+ * @LastEditTime: 2024-06-24 16:42:59
  * @FilePath: \speed\src\api\login.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -43,6 +43,10 @@ class LoginApi {
 
   userInfo (params) {
     return get(`${this.url}/user/info?platform=3`);
+  }
+
+  thirdPartyLogin (params) {
+    return post(`${this.url}/third_party/user_login`), params
   }
 }
 
