@@ -484,3 +484,27 @@
 #uploadButton .ant-upload-list-item-container {
     // margin: 0 10px;
 }
+
+.description-input-box, .contact-input-box {
+    position: relative;
+  }
+  
+  .char-count {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 1.3vw;
+    color: #999;
+  }
+
+  span.char-count-mobile {
+    position: relative;
+    right: 3.8vw;
+    font-size: 1.3vw;
+    display: flex;
+    flex-direction: row;
+    /* height: 1vw; */
+    height: 4vh;
+    line-height: 4vh;
+}
+  
