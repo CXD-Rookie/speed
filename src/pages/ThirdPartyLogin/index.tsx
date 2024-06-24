@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-24 15:45:14
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 16:45:20
+ * @LastEditTime: 2024-06-24 16:56:24
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\ThirdPartyLogin\index.tsx
@@ -21,10 +21,16 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
 
   const login = async (params: any) => {
     try {
-      let res = await loginApi.thirdPartyLogin({
+      console.log({
+        ...params,
         tid: 2,
         platform: 3,
+      });
+
+      let res = await loginApi.thirdPartyLogin({
         ...params,
+        tid: 2,
+        platform: 3,
       });
     } catch (error) {
       console.log(error);
