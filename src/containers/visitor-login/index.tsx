@@ -11,7 +11,11 @@ const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
 
   const [open, setOpen] = useState(false);
 
-  const handlevisitorLogin = async () => {
+  const handlevisitorLogin = async (event: any) => {
+    const target = event.currentTarget as HTMLDivElement;
+    const dataTitle = target.dataset.title;
+
+    (window as any).NativeApi_OpenBrowser(dataTitle);
     setOpen(true);
   };
 
@@ -21,7 +25,11 @@ const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
 
   return (
     <Fragment>
-      <div className="visitor-login" onClick={handlevisitorLogin}>
+      <div
+        className="visitor-login"
+        onClick={handlevisitorLogin}
+        data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
+      >
         游侠登录
       </div>
       {open ? (
