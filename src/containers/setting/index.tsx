@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 15:15:31
+ * @LastEditTime: 2024-06-25 17:32:00
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -24,6 +24,8 @@ import fixImg_1 from "@/assets/images/fixUtils/fix1@2x.png";
 import fixImg_2 from "@/assets/images/fixUtils/fix2@2x.png";
 import fixImg_3 from "@/assets/images/fixUtils/fix3@2x.png";
 import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
+import BindPhoneMode from "../bind-phone-mode";
+import loginApi from "@/api/login";
 const { TabPane } = Tabs;
 
 interface SettingsModalProps {
@@ -44,6 +46,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
+  const [isBindThirdOpen, setIsBindThirdOpen] = useState(false); // 手机号绑定第三方，切换手机号
+  const [bindType, setBindType] = useState(""); // 绑定弹窗类型
+
   const [activeTab, setActiveTab] = useState("system");
   const [closeWindow, setCloseWindow] = useState<string>("2");
 
@@ -51,6 +56,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
   const [accountInfo, setAccountInfo] = useState<any>(accountInfoRedux);
+  const [thirdInfo, setThirdInfo] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -124,6 +130,18 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     });
   };
 
+  const handleBindThirdInfo = async () => {
+    try {
+      let res = await loginApi.fetchBindThirdInfo({
+        platform: 3,
+      });
+
+      setThirdInfo(res?.data || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     let close_sign = localStorage.getItem("close_window_sign") || "2";
     let isRealName = localStorage.getItem("isRealName");
@@ -142,13 +160,19 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
         }
       });
     }
-  }, [isOpen, isModalOpenVip, isRealOpen]);
+  }, [isOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
 
   useEffect(() => {
     if (type === "edit") {
       setActiveTab("account");
     }
   }, [type]);
+
+  useEffect(() => {
+    if (activeTab === "account") {
+      handleBindThirdInfo();
+    }
+  }, [activeTab]);
 
   return (
     <Fragment>
@@ -249,9 +273,43 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                     {accountInfo?.userInfo.nickname}
                   </div>
                 </div>
-                <div className="info-box">
-                  <label>手机号:</label>
-                  <div>{accountInfo?.userInfo.phone}</div>
+                <div className="info-box info-flex">
+                  <div className="info-left">
+                    <label>手机号</label>
+                    <div>{accountInfo?.userInfo.phone}</div>
+                  </div>
+                  <div
+                    className="real-name-btn"
+                    onClick={() => {
+                      console.log(accountInfo);
+
+                      setBindType("oldPhone");
+                      setIsBindThirdOpen(true);
+                    }}
+                  >
+                    修改
+                  </div>
+                </div>
+                <div className="info-box info-flex">
+                  <div className="info-left">
+                    <label>游侠账号</label>
+                    <div>
+                      {thirdInfo?.some((item: any) => item?.scope === 2)
+                        ? "绑定"
+                        : "未绑定"}
+                    </div>
+                  </div>
+                  {!thirdInfo?.some((item: any) => item?.scope === 2) ? (
+                    <div
+                      className="real-name-btn"
+                      onClick={() => {
+                        setBindType("third");
+                        setIsBindThirdOpen(true);
+                      }}
+                    >
+                      绑定
+                    </div>
+                  ) : null}
                 </div>
                 <div className="info-box info-flex">
                   <div className="info-left">
@@ -411,6 +469,14 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
           isMinorOpen={isMinorOpen}
           setIsMinorOpen={setIsMinorOpen}
           type={minorType}
+        />
+      ) : null}
+      {isBindThirdOpen ? (
+        <BindPhoneMode
+          open={isBindThirdOpen}
+          setOpen={setIsBindThirdOpen}
+          notifyFc={onClose}
+          type={bindType}
         />
       ) : null}
     </Fragment>

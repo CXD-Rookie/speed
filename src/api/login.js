@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-13 14:37:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 20:42:34
+ * @LastEditTime: 2024-06-25 16:56:52
  * @FilePath: \speed\src\api\login.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -50,7 +50,19 @@ class LoginApi {
   }
 
   updatePhone (params) {
-    return put(`${this.url}/user/update_phone`, params)
+    return put(`${this.url}/user/update_phone?platform=3`, params)
+  }
+
+  sendSmsCode (params) {
+    return get(`${this.url}/user/send_sms`, params);
+  }
+
+  fetchBindThirdInfo (params) {
+    return get(`${this.url}/user/select/bind`, params);
+  }
+
+  verifyPhone (params) {
+    return post(`${this.url}/user/check/phone?platform=3`, params);
   }
 }
 

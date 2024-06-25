@@ -43,7 +43,7 @@
 
     /* 自定义输入框外层样式 */
     .public-input-group {
-      background-color: rgba(255,255,255,0.1);
+      background-color: transparent !important;
       border-radius: 0.75vh;
       position: relative;
     }
@@ -116,6 +116,7 @@
 
     .custom-input::placeholder {
       color: #bbbcc4;
+      // background-color: rgba(255,255,255,0.1);
     }
   }
 }

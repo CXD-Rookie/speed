@@ -30,17 +30,19 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
   const dispatch = useDispatch();
 
   const handleClose = () => {
-    setIsMinorOpen(false)
+    setIsMinorOpen(false);
     dispatch(closeRealNameModal());
   };
   useEffect(() => {
-    // 未成年 recharge充值 acceleration 加速
+    // 未成年 recharge充值 acceleration 加速 success 成功 bind 换绑手机号
     if (type === "recharge") {
       setRealType(3);
     } else if (type === "acceleration") {
       setRealType(2);
     } else if (type === "success") {
       setRealType(1);
+    } else if (type === "bind") {
+      setRealType(4);
     }
   }, [type]);
 
@@ -65,28 +67,24 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
             {realType === 3 && "充值"}
             服务，感谢您的理解！
           </p>
-          <Button
-            className="real-sueccess-btn"
-            onClick={() => handleClose()}
-          >
+          <Button className="real-sueccess-btn" onClick={() => handleClose()}>
             好的
           </Button>
         </div>
       )}
-      {realType === 1 && (
-        <div className="real-sueccess-modal-content">
-          <img src={realSucessIcon} width={69} height={69} alt="" />
-          <p>恭喜，实名认证成功</p>
-          <Button
-            className="real-sueccess-btn"
-            onClick={() =>
-              handleClose()
-            }
-          >
-            好的
-          </Button>
-        </div>
-      )}
+      {realType === 1 ||
+        (realType === 4 && (
+          <div className="real-sueccess-modal-content">
+            <img src={realSucessIcon} width={69} height={69} alt="" />
+            <p>
+              {realType === 1 && "恭喜，实名认证成功"}
+              {realType === 4 && "您的手机号已成功绑定并注册至账户"}
+            </p>
+            <Button className="real-sueccess-btn" onClick={handleClose}>
+              好的
+            </Button>
+          </div>
+        ))}
     </Modal>
   ) : null;
 };
