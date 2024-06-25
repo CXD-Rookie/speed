@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 15:15:31
+ * @LastEditTime: 2024-06-25 11:24:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -247,9 +247,29 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                     {accountInfo?.userInfo.nickname}
                   </div>
                 </div>
-                <div className="info-box">
-                  <label>手机号:</label>
-                  <div>{accountInfo?.userInfo.phone}</div>
+                <div className="info-box info-flex">
+                  <div className="info-left">
+                    <label>手机号</label>
+                    <div>{accountInfo?.userInfo.phone}</div>
+                  </div>
+                  <div
+                    className="real-name-btn"
+                    // onClick={() => dispatch(openRealNameModal())}
+                  >
+                    修改
+                  </div>
+                </div>
+                <div className="info-box info-flex">
+                  <div className="info-left">
+                    <label>游侠账号</label>
+                    <div>未绑定</div>
+                  </div>
+                  <div
+                    className="real-name-btn"
+                    // onClick={() => dispatch(openRealNameModal())}
+                  >
+                    绑定
+                  </div>
                 </div>
                 <div className="info-box info-flex">
                   <div className="info-left">
