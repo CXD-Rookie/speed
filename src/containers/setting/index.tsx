@@ -179,7 +179,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   </span>
                   <span>
                     桌面快捷图标
-                    <Switch defaultChecked />
+                    <Switch defaultChecked onChange={() => {
+                        (window as any).NativeApi_UpdateConfig('auto_create_shortcut',1)
+                    }}/>
                   </span>
                 </div>
               </div>

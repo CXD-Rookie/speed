@@ -54,7 +54,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       centered
       maskClosable={false}
       footer={null}
-      onCancel={() => setIsMinorOpen(false)}
+      onCancel={() => handleClose()}
     >
       {(realType === 2 || realType === 3) && (
         <div className="real-sueccess-modal-content real-error-modal-content">
