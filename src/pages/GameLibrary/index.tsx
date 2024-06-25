@@ -22,6 +22,7 @@ interface Game {
   download: {
     android: string;
   };
+  playsuit:any;
   game: any;
   site: string;
   tags: string[];
@@ -200,7 +201,10 @@ const GameLibrary: React.FC = () => {
             </div>
             <div className="card-text-box">
               <div className="game-name">{game.name}</div>
-              <div className="game-name-en">{game.name_en}</div>
+              {/* <div className="game-name-en">{game.name_en}</div> */}
+              <div className="game-name-en">
+                {game.note ? game.note : `${game.name_en}`}
+              </div>
             </div>
           </div>
         ))}

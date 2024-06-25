@@ -2,14 +2,15 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 10:53:29
+ * @LastEditTime: 2024-06-25 17:34:19
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
  */
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal } from "antd";
-
+import { closeRealNameModal } from "@/redux/actions/auth";
 import "./index.scss";
 
 import realErrorIcon from "@/assets/images/common/real_error.svg";
@@ -26,7 +27,12 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
 
   // 认证类型 2 - 加速时未成年 3 - 充值时未成年 1 - 认证成功
   const [realType, setRealType] = useState<any>();
+  const dispatch = useDispatch();
 
+  const handleClose = () => {
+    setIsMinorOpen(false);
+    dispatch(closeRealNameModal());
+  };
   useEffect(() => {
     // 未成年 recharge充值 acceleration 加速 success 成功 bind 换绑手机号
     if (type === "recharge") {
@@ -61,10 +67,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
             {realType === 3 && "充值"}
             服务，感谢您的理解！
           </p>
-          <Button
-            className="real-sueccess-btn"
-            onClick={() => setIsMinorOpen(false)}
-          >
+          <Button className="real-sueccess-btn" onClick={() => handleClose()}>
             好的
           </Button>
         </div>
@@ -77,10 +80,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
               {realType === 1 && "恭喜，实名认证成功"}
               {realType === 4 && "您的手机号已成功绑定并注册至账户"}
             </p>
-            <Button
-              className="real-sueccess-btn"
-              onClick={() => setIsMinorOpen(false)}
-            >
+            <Button className="real-sueccess-btn" onClick={handleClose}>
               好的
             </Button>
           </div>

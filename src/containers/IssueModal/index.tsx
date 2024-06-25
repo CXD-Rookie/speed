@@ -10,16 +10,20 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import React, { useEffect } from "react";
 import { Modal } from "antd";
-import FeedbackForm from "./issue"
+import FeedbackForm from "./issue";
 import "./index.scss";
 
-interface FeedbackTypeProps {
+interface FeedbackPopupProps {
   showIssueModal?: boolean;
+  defaultInfo?: string | null;
   onClose?: () => void;
 }
 
-const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
-  const { showIssueModal = false, onClose = () => {} } = props;
+const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
+  showIssueModal = false,
+  defaultInfo,
+  onClose = () => {},
+}) => {
   const closeFeedbackForm = () => {
     onClose();
   };
@@ -39,14 +43,6 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
     });
   }, []);
 
-  useEffect(() => {
-    function sendMessage() {
-      const iframe = document.getElementById("myIframe");
-      const message = { type: "greeting", text: "Hello from parent" };
-      // iframe.contentWindow.postMessage(message, "https://example.com");
-    }
-  }, []);
-
   return (
     <Modal
       className="overlay"
@@ -58,14 +54,7 @@ const FeedbackPopup: React.FC<FeedbackTypeProps> = (props) => {
       maskClosable={false}
       footer={null}
     >
-      <>
-      <FeedbackForm onClose={closeFeedbackForm} />
-      </>
-        {/* <iframe
-        id="myIframe"
-        src={`http://192.168.111.119:3001/issue.html`}
-      ></iframe> */}
-    
+      <FeedbackForm onClose={closeFeedbackForm} defaultInfo={defaultInfo} />
     </Modal>
   );
 };
