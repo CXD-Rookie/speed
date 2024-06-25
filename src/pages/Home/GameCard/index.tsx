@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 19:47:46
+ * @LastEditTime: 2024-06-25 19:49:52
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -236,44 +236,39 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 点击立即加速
   const accelerateDataHandling = async (option: object) => {
-    if (token) {
+    if (accountInfo?.isLogin) {
       let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
 
       if (res) {
         const latestAccountInfo = store.getState().accountInfo;
         const userInfo = latestAccountInfo?.userInfo; // 用户信息
+        // 是否登录
+        const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
-        if (accountInfo?.isLogin) {
-          // 是否登录
-          const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
+        let game_list = getGameList(); // 获取当前我的游戏列表
+        let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
 
-          let game_list = getGameList(); // 获取当前我的游戏列表
-          let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
-
-          // 是否实名认证 isRealNamel === "1" 是
-          // 是否是未成年
-          // 是否是vip
-          // 是否有加速中的游戏
-          if (isRealNamel === "1") {
-            dispatch(openRealNameModal());
-            return;
-          } else if (!userInfo?.user_ext?.is_adult) {
-            setIsMinorOpen(true);
-            setMinorType("acceleration");
-            return;
-          } else if (!userInfo?.is_vip) {
-            setIsModalOpenVip(true);
-            return;
-          } else if (find_accel?.[0]) {
-            setAccelOpen(true);
-            setSelectAccelerateOption(option);
-            return;
-          } else {
-            accelerateProcessing(option);
-            setSelectAccelerateOption(option);
-          }
+        // 是否实名认证 isRealNamel === "1" 是
+        // 是否是未成年
+        // 是否是vip
+        // 是否有加速中的游戏
+        if (isRealNamel === "1") {
+          dispatch(openRealNameModal());
+          return;
+        } else if (!userInfo?.user_ext?.is_adult) {
+          setIsMinorOpen(true);
+          setMinorType("acceleration");
+          return;
+        } else if (!userInfo?.is_vip) {
+          setIsModalOpenVip(true);
+          return;
+        } else if (find_accel?.[0]) {
+          setAccelOpen(true);
+          setSelectAccelerateOption(option);
+          return;
         } else {
-          dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
+          accelerateProcessing(option);
+          setSelectAccelerateOption(option);
         }
       }
     } else {
