@@ -7,6 +7,7 @@ import './FeedbackForm.scss'; // 自定义的样式文件
 
 interface FeedbackFormProps {
   onClose: () => void; // 用于关闭表单的回调函数
+  defaultInfo?: string | null;
 }
 
 // 配置全局 message 样式
@@ -16,7 +17,7 @@ message.config({
   maxCount: 1, // 最大显示数，超过限制时，最早的消息会被自动关闭，默认值为 1
 });
 
-const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose }) => {
+const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
   const [types, setTypes] = useState<any[]>([]); // 反馈类型
   const [selectedType, setSelectedType] = useState<number | null>(null); // 当前选择的问题类型
   const [description, setDescription] = useState<string>(''); // 问题描述
@@ -26,6 +27,22 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose }) => {
   useEffect(() => {
     fetchFeedbackTypes(); // 组件加载时获取反馈类型
   }, []);
+
+  useEffect(() => {
+    if (defaultInfo) {
+      setDescription(defaultInfo);
+    }
+  }, [defaultInfo]);
+
+  useEffect(() => {
+    // 如果有 defaultInfo 且等于 "缺少游戏"，自动选择对应的按钮
+    if (defaultInfo) {
+      const missingGameType = types.find((type) => type.value === "缺少游戏");
+      if (missingGameType) {
+        handleTypeSelect(missingGameType.id);
+      }
+    }
+  }, [defaultInfo, types]);
 
   // 获取反馈类型
   const fetchFeedbackTypes = async () => {
@@ -148,14 +165,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose }) => {
     } catch (error) {
       // 处理上传失败的逻辑
       console.error('上传失败：', error);
-      // message.error({
-      //     content: '上传失败：',
-      //     duration: 2,
-      //     style: {
-      //       marginTop: '20vh',
-      //     },
-      //   });
-      // onError(error);
     }
   };
 

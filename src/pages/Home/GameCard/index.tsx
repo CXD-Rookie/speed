@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-24 14:45:32
+ * @LastEditTime: 2024-06-25 11:10:06
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -17,7 +17,6 @@ import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
 import useCefQuery from "@/hooks/useCefQuery";
-import RegionNodeSelector from "@/containers/RegionNodeSelector/index";
 import "./style.scss";
 import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
@@ -427,13 +426,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           onConfirm={stopAcceleration}
         />
       ) : null}
-
-      <RegionNodeSelector
-        visible={isModalVisible}
-        // detailData={detailData}
-        onCancel={hideModal}
-        // onSelect={(e) => setRegionInfo(e)}
-      />
     </div>
   );
 };

@@ -52,6 +52,7 @@ const GameLibrary: React.FC = () => {
   const enterSign = useSelector((state: any) => state.searchEnter);
 
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
+  const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
 
   const [oldSearchBarValue, setOldSearchBarValue] = useState();
   const [games, setGames] = useState<any>([]);
@@ -161,7 +162,13 @@ const GameLibrary: React.FC = () => {
             <div className="empty-null-text">
               抱歉，没有找到“{oldSearchBarValue}”的相关游戏
             </div>
-            <div className="empty-text" onClick={() => setShowIssueModal(true)}>
+            <div
+              className="empty-text"
+              onClick={() => {
+                setShowIssueModal(true);
+                setIssueDescription(`未找到“${oldSearchBarValue}”的相关游戏`);
+              }}
+            >
               您可进行反馈，以便我们及时更新
             </div>
             <button
@@ -177,6 +184,7 @@ const GameLibrary: React.FC = () => {
         <IssueModal
           showIssueModal={showIssueModal}
           onClose={() => setShowIssueModal(false)}
+          defaultInfo={issueDescription} // 传递默认描述
         />
       ) : null}
     </div>
