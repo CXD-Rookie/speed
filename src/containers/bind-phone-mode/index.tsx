@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Input, Modal, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./index.scss";
+import MinorModal from "@/containers/minor";
 import loginApi from "@/api/login";
 
 interface BindPhoneProps {
@@ -42,6 +43,8 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
 
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
+
+  const [isMinorOpen, setIsMinorOpen] = useState(false); // 绑定手机号成功弹窗
 
   const modalTitle = typeObj?.[bindType]?.title;
   const modalText = typeObj?.[bindType]?.text;
@@ -180,6 +183,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
 
         if (res?.error === 0) {
           close();
+          setIsMinorOpen(true);
 
           localStorage.setItem("token", JSON.stringify(res.data.token));
           if (
@@ -206,70 +210,79 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   }, [type]);
 
   return (
-    <Modal
-      className="bind-phone-module"
-      open={open}
-      width={"67.6vw"}
-      onCancel={close}
-      title={modalTitle}
-      destroyOnClose
-      centered
-      maskClosable={false}
-      footer={null}
-    >
-      <div className="bind-phone-module-content">
-        <p className="bind-content-text">{modalText}</p>
-        {bindType === "third" || bindType === "oldPhone" ? (
-          <div className="old-phone">+86 {phone}</div>
-        ) : null}
-        {bindType === "newPhone" ? (
-          <div className="old-phone-box">
-            <div>新的手机号</div>
-            <Input
-              className="old-phone-input"
-              value={phone}
-              onChange={(e: any) => setPhone(e.target.value)}
-            />
-            {isPhone ? (
-              <div className="code-error">手机号无效，请重新输入</div>
-            ) : null}
+    <Fragment>
+      <Modal
+        className="bind-phone-module"
+        open={open}
+        width={"67.6vw"}
+        onCancel={close}
+        title={modalTitle}
+        destroyOnClose
+        centered
+        maskClosable={false}
+        footer={null}
+      >
+        <div className="bind-phone-module-content">
+          <p className="bind-content-text">{modalText}</p>
+          {bindType === "third" || bindType === "oldPhone" ? (
+            <div className="old-phone">+86 {phone}</div>
+          ) : null}
+          {bindType === "newPhone" ? (
+            <div className="old-phone-box">
+              <div>新的手机号</div>
+              <Input
+                className="old-phone-input"
+                value={phone}
+                onChange={(e: any) => setPhone(e.target.value)}
+              />
+              {isPhone ? (
+                <div className="code-error">手机号无效，请重新输入</div>
+              ) : null}
+            </div>
+          ) : null}
+          {/* 验证码 */}
+          <div className="code-box">
+            <div>验证码</div>
+            <div className="code-input">
+              <Input
+                value={code}
+                onChange={(e: any) => setCode(e.target.value)}
+              />
+              {countdown > 0 ? (
+                <div className="count-code">{countdown}秒后重新获取</div>
+              ) : (
+                <div className="code" onClick={handleVerifyCode}>
+                  获取验证码
+                </div>
+              )}
+              {isVeryCodeErr && (
+                <div className="code-error">验证码错误，请重新输入</div>
+              )}
+            </div>
           </div>
-        ) : null}
-        {/* 验证码 */}
-        <div className="code-box">
-          <div>验证码</div>
-          <div className="code-input">
-            <Input
-              value={code}
-              onChange={(e: any) => setCode(e.target.value)}
-            />
-            {countdown > 0 ? (
-              <div className="count-code">{countdown}秒后重新获取</div>
-            ) : (
-              <div className="code" onClick={handleVerifyCode}>
-                获取验证码
-              </div>
-            )}
-            {isVeryCodeErr && (
-              <div className="code-error">验证码错误，请重新输入</div>
-            )}
-          </div>
-        </div>
-        <div
-          className="last-login-box"
-          style={{ marginTop: bindType === "newPhone" ? "27vh" : "30vh" }}
-        >
-          <Button
-            className="last-login-text"
-            onClick={handlevisitorLogin}
-            disabled={!code || !phone}
-            data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
+          <div
+            className="last-login-box"
+            style={{ marginTop: bindType === "newPhone" ? "27vh" : "30vh" }}
           >
-            {bindType === "newPhone" ? "提交" : "下一步"}
-          </Button>
+            <Button
+              className="last-login-text"
+              onClick={handlevisitorLogin}
+              disabled={!code || !phone}
+              data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
+            >
+              {bindType === "newPhone" ? "提交" : "下一步"}
+            </Button>
+          </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+      {isMinorOpen ? (
+        <MinorModal
+          type={"updatePhone"}
+          isMinorOpen={isMinorOpen}
+          setIsMinorOpen={setIsMinorOpen}
+        />
+      ) : null}
+    </Fragment>
   );
 };
 
