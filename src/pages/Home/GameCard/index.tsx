@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-25 15:52:55
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-25 19:12:56
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -222,7 +222,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   const openSelect = (option: object) => {
-    console.log("打开 区服列表")
+    console.log("打开 区服列表");
     showModal();
   };
 
@@ -301,32 +301,36 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             />
             {/* 立即加速卡片 */}
             {isAllowAcceleration ? (
-              <div className="accelerate-immediately-card">
+              <div
+                className="accelerate-immediately-card"
+                onClick={() => accelerateDataHandling(option)}
+              >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
                 <img
                   className="select-game-img"
                   src={select}
                   alt=""
-                  onClick={() => openSelect(option)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openSelect(option);
+                  }}
                 />
                 <img
                   className="clear-game-img"
                   src={closeIcon}
                   alt=""
-                  onClick={() => handleClearGame(option)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClearGame(option);
+                  }}
                 />
                 <div className="accelerate-immediately-button">
-                  <span
-                    className="accelerate-immediately-text"
-                    onClick={() => accelerateDataHandling(option)}
-                  >
-                    立即加速
-                  </span>
+                  <span className="accelerate-immediately-text">立即加速</span>
                   <img
                     className="accelerate-immediately-img"
                     src={arrowIcon}
                     alt=""
-                    onClick={() => accelerateDataHandling(option)}
+                    // onClick={() => accelerateDataHandling(option)}
                   />
                 </div>
               </div>
@@ -344,7 +348,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             ) : null}
             {/* 加速中卡片 */}
             {isAllowShowAccelerating && option?.is_accelerate ? (
-              <div className="accelerating-card" onClick={() => navigate("/gameDetail")}>
+              <div
+                className="accelerating-card"
+                onClick={() => navigate("/gameDetail")}
+              >
                 <img
                   className="accelerating-content-img"
                   src={acceleratedIcon}
@@ -360,9 +367,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                       </div>
                     </>
                   )}
-                  <div
-                    className="enter-details"                  
-                  >
+                  <div className="enter-details">
                     <span>进入详情</span>
                     <img src={rightArrow} alt="" />
                   </div>
