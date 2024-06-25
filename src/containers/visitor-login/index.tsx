@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "antd";
 import { setAccountInfo } from "../../redux/actions/account-info";
@@ -7,6 +7,7 @@ import { debounce } from "@/common/utils";
 
 import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
+import MinorModal from "@/containers/minor";
 import loginApi from "@/api/login";
 
 import clotureIcon from "@/assets/images/common/cloture.svg";
@@ -35,6 +36,8 @@ const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
 
+  const [isMinorOpen, setIsMinorOpen] = useState(false); // 绑定手机号成功弹窗
+
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
     debounce((value: any) => {
@@ -59,6 +62,8 @@ const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
   };
 
   const handleLogin = async () => {
+    setIsMinorOpen(true);
+
     if (!isPhoneNumberValid) {
       setIsPhone(true);
       return;
@@ -73,13 +78,11 @@ const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
     }
 
     try {
-      console.log(phoneNumber, verificationCode);
-
-      let res = await loginApi.updatePhone({
-        phone: phoneNumber,
-        verification_code: verificationCode,
-        // platform: 3,
-      });
+      // let res = await loginApi.updatePhone({
+      //   phone: phoneNumber,
+      //   verification_code: verificationCode,
+      //   platform: 3,
+      // });
       // console.log(res);
       // if (res?.error === 0) {
       //   localStorage.setItem("token", JSON.stringify(res.data.token));
@@ -107,78 +110,88 @@ const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
   };
 
   return (
-    <Modal
-      className="bind-visitor-login"
-      open={isBindPhone}
-      onCancel={close}
-      title={null}
-      width={"32vw"}
-      centered
-      maskClosable={false}
-      footer={null}
-    >
-      <div className="bind-main">
-        <div className="login-text">游侠登录绑定手机号</div>
-        <div className="bind-text">游侠登录绑定手机号</div>
-        <div className="input-group public-input-group">
-          <CustomInput
-            placeholder={"请输入手机号码"}
-            prefix={
-              <div className="custom-prefix-box">
-                <img src={phoneIcon} alt="" />
-                <span>+86</span>
-              </div>
-            }
-            value={phoneNumber}
-            onChange={handlePhoneNumberChange}
-          />
-          {isPhone ? (
-            <div className="ercode">手机号无效，请重新输入</div>
-          ) : null}
+    <Fragment>
+      <Modal
+        className="bind-visitor-login"
+        open={isBindPhone}
+        onCancel={close}
+        title={null}
+        width={"32vw"}
+        centered
+        destroyOnClose
+        maskClosable={false}
+        footer={null}
+      >
+        <div className="bind-main">
+          <div className="login-text">游侠登录绑定手机号</div>
+          <div className="bind-text">游侠登录绑定手机号</div>
+          <div className="input-group public-input-group">
+            <CustomInput
+              placeholder={"请输入手机号码"}
+              prefix={
+                <div className="custom-prefix-box">
+                  <img src={phoneIcon} alt="" />
+                  <span>+86</span>
+                </div>
+              }
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+            />
+            {isPhone ? (
+              <div className="ercode">手机号无效，请重新输入</div>
+            ) : null}
+          </div>
+          <div className="computing-input-group public-input-group">
+            <CustomInput
+              placeholder={"请输入验证码"}
+              countdown={countdown}
+              prefix={
+                <div className="custom-prefix-box">
+                  <img src={challengeIcon} alt="" />
+                </div>
+              }
+              suffix={
+                <div
+                  className={`old-verification-code ${
+                    countdown > 0 &&
+                    !isPhoneNumberValid &&
+                    "send-verification-code"
+                  }`}
+                >
+                  {countdown > 0 ? (
+                    `${countdown}s后重新获取`
+                  ) : !isPhoneNumberValid ? (
+                    "获取验证码"
+                  ) : (
+                    <Captcha
+                      phoneNumber={phoneNumber}
+                      isPhoneNumberValid={isPhoneNumberValid}
+                      setCountdown={setCountdown}
+                    />
+                  )}
+                </div>
+              }
+              value={verificationCode}
+              onChange={handleVerificationCodeChange}
+            />
+            {isVeryCode && <div className="ercode">请先获取验证码</div>}
+            {isVeryCodeErr && (
+              <div className="ercode">验证码错误，请重新输入</div>
+            )}
+          </div>
+          <div className="login-btn-box">
+            <button onClick={handleLogin}>提交</button>
+          </div>
         </div>
-        <div className="computing-input-group public-input-group">
-          <CustomInput
-            placeholder={"请输入验证码"}
-            countdown={countdown}
-            prefix={
-              <div className="custom-prefix-box">
-                <img src={challengeIcon} alt="" />
-              </div>
-            }
-            suffix={
-              <div
-                className={`old-verification-code ${
-                  countdown > 0 &&
-                  !isPhoneNumberValid &&
-                  "send-verification-code"
-                }`}
-              >
-                {countdown > 0 ? (
-                  `${countdown}s后重新获取`
-                ) : !isPhoneNumberValid ? (
-                  "获取验证码"
-                ) : (
-                  <Captcha
-                    phoneNumber={phoneNumber}
-                    isPhoneNumberValid={isPhoneNumberValid}
-                    setCountdown={setCountdown}
-                  />
-                )}
-              </div>
-            }
-            value={verificationCode}
-            onChange={handleVerificationCodeChange}
-          />
-          {isVeryCode && <div className="ercode">请先获取验证码</div>}
-          {isVeryCodeErr && (
-            <div className="ercode">验证码错误，请重新输入</div>
-          )}
-        </div>
-        <div className="login-btn-box">
-          <button onClick={handleLogin}>提交</button>
-        </div>
-      </div>
-    </Modal>
+      </Modal>
+      {isMinorOpen ? (
+        <MinorModal
+          type={"bind"}
+          isMinorOpen={isMinorOpen}
+          setIsMinorOpen={setIsMinorOpen}
+        />
+      ) : null}
+    </Fragment>
   );
 };
 

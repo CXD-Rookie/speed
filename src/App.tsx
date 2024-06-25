@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
-import webSocketService from "./common/webSocketService";
 import type { MenuProps } from "antd";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
@@ -11,9 +10,10 @@ import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
 
+import "@/assets/css/App.scss";
 import eventBus from "./api/eventBus";
 import useCefQuery from "./hooks/useCefQuery";
-import "@/assets/css/App.scss";
+import webSocketService from "./common/webSocketService";
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
 import Login from "./containers/Login/index";
