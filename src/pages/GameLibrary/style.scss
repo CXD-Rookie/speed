@@ -43,7 +43,8 @@
       position: relative;
       width: 13.8vw;
       border-radius: var(--speed-dominant-border-radius);
-
+      cursor: pointer;
+      
       .content-box {
         img {
           width: 100%;

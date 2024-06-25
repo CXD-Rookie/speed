@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 18:55:07
+ * @LastEditTime: 2024-06-25 19:08:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
@@ -43,7 +43,6 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       bind: 4,
       updatePhone: 5,
     };
-    console.log(typeObj?.[type], type);
 
     if (typeObj?.[type]) {
       setRealType(typeObj?.[type]);

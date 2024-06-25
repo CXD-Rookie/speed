@@ -22,7 +22,7 @@ interface Game {
   download: {
     android: string;
   };
-  playsuit:any;
+  playsuit: any;
   game: any;
   site: string;
   tags: string[];
@@ -182,16 +182,15 @@ const GameLibrary: React.FC = () => {
       </div>
       <div className="game-list" ref={gameListRef}>
         {games.map((game) => (
-          <div key={game.id} className="game-card">
+          <div
+            key={game.id}
+            className="game-card"
+            onClick={() => clickAddGame(game)}
+          >
             <div className="content-box">
               <img className="back-icon" src={game.cover_img} alt={game.name} />
               <div className="game-card-content">
-                <img
-                  className="add-icon"
-                  src={addThemeIcon}
-                  alt=""
-                  onClick={() => clickAddGame(game)}
-                />
+                <img className="add-icon" src={addThemeIcon} alt="" />
                 <img
                   className="game-card-active-icon"
                   src={acceleratedIcon}
