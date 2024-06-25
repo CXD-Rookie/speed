@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, HtmlHTMLAttributes } from "react";
 import { Input, Modal, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
@@ -110,7 +110,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
       let phoneNumberRegex = /^1[3456789]\d{9}$/; // 检查手机号格式是否正确
       let isPhone = phoneNumberRegex.test(phone);
 
-      if (!isPhone) {
+      if (!isPhone && bindType === "newPhone") {
         setIsPhone(true);
         return;
       } else {
@@ -137,6 +137,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
       let res = await loginApi.verifyPhone({
         verification_code: code,
       });
+      console.log(res);
 
       return res;
     } catch (error) {
@@ -163,10 +164,16 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
       if (bindType === "third") {
         let res = await verifyPhone();
 
+        console.log(res, 111);
+
         if (res?.error === 0) {
           close();
-          const target = event.currentTarget as HTMLDivElement;
-          const dataTitle = target.dataset.title;
+          notifyFc(false);
+        } else {
+          setVeryCodeErr(true);
+          const target = document.querySelector(".last-login-text") as any;
+          const dataTitle = target?.dataset?.title;
+
           (window as any).NativeApi_OpenBrowser(dataTitle);
         }
       } else if (bindType === "oldPhone") {
@@ -177,6 +184,8 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           setCountdown(0);
           setPhone("");
           setCode("");
+          setVeryCodeErr(false);
+          setIsPhone(false);
         }
       } else if (bindType === "newPhone") {
         let res = await handleUpdatePhone();
@@ -264,14 +273,14 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
             className="last-login-box"
             style={{ marginTop: bindType === "newPhone" ? "27vh" : "30vh" }}
           >
-            <Button
+            <button
               className="last-login-text"
-              onClick={handlevisitorLogin}
+              onClick={(e) => handlevisitorLogin(e)}
               disabled={!code || !phone}
               data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
             >
               {bindType === "newPhone" ? "提交" : "下一步"}
-            </Button>
+            </button>
           </div>
         </div>
       </Modal>
