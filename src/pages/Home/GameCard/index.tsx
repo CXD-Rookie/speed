@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-25 11:10:06
+ * @LastEditTime: 2024-06-25 15:52:55
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -344,7 +344,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             ) : null}
             {/* 加速中卡片 */}
             {isAllowShowAccelerating && option?.is_accelerate ? (
-              <div className="accelerating-card">
+              <div className="accelerating-card" onClick={() => navigate("/gameDetail")}>
                 <img
                   className="accelerating-content-img"
                   src={acceleratedIcon}
@@ -361,8 +361,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     </>
                   )}
                   <div
-                    className="enter-details"
-                    onClick={() => navigate("/gameDetail")}
+                    className="enter-details"                  
                   >
                     <span>进入详情</span>
                     <img src={rightArrow} alt="" />
