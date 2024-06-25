@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 17:32:00
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-25 21:04:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -203,9 +203,18 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   </span>
                   <span>
                     桌面快捷图标
-                    <Switch defaultChecked onChange={() => {
-                        (window as any).NativeApi_UpdateConfig('auto_create_shortcut',1)
-                    }}/>
+                    <Switch 
+                    defaultChecked 
+                    onChange={(checked: boolean) => {
+                      console.log(checked);
+                      if(checked){
+                        (window as any).NativeApi_UpdateConfig('auto_create_shortcut', 1);
+                      }else{
+                        (window as any).NativeApi_UpdateConfig('auto_create_shortcut', 0);
+                      }
+                      
+                    }}
+                  />
                   </span>
                 </div>
               </div>
