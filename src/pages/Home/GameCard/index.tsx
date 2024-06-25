@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 19:49:52
+ * @LastEditTime: 2024-06-25 20:37:21
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -124,7 +124,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       console.log("获取游戏加速列表的信息", speedListRes);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const process = speedInfoRes.data.executable;
+      const process = speedInfoRes?.data?.executable || [];
       const { ip, server } = speedListRes.data[0];
       localStorage.setItem("speedIp", ip);
       localStorage.setItem("speedGid", t);
