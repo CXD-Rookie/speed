@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-25 15:52:55
+ * @LastEditTime: 2024-06-25 19:36:38
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -77,7 +77,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const [stopModalOpen, setStopModalOpen] = useState(false); // 停止加速确认
   const [isStartAnimate, setIsStartAnimate] = useState(false); // 是否开始加速动画
   const [selectAccelerateOption, setSelectAccelerateOption] = useState<any>(); // 选择加速的数据
-
+  const token = localStorage.getItem('token') || '';
   const [isAllowAcceleration, setIsAllowAcceleration] = useState<boolean>(true); // 是否允许加速
   const [isAllowShowAccelerating, setIsAllowShowAccelerating] =
     useState<boolean>(true); // 是否允许显示加速中
@@ -236,45 +236,51 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 点击立即加速
   const accelerateDataHandling = async (option: object) => {
-    let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
 
-    if (res) {
-      const latestAccountInfo = store.getState().accountInfo;
-      const userInfo = latestAccountInfo?.userInfo; // 用户信息
+    if(token){
+      let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
 
-      if (accountInfo?.isLogin) {
-        // 是否登录
-        const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
-
-        let game_list = getGameList(); // 获取当前我的游戏列表
-        let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
-
-        // 是否实名认证 isRealNamel === "1" 是
-        // 是否是未成年
-        // 是否是vip
-        // 是否有加速中的游戏
-        if (isRealNamel === "1") {
-          dispatch(openRealNameModal());
-          return;
-        } else if (!userInfo?.user_ext?.is_adult) {
-          setIsMinorOpen(true);
-          setMinorType("acceleration");
-          return;
-        } else if (!userInfo?.is_vip) {
-          setIsModalOpenVip(true);
-          return;
-        } else if (find_accel?.[0]) {
-          setAccelOpen(true);
-          setSelectAccelerateOption(option);
-          return;
+      if (res) {
+        const latestAccountInfo = store.getState().accountInfo;
+        const userInfo = latestAccountInfo?.userInfo; // 用户信息
+  
+        if (accountInfo?.isLogin) {
+          // 是否登录
+          const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
+  
+          let game_list = getGameList(); // 获取当前我的游戏列表
+          let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
+  
+          // 是否实名认证 isRealNamel === "1" 是
+          // 是否是未成年
+          // 是否是vip
+          // 是否有加速中的游戏
+          if (isRealNamel === "1") {
+            dispatch(openRealNameModal());
+            return;
+          } else if (!userInfo?.user_ext?.is_adult) {
+            setIsMinorOpen(true);
+            setMinorType("acceleration");
+            return;
+          } else if (!userInfo?.is_vip) {
+            setIsModalOpenVip(true);
+            return;
+          } else if (find_accel?.[0]) {
+            setAccelOpen(true);
+            setSelectAccelerateOption(option);
+            return;
+          } else {
+            accelerateProcessing(option);
+            setSelectAccelerateOption(option);
+          }
         } else {
-          accelerateProcessing(option);
-          setSelectAccelerateOption(option);
+          dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
         }
-      } else {
-        dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
       }
+    }else{
+      dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
     }
+
   };
 
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
