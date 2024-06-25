@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-18 14:49:47
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-25 20:16:41
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -113,18 +113,18 @@ const Home: React.FC = () => {
       if (event.deltaY > 0) {
         // 滑轮向下滑动，跳转到 A 页面
 
-        navigate('/myGames');
+        navigate("/myGames");
       } else if (event.deltaY < 0) {
         // 滑轮向上滑动，返回上一页
 
-        navigate('/home');
+        navigate("/home");
       }
     }, 500); // 设置节流间隔时间为500ms
 
-    window.addEventListener('wheel', handleWheel);
+    window.addEventListener("wheel", handleWheel);
 
     return () => {
-      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener("wheel", handleWheel);
     };
   }, [navigate]);
 
