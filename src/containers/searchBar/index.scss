@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-22 14:58:00
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-24 10:48:53
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-25 19:19:38
  * @FilePath: \speed\src\containers\searchBar\index.scss
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -19,11 +19,18 @@
       height: 4.8vh;
       border-top-left-radius: 10vw;
       border-bottom-left-radius: 10vw;
-      text-align: center;
       position: absolute;
       left: 0;
       top: 0;
       z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 1.2vw;
+        height: 1.2vw;
+      }
     }
   }
 
@@ -38,7 +45,7 @@
     color: #fff;
     outline: none;
     padding: 0 1vw 0 3.5vw;
-    padding-right: 3vw;
+    padding-right: 1vw;
   }
 
   input::placeholder {
