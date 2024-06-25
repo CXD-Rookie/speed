@@ -8,8 +8,9 @@
  * @FilePath: \speed\src\containers\minor\index.tsx
  */
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal } from "antd";
-
+import { closeRealNameModal } from "@/redux/actions/auth";
 import "./index.scss";
 
 import realErrorIcon from "@/assets/images/common/real_error.svg";
@@ -26,7 +27,12 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
 
   // 认证类型 2 - 加速时未成年 3 - 充值时未成年 1 - 认证成功
   const [realType, setRealType] = useState<any>();
+  const dispatch = useDispatch();
 
+  const handleClose = () => {
+    setIsMinorOpen(false)
+    dispatch(closeRealNameModal());
+  };
   useEffect(() => {
     // 未成年 recharge充值 acceleration 加速
     if (type === "recharge") {
@@ -61,7 +67,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
           </p>
           <Button
             className="real-sueccess-btn"
-            onClick={() => setIsMinorOpen(false)}
+            onClick={() => handleClose()}
           >
             好的
           </Button>
@@ -73,7 +79,9 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
           <p>恭喜，实名认证成功</p>
           <Button
             className="real-sueccess-btn"
-            onClick={() => setIsMinorOpen(false)}
+            onClick={() =>
+              handleClose()
+            }
           >
             好的
           </Button>

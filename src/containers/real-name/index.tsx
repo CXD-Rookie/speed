@@ -126,7 +126,7 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           name: true,
           id: true,
         });
-        handleClose();
+        // handleClose();
         setIsMinorOpen(true);
         localStorage.setItem("isRealName", "0"); //已经实名
       } else if (res?.error === 1) {
