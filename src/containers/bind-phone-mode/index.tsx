@@ -164,8 +164,6 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
       if (bindType === "third") {
         let res = await verifyPhone();
 
-        console.log(res, 111);
-
         if (res?.error === 0) {
           close();
           notifyFc(false);
@@ -173,7 +171,6 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           setVeryCodeErr(true);
           const target = document.querySelector(".last-login-text") as any;
           const dataTitle = target?.dataset?.title;
-
           (window as any).NativeApi_OpenBrowser(dataTitle);
         }
       } else if (bindType === "oldPhone") {

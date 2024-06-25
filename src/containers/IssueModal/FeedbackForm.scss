@@ -106,7 +106,6 @@
     color: #fff;
     background: rgba(255, 255, 255, 0.10);
     padding: 1.6vh 1.8vw;
-    padding-bottom: 8vw;
     border: none;
     border-radius: 1vh;
     resize: none;
@@ -492,10 +491,20 @@
   
   .char-count {
     position: absolute;
-    right: 10px;
-    bottom: 0px;
+    bottom: -0.5vw;
+    right: 0px;
+    padding-right: 1vw;
+    padding-bottom: 1.8vw;
     font-size: 1vw;
-    color: #999;
+    color: gray;
+    height: 1.5vw;
+    width: 60vw;
+    border-bottom-right-radius: 1vh;
+    border-bottom-left-radius: 1vh;
+    text-align: right;
+    z-index: 999999;
+    border: 0;
+    background-color: #52525c !important;
   }
 
   span.char-count-mobile {

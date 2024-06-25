@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 17:43:49
+ * @LastEditTime: 2024-06-25 18:29:55
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
@@ -59,7 +59,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       centered
       maskClosable={false}
       footer={null}
-      onCancel={() => setIsMinorOpen(false)}
+      onCancel={() => handleClose()}
     >
       {(realType === 2 || realType === 3) && (
         <div className="real-sueccess-modal-content real-error-modal-content">
