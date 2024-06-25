@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 18:29:55
+ * @LastEditTime: 2024-06-25 18:55:07
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
@@ -43,6 +43,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       bind: 4,
       updatePhone: 5,
     };
+    console.log(typeObj?.[type], type);
 
     if (typeObj?.[type]) {
       setRealType(typeObj?.[type]);
@@ -75,21 +76,19 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
           </Button>
         </div>
       )}
-      {realType === 1 ||
-        realType === 4 ||
-        (realType === 5 && (
-          <div className="real-sueccess-modal-content">
-            <img src={realSucessIcon} width={69} height={69} alt="" />
-            <p>
-              {realType === 1 && "恭喜，实名认证成功"}
-              {realType === 4 && "您的手机号已成功绑定并注册至账户"}
-              {realType === 5 && "恭喜，手机更换成功"}
-            </p>
-            <Button className="real-sueccess-btn" onClick={handleClose}>
-              好的
-            </Button>
-          </div>
-        ))}
+      {(realType === 1 || realType === 4 || realType === 5) && (
+        <div className="real-sueccess-modal-content">
+          <img src={realSucessIcon} width={69} height={69} alt="" />
+          <p>
+            {realType === 1 && "恭喜，实名认证成功"}
+            {realType === 4 && "您的手机号已成功绑定并注册至账户"}
+            {realType === 5 && "恭喜，手机更换成功"}
+          </p>
+          <Button className="real-sueccess-btn" onClick={handleClose}>
+            好的
+          </Button>
+        </div>
+      )}
     </Modal>
   ) : null;
 };
