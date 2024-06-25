@@ -10,16 +10,14 @@ import CustomInput from "./custom-input";
 import MinorModal from "@/containers/minor";
 import loginApi from "@/api/login";
 
-import clotureIcon from "@/assets/images/common/cloture.svg";
-import logoIcon from "@/assets/images/common/logo.svg";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
-import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
 
 import "./index.scss";
 
 interface VisitorLoginProps {}
 
+// 是否绑定加速器的手机号绑定登录
 const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
   const {} = props;
 
