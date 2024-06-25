@@ -2,11 +2,11 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-13 14:37:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 17:04:17
+ * @LastEditTime: 2024-06-24 20:42:34
  * @FilePath: \speed\src\api\login.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { get, post } from "./api";
+import { get, post, put } from "./api";
 
 class LoginApi {
   url = `https://test-api.accessorx.com/api/v1`
@@ -47,6 +47,10 @@ class LoginApi {
 
   thirdPartyLogin (params) {
     return post(`${this.url}/third_party/user_login`, params)
+  }
+
+  updatePhone (params) {
+    return put(`${this.url}/user/update_phone`, params)
   }
 }
 

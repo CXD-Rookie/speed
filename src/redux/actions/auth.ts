@@ -1,3 +1,12 @@
+/*
+ * @Author: zhangda
+ * @Date: 2024-05-28 20:53:18
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-24 20:17:20
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\src\redux\actions\auth.ts
+ */
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
 export const SET_IS_LOGIN = 'SET_IS_LOGIN';
@@ -8,6 +17,12 @@ export const CLOSE_PAY_MODAL = 'CLOSE_PAY_MODAL';
 export const UPDATE_DELAY = 'UPDATE_DELAY';
 export const STOP_ACCELERATE = 'STOP_ACCELERATE';
 export const ACCELERATE_TIME = 'ACCELERATE_TIME';
+export const BIND_PHONE = 'BIND_PHONE';
+
+export const updateBindPhoneState = (isBindPhone: any) => ({
+  type: BIND_PHONE,
+  payload: isBindPhone,
+});
 
 export const updateAccelerateTime = (accelerateTime: any) => ({
   type: ACCELERATE_TIME,
