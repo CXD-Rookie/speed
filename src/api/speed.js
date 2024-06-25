@@ -41,6 +41,16 @@ class PlaySuit {
     // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/game/speed/list`, params);
   }
+
+  playSpeedStart (params) {
+    // const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/game/speed/start`, params);
+  }
+
+  playSpeedEnd (params) {
+    // const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/game/speed/end`, params);
+  }
 }
 
 const playSuitApi = new PlaySuit();

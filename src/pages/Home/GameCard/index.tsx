@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 19:49:52
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-25 20:38:40
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -70,7 +70,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const [minorType, setMinorType] = useState<string>("acceleration"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
-
+  const [startKey, setStartKey] = useState<string>(""); // 是否成年 类型充值还是加速
   const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认加速
@@ -87,6 +87,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 停止加速
   const stopAcceleration = () => {
+    console.log("1111111111")
     setStopModalOpen(false);
     // 停止加速
     sendMessageToBackend(
@@ -125,7 +126,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes.data.executable;
-      const { ip, server } = speedListRes.data[0];
+      const { ip, server,id } = speedListRes.data[0];//目前只有一个服务器，后期增多要遍历
+      const StartInfo = await playSuitApi.playSpeedStart({ platform: 3, gid: t, nid:id }); // 游戏加速信息
+      console.log("开始加速接口调用返回信息",StartInfo)
+      setStartKey(id)
+      localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", ip);
       localStorage.setItem("speedGid", t);
       localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));

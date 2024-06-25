@@ -15,7 +15,7 @@ import { updateDelay } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import useCefQuery from "@/hooks/useCefQuery";
-
+import playSuitApi from "@/api/speed";
 import "./style.scss";
 import BarChart from "@/containers/BarChart/index";
 import RegionNodeSelector from "@/containers/RegionNodeSelector/index";
@@ -75,8 +75,11 @@ const GameDetail: React.FC = () => {
   };
 
   // 停止加速
-  const stopSpeed = () => {
+  const stopSpeed = async() => {
     setStopModalOpen(false);
+    const jsKey = localStorage.getItem("StartKey")
+    const stopInfo = await playSuitApi.playSpeedEnd({ platform: 3, js_key: jsKey }); // 游戏加速信息
+    console.log("停止加速接口调用返回信息",stopInfo)
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",
