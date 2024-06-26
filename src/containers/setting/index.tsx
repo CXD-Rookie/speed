@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-26 16:14:57
+ * @LastEditTime: 2024-06-26 17:44:52
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -214,7 +214,16 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="item-content">
                   <span>
                     开机自动启动
-                    <Switch defaultChecked />
+                    <Switch defaultChecked   
+                      onChange={(checked: boolean) => {
+                      console.log(checked);
+                      if(checked){
+                        (window as any).NativeApi_UpdateConfig('auto_run', 1);
+                      }else{
+                        (window as any).NativeApi_UpdateConfig('auto_run', 0);
+                      }
+                      
+                    }}/>
                   </span>
                   <span>
                     桌面快捷图标
@@ -239,9 +248,14 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   <Radio.Group
                     onChange={(e) => {
                       let value = e.target.value;
-
+                      console.log(e,'-------------------')
                       setCloseWindow(value);
                       localStorage.setItem("close_window_sign", value);
+                      if(e){
+                        (window as any).NativeApi_UpdateConfig('close_button_action', 1);
+                      }else{
+                        (window as any).NativeApi_UpdateConfig('close_button_action', 0);
+                      }
                     }}
                     value={closeWindow}
                   >
