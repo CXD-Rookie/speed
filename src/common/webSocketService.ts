@@ -78,7 +78,7 @@ class WebSocketService {
         client_id: localStorage.getItem('client_id') || '',
         user_token: JSON.parse(token ? token : ''),
       });
-    }, 5000); // 每5秒发送一次心跳
+    }, 3000); // 每5秒发送一次心跳
   }
 
   stopHeartbeat() {

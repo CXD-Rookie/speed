@@ -2,13 +2,13 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-26 15:01:39
+ * @LastEditTime: 2024-06-26 16:14:57
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { Fragment, useState, useEffect } from "react";
-import { Modal, Tabs, Button, Switch, Radio, Card } from "antd";
+import { Modal, Tabs, Button, Switch, Radio, Card, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
@@ -43,7 +43,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const accountInfo = useSelector((state: any) => state.accountInfo);
   const isLogin = useSelector((state: any) => state.isLogin);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
-
+  const [loading, setLoading] = React.useState<boolean>(true);
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
@@ -175,10 +175,18 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     }
   }, [activeTab]);
 
+  // useEffect(() => {
+  //   // showLoading()
+  //   console.log(accountInfo,"用户信息是否更新")
+  //   console.log(accountInfo?.userInfo)
+  // }, [accountInfo]);
+
   useEffect(() => {
-    console.log(accountInfo,"用户信息是否更新")
-    console.log(accountInfo?.userInfo)
-  }, [accountInfo]);
+    // 模拟一个异步操作，比如数据获取
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000); // 假设2秒后数据加载完毕
+  }, []);
 
   return (
     <Fragment>
@@ -193,6 +201,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
         centered
         footer={null}
       >
+        
         <Tabs
           className="tabActive"
           activeKey={activeTab}
@@ -277,6 +286,12 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
           </TabPane>
           {accountInfo?.isLogin && (
             <TabPane tab="账号设置" key="account">
+              {loading ? (
+
+              <div style={{ position: 'relative', height: '60vh' }}>
+                <Spin size="large" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }} />
+              </div>
+              ) : (
               <div className="tab-content">
                 <div className="tab-avatar">
                   <UserAvatarCom
@@ -400,6 +415,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   )}
                 </div>
               </div>
+                
+              )}
+              
             </TabPane>
           )}
           <TabPane tab="修复工具" key="fix">
