@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Select, Button, Table } from "antd";
-import { DownOutlined, UpOutlined  } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -13,7 +12,8 @@ const { Option } = Select;
 const { Column } = Table;
 
 interface RegionNodeSelectorProps {
-  visible: boolean;
+  open: boolean;
+  options: any;
   detailData?: any;
   onCancel: () => void;
   onSelect?: (value: any) => void;
@@ -21,7 +21,8 @@ interface RegionNodeSelectorProps {
 
 const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   detailData,
-  visible,
+  options,
+  open,
   onCancel,
   onSelect,
 }) => {
@@ -36,7 +37,9 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   const [regions, setRegions] = useState([]); // 区服列表
   //@ts-ignore
-  const [subRegions, setSubRegions] = useState<{ [key: string]: SubRegion[] }>({});
+  const [subRegions, setSubRegions] = useState<{ [key: string]: SubRegion[] }>(
+    {}
+  );
   const [selectRegions, setSelectRegions] = useState([]); // 选择过的区服列表
   const [selectValue, setSelectValue] = useState<any>(""); // 当前选择的区服id
   const [selectInfo, setSelectInfo] = useState<any>({}); // 当前选择的区服信息
@@ -50,7 +53,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     setSelectedNode(node);
     console.log("Selected node:", node);
   };
-
 
   // const togglePanel = (panelKey: string) => {
   //   if (expandedPanels.includes(panelKey)) {
@@ -71,7 +73,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   // 获取每个区服的子区服列表
   const handleSubRegions = async () => {
     try {
-      let res = await playSuitApi.playSuitInfo({ system_id: 3, gid: localStorage.getItem('speedGid') });
+      let res = await playSuitApi.playSuitInfo({
+        system_id: 3,
+        gid: localStorage.getItem("speedGid"),
+      });
       const subRegionsData = res?.data || [];
       const subRegionsMap = subRegionsData.reduce((acc: any, region: any) => {
         if (region.children && region.children.length > 0) {
@@ -82,7 +87,12 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
         return acc;
       }, {});
       setSubRegions(subRegionsMap);
-      setRegions(subRegionsData.map((region: any) => ({ id: region.qu, name: region.qu })));
+      setRegions(
+        subRegionsData.map((region: any) => ({
+          id: region.qu,
+          name: region.qu,
+        }))
+      );
     } catch (error) {
       console.log(error);
     }
@@ -127,7 +137,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
   };
 
-// 选择区服旧逻辑
+  // 选择区服旧逻辑
   const handleSelectRegion = (region: any) => {
     let arr: any = getMyGames(); // 我的游戏列表
     let acc_arr = arr.filter((item: any) => item?.is_accelerate); // 当前加速游戏的数据
@@ -294,7 +304,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   return (
     <Modal
       className="region-node-selector"
-      open={visible}
+      open={open}
       title="区服、节点选择"
       destroyOnClose
       width={"67.6vw"}
@@ -334,42 +344,48 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
             <div className="region-buttons">
               {regions
-              .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
-              .map((region:any) => (
-              <div>
-                <Button
-                  onClick={() => togglePanel(region.id)}
-                  className="region-button"
-                  style={{ marginBottom: 8 }}
-                >
-                  {/* {region.name} <DownOutlined /> */}
-                  {region.name}{" "}
-                  {/* {expandedPanels.includes(region.id) ? <UpOutlined /> : <DownOutlined />} */}
-                  <span className={expandedPanels.includes(region.id) ? "up-triangle" : "down-triangle"}></span>
-                </Button>
-              </div>
-            ))}
+                .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
+                .map((region: any) => (
+                  <div>
+                    <Button
+                      onClick={() => togglePanel(region.id)}
+                      className="region-button"
+                      style={{ marginBottom: 8 }}
+                    >
+                      {/* {region.name} <DownOutlined /> */}
+                      {region.name}{" "}
+                      {/* {expandedPanels.includes(region.id) ? <UpOutlined /> : <DownOutlined />} */}
+                      <span
+                        className={
+                          expandedPanels.includes(region.id)
+                            ? "up-triangle"
+                            : "down-triangle"
+                        }
+                      ></span>
+                    </Button>
+                  </div>
+                ))}
             </div>
             <div className="sub-btns">
-            {regions
-              .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
-              .map((region:any) => (
-              <div>
-                {expandedPanels.includes(region.id) && (
+              {regions
+                .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
+                .map((region: any) => (
                   <div>
-                    {subRegions[region.name]?.map((subRegion: any) => (
-                      <Button
-                        key={subRegion.qu}
-                        className="region-button"
-                        onClick={() => handleSelectRegion(subRegion)}
-                      >
-                        {subRegion.qu}
-                      </Button>
-                    ))}
+                    {expandedPanels.includes(region.id) && (
+                      <div>
+                        {subRegions[region.name]?.map((subRegion: any) => (
+                          <Button
+                            key={subRegion.qu}
+                            className="region-button"
+                            onClick={() => handleSelectRegion(subRegion)}
+                          >
+                            {subRegion.qu}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                ))}
             </div>
 
             <div className="not-have-region">没有找到区服？</div>

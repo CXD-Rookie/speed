@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-26 14:38:16
+ * @LastEditTime: 2024-06-26 15:48:34
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -16,8 +16,10 @@ import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
-import useCefQuery from "@/hooks/useCefQuery";
+
 import "./style.scss";
+import RegionNodeSelector from "@/containers/RegionNodeSelector";
+import useCefQuery from "@/hooks/useCefQuery";
 import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";
@@ -55,7 +57,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
-  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
 
@@ -70,14 +72,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const [minorType, setMinorType] = useState<string>("acceleration"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
-  const [startKey, setStartKey] = useState<string>(""); // 是否成年 类型充值还是加速
+  const [startKey, setStartKey] = useState<string>(""); //
   const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
+
+  const [isOpenRegion, setIsOpenRegion] = useState(false); // 是否是打开选择区服节点
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认加速
   const [stopModalOpen, setStopModalOpen] = useState(false); // 停止加速确认
   const [isStartAnimate, setIsStartAnimate] = useState(false); // 是否开始加速动画
   const [selectAccelerateOption, setSelectAccelerateOption] = useState<any>(); // 选择加速的数据
-  const token = localStorage.getItem("token") || "";
+
   const [isAllowAcceleration, setIsAllowAcceleration] = useState<boolean>(true); // 是否允许加速
   const [isAllowShowAccelerating, setIsAllowShowAccelerating] =
     useState<boolean>(true); // 是否允许显示加速中
@@ -112,12 +116,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     );
   };
 
+  // 获取游戏运营平台列表
   const fetchPcPlatformList = async () => {
     try {
       let res = await playSuitApi.pcPlatform();
-      let keys = Object?.keys(res?.data);
 
-      return keys;
+      return res?.data;
     } catch (error) {
       console.log(error);
     }
@@ -191,6 +195,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
+    console.log(option);
+    if (option) {
+      setIsOpenRegion(true);
+      return;
+    }
+
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
@@ -238,19 +248,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const handleClearGame = (option: object) => {
     removeGameList(option);
     triggerDataUpdate();
-  };
-
-  const openSelect = (option: object) => {
-    console.log("打开 区服列表");
-    showModal();
-  };
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const hideModal = () => {
-    setIsModalVisible(false);
   };
 
   // 点击立即加速
@@ -330,7 +327,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   alt=""
                   onClick={(e) => {
                     e.stopPropagation();
-                    openSelect(option);
+                    setIsOpenRegion(true);
                   }}
                 />
                 <img
@@ -449,6 +446,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           type={"stopAccelerate"}
           setAccelOpen={setStopModalOpen}
           onConfirm={stopAcceleration}
+        />
+      ) : null}
+      {isOpenRegion ? (
+        <RegionNodeSelector
+          open={isOpenRegion}
+          options={selectAccelerateOption}
+          onCancel={() => setIsOpenRegion(false)}
+          // onSelect={(e) => setRegionInfo(e)}
         />
       ) : null}
     </div>
