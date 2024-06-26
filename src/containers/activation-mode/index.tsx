@@ -2,15 +2,16 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-26 10:57:47
+ * @LastEditTime: 2024-06-26 11:49:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
  */
-import React, { useState } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Modal, Button, Select, Input } from "antd";
 
 import "./index.scss";
+import playSuitApi from "@/api/speed";
 
 const { Option } = Select;
 
@@ -60,6 +61,8 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
   const [filePath, setFilePath] = useState(""); // 启动路径
   const [game, setGame] = useState<Game | null>(null);
 
+  const [platforms, setPlatforms] = useState<any>({});
+
   const handleInputChange = () => {
     console.log("打开路径=====================", gameId);
 
@@ -103,6 +106,22 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     }
   };
 
+  const handleMethod = async () => {
+    try {
+      let res = await playSuitApi.pcPlatform();
+
+      setPlatforms(res?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      handleMethod();
+    }
+  }, [open]);
+
   return (
     <Modal
       className="activation-modal"
@@ -117,8 +136,15 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     >
       <div className="activation-modal-content">
         <div className="content-title">启动平台：</div>
-        <Select className="content-select" defaultValue={"Steam"}>
-          <Option value="Steam">Steam</Option>
+        <Select className="content-select">
+          {Object?.keys(platforms)?.length > 0 &&
+            Object?.keys(platforms)?.map((key: any) => {
+              return (
+                <Option value="Steam" key={key}>
+                  {key === "0" ? "自定义" : platforms?.[key]}
+                </Option>
+              );
+            })}
         </Select>
         <div className="content-title">启动路径：</div>
         <div className="content-path-box">
