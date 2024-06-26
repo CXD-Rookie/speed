@@ -38,7 +38,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   const [bindType, setBindType] = useState(""); // third oldPhone newPhone
   const [countdown, setCountdown] = useState(0);
 
-  const [phone, setPhone] = useState(accountInfoRedux?.userInfo?.phone);
+  const [phone, setPhone] = useState(accountInfoRedux?.userInfo?.userInfo?.phone);
   const [code, setCode] = useState("");
 
   const [isPhone, setIsPhone] = useState(false);

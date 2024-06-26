@@ -78,7 +78,7 @@ const App: React.FC = (props: any) => {
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
 
-  const userInfo = useSelector((state: any) => state.accountInfo.user_info); // 替换为你的 state 结构
+  const userInfo = useSelector((state: any) => state.accountInfo); // 替换为你的 state 结构
 
   const menuList: CustomMenuProps[] = [
     {
@@ -255,17 +255,18 @@ const App: React.FC = (props: any) => {
 
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
+     
       const data = JSON.parse(event.data);
-
+      console.log(data,"ws返回的信息---------------")
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
         let userInfo = data?.data?.user_info || {};
-
         if (String(userInfo?.phone)?.length > 1) {
-          dispatch(setAccountInfo(data.data.user_info));
+          
           // 3个参数 用户信息 是否登录 是否显示登录
-          dispatch(setAccountInfo({}, true, false));
+          dispatch(setAccountInfo({userInfo}, true, false));
+        
         } else {
           dispatch(updateBindPhoneState(true));
         }
@@ -281,8 +282,8 @@ const App: React.FC = (props: any) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("Redux 中的 user_info 更新为:", userInfo);
-  }, [userInfo]);
+    console.log("Redux 中的 user_info 更新为:", accountInfo);
+  }, [accountInfo]);
 
   return (
     <Layout className="app-module">
