@@ -230,27 +230,9 @@ const App: React.FC = (props: any) => {
     e.stopPropagation();
   };
 
-  const handleSuitDomList = async () => {
-    try {
-      let res = await playSuitApi.pcPlatform();
-      console.log("获取运营平台信息", res.data[1]);
-      const keys = Object.keys(res.data);
-      console.log(keys);
-      localStorage.setItem("pid", keys[0]);
-      // 更新 state
-      //@ts-ignore
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     setMenuActive(location?.pathname);
   }, [location]);
-
-  useEffect(() => {
-    handleSuitDomList();
-  }, []);
 
   useEffect(() => {
     setupInterceptors({

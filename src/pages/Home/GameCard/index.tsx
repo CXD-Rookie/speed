@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-25 20:47:28
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-26 14:38:16
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -87,7 +87,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 停止加速
   const stopAcceleration = () => {
-    console.log("1111111111")
+    console.log("1111111111");
     setStopModalOpen(false);
     // 停止加速
     sendMessageToBackend(
@@ -112,13 +112,23 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     );
   };
 
+  const fetchPcPlatformList = async () => {
+    try {
+      let res = await playSuitApi.pcPlatform();
+      let keys = Object?.keys(res?.data);
+
+      return keys;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (t: any) => {
     try {
-      const pid = localStorage.getItem("pid");
       const [speedInfoRes, speedListRes] = await Promise.all([
-        playSuitApi.speedInfo({ platform: 3, gid: t, pid }), // 游戏加速信息
-        playSuitApi.playSpeedList({ platform: 3, gid: t, pid }), // 游戏加速节点列表
+        playSuitApi.speedInfo({ platform: 3, gid: t, pid: "1" }), // 游戏加速信息
+        playSuitApi.playSpeedList({ platform: 3, gid: t, pid: "1" }), // 游戏加速节点列表
       ]);
 
       console.log("获取游戏加速用的信息", speedInfoRes);
@@ -126,11 +136,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes?.data?.executable || [];
-      const { ip, server,id } = speedListRes.data[0];//目前只有一个服务器，后期增多要遍历
-      const StartInfo = await playSuitApi.playSpeedStart({ platform: 3, gid: t, nid:id }); // 游戏加速信息
-      console.log("开始加速接口调用返回信息",StartInfo)
-      console.log("accountInfo----------",accountInfo)
-      setStartKey(id)
+      const { ip, server, id } = speedListRes.data[0]; //目前只有一个服务器，后期增多要遍历
+      const StartInfo = await playSuitApi.playSpeedStart({
+        platform: 3,
+        gid: t,
+        nid: id,
+      }); // 游戏加速信息
+      console.log("开始加速接口调用返回信息", StartInfo);
+      setStartKey(id);
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", ip);
       localStorage.setItem("speedGid", t);
