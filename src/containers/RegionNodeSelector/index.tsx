@@ -32,11 +32,11 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const { getGameList, identifyAccelerationData } = useGamesInitialize();
   const sendMessageToBackend = useCefQuery();
 
-  const [presentGameInfo, setPresentGameInfo] = useState({}); // 当前期望加速的游戏信息
+  const [presentGameInfo, setPresentGameInfo] = useState<any>({}); // 当前期望加速的游戏信息
 
   const [activeTab, setActiveTab] = useState("1"); // tab栏值
 
-  const [domHistory, setDomHistory] = useState<any>({}); // 节点历史信息
+  const [domHistory, setDomHistory] = useState<any>([]); // 节点历史信息
   const [regionDomList, setRegionDomList] = useState(); // 节点列表
   const [selectedNode, setSelectedNode] = useState<any>({}); // 当前点击列表触发的节点
 
@@ -54,14 +54,49 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
   };
 
+  // 更新游戏历史选择节点
+  const updateGamesDom = (option: any = {}) => {
+    let dom_history = presentGameInfo?.dom_history || [];
+    let is_sort = dom_history.some((item: any) => item?.id === option?.id);
+
+    if (!is_sort) {
+      dom_history.push(option);
+    }
+
+    let game_list = getGameList();
+    let find_index = game_list.findIndex(
+      (item: any) => item?.id === presentGameInfo?.id
+    );
+    let game_info = {
+      ...presentGameInfo,
+      dom_history,
+    };
+
+    setDomHistory(dom_history); // 更新当前节点信息
+    setPresentGameInfo(game_info); // 更新当前游戏信息
+
+    if (find_index !== -1) {
+      game_list[find_index] = game_info;
+
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
+    }
+
+    return dom_history;
+  };
+
   // 开始加速
   const clickStartOn = () => {
+    let domHistory = updateGamesDom(selectedNode);
+
+    onCancel();
     // 跳转到首页并触发自动加速autoAccelerate
     navigate("/home", {
       state: {
         isNav: true,
         data: {
-          ...detailData,
+          ...presentGameInfo,
+          ...selectedNode,
+          domHistory,
           router: "details",
         },
         autoAccelerate: true,
@@ -293,6 +328,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
                 .map((region: any) => (
                   <Button
+                    key={region.id}
                     onClick={() => togglePanel(region.id)}
                     className="region-button public-button"
                     style={{ marginBottom: 8 }}
@@ -331,20 +367,20 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
         <TabPane tab="节点" key="2">
           <div className="content">
             <div className="current-settings">
-              {options?.name} | {regionInfo?.select_region?.name}
+              {presentGameInfo?.name} | {regionInfo?.select_region?.name}
             </div>
             <div className="node-select">
               <div>
                 <span>节点记录:</span>
                 <Select>
-                  {/* {domHistory?.length > 0 &&
+                  {domHistory?.length > 0 &&
                     domHistory.map((item: any) => {
                       return (
                         <Option key={item?.id} value={item?.id}>
                           {item?.name}
                         </Option>
                       );
-                    })} */}
+                    })}
                 </Select>
               </div>
               <Button className="refresh-button">刷新</Button>
@@ -354,7 +390,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               dataSource={regionDomList}
               pagination={false}
               rowClassName={(record) =>
-                record.id === "" ? "selected-node" : ""
+                record.id === selectedNode?.id ? "selected-node" : ""
               }
               onRow={(record) => ({
                 onClick: () => setSelectedNode(record),

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-26 15:48:34
+ * @LastEditTime: 2024-06-26 21:16:00
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -128,29 +128,29 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 通知客户端进行游戏加速
-  const handleSuitDomList = async (t: any) => {
+  const handleSuitDomList = async (option: any) => {
     try {
-      const [speedInfoRes, speedListRes] = await Promise.all([
-        playSuitApi.speedInfo({ platform: 3, gid: t, pid: "1" }), // 游戏加速信息
-        playSuitApi.playSpeedList({ platform: 3, gid: t, pid: "1" }), // 游戏加速节点列表
-      ]);
+      const speedInfoRes = await playSuitApi.speedInfo({
+        platform: 3,
+        gid: option?.id,
+        pid: "1",
+      });
 
       console.log("获取游戏加速用的信息", speedInfoRes);
-      console.log("获取游戏加速列表的信息", speedListRes);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const process = speedInfoRes?.data?.executable || [];
-      const { ip, server, id } = speedListRes.data[0]; //目前只有一个服务器，后期增多要遍历
+      const { ip, server, id } = option.dom_history[0]; //目前只有一个服务器，后期增多要遍历
       const StartInfo = await playSuitApi.playSpeedStart({
         platform: 3,
-        gid: t,
+        gid: option?.id,
         nid: id,
       }); // 游戏加速信息
       console.log("开始加速接口调用返回信息", StartInfo);
       setStartKey(id);
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", ip);
-      localStorage.setItem("speedGid", t);
+      localStorage.setItem("speedGid", option?.id);
       localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
 
       // 真实拼接
@@ -164,7 +164,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         tcp_tunnel_mode: 0,
         udp_tunnel_mode: 1,
         user_id: accountInfo?.userInfo?.id,
-        game_id: t,
+        game_id: option?.id,
         tunnel: {
           address: ip,
           server: server,
@@ -196,7 +196,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
     console.log(option);
-    if (option) {
+    if (!option?.dom_history?.[0]?.id) {
       setIsOpenRegion(true);
       return;
     }
@@ -216,7 +216,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const isCheck = JSON.parse(response);
 
         accelerateGameToList(option); // 加速完后更新我的游戏
-        handleSuitDomList(option.id); // 通知客户端进行加速
+        handleSuitDomList(option); // 通知客户端进行加速
         // 暂时注释 实际生产打开
         // if (isCheck?.pre_check_status === 0) {
         //   handleSuitDomList(option.id);
@@ -234,7 +234,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       setIsAllowShowAccelerating(true); // 启用显示加速中
       setIsStartAnimate(false); // 结束加速动画
 
-      navigate("/gameDetail");
+      // navigate("/gameDetail");
     }, 5000);
   };
 
@@ -258,7 +258,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (res) {
         const latestAccountInfo = store.getState().accountInfo;
         const userInfo = latestAccountInfo?.userInfo; // 用户信息
-        console.log("点击加速之后的用户信息userInfo---------------",userInfo)
+        console.log("点击加速之后的用户信息userInfo---------------", userInfo);
         // 是否登录
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
