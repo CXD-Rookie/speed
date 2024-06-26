@@ -108,8 +108,9 @@
 
     .region-buttons {
       margin-top: 6vh;
+      // margin-left: 0.5vw;
       display: flex;
-      column-gap: 1.1vw;
+      // column-gap: 1.1vw;
       row-gap: 0.9vh;
       justify-content: flex-start;
       flex-wrap: wrap;
@@ -122,6 +123,25 @@
         background: #6b6b7d;
         border-radius: 0.5vw;
         margin-right: 1vw;
+      }
+    }
+    .sub-btns{
+      display: flex;
+      column-gap: 1.1vw;
+      flex-direction: column;
+      opacity: 0.29;
+      background: #6b6b7d;
+      border-radius: 0.5vh;
+      margin-top: 1vh;
+      .region-button {
+        width: 11.3vw;
+        height: 6vh;
+        font-size: 1.4vw;
+        color: #fff;
+        border: none;
+        background: #6b6b7d;
+        border-radius: 0.5vw;
+        // margin: 0.5vw;
       }
     }
 
@@ -273,4 +293,22 @@
 .ant-select-item-option-selected {
   background-color: #3E3E4A !important; /* 修改背景颜色 */
   color: #fff !important;            /* 修改文字颜色 */
+}
+
+
+.up-triangle {
+  border-bottom: 0.5vw solid #fff;
+}
+
+.down-triangle {
+  border-top: 0.5vw solid #fff;
+}
+.up-triangle, .down-triangle {
+  display: inline-block;
+  margin-left: 8px;
+  width: 1vw;
+  margin-bottom: 0.1vw;
+  // height: 1vh;
+  border-left: 0.5vw solid transparent;
+  border-right: 0.5vw solid transparent;
 }
