@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-14 19:26:30
+ * @LastEditTime: 2024-06-26 11:01:28
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -47,7 +47,7 @@ const GameDetail: React.FC = () => {
   } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // 启动游戏平台弹窗
 
   const [stopModalOpen, setStopModalOpen] = useState(false);
 
@@ -75,11 +75,14 @@ const GameDetail: React.FC = () => {
   };
 
   // 停止加速
-  const stopSpeed = async() => {
+  const stopSpeed = async () => {
     setStopModalOpen(false);
-    const jsKey = localStorage.getItem("StartKey")
-    const stopInfo = await playSuitApi.playSpeedEnd({ platform: 3, js_key: jsKey }); // 游戏加速信息
-    console.log("停止加速接口调用返回信息",stopInfo)
+    const jsKey = localStorage.getItem("StartKey");
+    const stopInfo = await playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: jsKey,
+    }); // 游戏加速信息
+    console.log("停止加速接口调用返回信息", stopInfo);
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",
@@ -324,15 +327,16 @@ const GameDetail: React.FC = () => {
               onCancel={hideModal}
               onSelect={(e) => setRegionInfo(e)}
             />
-            {isOpen && (
-              <ActivationModal
-                gameId={detailData.id}
-                onClose={() => setIsOpen(false)}
-              />
-            )}
           </div>
         </div>
       </div>
+      {isOpen && (
+        <ActivationModal
+          open={isOpen}
+          gameId={detailData.id}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
       {stopModalOpen ? (
         <BreakConfirmModal
           type={"stopAccelerate"}

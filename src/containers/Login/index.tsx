@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 18:19:37
+ * @LastEditTime: 2024-06-26 11:07:03
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -61,8 +61,8 @@ const Login: React.FC = () => {
   const handlevisitorLogin = async (event: any) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
-
-    (window as any).NativeApi_OpenBrowser(dataTitle);
+    (window as any).NativeApi_YouXiaAuth(dataTitle);
+    // (window as any).NativeApi_OpenBrowser(dataTitle);
   };
 
   const handleVerificationCodeChange = (
