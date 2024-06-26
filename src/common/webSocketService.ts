@@ -18,6 +18,7 @@ class WebSocketService {
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     const token = localStorage.getItem('token');
+    // console.log("游侠token-------------------------",token)
     // if (!token) {
     //   console.log('Token not found in localStorage. WebSocket connection skipped.');
     //   return;
@@ -28,7 +29,7 @@ class WebSocketService {
     } catch (e) {
       console.log('Failed to parse token:', e);
     }
-
+    // console.log("发送消息的userToken-------------------------",userToken)
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => {

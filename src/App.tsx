@@ -257,7 +257,7 @@ const App: React.FC = (props: any) => {
     const handleWebSocketMessage = (event: MessageEvent) => {
      
       const data = JSON.parse(event.data);
-      console.log(data,"ws返回的信息---------------")
+      // console.log(data,"ws返回的信息---------------")
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
@@ -282,7 +282,7 @@ const App: React.FC = (props: any) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("Redux 中的 user_info 更新为:", accountInfo);
+    // console.log("Redux 中的 user_info 更新为:", accountInfo);
   }, [accountInfo]);
 
   return (
