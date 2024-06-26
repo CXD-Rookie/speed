@@ -108,40 +108,48 @@
 
     .region-buttons {
       margin-top: 6vh;
-      // margin-left: 0.5vw;
       display: flex;
-      // column-gap: 1.1vw;
-      row-gap: 0.9vh;
       justify-content: flex-start;
       flex-wrap: wrap;
-      .region-button {
+      column-gap: 1vw;
+      row-gap: 0.9vh;
+
+      .public-button {
         width: 11.3vw;
         height: 6vh;
         font-size: 1.4vw;
         color: #fff;
-        border: none;
         background: #6b6b7d;
         border-radius: 0.5vw;
-        margin-right: 1vw;
+      }
+
+      .smart-match {
+        text-align: center;
+        line-height: 6vh;
+        cursor: pointer;
+      }
+
+      .region-button {
+        border: none;
       }
     }
+
     .sub-btns{
       display: flex;
-      column-gap: 1.1vw;
-      flex-direction: column;
-      opacity: 0.29;
-      background: #6b6b7d;
+      flex-wrap: wrap;
+      gap: 1vw;
+      background: rgba(107, 107, 125, 0.3);
       border-radius: 0.5vh;
       margin-top: 1vh;
+
       .region-button {
         width: 11.3vw;
         height: 6vh;
         font-size: 1.4vw;
         color: #fff;
         border: none;
-        background: #6b6b7d;
+        background: transparent;
         border-radius: 0.5vw;
-        // margin: 0.5vw;
       }
     }
 

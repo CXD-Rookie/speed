@@ -6,6 +6,7 @@ import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
+import useCefQuery from "@/hooks/useCefQuery";
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -29,38 +30,21 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const navigate = useNavigate();
 
   const { getGameList, identifyAccelerationData } = useGamesInitialize();
+  const sendMessageToBackend = useCefQuery();
 
-  const [selectedNode, setSelectedNode] = useState<any>();
-  const [selectedNodeKey, setSelectedNodeKey] = useState<string | null>(null);
+  const [presentGameInfo, setPresentGameInfo] = useState({}); // 当前期望加速的游戏信息
+
+  const [activeTab, setActiveTab] = useState("1"); // tab栏值
+
+  const [domHistory, setDomHistory] = useState<any>({}); // 节点历史信息
   const [regionDomList, setRegionDomList] = useState(); // 节点列表
-  const [regionDomHistory, setRegionDomHistory] = useState(); // 节点历史
+  const [selectedNode, setSelectedNode] = useState<any>({}); // 当前点击列表触发的节点
 
+  const [subRegions, setSubRegions] = useState<any>({}); // 区服信息列表
   const [regions, setRegions] = useState([]); // 区服列表
-  //@ts-ignore
-  const [subRegions, setSubRegions] = useState<{ [key: string]: SubRegion[] }>(
-    {}
-  );
-  const [selectRegions, setSelectRegions] = useState([]); // 选择过的区服列表
-  const [selectValue, setSelectValue] = useState<any>(""); // 当前选择的区服id
-  const [selectInfo, setSelectInfo] = useState<any>({}); // 当前选择的区服信息
-  const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
-  const handleNodeClick = (node: {
-    key: string;
-    ip: string;
-    server: { port: number }[];
-  }) => {
-    setSelectedNodeKey((node as any)?.id);
-    setSelectedNode(node);
-    console.log("Selected node:", node);
-  };
+  const [regionInfo, setRegionInfo] = useState<any>({}); // 当前选择的区服信息
 
-  // const togglePanel = (panelKey: string) => {
-  //   if (expandedPanels.includes(panelKey)) {
-  //     setExpandedPanels(expandedPanels.filter((key) => key !== panelKey));
-  //   } else {
-  //     setExpandedPanels([...expandedPanels, panelKey]);
-  //   }
-  // };
+  const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
 
   const togglePanel = (panelKey: string) => {
     if (expandedPanels.includes(panelKey)) {
@@ -70,216 +54,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
   };
 
-  // 获取每个区服的子区服列表
-  const handleSubRegions = async () => {
-    try {
-      let res = await playSuitApi.playSuitInfo({
-        system_id: 3,
-        gid: localStorage.getItem("speedGid"),
-      });
-      const subRegionsData = res?.data || [];
-      const subRegionsMap = subRegionsData.reduce((acc: any, region: any) => {
-        if (region.children && region.children.length > 0) {
-          acc[region.qu] = region.children;
-        } else {
-          acc[region.qu] = [];
-        }
-        return acc;
-      }, {});
-      setSubRegions(subRegionsMap);
-      setRegions(
-        subRegionsData.map((region: any) => ({
-          id: region.qu,
-          name: region.qu,
-        }))
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // 更新游戏默认选择区服
-  const updateGamesRegion = () => {
-    let game_list: any = getGameList(); // 我的游戏列表
-
-    if (game_list?.length > 0 && game_list instanceof Array) {
-      game_list = game_list.map((game: any) => {
-        let region = game?.select_region || [];
-
-        if (region?.length < 1) {
-          region = [{ id: "2", region: "国服", is_select: true }];
-        } else {
-          let find_index = region.findIndex((select: any) => select?.is_select);
-
-          if (find_index === -1) {
-            region = region.map((item: any) => ({
-              ...item,
-              is_select: item?.id === "2",
-            }));
-          }
-        }
-
-        return {
-          ...game,
-          select_region: region,
-        };
-      });
-    }
-
-    let accel_obj = identifyAccelerationData(game_list)?.[1] || {};
-    let select_arr = accel_obj?.select_region || [];
-    let result = select_arr.filter((item: any) => item?.is_select);
-
-    setSelectValue(result?.[0]?.id);
-    setSelectInfo(result?.[0]);
-    setSelectRegions(select_arr);
-
-    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
-  };
-
-  // 选择区服旧逻辑
-  const handleSelectRegion = (region: any) => {
-    let arr: any = getMyGames(); // 我的游戏列表
-    let acc_arr = arr.filter((item: any) => item?.is_accelerate); // 当前加速游戏的数据
-    let region_arr = acc_arr?.[0]?.select_region || []; // 当前加速游戏的历史区服列表
-
-    console.log("选择区服参数：", region);
-    // 去重 添加
-    if (!region_arr.some((item: any) => item?.id === region?.id)) {
-      region_arr.push(region);
-    }
-
-    // 选择当前区服
-    region_arr = region_arr.map((item: any) => {
-      return { ...item, is_select: item?.id === region?.id };
-    });
-
-    // 更新当前区服列表
-    acc_arr[0].select_region = region_arr;
-
-    setSelectRegions(region_arr);
-    setSelectValue(region?.id);
-    setSelectInfo(region);
-    //@ts-ignore
-    onSelect(region); // 将选中数据返回上级
-
-    // 更新我的游戏
-    let arr_index = arr.findIndex((item: any) => item?.is_accelerate);
-
-    arr[arr_index] = acc_arr[0];
-    arr = arr.map((item: any) => ({ ...item, is_accelerate: false }));
-
-    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
-
-    onCancel();
-
-    // 跳转到首页并触发自动加速autoAccelerate
-    navigate("/home", {
-      state: {
-        isNav: true,
-        data: {
-          ...acc_arr[0],
-          router: "details",
-        },
-        autoAccelerate: true,
-      },
-    });
-  };
-
-  const handleSuitDomList = async () => {
-    try {
-      let res = await playSuitApi.playSpeedList({
-        platform: 3,
-        nid: selectValue,
-      });
-      console.log("获取节点列表", res);
-
-      const nodes = res?.data || [];
-
-      // 创建一个新的Promise数组，以便等待所有异步操作完成
-      const updatedNodes = await Promise.all(
-        nodes.map(async (node: any) => {
-          const requestData = JSON.stringify({
-            method: "NativeApi_GetIpDelayByICMP",
-            params: { ip: node.ip },
-          });
-
-          return new Promise<any>((resolve, reject) => {
-            (window as any).cefQuery({
-              request: requestData,
-              onSuccess: (response: any) => {
-                console.log("Response from C++:", response);
-                const jsonResponse = JSON.parse(response);
-                resolve({
-                  ...node,
-                  delay: jsonResponse.delay,
-                  packetLoss: 10,
-                  mode: "进程模式",
-                });
-              },
-              onFailure: (errorCode: any, errorMessage: any) => {
-                console.error("Query failed:", errorMessage);
-                resolve({
-                  ...node,
-                  delay: 9999, // 处理失败的情况，设为9999
-                  packetLoss: 10,
-                  mode: "进程模式",
-                });
-              },
-            });
-          });
-        })
-      );
-
-      // 更新 state
-      //@ts-ignore
-      setRegionDomList(updatedNodes);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // 切换tab
-  const handleTabsChange = (e: any) => {
-    if (e === "2") {
-      let arr = detailData?.dom_history || [];
-
-      setRegionDomHistory(arr);
-      handleSuitDomList();
-    }
-  };
-
   // 开始加速
   const clickStartOn = () => {
-    // 当前选中的节点 selectedNode
-    let arr: any = getMyGames(); // 我的游戏列表
-    let acc_arr = arr.filter((item: any) => item?.is_accelerate); // 当前加速游戏的数据
-    let region_arr = acc_arr?.[0]?.dom_history || []; // 当前加速游戏的历史区服列表
-
-    console.log("选择节点参数：", selectedNode);
-    // 去重 添加
-    if (!region_arr.some((item: any) => item?.id === selectedNode?.id)) {
-      region_arr.push(selectedNode);
-    }
-
-    // 选择当前节点
-    region_arr = region_arr.map((item: any) => {
-      return { ...item, is_select: item?.id === selectedNode?.id };
-    });
-
-    // 更新当前区服列表
-    acc_arr[0].dom_history = region_arr;
-
-    setRegionDomHistory(region_arr);
-
-    // 更新我的游戏
-    let arr_index = arr.findIndex((item: any) => item?.is_accelerate);
-
-    arr[arr_index] = acc_arr[0];
-    arr = arr.map((item: any) => ({ ...item, is_accelerate: false }));
-
-    // localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(arr));
-
     // 跳转到首页并触发自动加速autoAccelerate
     navigate("/home", {
       state: {
@@ -293,13 +69,180 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     });
   };
 
-  useEffect(() => {
-    updateGamesRegion();
-  }, []);
+  // 获取每个区服的子区服列表
+  const handleSubRegions = async () => {
+    try {
+      let res = await playSuitApi.playSuitInfo({
+        system_id: 3,
+        gid: localStorage.getItem("speedGid"),
+      });
+
+      const subRegionsData = res?.data || [];
+      const subRegionsMap = subRegionsData.reduce((acc: any, region: any) => {
+        if (region.children && region.children.length > 0) {
+          acc[region.qu] = region.children;
+        } else {
+          acc[region.qu] = [];
+        }
+        return acc;
+      }, {});
+
+      setSubRegions(subRegionsMap);
+      setRegions(
+        subRegionsData.map((region: any) => ({
+          id: region.qu,
+          name: region.qu,
+        }))
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 进行节表格数据 延迟 进行组合拼接
+  const handleSuitDomList = async (nodes: any = []) => {
+    // 创建一个新的Promise数组，以便等待所有异步操作完成
+    const updatedNodes: any = await Promise.all(
+      nodes.map(async (node: any) => {
+        return new Promise<any>((resolve, reject) => {
+          let default_node = {
+            ...node,
+            delay: 9999,
+            packetLoss: 10,
+            mode: "进程模式",
+          };
+
+          sendMessageToBackend(
+            JSON.stringify({
+              method: "NativeApi_GetIpDelayByICMP",
+              params: { ip: node.ip },
+            }),
+            (response: any) => {
+              console.log("Success response from 获取延迟:", response);
+              const jsonResponse = JSON.parse(response);
+
+              resolve({
+                ...default_node,
+                delay: jsonResponse.delay,
+              });
+            },
+            (errorCode: any, errorMessage: any) => {
+              console.error("Failure response from 获取延迟:", errorCode);
+              resolve(default_node);
+            }
+          );
+        });
+      })
+    );
+
+    setRegionDomList(updatedNodes);
+  };
+
+  // 更新游戏历史选择区服
+  const updateGamesRegion = (option: any = {}, select_region: any = {}) => {
+    let region = option?.region || {};
+
+    if (!(Object?.keys(region)?.length > 0)) {
+      const select_region = {
+        id: "smart_match",
+        name: "智能匹配",
+      };
+      region = {
+        select_region, // 默认区服 智能匹配
+        history_region: [select_region], // 历史选择区服
+      };
+    }
+
+    // 点击新区服进行添加到历史记录
+    if (Object?.keys(select_region)?.length > 0) {
+      let history = region?.history_region;
+      // 判断是否重复数据
+      let find_sort = region?.history_region.findIndex(
+        (item: any) => item?.id === select_region?.id
+      );
+
+      history = find_sort !== -1 ? history : [...history, select_region];
+      region = {
+        select_region, // 点击选择的区服
+        history_region: history, // 历史选择区服
+      };
+    }
+
+    let game_list = getGameList();
+    let find_index = game_list.findIndex(
+      (item: any) => item?.id === option?.id
+    );
+    let game_info = {
+      ...option,
+      region,
+    };
+
+    setRegionInfo(region); // 更新当前区服信息
+    setPresentGameInfo(game_info); // 更新当前游戏信息
+
+    if (find_index !== -1) {
+      game_list[find_index] = game_info;
+
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
+    }
+
+    return region;
+  };
+
+  // 初始化获取所有的加速服务器列表
+  const fetchAllSpeedList = async (params = {}) => {
+    try {
+      let res = await playSuitApi.playSpeedList({
+        platform: 3,
+        ...params,
+      });
+
+      handleSuitDomList(res?.data || []); // 进行当前选择的节点的表格数据组合
+    } catch (error) {
+      console.log("初始化获取所有的加速服务器列表:", error);
+    }
+  };
+
+  // 切换 tabs 进行区服 节点切换
+  const tabsChange = (event: any) => {
+    if (event === "2") {
+      setDomHistory(options?.dom_history || {});
+    }
+
+    setActiveTab(event);
+  };
+
+  // 点击 选择区服
+  const clickRegion = (option: any, type = "default") => {
+    console.log();
+
+    fetchAllSpeedList(); // 暂时只有固定的几个节点，所以直接获取节点就行，不需要传区服id
+    tabsChange("2");
+
+    if (type === "custom") {
+      updateGamesRegion(presentGameInfo, option);
+    } else {
+      updateGamesRegion(presentGameInfo, {
+        id: option?.fu + option?.qu,
+        name: `${option?.fu}${option?.qu && "-" + option?.qu}`,
+      });
+    }
+  };
 
   useEffect(() => {
-    handleSubRegions(); // 改为调用 handleSubRegions 初始化
-  }, []);
+    const initializeFetch = async () => {
+      let region = updateGamesRegion(options); // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
+
+      setPresentGameInfo(options);
+      // 初始化默认选择的区服不是智能匹配
+      fetchAllSpeedList(region?.id !== "smart_match" && {});
+      handleSubRegions(); // 改为调用 handleSubRegions 初始化获取所有的区服信息
+    };
+
+    if (open) {
+      initializeFetch();
+    }
+  }, [open]);
 
   return (
     <Modal
@@ -313,108 +256,97 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       footer={null}
       onCancel={onCancel}
     >
-      <Tabs defaultActiveKey="1" onChange={handleTabsChange}>
+      <Tabs activeKey={activeTab} onChange={tabsChange}>
         <TabPane tab="区服" key="1">
           <div className="content">
             <div className="current-box">
-              <div className="current-game">{detailData?.name}</div>
+              <div className="current-game">{options?.name}</div>
               <div className="current-region">
                 当前区服:
                 <Select
                   className="region-select"
-                  value={selectValue}
-                  onChange={(value) => {
-                    let arr: any = selectRegions.filter(
-                      (child: any) => child?.id === value
-                    );
-                    setSelectValue(value);
-                    handleSelectRegion({ id: value, region: arr?.[0]?.region });
-                  }}
+                  value={regionInfo?.select_region?.id}
+                  onChange={(value) =>
+                    clickRegion(
+                      regionInfo?.history_region?.filter(
+                        (child: any) => child?.id === value
+                      )?.[0],
+                      "custom"
+                    )
+                  }
                 >
-                  {selectRegions.map((item: any) => {
+                  {regionInfo?.history_region?.map((item: any) => {
                     return (
                       <Option key={item?.id} value={item?.id}>
-                        {item?.region}
+                        {item?.name}
                       </Option>
                     );
                   })}
                 </Select>
               </div>
             </div>
-
             <div className="region-buttons">
+              <div className="smart-match public-button" onClick={clickRegion}>
+                智能匹配
+              </div>
               {regions
                 .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
                 .map((region: any) => (
-                  <div>
-                    <Button
-                      onClick={() => togglePanel(region.id)}
-                      className="region-button"
-                      style={{ marginBottom: 8 }}
-                    >
-                      {/* {region.name} <DownOutlined /> */}
-                      {region.name}{" "}
-                      {/* {expandedPanels.includes(region.id) ? <UpOutlined /> : <DownOutlined />} */}
-                      <span
-                        className={
-                          expandedPanels.includes(region.id)
-                            ? "up-triangle"
-                            : "down-triangle"
-                        }
-                      ></span>
-                    </Button>
-                  </div>
+                  <Button
+                    onClick={() => togglePanel(region.id)}
+                    className="region-button public-button"
+                    style={{ marginBottom: 8 }}
+                  >
+                    {region.name}{" "}
+                    <span
+                      className={
+                        expandedPanels.includes(region.id)
+                          ? "up-triangle"
+                          : "down-triangle"
+                      }
+                    />
+                  </Button>
                 ))}
             </div>
             <div className="sub-btns">
               {regions
                 .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
-                .map((region: any) => (
-                  <div>
-                    {expandedPanels.includes(region.id) && (
-                      <div>
-                        {subRegions[region.name]?.map((subRegion: any) => (
-                          <Button
-                            key={subRegion.qu}
-                            className="region-button"
-                            onClick={() => handleSelectRegion(subRegion)}
-                          >
-                            {subRegion.qu}
-                          </Button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                .map(
+                  (region: any) =>
+                    expandedPanels.includes(region.id) &&
+                    subRegions[region.name]?.map((subRegion: any) => (
+                      <Button
+                        key={subRegion.qu}
+                        className="region-button"
+                        onClick={() => clickRegion(subRegion)}
+                      >
+                        {subRegion.qu}
+                      </Button>
+                    ))
+                )}
             </div>
-
             <div className="not-have-region">没有找到区服？</div>
           </div>
         </TabPane>
         <TabPane tab="节点" key="2">
           <div className="content">
             <div className="current-settings">
-              {detailData?.name} | {selectInfo?.region}
+              {options?.name} | {regionInfo?.select_region?.name}
             </div>
             <div className="node-select">
               <div>
                 <span>节点记录:</span>
-                <Select
-                  onChange={(value) => {
-                    setSelectedNodeKey(value);
-                  }}
-                >
-                  {(regionDomHistory as any)?.length > 0 &&
-                    (regionDomHistory as any).map((item: any) => {
+                <Select>
+                  {/* {domHistory?.length > 0 &&
+                    domHistory.map((item: any) => {
                       return (
                         <Option key={item?.id} value={item?.id}>
                           {item?.name}
                         </Option>
                       );
-                    })}
+                    })} */}
                 </Select>
               </div>
-
               <Button className="refresh-button">刷新</Button>
             </div>
             <Table
@@ -422,18 +354,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               dataSource={regionDomList}
               pagination={false}
               rowClassName={(record) =>
-                record.id === selectedNodeKey ? "selected-node" : ""
+                record.id === "" ? "selected-node" : ""
               }
               onRow={(record) => ({
-                onClick: () =>
-                  handleNodeClick(
-                    record as {
-                      id: any;
-                      key: string;
-                      ip: string;
-                      server: { port: number }[];
-                    }
-                  ),
+                onClick: () => setSelectedNode(record),
               })}
               className="nodes-table"
             >
