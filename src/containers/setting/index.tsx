@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-26 16:14:57
+ * @LastEditTime: 2024-06-26 19:28:29
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -214,7 +214,16 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="item-content">
                   <span>
                     开机自动启动
-                    <Switch defaultChecked />
+                    <Switch defaultChecked   
+                      onChange={(checked: boolean) => {
+                      console.log(checked);
+                      if(checked){
+                        (window as any).NativeApi_UpdateConfig('auto_run', 1);
+                      }else{
+                        (window as any).NativeApi_UpdateConfig('auto_run', 0);
+                      }
+                      
+                    }}/>
                   </span>
                   <span>
                     桌面快捷图标
@@ -239,9 +248,14 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   <Radio.Group
                     onChange={(e) => {
                       let value = e.target.value;
-
+                      console.log(value,'-------------------')
                       setCloseWindow(value);
                       localStorage.setItem("close_window_sign", value);
+                      if(value === '1' || value === 1){
+                        (window as any).NativeApi_UpdateConfig('close_button_action', 0);
+                      }else{
+                        (window as any).NativeApi_UpdateConfig('close_button_action', 1);
+                      }
                     }}
                     value={closeWindow}
                   >
@@ -253,7 +267,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
               <div className="setting-item">
                 <div className="item-title">关于</div>
                 <div className="regard-item-content">
-                  版本号: 1.0.110<Button type="default">检查新版本</Button>
+                  版本号: 1.0.110
+                  {/* <Button type="default">检查新版本</Button> */}
                 </div>
               </div>
               <div className="protocols">
@@ -295,18 +310,18 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
               <div className="tab-content">
                 <div className="tab-avatar">
                   <UserAvatarCom
-                    isVip={accountInfo?.userInfo?.userInfo?.is_vip}
+                    isVip={accountInfo?.userInfo?.is_vip}
                     isLogin={accountInfo?.isLogin}
                     type={"setting"}
                   />
                   <div className="avatar-name">
-                    {accountInfo?.userInfo.userInfo?.nickname}
+                    {accountInfo?.userInfo?.nickname}
                   </div>
                 </div>
                 <div className="info-box info-flex">
                   <div className="info-left">
                     <label>手机号</label>
-                    <div>{accountInfo?.userInfo.userInfo?.phone}</div>
+                    <div>{accountInfo?.userInfo?.phone}</div>
                   </div>
                   <div
                     className="real-name-btn"
@@ -324,12 +339,12 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   <div className="info-left">
                     <label>游侠账号</label>
                     <div>
-                      {thirdInfo?.some((item: any) => item?.scope === 2)
+                      {thirdInfo?.some((item: any) => item?.source === 2)
                         ? "绑定"
                         : "未绑定"}
                     </div>
                   </div>
-                  {!thirdInfo?.some((item: any) => item?.scope === 2) ? (
+                  {!thirdInfo?.some((item: any) => item?.source === 2) ? (
                     <div
                       className="real-name-btn"
                       onClick={() => {
@@ -362,10 +377,10 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="info-box info-flex">
                   <div className="info-left">
                     <label>会员到期时间</label>
-                    {accountInfo?.userInfo.userInfo?.is_vip ? (
+                    {accountInfo?.userInfo?.is_vip ? (
                       <div>
                         {formatDate(
-                          accountInfo?.userInfo.userInfo?.vip_expiration_time - 86400 || 0
+                          accountInfo?.userInfo?.vip_expiration_time - 86400 || 0
                         )}
                       </div>
                     ) : (
@@ -380,7 +395,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                         if (isRealNamel === "1") {
                           dispatch(openRealNameModal());
                           return;
-                        } else if (!accountInfo?.userInfo?.userInfo?.user_ext?.is_adult) {
+                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
                           setIsMinorOpen(true);
                           setMinorType("recharge");
                           return;
@@ -400,7 +415,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                         if (isRealNamel === "1") {
                           dispatch(openRealNameModal());
                           return;
-                        } else if (!accountInfo?.userInfo?.userInfo?.user_ext?.is_adult) {
+                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
                           setIsMinorOpen(true);
                           setMinorType("recharge");
                           return;

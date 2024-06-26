@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 19:16:43
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-26 18:24:56
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,6 +18,7 @@ class WebSocketService {
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     const token = localStorage.getItem('token');
+    // console.log("游侠token-------------------------",token)
     // if (!token) {
     //   console.log('Token not found in localStorage. WebSocket connection skipped.');
     //   return;
@@ -28,7 +29,7 @@ class WebSocketService {
     } catch (e) {
       console.log('Failed to parse token:', e);
     }
-
+    // console.log("发送消息的userToken-------------------------",userToken)
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => {
@@ -51,7 +52,7 @@ class WebSocketService {
     this.ws.onclose = () => {
       console.log('WebSocket connection closed');
       this.stopHeartbeat();
-      // this.reconnect(url, onMessage, dispatch);
+      this.reconnect(url, onMessage, dispatch);
     };
 
     this.ws.onerror = (error) => {

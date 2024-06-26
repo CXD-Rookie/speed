@@ -163,7 +163,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ],
         tcp_tunnel_mode: 0,
         udp_tunnel_mode: 1,
-        user_id: accountInfo?.userInfo?.userInfo?.id,
+        user_id: accountInfo?.userInfo?.id,
         game_id: t,
         tunnel: {
           address: ip,

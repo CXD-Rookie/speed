@@ -257,7 +257,7 @@ const App: React.FC = (props: any) => {
     const handleWebSocketMessage = (event: MessageEvent) => {
      
       const data = JSON.parse(event.data);
-      console.log(data,"ws返回的信息---------------")
+      // console.log(data,"ws返回的信息---------------")
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
@@ -265,7 +265,7 @@ const App: React.FC = (props: any) => {
         if (String(userInfo?.phone)?.length > 1) {
           
           // 3个参数 用户信息 是否登录 是否显示登录
-          dispatch(setAccountInfo({userInfo}, true, false));
+          dispatch(setAccountInfo(userInfo, true, false));
         
         } else {
           dispatch(updateBindPhoneState(true));
@@ -282,7 +282,7 @@ const App: React.FC = (props: any) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("Redux 中的 user_info 更新为:", accountInfo);
+    // console.log("Redux 中的 user_info 更新为:", accountInfo);
   }, [accountInfo]);
 
   return (
