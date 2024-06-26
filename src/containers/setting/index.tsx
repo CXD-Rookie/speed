@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-25 21:04:47
+ * @LastEditTime: 2024-06-26 15:01:39
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -40,6 +40,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const { handleUserInfo } = useHandleUserInfo();
 
   const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
+  const accountInfo = useSelector((state: any) => state.accountInfo);
   const isLogin = useSelector((state: any) => state.isLogin);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
@@ -55,7 +56,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const [isRealNameTag, setRealNameTag] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
-  const [accountInfo, setAccountInfo] = useState<any>(accountInfoRedux);
+  // const [accountInfo, setAccountInfo] = useState<any>(accountInfoRedux);
   const [thirdInfo, setThirdInfo] = useState([]);
 
   const dispatch = useDispatch();
@@ -156,7 +157,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
         if (res) {
           // 重新获取最新的 accountInfo
           const latestAccountInfo = store.getState().accountInfo;
-          setAccountInfo(latestAccountInfo);
+          // setAccountInfo(latestAccountInfo);
         }
       });
     }
@@ -173,6 +174,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       handleBindThirdInfo();
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    console.log(accountInfo,"用户信息是否更新")
+    console.log(accountInfo?.userInfo)
+  }, [accountInfo]);
 
   return (
     <Fragment>
@@ -274,18 +280,18 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
               <div className="tab-content">
                 <div className="tab-avatar">
                   <UserAvatarCom
-                    isVip={accountInfo?.userInfo?.is_vip}
+                    isVip={accountInfo?.userInfo?.userInfo?.is_vip}
                     isLogin={accountInfo?.isLogin}
                     type={"setting"}
                   />
                   <div className="avatar-name">
-                    {accountInfo?.userInfo.nickname}
+                    {accountInfo?.userInfo.userInfo?.nickname}
                   </div>
                 </div>
                 <div className="info-box info-flex">
                   <div className="info-left">
                     <label>手机号</label>
-                    <div>{accountInfo?.userInfo.phone}</div>
+                    <div>{accountInfo?.userInfo.userInfo?.phone}</div>
                   </div>
                   <div
                     className="real-name-btn"
@@ -341,10 +347,10 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="info-box info-flex">
                   <div className="info-left">
                     <label>会员到期时间</label>
-                    {accountInfo?.userInfo.is_vip ? (
+                    {accountInfo?.userInfo.userInfo?.is_vip ? (
                       <div>
                         {formatDate(
-                          accountInfo?.userInfo.vip_expiration_time - 86400 || 0
+                          accountInfo?.userInfo.userInfo?.vip_expiration_time - 86400 || 0
                         )}
                       </div>
                     ) : (
@@ -359,7 +365,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                         if (isRealNamel === "1") {
                           dispatch(openRealNameModal());
                           return;
-                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+                        } else if (!accountInfo?.userInfo?.userInfo?.user_ext?.is_adult) {
                           setIsMinorOpen(true);
                           setMinorType("recharge");
                           return;
@@ -379,7 +385,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                         if (isRealNamel === "1") {
                           dispatch(openRealNameModal());
                           return;
-                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+                        } else if (!accountInfo?.userInfo?.userInfo?.user_ext?.is_adult) {
                           setIsMinorOpen(true);
                           setMinorType("recharge");
                           return;

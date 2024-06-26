@@ -129,6 +129,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const { ip, server,id } = speedListRes.data[0];//目前只有一个服务器，后期增多要遍历
       const StartInfo = await playSuitApi.playSpeedStart({ platform: 3, gid: t, nid:id }); // 游戏加速信息
       console.log("开始加速接口调用返回信息",StartInfo)
+      console.log("accountInfo----------",accountInfo)
       setStartKey(id)
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", ip);
@@ -145,7 +146,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ],
         tcp_tunnel_mode: 0,
         udp_tunnel_mode: 1,
-        user_id: accountInfo?.userInfo?.id,
+        user_id: accountInfo?.userInfo?.userInfo?.id,
         game_id: t,
         tunnel: {
           address: ip,
@@ -247,6 +248,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (res) {
         const latestAccountInfo = store.getState().accountInfo;
         const userInfo = latestAccountInfo?.userInfo; // 用户信息
+        console.log("点击加速之后的用户信息userInfo---------------",userInfo)
         // 是否登录
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
