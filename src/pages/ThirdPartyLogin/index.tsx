@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-24 15:45:14
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 16:56:24
+ * @LastEditTime: 2024-06-26 15:07:00
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\ThirdPartyLogin\index.tsx
@@ -32,6 +32,9 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
         tid: 2,
         platform: 3,
       });
+      console.log("token:", res, 11111111111111);
+
+      (window as any).NativeApi_YouXiaAuthComplete(res?.data?.token);
     } catch (error) {
       console.log(error);
     }
