@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Select, Button, Table } from "antd";
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined  } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -52,11 +52,19 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   };
 
 
+  // const togglePanel = (panelKey: string) => {
+  //   if (expandedPanels.includes(panelKey)) {
+  //     setExpandedPanels(expandedPanels.filter((key) => key !== panelKey));
+  //   } else {
+  //     setExpandedPanels([...expandedPanels, panelKey]);
+  //   }
+  // };
+
   const togglePanel = (panelKey: string) => {
     if (expandedPanels.includes(panelKey)) {
-      setExpandedPanels(expandedPanels.filter((key) => key !== panelKey));
+      setExpandedPanels([]);
     } else {
-      setExpandedPanels([...expandedPanels, panelKey]);
+      setExpandedPanels([panelKey]);
     }
   };
 
@@ -334,8 +342,19 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                   className="region-button"
                   style={{ marginBottom: 8 }}
                 >
-                  {region.name} <DownOutlined />
+                  {/* {region.name} <DownOutlined /> */}
+                  {region.name}{" "}
+                  {/* {expandedPanels.includes(region.id) ? <UpOutlined /> : <DownOutlined />} */}
+                  <span className={expandedPanels.includes(region.id) ? "up-triangle" : "down-triangle"}></span>
                 </Button>
+              </div>
+            ))}
+            </div>
+            <div className="sub-btns">
+            {regions
+              .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
+              .map((region:any) => (
+              <div>
                 {expandedPanels.includes(region.id) && (
                   <div>
                     {subRegions[region.name]?.map((subRegion: any) => (
