@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-05-30 16:40:32
+ * @LastEditTime: 2024-06-26 10:57:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
@@ -15,7 +15,7 @@ import "./index.scss";
 const { Option } = Select;
 
 interface ActivationModalProps {
-  isOpen?: boolean;
+  open?: boolean;
   gameId: string;
   onClose: () => void;
 }
@@ -53,7 +53,7 @@ interface Game {
 }
 
 const ActivationModal: React.FC<ActivationModalProps> = ({
-  isOpen = true,
+  open = false,
   gameId,
   onClose,
 }) => {
@@ -106,11 +106,12 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
   return (
     <Modal
       className="activation-modal"
-      open={isOpen} //isOpen
+      open={open}
       onCancel={onClose}
       title="启动方式"
       width={"40vw"}
       centered
+      destroyOnClose
       maskClosable={false}
       footer={null}
     >
