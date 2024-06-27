@@ -64,7 +64,7 @@ const App: React.FC = (props: any) => {
   const dispatch: any = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
   const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
@@ -268,9 +268,11 @@ const App: React.FC = (props: any) => {
           dispatch(setAccountInfo(userInfo, true, false));
         
         } else {
-          dispatch(updateBindPhoneState(true));
+          if (!isBindPhone) {
+            dispatch(updateBindPhoneState(true));
+          }
         }
-      }
+      }  
     };
 
     const url = "wss://test-api.accessorx.com/ws/v1/user/info";
@@ -400,7 +402,7 @@ const App: React.FC = (props: any) => {
           loginOutStop();
         }}
       />
-      <VisitorLogin />
+      <VisitorLogin loginOutStop={loginOutStop}/>
     </Layout>
   );
 };

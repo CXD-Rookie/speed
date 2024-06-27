@@ -15,11 +15,13 @@ import challengeIcon from "@/assets/images/common/challenge.svg";
 
 import "./index.scss";
 
-interface VisitorLoginProps {}
+interface VisitorLoginProps {
+  loginOutStop: () => void;
+}
 
 // 是否绑定加速器的手机号绑定登录
-const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
-  const {} = props;
+const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
+  // const {} = props;
 
   const dispatch: any = useDispatch();
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
@@ -104,6 +106,7 @@ const VisitorLogin: React.FC<VisitorLoginProps> = (props) => {
 
   const close = async () => {
     dispatch(updateBindPhoneState(false));
+    loginOutStop()
   };
 
   return (
