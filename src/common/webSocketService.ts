@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-26 18:24:56
+ * @LastEditTime: 2024-06-27 14:42:12
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,7 +14,7 @@ class WebSocketService {
   private heartbeatInterval: NodeJS.Timeout | null = null;
   private reconnectAttempts: number = 0;
   private readonly maxReconnectAttempts: number = 10;
-  private readonly reconnectInterval: number = 5000; // 初始重连间隔为5秒
+  private readonly reconnectInterval: number = 3000; // 初始重连间隔为3秒
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     const token = localStorage.getItem('token');
