@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-26 19:28:29
+ * @LastEditTime: 2024-06-27 17:09:10
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -75,38 +75,83 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     (window as any).NativeApi_OpenBrowser(dataTitle);
     console.log("data-title:", dataTitle);
   };
+  const native_fixup_network_lsp = () => {
+    console.log("Fixing network LSP");
+    (window as any).native_fixup_network_lsp()
+    // 调用对应的修复方法
+  };
+  
+  const native_fixup_network_proxy = () => {
+    console.log("Fixing network proxy");
+    // (window as any).native_fixup_network_proxy()
+    // 调用对应的修复方法
+  };
+  
+  const native_fixup_network_host = () => {
+    console.log("Fixing network HOST");
+    (window as any).native_fixup_network_host()
+    // 调用对应的修复方法
+  };
+  
+  const native_fixup_network_dns = () => {
+    console.log("Fixing network DNS");
+    // 调用对应的修复方法
+    (window as any).native_fixup_network_dns()
+  };
+  
+  const native_restart = () => {
+    console.log("Restarting");
+    (window as any).native_restart()
+    // 调用重启方法
+  };
+  
 
   const repairToolDetails = {
-    安全自我修复: {
+    "安全自我修复": {
       content: "您的问题已成功修复。",
       okText: "好的",
       icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
+      fixMethod: native_fixup_network_lsp,
     },
-    修复系统代理: {
+    "修复系统代理": {
       content: "修复成功，需要重启加速器生效",
       okText: "立即重启",
       cancelText: "稍后重启",
       icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
+      fixMethod: native_fixup_network_proxy,
     },
-    Host清理: {
+    "Host清理": {
       content:
         "无法修复加速器的安全问题，请重启加速器后重试。如果问题仍然存在，请使用问题反馈联系技术支持。",
       okText: "立即重启",
       cancelText: "稍后重启",
       icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
+      fixMethod: native_fixup_network_host,
     },
-    修复本地DNS: {
+    "修复本地DNS": {
       content:
         "修复系统代理：无法修复系统代理设置导致的问题，请检查您的代理设置或使用问题反馈联系技术支持。",
       okText: "好的",
       icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
+      fixMethod: native_fixup_network_dns,
     },
   };
+  
 
   const openModal = (title: string) => {
-    //@ts-ignore
-    const { content, okText, cancelText, icon } =
-      (repairToolDetails as any)[title] || {};
+    const repairDetail = (repairToolDetails as any)[title];
+  
+    if (!repairDetail) {
+      console.error(`无效修复: ${title}`);
+      return;
+    }
+  
+    const { content, okText, cancelText, icon, fixMethod } = repairDetail;
+  
+    if (fixMethod) {
+      fixMethod();
+    }
+  
     Modal.confirm({
       title: (
         <div className="modal-header">
@@ -123,6 +168,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       cancelText,
       className: "popup-success-fix",
       onOk: () => {
+        if (okText === "立即重启") {
+          native_restart();
+        }
         console.log("Modal closed");
       }, // 替换为你的关闭逻辑
       onCancel: () => {
