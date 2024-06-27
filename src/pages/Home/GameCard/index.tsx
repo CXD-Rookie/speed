@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 15:58:45
+ * @LastEditTime: 2024-06-27 16:08:23
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -264,7 +264,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 点击立即加速
-  const accelerateDataHandling = async (option: object) => {
+  const accelerateDataHandling = async (option: object, type = "default") => {
     if (accountInfo?.isLogin) {
       let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
 
@@ -297,7 +297,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setSelectAccelerateOption(option);
           return;
         } else {
-          accelerateProcessing(option);
+          if (type === "custom") {
+            setIsOpenRegion(true);
+          } else {
+            accelerateProcessing(option);
+          }
+
           setSelectAccelerateOption(option);
         }
       }
@@ -341,8 +346,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   alt=""
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectAccelerateOption(option);
-                    setIsOpenRegion(true);
+                    accelerateDataHandling(option, "custom");
                   }}
                 />
                 <img
