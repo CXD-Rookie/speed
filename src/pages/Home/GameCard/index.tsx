@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 16:08:23
+ * @LastEditTime: 2024-06-27 18:46:28
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -24,7 +24,7 @@ import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";
 import BreakConfirmModal from "@/containers/break-confirm";
-
+import eventBus from "@/api/eventBus";
 import playSuitApi from "@/api/speed";
 
 import addIcon from "@/assets/images/common/add.svg";
@@ -219,6 +219,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setIsStartAnimate(true); // 开始加速动画
     stopAcceleration(); // 停止加速
 
+    let isPre: boolean;
+
     // 校验是否合法文件
     sendMessageToBackend(
       JSON.stringify({
@@ -228,17 +230,22 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
 
-        accelerateGameToList(option); // 加速完后更新我的游戏
-        handleSuitDomList(option); // 通知客户端进行加速
         // 暂时注释 实际生产打开
-        // if (isCheck?.pre_check_status === 0) {
-        //   handleSuitDomList(option.id);
-        // } else {
-        //   console.log(`不是合法文件，请重新安装加速器`);
-        // }
+        if (isCheck?.pre_check_status === 0) {
+          isPre = true;
+          accelerateGameToList(option); // 加速完后更新我的游戏
+          handleSuitDomList(option); // 通知客户端进行加速
+        } else {
+          console.log(`不是合法文件，请重新安装加速器`);
+          eventBus.emit("showModal", {
+            show: true,
+            type: "infectedOrHijacked",
+          });
+        }
       },
       (errorCode: any, errorMessage: any) => {
         console.error("Failure response from 校验是否合法文件:", errorCode);
+        eventBus.emit("showModal", { show: true, type: "infectedOrHijacked" });
       }
     );
 
@@ -247,7 +254,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       setIsAllowShowAccelerating(true); // 启用显示加速中
       setIsStartAnimate(false); // 结束加速动画
 
-      navigate("/gameDetail");
+      if (isPre) {
+        navigate("/gameDetail");
+      }
     }, 5000);
   };
 

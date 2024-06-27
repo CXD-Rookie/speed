@@ -77,50 +77,49 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   };
   const native_fixup_network_lsp = () => {
     console.log("Fixing network LSP");
-    (window as any).native_fixup_network_lsp()
+    (window as any).native_fixup_network_lsp();
     // 调用对应的修复方法
   };
-  
+
   const native_fixup_network_proxy = () => {
     console.log("Fixing network proxy");
     // (window as any).native_fixup_network_proxy()
     // 调用对应的修复方法
   };
-  
+
   const native_fixup_network_host = () => {
     console.log("Fixing network HOST");
-    (window as any).native_fixup_network_host()
+    (window as any).native_fixup_network_host();
     // 调用对应的修复方法
   };
-  
+
   const native_fixup_network_dns = () => {
     console.log("Fixing network DNS");
     // 调用对应的修复方法
-    (window as any).native_fixup_network_dns()
+    (window as any).native_fixup_network_dns();
   };
-  
+
   const native_restart = () => {
     console.log("Restarting");
-    (window as any).native_restart()
+    (window as any).native_restart();
     // 调用重启方法
   };
-  
 
   const repairToolDetails = {
-    "安全自我修复": {
+    安全自我修复: {
       content: "您的问题已成功修复。",
       okText: "好的",
       icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
       fixMethod: native_fixup_network_lsp,
     },
-    "修复系统代理": {
+    修复系统代理: {
       content: "修复成功，需要重启加速器生效",
       okText: "立即重启",
       cancelText: "稍后重启",
       icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
       fixMethod: native_fixup_network_proxy,
     },
-    "Host清理": {
+    Host清理: {
       content:
         "无法修复加速器的安全问题，请重启加速器后重试。如果问题仍然存在，请使用问题反馈联系技术支持。",
       okText: "立即重启",
@@ -128,7 +127,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       icon: <img src="1.png" alt="成功图标" className="modal-icon" />,
       fixMethod: native_fixup_network_host,
     },
-    "修复本地DNS": {
+    修复本地DNS: {
       content:
         "修复系统代理：无法修复系统代理设置导致的问题，请检查您的代理设置或使用问题反馈联系技术支持。",
       okText: "好的",
@@ -136,22 +135,21 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       fixMethod: native_fixup_network_dns,
     },
   };
-  
 
   const openModal = (title: string) => {
     const repairDetail = (repairToolDetails as any)[title];
-  
+
     if (!repairDetail) {
       console.error(`无效修复: ${title}`);
       return;
     }
-  
+
     const { content, okText, cancelText, icon, fixMethod } = repairDetail;
-  
+
     if (fixMethod) {
       fixMethod();
     }
-  
+
     Modal.confirm({
       title: (
         <div className="modal-header">
@@ -214,6 +212,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   useEffect(() => {
     if (type === "edit") {
       setActiveTab("account");
+    } else if (type === "fix") {
+      setActiveTab("fix");
     }
   }, [type]);
 
@@ -222,12 +222,6 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       handleBindThirdInfo();
     }
   }, [activeTab]);
-
-  // useEffect(() => {
-  //   // showLoading()
-  //   console.log(accountInfo,"用户信息是否更新")
-  //   console.log(accountInfo?.userInfo)
-  // }, [accountInfo]);
 
   useEffect(() => {
     // 模拟一个异步操作，比如数据获取
@@ -249,7 +243,6 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
         centered
         footer={null}
       >
-        
         <Tabs
           className="tabActive"
           activeKey={activeTab}
@@ -262,31 +255,37 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="item-content">
                   <span>
                     开机自动启动
-                    <Switch defaultChecked   
+                    <Switch
+                      defaultChecked
                       onChange={(checked: boolean) => {
-                      console.log(checked);
-                      if(checked){
-                        (window as any).NativeApi_UpdateConfig('auto_run', 1);
-                      }else{
-                        (window as any).NativeApi_UpdateConfig('auto_run', 0);
-                      }
-                      
-                    }}/>
+                        console.log(checked);
+                        if (checked) {
+                          (window as any).NativeApi_UpdateConfig("auto_run", 1);
+                        } else {
+                          (window as any).NativeApi_UpdateConfig("auto_run", 0);
+                        }
+                      }}
+                    />
                   </span>
                   <span>
                     桌面快捷图标
-                    <Switch 
-                    defaultChecked 
-                    onChange={(checked: boolean) => {
-                      console.log(checked);
-                      if(checked){
-                        (window as any).NativeApi_UpdateConfig('auto_create_shortcut', 1);
-                      }else{
-                        (window as any).NativeApi_UpdateConfig('auto_create_shortcut', 0);
-                      }
-                      
-                    }}
-                  />
+                    <Switch
+                      defaultChecked
+                      onChange={(checked: boolean) => {
+                        console.log(checked);
+                        if (checked) {
+                          (window as any).NativeApi_UpdateConfig(
+                            "auto_create_shortcut",
+                            1
+                          );
+                        } else {
+                          (window as any).NativeApi_UpdateConfig(
+                            "auto_create_shortcut",
+                            0
+                          );
+                        }
+                      }}
+                    />
                   </span>
                 </div>
               </div>
@@ -296,13 +295,19 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   <Radio.Group
                     onChange={(e) => {
                       let value = e.target.value;
-                      console.log(value,'-------------------')
+                      console.log(value, "-------------------");
                       setCloseWindow(value);
                       localStorage.setItem("close_window_sign", value);
-                      if(value === '1' || value === 1){
-                        (window as any).NativeApi_UpdateConfig('close_button_action', 0);
-                      }else{
-                        (window as any).NativeApi_UpdateConfig('close_button_action', 1);
+                      if (value === "1" || value === 1) {
+                        (window as any).NativeApi_UpdateConfig(
+                          "close_button_action",
+                          0
+                        );
+                      } else {
+                        (window as any).NativeApi_UpdateConfig(
+                          "close_button_action",
+                          1
+                        );
                       }
                     }}
                     value={closeWindow}
@@ -350,137 +355,153 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
           {accountInfo?.isLogin && (
             <TabPane tab="账号设置" key="account">
               {loading ? (
-
-              <div style={{ position: 'relative', height: '60vh' }}>
-                <Spin size="large" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }} />
-              </div>
-              ) : (
-              <div className="tab-content">
-                <div className="tab-avatar">
-                  <UserAvatarCom
-                    isVip={accountInfo?.userInfo?.is_vip}
-                    isLogin={accountInfo?.isLogin}
-                    type={"setting"}
-                  />
-                  <div className="avatar-name">
-                    {accountInfo?.userInfo?.nickname}
-                  </div>
-                </div>
-                <div className="info-box info-flex">
-                  <div className="info-left">
-                    <label>手机号</label>
-                    <div>{accountInfo?.userInfo?.phone}</div>
-                  </div>
-                  <div
-                    className="real-name-btn"
-                    onClick={() => {
-                      console.log(accountInfo);
-
-                      setBindType("oldPhone");
-                      setIsBindThirdOpen(true);
+                <div style={{ position: "relative", height: "60vh" }}>
+                  <Spin
+                    size="large"
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100%",
                     }}
-                  >
-                    修改
-                  </div>
+                  />
                 </div>
-                <div className="info-box info-flex">
-                  <div className="info-left">
-                    <label>游侠账号</label>
-                    <div>
-                      {thirdInfo?.some((item: any) => item?.source === 2)
-                        ? "绑定"
-                        : "未绑定"}
+              ) : (
+                <div className="tab-content">
+                  <div className="tab-avatar">
+                    <UserAvatarCom
+                      isVip={accountInfo?.userInfo?.is_vip}
+                      isLogin={accountInfo?.isLogin}
+                      type={"setting"}
+                    />
+                    <div className="avatar-name">
+                      {accountInfo?.userInfo?.nickname}
                     </div>
                   </div>
-                  {!thirdInfo?.some((item: any) => item?.source === 2) ? (
+                  <div className="info-box info-flex">
+                    <div className="info-left">
+                      <label>手机号</label>
+                      <div>{accountInfo?.userInfo?.phone}</div>
+                    </div>
                     <div
                       className="real-name-btn"
                       onClick={() => {
-                        setBindType("third");
+                        console.log(accountInfo);
+
+                        setBindType("oldPhone");
                         setIsBindThirdOpen(true);
                       }}
                     >
-                      绑定
+                      修改
                     </div>
-                  ) : null}
-                </div>
-                <div className="info-box info-flex">
-                  <div className="info-left">
-                    <label>实名认证</label>
-                    {isRealNameTag === "1" ? (
-                      <div>未认证</div>
-                    ) : (
-                      <div>已认证</div>
+                  </div>
+                  <div className="info-box info-flex">
+                    <div className="info-left">
+                      <label>游侠账号</label>
+                      <div>
+                        {thirdInfo?.some((item: any) => item?.source === 2)
+                          ? "绑定"
+                          : "未绑定"}
+                      </div>
+                    </div>
+                    {!thirdInfo?.some((item: any) => item?.source === 2) ? (
+                      <div
+                        className="real-name-btn"
+                        onClick={() => {
+                          setBindType("third");
+                          setIsBindThirdOpen(true);
+                        }}
+                      >
+                        绑定
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="info-box info-flex">
+                    <div className="info-left">
+                      <label>实名认证</label>
+                      {isRealNameTag === "1" ? (
+                        <div>未认证</div>
+                      ) : (
+                        <div>已认证</div>
+                      )}
+                    </div>
+                    {isRealNameTag === "1" && (
+                      <div
+                        className="real-name-btn"
+                        onClick={() => dispatch(openRealNameModal())}
+                      >
+                        实名认证
+                      </div>
                     )}
                   </div>
-                  {isRealNameTag === "1" && (
-                    <div
-                      className="real-name-btn"
-                      onClick={() => dispatch(openRealNameModal())}
-                    >
-                      实名认证
+                  <div className="info-box info-flex">
+                    <div className="info-left">
+                      <label>会员到期时间</label>
+                      {accountInfo?.userInfo?.is_vip ? (
+                        <div>
+                          {formatDate(
+                            accountInfo?.userInfo?.vip_expiration_time -
+                              86400 || 0
+                          )}
+                        </div>
+                      ) : (
+                        <div>非会员</div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className="info-box info-flex">
-                  <div className="info-left">
-                    <label>会员到期时间</label>
-                    {accountInfo?.userInfo?.is_vip ? (
-                      <div>
-                        {formatDate(
-                          accountInfo?.userInfo?.vip_expiration_time - 86400 || 0
-                        )}
+                    {accountInfo?.userInfo.is_vip ? (
+                      <div
+                        onClick={() => {
+                          const isRealNamel =
+                            localStorage.getItem("isRealName");
+
+                          if (isRealNamel === "1") {
+                            dispatch(openRealNameModal());
+                            return;
+                          } else if (
+                            !accountInfo?.userInfo?.user_ext?.is_adult
+                          ) {
+                            setIsMinorOpen(true);
+                            setMinorType("recharge");
+                            return;
+                          } else {
+                            setIsModalOpenVip(true);
+                          }
+                        }}
+                        className="real-name-btn"
+                      >
+                        续费
                       </div>
                     ) : (
-                      <div>非会员</div>
+                      <div
+                        onClick={() => {
+                          const isRealNamel =
+                            localStorage.getItem("isRealName");
+
+                          if (isRealNamel === "1") {
+                            dispatch(openRealNameModal());
+                            return;
+                          } else if (
+                            !accountInfo?.userInfo?.user_ext?.is_adult
+                          ) {
+                            setIsMinorOpen(true);
+                            setMinorType("recharge");
+                            return;
+                          } else {
+                            setIsModalOpenVip(true);
+                          }
+                        }}
+                        className="real-name-btn"
+                      >
+                        充值
+                      </div>
                     )}
                   </div>
-                  {accountInfo?.userInfo.is_vip ? (
-                    <div
-                      onClick={() => {
-                        const isRealNamel = localStorage.getItem("isRealName");
-
-                        if (isRealNamel === "1") {
-                          dispatch(openRealNameModal());
-                          return;
-                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-                          setIsMinorOpen(true);
-                          setMinorType("recharge");
-                          return;
-                        } else {
-                          setIsModalOpenVip(true);
-                        }
-                      }}
-                      className="real-name-btn"
-                    >
-                      续费
-                    </div>
-                  ) : (
-                    <div
-                      onClick={() => {
-                        const isRealNamel = localStorage.getItem("isRealName");
-
-                        if (isRealNamel === "1") {
-                          dispatch(openRealNameModal());
-                          return;
-                        } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-                          setIsMinorOpen(true);
-                          setMinorType("recharge");
-                          return;
-                        } else {
-                          setIsModalOpenVip(true);
-                        }
-                      }}
-                      className="real-name-btn"
-                    >
-                      充值
-                    </div>
-                  )}
                 </div>
-              </div>
-                
               )}
-              
             </TabPane>
           )}
           <TabPane tab="修复工具" key="fix">

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 18:26:16
+ * @LastEditTime: 2024-06-27 19:00:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -10,6 +10,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Modal } from "antd";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
+
+import SettingsModal from "../setting";
 import eventBus from "@/api/eventBus";
 
 import "./index.scss";
@@ -31,7 +33,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   const { isNetworkError, setIsNetworkError }: any = useHistoryContext();
 
-  const [noticeType, setNoticeType] = useState<any>("");
+  const [noticeType, setNoticeType] = useState<any>(""); // 通过eventBus 传递的通知消息类型
+  const [settingOpen, setSettingOpen] = useState(false);
 
   const textContentObj: any = {
     accelerate: "启动加速将断开现有游戏加速，是否确认？",
@@ -39,11 +42,13 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     loginOut: "确定退出当前账号登录吗？",
     netorkError: "网络连接异常，请检查网络设置。",
     newVersionFound: "发现新版本",
+    infectedOrHijacked: "检测到加速器安全问题，请立即进行安全自我修复",
   };
 
   const confirmObj: any = {
     netorkError: "好的",
     newVersionFound: "立即升级",
+    infectedOrHijacked: "修复",
   };
 
   const displaySingleButton = ["netorkError", "newVersionFound"];
@@ -54,6 +59,22 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     } else {
       setNoticeType("");
       setIsNetworkError(false);
+    }
+  };
+
+  const performOperationBasedOnType = () => {
+    setNoticeType("");
+    setIsNetworkError(false);
+
+    switch (noticeType) {
+      case "newVersionFound":
+        (window as any).native_update();
+        break;
+      case "infectedOrHijacked":
+        setSettingOpen(true);
+        break;
+      default:
+        break;
     }
   };
 
@@ -92,15 +113,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
                 if (accelOpen) {
                   onConfirm();
                 } else {
-                  switch (noticeType) {
-                    case "newVersionFound":
-                      (window as any).native_update();
-                      break;
-                    default:
-                      setNoticeType("");
-                      setIsNetworkError(false);
-                      break;
-                  }
+                  performOperationBasedOnType();
                 }
               }}
             >
@@ -115,6 +128,13 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
             : textContentObj?.[type]}
         </div>
       </Modal>
+      {settingOpen ? (
+        <SettingsModal
+          type="fix"
+          isOpen={settingOpen}
+          onClose={() => setSettingOpen(false)}
+        />
+      ) : null}
     </Fragment>
   );
 };
