@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-26 21:16:00
+ * @LastEditTime: 2024-06-27 11:30:09
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -91,7 +91,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 停止加速
   const stopAcceleration = () => {
-    console.log("1111111111");
     setStopModalOpen(false);
     // 停止加速
     sendMessageToBackend(
@@ -130,32 +129,46 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
-      const speedInfoRes = await playSuitApi.speedInfo({
-        platform: 3,
-        gid: option?.id,
-        pid: "1",
+      let res = await fetchPcPlatformList(); // 请求运营平台接口
+      let platform_list = Object?.keys(res) || []; // 运营平台数据
+      let api_list: any = []; // 需要请求的api 数量
+
+      // 对api数量进行处理
+      platform_list.forEach((key: string) => {
+        api_list.push(
+          playSuitApi.speedInfo({
+            platform: 3,
+            gid: option?.id,
+            pid: key,
+          })
+        );
       });
 
-      console.log("获取游戏加速用的信息", speedInfoRes);
+      const data: any = await Promise.all(api_list); // 请求等待统一请求完毕
+      // 聚合所以的api 数据中的 executable
+      const result_excutable = data.reduce((acc: any, item: any) => {
+        if (item.data.executable) {
+          return acc.concat(item.data.executable);
+        }
+        return acc;
+      }, []);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const process = speedInfoRes?.data?.executable || [];
-      const { ip, server, id } = option.dom_history[0]; //目前只有一个服务器，后期增多要遍历
-      const StartInfo = await playSuitApi.playSpeedStart({
+      const { ip, server, id } = option?.dom_info?.select_dom; //目前只有一个服务器，后期增多要遍历
+      const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
         nid: id,
       }); // 游戏加速信息
-      console.log("开始加速接口调用返回信息", StartInfo);
-      setStartKey(id);
+      const js_key = startInfo?.data?.js_key;
+
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", ip);
       localStorage.setItem("speedGid", option?.id);
-      localStorage.setItem("speedInfo", JSON.stringify(speedInfoRes));
 
       // 真实拼接
       const jsonResult = {
-        process: [process[0], process[1], process[2]],
+        process: [...result_excutable],
         black_ip: ["42.201.128.0/17"],
         black_domain: [
           "re:.+\\.steamcommunity\\.com",
@@ -169,6 +182,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           address: ip,
           server: server,
         },
+        js_key,
       };
 
       // 真实加速
@@ -195,8 +209,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
-    console.log(option);
-    if (!option?.dom_history?.[0]?.id) {
+    if (!option?.dom_info?.select_dom?.id) {
       setIsOpenRegion(true);
       return;
     }
@@ -234,7 +247,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       setIsAllowShowAccelerating(true); // 启用显示加速中
       setIsStartAnimate(false); // 结束加速动画
 
-      // navigate("/gameDetail");
+      navigate("/gameDetail");
     }, 5000);
   };
 
@@ -452,9 +465,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       {isOpenRegion ? (
         <RegionNodeSelector
           open={isOpenRegion}
+          type={"acelerate"}
           options={selectAccelerateOption}
           onCancel={() => setIsOpenRegion(false)}
-          // onSelect={(e) => setRegionInfo(e)}
+          notice={(e) => accelerateProcessing(e)}
         />
       ) : null}
     </div>

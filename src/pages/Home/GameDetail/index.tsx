@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-26 16:03:54
+ * @LastEditTime: 2024-06-27 11:42:04
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -142,11 +142,12 @@ const GameDetail: React.FC = () => {
   }
 
   useEffect(() => {
-    let ip = localStorage.getItem("speedIp"); // 存储的ip
     let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-    let select_region = chooseDefaultNode(find_accel); // 当前选择区服
+    let select_region = find_accel?.region; // 当前选择区服
+    let ip = find_accel?.dom_info?.select_dom; // 存储的ip
 
     historyContext?.accelerateTime?.startTimer();
+    console.log(select_region);
 
     // 查看加速详情，获取延迟
     sendMessageToBackend(
@@ -179,7 +180,8 @@ const GameDetail: React.FC = () => {
   // 每隔 10 秒增加计数器的值
   useEffect(() => {
     const interval = setInterval(() => {
-      let ip = localStorage.getItem("speedIp"); // 存储的ip
+      let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
+      let ip = find_accel?.dom_info?.select_dom; // 存储的ip
 
       // 查看加速详情，获取延迟
       sendMessageToBackend(
@@ -229,9 +231,6 @@ const GameDetail: React.FC = () => {
     (window as any).stopDelayTimer = () => {
       clearInterval(interval);
     };
-
-    // 返回一个清理函数，在组件卸载时清除定时器
-    // return () => clearInterval(interval);
   }, []);
 
   return (
@@ -266,7 +265,7 @@ const GameDetail: React.FC = () => {
           </div>
           <div className="game-right">
             <div className="info-switch info-common-style" onClick={showModal}>
-              <span>{regionInfo?.region}</span>
+              <span>{regionInfo?.select_region?.name}</span>
               <span>切换</span>
             </div>
             <div className="info-speed info-common-style">
@@ -321,16 +320,16 @@ const GameDetail: React.FC = () => {
               <div className="title">加速趋势</div>
               <BarChart data={memoizedData} />
             </div>
-            <RegionNodeSelector
-              open={isModalVisible}
-              options={{}}
-              detailData={detailData}
-              onCancel={hideModal}
-              onSelect={(e) => setRegionInfo(e)}
-            />
           </div>
         </div>
       </div>
+      {isModalVisible ? (
+        <RegionNodeSelector
+          open={isModalVisible}
+          options={detailData}
+          onCancel={hideModal}
+        />
+      ) : null}
       {isOpen && (
         <ActivationModal
           open={isOpen}
