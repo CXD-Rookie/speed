@@ -11,6 +11,7 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
 
 import "@/assets/css/App.scss";
+import PayModal from "./containers/Pay";
 import eventBus from "./api/eventBus";
 import useCefQuery from "./hooks/useCefQuery";
 import webSocketService from "./common/webSocketService";
@@ -23,7 +24,6 @@ import IssueModal from "./containers/IssueModal/index";
 import BreakConfirmModal from "@/containers/break-confirm";
 import VisitorLogin from "./containers/visitor-login";
 
-import playSuitApi from "./api/speed";
 import loginApi from "./api/login";
 
 import menuIcon from "@/assets/images/common/menu.svg";
@@ -73,13 +73,13 @@ const App: React.FC = (props: any) => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
+  const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
+  const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
   const [exitOpen, setExitOpen] = useState(false);
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
-
-  const userInfo = useSelector((state: any) => state.accountInfo); // 替换为你的 state 结构
 
   const menuList: CustomMenuProps[] = [
     {
@@ -282,6 +282,14 @@ const App: React.FC = (props: any) => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    let time = new Date().getTime() / 1000;
+
+    if (accountInfo?.vip_expiration_time - time <= 432000) {
+      setRenewalOpen(true);
+    }
+  }, []);
+
   return (
     <Layout className="app-module">
       <Header
@@ -404,6 +412,25 @@ const App: React.FC = (props: any) => {
           accelOpen={exitOpen}
           setAccelOpen={setExitOpen}
           onConfirm={handleExitProcess}
+        />
+      ) : null}
+      {/* vip 充值弹窗 */}
+      {!!isModalOpenVip && (
+        <PayModal
+          isModalOpen={isModalOpenVip}
+          setIsModalOpen={(e) => setIsModalOpenVip(e)}
+        />
+      )}
+      {/* 续费提醒确认弹窗 */}
+      {renewalOpen ? (
+        <BreakConfirmModal
+          accelOpen={renewalOpen}
+          type={"renewalReminder"}
+          setAccelOpen={setRenewalOpen}
+          onConfirm={() => {
+            setRenewalOpen(false);
+            setIsModalOpenVip(true);
+          }}
         />
       ) : null}
     </Layout>
