@@ -350,7 +350,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             updateQrCode();
             setPayErrorModalOpen(e);
           }}
-          onConfirm={(e) => {
+          onConfirm={() => {
             updateQrCode();
             setPayErrorModalOpen(false);
           }}

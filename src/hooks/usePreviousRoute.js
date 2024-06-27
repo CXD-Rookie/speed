@@ -1,3 +1,12 @@
+/*
+ * @Author: zhangda
+ * @Date: 2024-06-12 10:43:26
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-27 17:18:02
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\src\hooks\usePreviousRoute.js
+ */
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -8,10 +17,12 @@ const HistoryContext = createContext([]);
 export const HistoryProvider = ({ children }) => {
   const location = useLocation();
 
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState([]); // 路由历史
 
-  const [count, setCount] = useState(0);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [count, setCount] = useState(0); // 详情每秒计时
+  const [isTimerRunning, setIsTimerRunning] = useState(false); // 是否停止计时器
+
+  const [isNetworkError, setIsNetworkError] = useState(false); // 是否出现网络错误，断网
 
   let interval;
 
@@ -48,7 +59,9 @@ export const HistoryProvider = ({ children }) => {
     <HistoryContext.Provider
       value={{
         history,
-        accelerateTime: { count, stopTimer, startTimer }
+        accelerateTime: { count, stopTimer, startTimer },
+        isNetworkError,
+        setIsNetworkError
       }}
     >
       {children}

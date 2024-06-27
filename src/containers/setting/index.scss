@@ -277,23 +277,18 @@
 // 修复弹窗
 .popup-success-fix {
   border-radius: 2vh;
-  width: 30vw !important;
-  /* height: 22vh; */
+  width: 32vw !important;
+  height: 25.5vh !important;
   padding: 0;
-  // box-shadow: 0px 0px 6vh 0px rgba(0, 0, 0, 0.50);
   text-align: center;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  // position: fixed;
-  // margin: auto;
-  // top: 0;
-  // left: 0;
-  // right: 0;
-  // bottom: 0;
 }
+
 .popup-success-fix .ant-modal-confirm-body {
   justify-content: space-evenly;
 }
+
 .popup-success-fix .ant-btn-primary {
   background: #f86c34;
   width: 7.5vw;
