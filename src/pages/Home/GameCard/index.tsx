@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 11:30:09
+ * @LastEditTime: 2024-06-27 14:42:36
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -72,7 +72,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const [minorType, setMinorType] = useState<string>("acceleration"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
-  const [startKey, setStartKey] = useState<string>(""); //
+
   const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
 
   const [isOpenRegion, setIsOpenRegion] = useState(false); // 是否是打开选择区服节点

@@ -328,6 +328,7 @@ const GameDetail: React.FC = () => {
           open={isModalVisible}
           options={detailData}
           onCancel={hideModal}
+          stopSpeed={stopSpeed}
         />
       ) : null}
       {isOpen && (
