@@ -76,6 +76,7 @@ const App: React.FC = (props: any) => {
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
+  const [exitOpen, setExitOpen] = useState(false);
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
 
   const userInfo = useSelector((state: any) => state.accountInfo); // 替换为你的 state 结构
@@ -255,24 +256,22 @@ const App: React.FC = (props: any) => {
 
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
-     
       const data = JSON.parse(event.data);
-      // console.log(data,"ws返回的信息---------------")
+      // console.log(data, "ws返回的信息---------------");
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
         let userInfo = data?.data?.user_info || {};
+
         if (String(userInfo?.phone)?.length > 1) {
-          
           // 3个参数 用户信息 是否登录 是否显示登录
           dispatch(setAccountInfo(userInfo, true, false));
-        
         } else {
           if (!isBindPhone) {
             dispatch(updateBindPhoneState(true));
           }
         }
-      }  
+      }
     };
 
     const url = "wss://test-api.accessorx.com/ws/v1/user/info";
@@ -282,10 +281,6 @@ const App: React.FC = (props: any) => {
       webSocketService.close();
     };
   }, [dispatch]);
-
-  useEffect(() => {
-    // console.log("Redux 中的 user_info 更新为:", accountInfo);
-  }, [accountInfo]);
 
   return (
     <Layout className="app-module">
@@ -356,7 +351,7 @@ const App: React.FC = (props: any) => {
             <img
               onClick={() => {
                 if (localStorage.getItem("close_window_sign") !== "1") {
-                  handleExitProcess();
+                  setExitOpen(true);
                 } else {
                   handleMinimize();
                 }
@@ -402,7 +397,15 @@ const App: React.FC = (props: any) => {
           loginOutStop();
         }}
       />
-      <VisitorLogin loginOutStop={loginOutStop}/>
+      <VisitorLogin loginOutStop={loginOutStop} />
+      {exitOpen ? (
+        <BreakConfirmModal
+          type={"exit"}
+          accelOpen={exitOpen}
+          setAccelOpen={setExitOpen}
+          onConfirm={handleExitProcess}
+        />
+      ) : null}
     </Layout>
   );
 };

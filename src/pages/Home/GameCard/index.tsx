@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 18:46:28
+ * @LastEditTime: 2024-06-27 20:25:34
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -74,7 +74,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
-
+  const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [isOpenRegion, setIsOpenRegion] = useState(false); // 是否是打开选择区服节点
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认加速
@@ -200,6 +200,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             errorCode,
             errorMessage
           );
+          eventBus.emit("showModal", {
+            show: true,
+            type: "accelerationServiceNotStarting",
+          });
         }
       );
     } catch (error) {
@@ -280,7 +284,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (res) {
         const latestAccountInfo = store.getState().accountInfo;
         const userInfo = latestAccountInfo?.userInfo; // 用户信息
-        console.log("点击加速之后的用户信息userInfo---------------", userInfo);
+        console.log(
+          "点击加速之后的用户信息userInfo---------------",
+          userInfo,
+          new Date().getTime() / 1000
+        );
         // 是否登录
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
@@ -306,13 +314,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setSelectAccelerateOption(option);
           return;
         } else {
-          if (type === "custom") {
-            setIsOpenRegion(true);
-          } else {
-            accelerateProcessing(option);
-          }
+          let time = new Date().getTime() / 1000;
 
-          setSelectAccelerateOption(option);
+          if (userInfo?.vip_expiration_time - time <= 432000) {
+            setRenewalOpen(true);
+          } else {
+            if (type === "custom") {
+              setIsOpenRegion(true);
+            } else {
+              accelerateProcessing(option);
+            }
+
+            setSelectAccelerateOption(option);
+          }
         }
       }
     } else {
@@ -485,6 +499,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           options={selectAccelerateOption}
           onCancel={() => setIsOpenRegion(false)}
           notice={(e) => accelerateProcessing(e)}
+        />
+      ) : null}
+      {/* 续费提醒确认弹窗 */}
+      {renewalOpen ? (
+        <BreakConfirmModal
+          accelOpen={renewalOpen}
+          type={"renewalReminder"}
+          setAccelOpen={setRenewalOpen}
+          onConfirm={() => {
+            setRenewalOpen(false);
+            setIsModalOpenVip(true);
+          }}
         />
       ) : null}
     </div>
