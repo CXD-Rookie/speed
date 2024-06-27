@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 11:42:04
+ * @LastEditTime: 2024-06-27 15:50:28
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -334,7 +334,8 @@ const GameDetail: React.FC = () => {
       {isOpen && (
         <ActivationModal
           open={isOpen}
-          gameId={detailData.id}
+          options={detailData}
+          notice={(e) => setDetailData(e)}
           onClose={() => setIsOpen(false)}
         />
       )}

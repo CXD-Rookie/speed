@@ -2,13 +2,14 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-26 11:49:44
+ * @LastEditTime: 2024-06-27 15:51:19
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
  */
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Select, Input } from "antd";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
@@ -16,56 +17,30 @@ import playSuitApi from "@/api/speed";
 const { Option } = Select;
 
 interface ActivationModalProps {
-  open?: boolean;
-  gameId: string;
+  open: boolean;
+  options: any;
+  notice?: (option: any) => void;
   onClose: () => void;
-}
-
-interface Game {
-  id: string;
-  name: string;
-  name_en: string;
-  cover_img: string;
-  background_img: string;
-  icon: string;
-  note: string;
-  description: string;
-  developer: string;
-  playsuit: number;
-  pack_name: string;
-  screen_shot: any;
-  system_id: number[];
-  pc_platform: number[];
-  download: { android: string };
-  site: string;
-  tags: string[];
-  game_more: {
-    news: string;
-    guide: string;
-    store: string;
-    bbs: string;
-    mod: string;
-    modifier: string;
-  };
-  create_time: number;
-  update_time: number;
-  is_accelerate: boolean;
-  start_path?: string;
 }
 
 const ActivationModal: React.FC<ActivationModalProps> = ({
   open = false,
-  gameId,
+  options,
+  notice = () => {},
   onClose,
 }) => {
-  const [filePath, setFilePath] = useState(""); // 启动路径
-  const [game, setGame] = useState<Game | null>(null);
+  const { getGameList } = useGamesInitialize();
 
-  const [platforms, setPlatforms] = useState<any>({});
+  const [filePath, setFilePath] = useState(
+    options?.activation_method?.filePath
+  ); // 启动路径
+  const [selectPlatform, setSelectPlatform] = useState<string>(
+    options?.activation_method?.select_platforms_id
+  ); // 选择的游戏平台
+
+  const [platforms, setPlatforms] = useState<any>({}); // 所有的运营平台
 
   const handleInputChange = () => {
-    console.log("打开路径=====================", gameId);
-
     const requestData = JSON.stringify({
       method: "NativeApi_SelectFilePath",
     });
@@ -82,28 +57,27 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
   };
 
   const handleSave = () => {
-    console.log("点击报存");
     // 这个逻辑需要在打开文件之后回调处理，这是保存的逻辑
-    const gamesListString = localStorage.getItem("speed-1.0.0.1-games");
-    if (gamesListString) {
-      try {
-        const gamesList: Game[] = JSON.parse(gamesListString);
-        const gameDetail = gamesList.find((game) => game.id === gameId); // 使用传递进来的 gameId
+    let games_list = getGameList();
+    let games_option = { ...options }; // 当前游戏数据
 
-        if (gameDetail) {
-          gameDetail.start_path = filePath; // 添加 start_path 属性
-          console.log(11111111111111111);
-          localStorage.setItem(
-            "speed-1.0.0.1-games",
-            JSON.stringify(gamesList)
-          );
-          setGame(gameDetail); // 更新本地状态
-          onClose(); // 关闭弹窗
-        }
-      } catch (error) {
-        console.error("Failed to parse gamesList from localStorage", error);
-      }
+    games_option.activation_method = {
+      select_platforms_id: selectPlatform,
+      filePath,
+    }; // 添加 start_path 属性
+
+    let find_index = games_list.findIndex(
+      (item: any) => games_option?.id === item?.id
+    );
+
+    if (find_index !== -1) {
+      games_list[find_index] = games_option;
     }
+
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(games_list));
+
+    notice(games_option);
+    onClose(); // 关闭弹窗
   };
 
   const handleMethod = async () => {
@@ -111,6 +85,21 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
       let res = await playSuitApi.pcPlatform();
 
       setPlatforms(res?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const clickSelectPlatform = async (e: string) => {
+    try {
+      let res = await playSuitApi.speedInfo({
+        platform: 3,
+        gid: options?.id,
+        pid: e,
+      });
+
+      setSelectPlatform(e);
+      setFilePath(res?.data?.start_path);
     } catch (error) {
       console.log(error);
     }
@@ -136,11 +125,15 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     >
       <div className="activation-modal-content">
         <div className="content-title">启动平台：</div>
-        <Select className="content-select">
+        <Select
+          className="content-select"
+          value={selectPlatform}
+          onChange={(e) => clickSelectPlatform(e)}
+        >
           {Object?.keys(platforms)?.length > 0 &&
             Object?.keys(platforms)?.map((key: any) => {
               return (
-                <Option value="Steam" key={key}>
+                <Option value={key} key={key}>
                   {key === "0" ? "自定义" : platforms?.[key]}
                 </Option>
               );
@@ -148,10 +141,17 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
         </Select>
         <div className="content-title">启动路径：</div>
         <div className="content-path-box">
-          <Input className="content-input" disabled value={filePath} />
-          <Button className="content-btn" onClick={handleInputChange}>
-            浏览
-          </Button>
+          <Input
+            className="content-input"
+            style={{ width: selectPlatform === "0" ? "30.8vw" : "38.8vw" }}
+            disabled
+            value={filePath}
+          />
+          {selectPlatform === "0" && (
+            <Button className="content-btn" onClick={handleInputChange}>
+              浏览
+            </Button>
+          )}
         </div>
         <Button className="save-btn" type="default" onClick={handleSave}>
           保存
