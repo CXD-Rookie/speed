@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 15:05:56
+ * @LastEditTime: 2024-06-27 15:58:45
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -332,7 +332,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isAllowAcceleration ? (
               <div
                 className="accelerate-immediately-card"
-                onClick={() => setSelectAccelerateOption(option)}
+                onClick={() => accelerateDataHandling(option)}
               >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
                 <img
@@ -354,13 +354,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     handleClearGame(option);
                   }}
                 />
-                <div className="accelerate-immediately-button">
+                <div
+                  className="accelerate-immediately-button"
+                  onClick={() => accelerateDataHandling(option)}
+                >
                   <span className="accelerate-immediately-text">立即加速</span>
                   <img
                     className="accelerate-immediately-img"
                     src={arrowIcon}
                     alt=""
-                    // onClick={() => accelerateDataHandling(option)}
                   />
                 </div>
               </div>
