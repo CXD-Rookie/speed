@@ -50,9 +50,7 @@ const Home: React.FC = () => {
   const isRealNamel = localStorage.getItem("isRealName");
 
   const openModal = async () => {
-    let res = await handleUserInfo();
 
-    if (res) {
       const latestAccountInfo = store.getState().accountInfo;
 
       if (accountInfo?.isLogin) {
@@ -70,7 +68,7 @@ const Home: React.FC = () => {
         // 3个参数 用户信息 是否登录 是否显示登录
         dispatch(setAccountInfo(undefined, undefined, true));
       }
-    }
+  
   };
 
   const throttle = (func: (...args: any[]) => void, limit: number) => {
