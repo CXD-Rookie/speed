@@ -2,14 +2,13 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-26 11:07:03
+ * @LastEditTime: 2024-06-27 16:12:45
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { setAccountInfo } from "../../redux/actions/account-info";
-import { updateBindPhoneState } from "@/redux/actions/auth";
 import { debounce } from "@/common/utils";
 
 import Captcha from "./tencent-captcha";
@@ -114,11 +113,6 @@ const Login: React.FC = () => {
 
         // 3个参数 用户信息 是否登录 是否显示登录
         dispatch(setAccountInfo(res.data.user_info, true, false));
-
-        // eslint-disable-next-line no-restricted-globals
-        // @ts-ignore
-        // window.location.reload();
-        console.log("关闭跳转");
       } else {
         setVeryCode(false);
         setVeryCodeErr(true);
@@ -130,9 +124,6 @@ const Login: React.FC = () => {
 
   const close = async () => {
     dispatch(setAccountInfo(undefined, undefined, false));
-    // eslint-disable-next-line no-restricted-globals
-    // @ts-ignore
-    // window.location.reload();
     console.log("关闭跳转");
   };
 
@@ -202,15 +193,6 @@ const Login: React.FC = () => {
         </div>
         <div className="login-btn-box">
           <button onClick={handleLogin}>登录</button>
-          {/* <button
-            onClick={() => {
-              setBindVisitorOpen(true);
-              dispatch(setAccountInfo(undefined, false, false));
-              dispatch(updateBindPhoneState(true));
-            }}
-          >
-            登录
-          </button> */}
         </div>
         <div
           className="visitor-login-text"
