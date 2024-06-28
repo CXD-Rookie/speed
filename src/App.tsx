@@ -257,11 +257,16 @@ const App: React.FC = (props: any) => {
     const handleWebSocketMessage = (event: MessageEvent) => {
      
       const data = JSON.parse(event.data);
-      // console.log(data,"ws返回的信息---------------")
+      console.log(data,"ws返回的信息---------------")
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
         let userInfo = data?.data?.user_info || {};
+        if(!accountInfo?.userInfo?.user_ext?.is_adult || (accountInfo?.userInfo?.user_ext?.name === "" && accountInfo?.userInfo?.user_ext?.idcard === "")){
+          localStorage.setItem("isRealName", "1")
+        }else{
+          localStorage.setItem("isRealName", "0")
+        }
         if (String(userInfo?.phone)?.length > 1) {
           
           // 3个参数 用户信息 是否登录 是否显示登录
