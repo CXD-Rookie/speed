@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-27 17:09:10
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-06-28 16:11:38
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -56,7 +56,6 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const [isRealNameTag, setRealNameTag] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
-  // const [accountInfo, setAccountInfo] = useState<any>(accountInfoRedux);
   const [thirdInfo, setThirdInfo] = useState([]);
 
   const dispatch = useDispatch();
@@ -298,6 +297,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                       console.log(value, "-------------------");
                       setCloseWindow(value);
                       localStorage.setItem("close_window_sign", value);
+                      localStorage.setItem("settingsModified", String(true)); // 是否手动设置过关闭弹窗
+
                       if (value === "1" || value === 1) {
                         (window as any).NativeApi_UpdateConfig(
                           "close_button_action",

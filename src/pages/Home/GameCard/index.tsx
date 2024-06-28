@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 14:30:03
+ * @LastEditTime: 2024-06-28 15:51:16
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -315,9 +315,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           return;
         } else {
           let time = new Date().getTime() / 1000;
+          let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
 
-          if (userInfo?.vip_expiration_time - time <= 432000) {
+          if (
+            time - renewalTime > 86400 &&
+            userInfo?.vip_expiration_time - time <= 432000
+          ) {
             setRenewalOpen(true);
+            localStorage.setItem("renewalTime", String(time));
           } else {
             if (type === "custom") {
               setIsOpenRegion(true);
