@@ -1,0 +1,52 @@
+.app-close-module {
+  .ant-modal-content {
+    height: 42.4vh;
+    background-color: #3e3e4a;
+    padding: 1.2vw 2.4vh;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
+  }
+
+  .ant-modal-title,
+  .ant-modal-close-x {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  .app-close-module-content {
+    font-size: 1.4vw;
+    color: #fff;
+    text-align: center;
+
+    .content-radio-group {
+      margin-top: 3vh;
+    }
+    
+    :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
+      font-size: 1.4vw;
+      color: #fff !important;
+      margin-inline-end: 3.8vw !important;
+    }
+    
+    .ant-radio-inner {
+      background: transparent;
+    }
+      
+    .ant-radio-checked .ant-radio-inner {
+      font-size: 1.4vw;
+      background-color: #f86c34;
+    }
+  }
+}

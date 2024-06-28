@@ -11,6 +11,7 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
 
 import "@/assets/css/App.scss";
+import AppCloseModal from "./containers/app-close";
 import PayModal from "./containers/Pay";
 import eventBus from "./api/eventBus";
 import useCefQuery from "./hooks/useCefQuery";
@@ -65,9 +66,10 @@ const App: React.FC = (props: any) => {
   const dispatch: any = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
+
   const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
+  const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
   const routeView = useRoutes(routes); // 获得路由表
@@ -79,8 +81,9 @@ const App: React.FC = (props: any) => {
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
-  const [exitOpen, setExitOpen] = useState(false);
+  const [exitOpen, setExitOpen] = useState(false); // 是否关闭主程序
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
+  const [isAppCloseOpen, setIsAppCloseOpen] = useState(false); // 是否手动设置关闭主程序操作
 
   const menuList: CustomMenuProps[] = [
     {
@@ -133,11 +136,9 @@ const App: React.FC = (props: any) => {
 
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
-      // window.location.reload();
       navigate("/home");
     }
   };
-  // (window as any).loginOut = loginOut;
 
   const items: MenuProps["items"] = [
     {
@@ -335,10 +336,14 @@ const App: React.FC = (props: any) => {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
         let userInfo = data?.data?.user_info || {};
-        if(!accountInfo?.userInfo?.user_ext?.is_adult || (accountInfo?.userInfo?.user_ext?.name === "" && accountInfo?.userInfo?.user_ext?.idcard === "")){
-          localStorage.setItem("isRealName", "1")
-        }else{
-          localStorage.setItem("isRealName", "0")
+        if (
+          !accountInfo?.userInfo?.user_ext?.is_adult ||
+          (accountInfo?.userInfo?.user_ext?.name === "" &&
+            accountInfo?.userInfo?.user_ext?.idcard === "")
+        ) {
+          localStorage.setItem("isRealName", "1");
+        } else {
+          localStorage.setItem("isRealName", "0");
         }
 
         if (String(userInfo?.phone)?.length > 1) {
@@ -454,9 +459,14 @@ const App: React.FC = (props: any) => {
             <img
               onClick={() => {
                 if (localStorage.getItem("close_window_sign") !== "1") {
-                  setExitOpen(true);
+                  let isSet = localStorage.getItem("settingsModified"); // 是否手动设置过关闭弹窗
+                  if (Boolean(isSet)) {
+                    setExitOpen(true);
+                  } else {
+                    setIsAppCloseOpen(true);
+                  }
                 } else {
-                  handleMinimize();
+                  (window as any).NativeApi_MinimizeToTray();
                 }
               }}
               className="closeType"
@@ -501,6 +511,7 @@ const App: React.FC = (props: any) => {
         }}
       />
       <VisitorLogin loginOutStop={loginOutStop} />
+      {/* 关闭主程序 */}
       {exitOpen ? (
         <BreakConfirmModal
           type={"exit"}
@@ -527,6 +538,10 @@ const App: React.FC = (props: any) => {
             setIsModalOpenVip(true);
           }}
         />
+      ) : null}
+      {/* 提示修改关闭窗口设置 */}
+      {isAppCloseOpen ? (
+        <AppCloseModal open={isAppCloseOpen} close={setIsAppCloseOpen} />
       ) : null}
     </Layout>
   );
