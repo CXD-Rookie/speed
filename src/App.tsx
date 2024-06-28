@@ -316,6 +316,7 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
+      // console.log(data,"ws返回的信息---------------")
       // const version = data?.data?.version;
 
       // let isTrue = compareVersions(version?.min_version, version?.now_version);
@@ -334,6 +335,11 @@ const App: React.FC = (props: any) => {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
         let userInfo = data?.data?.user_info || {};
+        if(!accountInfo?.userInfo?.user_ext?.is_adult || (accountInfo?.userInfo?.user_ext?.name === "" && accountInfo?.userInfo?.user_ext?.idcard === "")){
+          localStorage.setItem("isRealName", "1")
+        }else{
+          localStorage.setItem("isRealName", "0")
+        }
 
         if (String(userInfo?.phone)?.length > 1) {
           // 3个参数 用户信息 是否登录 是否显示登录
