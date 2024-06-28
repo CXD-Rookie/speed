@@ -364,14 +364,17 @@ const App: React.FC = (props: any) => {
   }, [dispatch]);
 
   useEffect(() => {
+    let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
     let time = new Date().getTime() / 1000;
     let info = accountInfo?.userInfo;
 
     if (
+      time - renewalTime > 86400 &&
       accountInfo?.isLogin &&
       info?.is_vip &&
       info?.vip_expiration_time - time <= 432000
     ) {
+      localStorage.setItem("renewalTime", String(time));
       setRenewalOpen(true);
     }
   }, []);
