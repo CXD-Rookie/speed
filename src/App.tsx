@@ -314,6 +314,35 @@ const App: React.FC = (props: any) => {
     );
   };
 
+  const stopSpeed = () => {
+    playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
+    sendMessageToBackend(
+      JSON.stringify({
+        method: "NativeApi_StopProxy",
+        params: null,
+      }),
+      (response: any) => {
+        console.log("Success response from 停止加速:", response);
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        historyContext?.accelerateTime?.stopTimer();
+        removeGameList("initialize"); // 更新我的游戏
+        navigate("/home");
+      },
+      (errorCode: any, errorMessage: any) => {
+        console.error("Failure response from 停止加速:", errorCode);
+      }
+    );
+  };
+
+  (window as any).stopSpeed = stopSpeed;
+
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
