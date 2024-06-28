@@ -283,18 +283,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 点击立即加速
   const accelerateDataHandling = async (option: object, type = "default") => {
+    // 是否登录
     if (accountInfo?.isLogin) {
       let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
 
       if (res) {
         const latestAccountInfo = store.getState().accountInfo;
         const userInfo = latestAccountInfo?.userInfo; // 用户信息
-        console.log(
-          "点击加速之后的用户信息userInfo---------------",
-          userInfo,
-          new Date().getTime() / 1000
-        );
-        // 是否登录
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
         let game_list = getGameList(); // 获取当前我的游戏列表
