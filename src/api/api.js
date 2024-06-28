@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 18:00:53
+ * @LastEditTime: 2024-06-28 10:53:34
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,6 +11,7 @@ import { message, Modal } from 'antd';
 import { setAccountInfo } from '@/redux/actions/account-info';
 
 import axios from 'axios';
+import playSuitApi from './speed';
 import eventBus from './eventBus';
 
 const instance = axios.create({
@@ -56,6 +57,10 @@ instance.interceptors.response.use(
 
       // token验证失败 退出登录
       if (erroeCode.includes(code)) {
+        playSuitApi.playSpeedEnd({
+          platform: 3,
+          js_key: localStorage.getItem("StartKey"),
+        }); // 游戏停止加速
         window.cefQuery({
           request: JSON.stringify({
             method: "NativeApi_StopProxy",

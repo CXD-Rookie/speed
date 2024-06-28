@@ -11,6 +11,7 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
 
 import "@/assets/css/App.scss";
+import PayModal from "./containers/Pay";
 import eventBus from "./api/eventBus";
 import useCefQuery from "./hooks/useCefQuery";
 import webSocketService from "./common/webSocketService";
@@ -23,8 +24,8 @@ import IssueModal from "./containers/IssueModal/index";
 import BreakConfirmModal from "@/containers/break-confirm";
 import VisitorLogin from "./containers/visitor-login";
 
-import playSuitApi from "./api/speed";
 import loginApi from "./api/login";
+import playSuitApi from "./api/speed";
 
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
@@ -67,18 +68,19 @@ const App: React.FC = (props: any) => {
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
   const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
-  const { removeGameList } = useGamesInitialize();
+  const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
   const routeView = useRoutes(routes); // 获得路由表
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
+  const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
+  const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
+  const [exitOpen, setExitOpen] = useState(false);
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
-
-  const userInfo = useSelector((state: any) => state.accountInfo); // 替换为你的 state 结构
 
   const menuList: CustomMenuProps[] = [
     {
@@ -94,6 +96,10 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStop = async () => {
+    await playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",
@@ -189,6 +195,10 @@ const App: React.FC = (props: any) => {
 
   // 定义退出程序的处理函数
   const handleExitProcess = () => {
+    playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",
@@ -253,11 +263,74 @@ const App: React.FC = (props: any) => {
     };
   }, [navigate]);
 
+  function compareVersions(version1: string, version2: string) {
+    // 将版本号按点号分割成数组
+    const parts1 = version1.split(".").map(Number);
+    const parts2 = version2.split(".").map(Number);
+
+    // 获取最长的版本号长度
+    const maxLength = Math.max(parts1.length, parts2.length);
+
+    // 循环比较每个部分
+    for (let i = 0; i < maxLength; i++) {
+      const num1 = parts1[i] || 0;
+      const num2 = parts2[i] || 0;
+
+      if (num1 <= num2) {
+        return true; // 如果前者小于后者版本，返回 true
+      }
+    }
+
+    // 如果前者不小于后者版本，返回false
+    return false;
+  }
+
+  // 停止加速
+  const stopProxy = () => {
+    playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
+    sendMessageToBackend(
+      JSON.stringify({
+        method: "NativeApi_StopProxy",
+        params: null,
+      }),
+      (response: any) => {
+        console.log("Success response from 停止加速:", response);
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        historyContext?.accelerateTime?.stopTimer();
+        removeGameList("initialize"); // 更新我的游戏
+        navigate("/home");
+      },
+      (errorCode: any, errorMessage: any) => {
+        console.error("Failure response from 停止加速:", errorCode);
+      }
+    );
+  };
+
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
-     
       const data = JSON.parse(event.data);
-      console.log(data,"ws返回的信息---------------")
+      // console.log(data,"ws返回的信息---------------")
+      // const version = data?.data?.version;
+
+      // let isTrue = compareVersions(version?.min_version, version?.now_version);
+
+      // if (isTrue) {
+      //   stopProxy();
+      //   eventBus.emit("showModal", {
+      //     show: true,
+      //     type: "newVersionFound",
+      //     version: version?.now_version,
+      //   });
+      //   return;
+      // }
+
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
@@ -267,17 +340,25 @@ const App: React.FC = (props: any) => {
         }else{
           localStorage.setItem("isRealName", "0")
         }
+
         if (String(userInfo?.phone)?.length > 1) {
-          
           // 3个参数 用户信息 是否登录 是否显示登录
           dispatch(setAccountInfo(userInfo, true, false));
-        
+
+          // 加速中并且会员到期 停止加速
+          if (identifyAccelerationData()?.[0] && !userInfo?.is_vip) {
+            stopProxy();
+            eventBus.emit("showModal", {
+              show: true,
+              type: "accelMemEnd",
+            });
+          }
         } else {
           if (!isBindPhone) {
             dispatch(updateBindPhoneState(true));
           }
         }
-      }  
+      }
     };
 
     const url = "wss://test-api.accessorx.com/ws/v1/user/info";
@@ -289,8 +370,17 @@ const App: React.FC = (props: any) => {
   }, [dispatch]);
 
   useEffect(() => {
-    // console.log("Redux 中的 user_info 更新为:", accountInfo);
-  }, [accountInfo]);
+    let time = new Date().getTime() / 1000;
+    let info = accountInfo?.userInfo;
+
+    if (
+      accountInfo?.isLogin &&
+      info?.is_vip &&
+      info?.vip_expiration_time - time <= 432000
+    ) {
+      setRenewalOpen(true);
+    }
+  }, []);
 
   return (
     <Layout className="app-module">
@@ -361,7 +451,7 @@ const App: React.FC = (props: any) => {
             <img
               onClick={() => {
                 if (localStorage.getItem("close_window_sign") !== "1") {
-                  handleExitProcess();
+                  setExitOpen(true);
                 } else {
                   handleMinimize();
                 }
@@ -407,7 +497,34 @@ const App: React.FC = (props: any) => {
           loginOutStop();
         }}
       />
-      <VisitorLogin loginOutStop={loginOutStop}/>
+      <VisitorLogin loginOutStop={loginOutStop} />
+      {exitOpen ? (
+        <BreakConfirmModal
+          type={"exit"}
+          accelOpen={exitOpen}
+          setAccelOpen={setExitOpen}
+          onConfirm={handleExitProcess}
+        />
+      ) : null}
+      {/* vip 充值弹窗 */}
+      {!!isModalOpenVip && (
+        <PayModal
+          isModalOpen={isModalOpenVip}
+          setIsModalOpen={(e) => setIsModalOpenVip(e)}
+        />
+      )}
+      {/* 续费提醒确认弹窗 */}
+      {renewalOpen ? (
+        <BreakConfirmModal
+          accelOpen={renewalOpen}
+          type={"renewalReminder"}
+          setAccelOpen={setRenewalOpen}
+          onConfirm={() => {
+            setRenewalOpen(false);
+            setIsModalOpenVip(true);
+          }}
+        />
+      ) : null}
     </Layout>
   );
 };

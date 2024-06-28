@@ -65,17 +65,13 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 更新游戏历史选择节点
   const updateGamesDom = (option: any = {}) => {
+    let old_dom = presentGameInfo?.dom_info?.dom_history || []; // 现在已存在的数据
+    let isTrue = old_dom.some((item: any) => item?.id === option?.id); // 现在已有的历史节点是否包含当前选择的节点
+
     let dom_info = {
       select_dom: option,
-      dom_history: presentGameInfo?.dom_history || [],
+      dom_history: isTrue ? old_dom : [...old_dom, option],
     };
-    let is_sort = dom_info?.dom_history.some(
-      (item: any) => item?.id === option?.id
-    );
-
-    if (!is_sort) {
-      dom_info.dom_history.push(option);
-    }
 
     let game_list = getGameList();
     let find_index = game_list.findIndex(
@@ -99,13 +95,12 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   };
 
   // 开始加速
-  const clickStartOn = async () => {
-    let domInfo = updateGamesDom(selectedNode);
-    const jsKey = localStorage.getItem("StartKey");
+  const clickStartOn = async (node = selectedNode) => {
+    let domInfo = updateGamesDom(node);
 
     await playSuitApi.playSpeedEnd({
       platform: 3,
-      js_key: jsKey,
+      js_key: localStorage.getItem("StartKey"),
     }); // 游戏加速信息
 
     sendMessageToBackend(
@@ -291,7 +286,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   // 切换 tabs 进行区服 节点切换
   const tabsChange = (event: any) => {
     if (event === "2") {
-      setDomHistory(options?.dom_info || {});
+      setDomHistory(presentGameInfo?.dom_info || {});
     }
 
     setActiveTab(event);
@@ -432,7 +427,21 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               <div className="node-select">
                 <div>
                   <span>节点记录:</span>
-                  <Select defaultValue={domHistory?.select_dom?.id}>
+                  <Select
+                    defaultValue={domHistory?.select_dom?.id}
+                    onChange={(id) => {
+                      let isFind = identifyAccelerationData()?.[0] || {}; // 当前是否有加速数据
+                      let dom = presentGameInfo?.dom_info?.dom_history;
+                      let node = dom.filter((value: any) => value?.id === id);
+
+                      if (isFind && type === "details") {
+                        setSelectedNode(node);
+                        setAccelOpen(true);
+                      } else {
+                        clickStartOn(node?.[0]);
+                      }
+                    }}
+                  >
                     {domHistory?.dom_history?.length > 0 &&
                       domHistory?.dom_history?.map((item: any) => {
                         return (

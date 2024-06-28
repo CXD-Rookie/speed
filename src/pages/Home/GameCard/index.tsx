@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 16:08:23
+ * @LastEditTime: 2024-06-28 14:30:03
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -24,7 +24,7 @@ import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";
 import BreakConfirmModal from "@/containers/break-confirm";
-
+import eventBus from "@/api/eventBus";
 import playSuitApi from "@/api/speed";
 
 import addIcon from "@/assets/images/common/add.svg";
@@ -74,7 +74,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
-
+  const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [isOpenRegion, setIsOpenRegion] = useState(false); // 是否是打开选择区服节点
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认加速
@@ -92,6 +92,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 停止加速
   const stopAcceleration = () => {
     setStopModalOpen(false);
+    playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
     // 停止加速
     sendMessageToBackend(
       JSON.stringify({
@@ -200,6 +204,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             errorCode,
             errorMessage
           );
+          // 无法启动加速服务
+          eventBus.emit("showModal", {
+            show: true,
+            type: "accelerationServiceNotStarting",
+          });
         }
       );
     } catch (error) {
@@ -219,6 +228,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setIsStartAnimate(true); // 开始加速动画
     stopAcceleration(); // 停止加速
 
+    let isPre: boolean;
+
     // 校验是否合法文件
     sendMessageToBackend(
       JSON.stringify({
@@ -228,17 +239,22 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
 
-        accelerateGameToList(option); // 加速完后更新我的游戏
-        handleSuitDomList(option); // 通知客户端进行加速
         // 暂时注释 实际生产打开
-        // if (isCheck?.pre_check_status === 0) {
-        //   handleSuitDomList(option.id);
-        // } else {
-        //   console.log(`不是合法文件，请重新安装加速器`);
-        // }
+        if (isCheck?.pre_check_status === 0) {
+          isPre = true;
+          accelerateGameToList(option); // 加速完后更新我的游戏
+          handleSuitDomList(option); // 通知客户端进行加速
+        } else {
+          console.log(`不是合法文件，请重新安装加速器`);
+          eventBus.emit("showModal", {
+            show: true,
+            type: "infectedOrHijacked",
+          });
+        }
       },
       (errorCode: any, errorMessage: any) => {
         console.error("Failure response from 校验是否合法文件:", errorCode);
+        eventBus.emit("showModal", { show: true, type: "infectedOrHijacked" });
       }
     );
 
@@ -247,7 +263,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       setIsAllowShowAccelerating(true); // 启用显示加速中
       setIsStartAnimate(false); // 结束加速动画
 
-      navigate("/gameDetail");
+      if (isPre) {
+        navigate("/gameDetail");
+      }
     }, 5000);
   };
 
@@ -264,15 +282,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 点击立即加速
-  const accelerateDataHandling = async (option: object, type = "default") => {
+  const accelerateDataHandling = async (option: any, type = "default") => {
+    // 是否登录
     if (accountInfo?.isLogin) {
       let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
 
       if (res) {
         const latestAccountInfo = store.getState().accountInfo;
         const userInfo = latestAccountInfo?.userInfo; // 用户信息
-        console.log("点击加速之后的用户信息userInfo---------------", userInfo);
-        // 是否登录
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
         let game_list = getGameList(); // 获取当前我的游戏列表
@@ -289,7 +306,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsMinorOpen(true);
           setMinorType("acceleration");
           return;
-        } else if (!userInfo?.is_vip) {
+        } else if (!options?.free_time && !userInfo?.is_vip) {
           setIsModalOpenVip(true);
           return;
         } else if (find_accel?.[0]) {
@@ -297,13 +314,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setSelectAccelerateOption(option);
           return;
         } else {
-          if (type === "custom") {
-            setIsOpenRegion(true);
-          } else {
-            accelerateProcessing(option);
-          }
+          let time = new Date().getTime() / 1000;
 
-          setSelectAccelerateOption(option);
+          if (userInfo?.vip_expiration_time - time <= 432000) {
+            setRenewalOpen(true);
+          } else {
+            if (type === "custom") {
+              setIsOpenRegion(true);
+            } else {
+              accelerateProcessing(option);
+            }
+
+            setSelectAccelerateOption(option);
+          }
         }
       }
     } else {
@@ -476,6 +499,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           options={selectAccelerateOption}
           onCancel={() => setIsOpenRegion(false)}
           notice={(e) => accelerateProcessing(e)}
+        />
+      ) : null}
+      {/* 续费提醒确认弹窗 */}
+      {renewalOpen ? (
+        <BreakConfirmModal
+          accelOpen={renewalOpen}
+          type={"renewalReminder"}
+          setAccelOpen={setRenewalOpen}
+          onConfirm={() => {
+            setRenewalOpen(false);
+            setIsModalOpenVip(true);
+          }}
         />
       ) : null}
     </div>

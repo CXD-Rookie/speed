@@ -13,6 +13,7 @@ interface Game {
   id: string;
   name: string;
   name_en: string;
+  free_time: string;
   cover_img: string;
   background_img: string;
   note: string;
@@ -99,6 +100,7 @@ const GameLibrary: React.FC = () => {
         param.t = tParam;
       }
       const res = await gameApi.gameList(param);
+
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
         cover_img: `https://cdn.accessorx.com/${
@@ -188,6 +190,15 @@ const GameLibrary: React.FC = () => {
             onClick={() => clickAddGame(game)}
           >
             <div className="content-box">
+              {game?.free_time && (
+                <div className="exemption-box">
+                  <div className="exemption">限免</div>
+                  {game?.free_time !== "永久" && (
+                    <div className="time">剩余{game?.free_time}</div>
+                  )}
+                </div>
+              )}
+
               <img className="back-icon" src={game.cover_img} alt={game.name} />
               <div className="game-card-content">
                 <img className="add-icon" src={addThemeIcon} alt="" />

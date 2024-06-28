@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 15:50:28
+ * @LastEditTime: 2024-06-27 20:08:31
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -50,7 +50,7 @@ const GameDetail: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false); // 启动游戏平台弹窗
 
   const [stopModalOpen, setStopModalOpen] = useState(false);
-
+  const [delayOpen, setDelayOpen] = useState(false); // 延迟弹窗
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(); // 实时延迟
   const [packetLoss, setPacketLoss] = useState<any>(); // 丢包率
@@ -81,7 +81,7 @@ const GameDetail: React.FC = () => {
     const stopInfo = await playSuitApi.playSpeedEnd({
       platform: 3,
       js_key: jsKey,
-    }); // 游戏加速信息
+    }); // 游戏停止加速
     console.log("停止加速接口调用返回信息", stopInfo);
     sendMessageToBackend(
       JSON.stringify({
@@ -163,6 +163,10 @@ const GameDetail: React.FC = () => {
         const lost_bag = delay < 2 ? 2 : delay;
         const chart_list = generateDataEvery10Seconds(lost_bag);
 
+        if (delay === 9999) {
+          setDelayOpen(true);
+        }
+
         setChartData(chart_list); // 更新图表
         setLostBag(lost_bag); // 更新延迟数
         setPacketLoss(delay === 9999 ? 25 : 0); // 更新丢包率
@@ -173,6 +177,7 @@ const GameDetail: React.FC = () => {
       },
       (errorCode: any, errorMessage: any) => {
         console.error("Failure response from 详情丢包信息:", errorCode);
+        setDelayOpen(true);
       }
     );
   }, []);
@@ -345,6 +350,14 @@ const GameDetail: React.FC = () => {
           accelOpen={stopModalOpen}
           setAccelOpen={setStopModalOpen}
           onConfirm={stopSpeed}
+        />
+      ) : null}
+      {delayOpen ? (
+        <BreakConfirmModal
+          type={"delayTooHigh"}
+          accelOpen={delayOpen}
+          setAccelOpen={setDelayOpen}
+          onConfirm={() => setIsModalVisible(true)}
         />
       ) : null}
     </div>
