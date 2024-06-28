@@ -68,7 +68,7 @@ const App: React.FC = (props: any) => {
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
   const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
-  const { removeGameList } = useGamesInitialize();
+  const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
   const routeView = useRoutes(routes); // 获得路由表
 
@@ -266,7 +266,7 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      // console.log(data, "ws返回的信息---------------");
+
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
       } else if (data.code === 0 || data.code === "0") {
@@ -275,6 +275,37 @@ const App: React.FC = (props: any) => {
         if (String(userInfo?.phone)?.length > 1) {
           // 3个参数 用户信息 是否登录 是否显示登录
           dispatch(setAccountInfo(userInfo, true, false));
+
+          // 加速中并且会员到期 停止加速
+          if (identifyAccelerationData()?.[0] && !userInfo?.is_vip) {
+            playSuitApi.playSpeedEnd({
+              platform: 3,
+              js_key: localStorage.getItem("StartKey"),
+            }); // 游戏停止加速
+            sendMessageToBackend(
+              JSON.stringify({
+                method: "NativeApi_StopProxy",
+                params: null,
+              }),
+              (response: any) => {
+                console.log("Success response from 停止加速:", response);
+                historyContext?.accelerateTime?.stopTimer();
+
+                if ((window as any).stopDelayTimer) {
+                  (window as any).stopDelayTimer();
+                }
+                removeGameList("initialize"); // 更新我的游戏
+                navigate("/home");
+                eventBus.emit("showModal", {
+                  show: true,
+                  type: "newVersionFound",
+                });
+              },
+              (errorCode: any, errorMessage: any) => {
+                console.error("Failure response from 停止加速:", errorCode);
+              }
+            );
+          }
         } else {
           if (!isBindPhone) {
             dispatch(updateBindPhoneState(true));

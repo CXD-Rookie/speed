@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 10:48:06
+ * @LastEditTime: 2024-06-28 11:16:16
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -62,6 +62,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       ? "退出加速器将会中断正在加速的游戏，是否确认退出？"
       : "确定要退出加速器吗？",
     renewalReminder: "您的加速服务即将到期，请尽快续费以享受流畅的游戏体验。",
+    accelMemEnd: "您的加速服务已到期，请续费继续使用",
   };
 
   const confirmObj: any = {
@@ -71,6 +72,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     accelerationServiceNotStarting: "好的",
     delayTooHigh: "更换节点",
     renewalReminder: "立即充值",
+    accelMemEnd: "好的",
   };
 
   const displaySingleButton = [
@@ -79,6 +81,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "accelerationServiceNotStarting",
     "delayTooHigh",
     "renewalReminder",
+    "accelMemEnd",
   ];
 
   // 停止加速
