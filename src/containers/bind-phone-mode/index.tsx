@@ -171,7 +171,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           setVeryCodeErr(true);
           const target = document.querySelector(".last-login-text") as any;
           const dataTitle = target?.dataset?.title;
-          (window as any).NativeApi_OpenBrowser(dataTitle);
+          (window as any).NativeApi_YouXiaAuth(dataTitle);
         }
       } else if (bindType === "oldPhone") {
         let res = await verifyPhone();
