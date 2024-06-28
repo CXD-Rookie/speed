@@ -100,7 +100,6 @@ const GameLibrary: React.FC = () => {
         param.t = tParam;
       }
       const res = await gameApi.gameList(param);
-      console.log(res);
 
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,

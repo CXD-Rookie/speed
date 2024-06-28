@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 10:55:02
+ * @LastEditTime: 2024-06-28 14:30:03
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -282,7 +282,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 点击立即加速
-  const accelerateDataHandling = async (option: object, type = "default") => {
+  const accelerateDataHandling = async (option: any, type = "default") => {
     // 是否登录
     if (accountInfo?.isLogin) {
       let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
@@ -306,7 +306,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsMinorOpen(true);
           setMinorType("acceleration");
           return;
-        } else if (!userInfo?.is_vip) {
+        } else if (!options?.free_time && !userInfo?.is_vip) {
           setIsModalOpenVip(true);
           return;
         } else if (find_accel?.[0]) {
