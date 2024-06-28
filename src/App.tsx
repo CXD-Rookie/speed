@@ -314,7 +314,7 @@ const App: React.FC = (props: any) => {
     );
   };
 
-  const stopSpeed = () => {
+  const stopSpeed = () => {  //全局只给客户端调用，业务不处理
     playSuitApi.playSpeedEnd({
       platform: 3,
       js_key: localStorage.getItem("StartKey"),
@@ -334,6 +334,7 @@ const App: React.FC = (props: any) => {
         historyContext?.accelerateTime?.stopTimer();
         removeGameList("initialize"); // 更新我的游戏
         navigate("/home");
+        (window as any).NativeApi_ExitProcess();
       },
       (errorCode: any, errorMessage: any) => {
         console.error("Failure response from 停止加速:", errorCode);
@@ -397,7 +398,6 @@ const App: React.FC = (props: any) => {
 
     const url = "wss://test-api.accessorx.com/ws/v1/user/info";
     webSocketService.connect(url, handleWebSocketMessage, dispatch);
-
     return () => {
       webSocketService.close();
     };
