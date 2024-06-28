@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 20:26:39
+ * @LastEditTime: 2024-06-28 10:48:06
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 import eventBus from "@/api/eventBus";
 import useCefQuery from "@/hooks/useCefQuery";
+import playSuitApi from "@/api/speed";
 
 import "./index.scss";
 import SettingsModal from "../setting";
@@ -46,10 +47,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   const textContentObj: any = {
     accelerate: "启动加速将断开现有游戏加速，是否确认？",
-    stopAccelerate: identifyAccelerationData()?.[0]
+    stopAccelerate: "停止加速可能导致游戏重连，是否要继续？",
+    loginOut: identifyAccelerationData()?.[0]
       ? "退出登录将会中断正在加速的游戏"
-      : "停止加速可能导致游戏重连，是否要继续？",
-    loginOut: "确定退出当前账号登录吗？",
+      : "确定退出当前账号登录吗？",
     netorkError: "网络连接异常，请检查网络设置。",
     newVersionFound: "发现新版本",
     infectedOrHijacked: "检测到加速器安全问题，请立即进行安全自我修复",
@@ -57,7 +58,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       "无法启动加速服务，请重启客户端或使用问题反馈技术支持。",
     delayTooHigh:
       "网络延迟过高，可能影响游戏体验，请检查网络连接或尝试更换节点。",
-    exit: "退出加速器将会中断正在加速的游戏，是否确认退出？",
+    exit: identifyAccelerationData()?.[0]
+      ? "退出加速器将会中断正在加速的游戏，是否确认退出？"
+      : "确定要退出加速器吗？",
     renewalReminder: "您的加速服务即将到期，请尽快续费以享受流畅的游戏体验。",
   };
 
@@ -80,6 +83,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   // 停止加速
   const stopAcceleration = () => {
+    playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
     // 停止加速
     sendMessageToBackend(
       JSON.stringify({

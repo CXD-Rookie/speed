@@ -81,7 +81,7 @@ const GameDetail: React.FC = () => {
     const stopInfo = await playSuitApi.playSpeedEnd({
       platform: 3,
       js_key: jsKey,
-    }); // 游戏加速信息
+    }); // 游戏停止加速
     console.log("停止加速接口调用返回信息", stopInfo);
     sendMessageToBackend(
       JSON.stringify({

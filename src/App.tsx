@@ -25,6 +25,7 @@ import BreakConfirmModal from "@/containers/break-confirm";
 import VisitorLogin from "./containers/visitor-login";
 
 import loginApi from "./api/login";
+import playSuitApi from "./api/speed";
 
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
@@ -95,6 +96,10 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStop = async () => {
+    await playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",
@@ -190,6 +195,10 @@ const App: React.FC = (props: any) => {
 
   // 定义退出程序的处理函数
   const handleExitProcess = () => {
+    playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",

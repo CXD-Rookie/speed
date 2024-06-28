@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 20:25:34
+ * @LastEditTime: 2024-06-28 10:55:02
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -92,6 +92,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 停止加速
   const stopAcceleration = () => {
     setStopModalOpen(false);
+    playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
     // 停止加速
     sendMessageToBackend(
       JSON.stringify({
@@ -200,6 +204,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             errorCode,
             errorMessage
           );
+          // 无法启动加速服务
           eventBus.emit("showModal", {
             show: true,
             type: "accelerationServiceNotStarting",
