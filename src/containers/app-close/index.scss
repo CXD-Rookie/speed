@@ -31,9 +31,22 @@
     text-align: center;
 
     .content-radio-group {
+      width: 100%;
       margin-top: 3vh;
     }
-    
+
+    .content-confirm {
+      width: 6vw;
+      height: 3.6vh;
+      margin-top: 4.5vh;
+      background-color: #f86c34;
+    }
+
+    .content-no-tooltip {
+      width: 100%;
+      margin-top: 3vh;
+    }
+
     :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
       font-size: 1.4vw;
       color: #fff !important;
