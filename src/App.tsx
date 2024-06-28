@@ -263,9 +263,72 @@ const App: React.FC = (props: any) => {
     };
   }, [navigate]);
 
+  function compareVersions(version1: string, version2: string) {
+    // 将版本号按点号分割成数组
+    const parts1 = version1.split(".").map(Number);
+    const parts2 = version2.split(".").map(Number);
+
+    // 获取最长的版本号长度
+    const maxLength = Math.max(parts1.length, parts2.length);
+
+    // 循环比较每个部分
+    for (let i = 0; i < maxLength; i++) {
+      const num1 = parts1[i] || 0;
+      const num2 = parts2[i] || 0;
+
+      if (num1 <= num2) {
+        return true; // 如果前者小于后者版本，返回 true
+      }
+    }
+
+    // 如果前者不小于后者版本，返回false
+    return false;
+  }
+
+  // 停止加速
+  const stopProxy = () => {
+    playSuitApi.playSpeedEnd({
+      platform: 3,
+      js_key: localStorage.getItem("StartKey"),
+    }); // 游戏停止加速
+    sendMessageToBackend(
+      JSON.stringify({
+        method: "NativeApi_StopProxy",
+        params: null,
+      }),
+      (response: any) => {
+        console.log("Success response from 停止加速:", response);
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        historyContext?.accelerateTime?.stopTimer();
+        removeGameList("initialize"); // 更新我的游戏
+        navigate("/home");
+      },
+      (errorCode: any, errorMessage: any) => {
+        console.error("Failure response from 停止加速:", errorCode);
+      }
+    );
+  };
+
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
+      // const version = data?.data?.version;
+
+      // let isTrue = compareVersions(version?.min_version, version?.now_version);
+
+      // if (isTrue) {
+      //   stopProxy();
+      //   eventBus.emit("showModal", {
+      //     show: true,
+      //     type: "newVersionFound",
+      //     version: version?.now_version,
+      //   });
+      //   return;
+      // }
 
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
@@ -278,33 +341,11 @@ const App: React.FC = (props: any) => {
 
           // 加速中并且会员到期 停止加速
           if (identifyAccelerationData()?.[0] && !userInfo?.is_vip) {
-            playSuitApi.playSpeedEnd({
-              platform: 3,
-              js_key: localStorage.getItem("StartKey"),
-            }); // 游戏停止加速
-            sendMessageToBackend(
-              JSON.stringify({
-                method: "NativeApi_StopProxy",
-                params: null,
-              }),
-              (response: any) => {
-                console.log("Success response from 停止加速:", response);
-                historyContext?.accelerateTime?.stopTimer();
-
-                if ((window as any).stopDelayTimer) {
-                  (window as any).stopDelayTimer();
-                }
-                removeGameList("initialize"); // 更新我的游戏
-                navigate("/home");
-                eventBus.emit("showModal", {
-                  show: true,
-                  type: "newVersionFound",
-                });
-              },
-              (errorCode: any, errorMessage: any) => {
-                console.error("Failure response from 停止加速:", errorCode);
-              }
-            );
+            stopProxy();
+            eventBus.emit("showModal", {
+              show: true,
+              type: "accelMemEnd",
+            });
           }
         } else {
           if (!isBindPhone) {

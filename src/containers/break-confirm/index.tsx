@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 11:16:16
+ * @LastEditTime: 2024-06-28 15:10:02
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -44,6 +44,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   const [noticeType, setNoticeType] = useState<any>(""); // 通过eventBus 传递的通知消息类型
   const [settingOpen, setSettingOpen] = useState(false);
+
+  const [version, setVersion] = useState(""); // 立即升级版本
 
   const textContentObj: any = {
     accelerate: "启动加速将断开现有游戏加速，是否确认？",
@@ -149,6 +151,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const showModal = (option: any = {}) => {
     setIsNetworkError(option?.show || true);
     setNoticeType(option?.type || "");
+
+    if (noticeType === "newVersionFound") {
+      setVersion(option?.version);
+    }
   };
 
   useEffect(() => {
@@ -164,12 +170,16 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       <Modal
         className="break-confirm"
         open={accelOpen || isNetworkError}
+        closable={noticeType === "newVersionFound" ? false : true}
         onCancel={cancel}
         title="提示"
         centered
         maskClosable={false}
         footer={
-          <div className="accelerate-modal-footer">
+          <div
+            className="accelerate-modal-footer"
+            style={noticeType === "newVersionFound" ? { marginTop: "2vh" } : {}}
+          >
             {!displaySingleButton.includes(noticeType) && (
               <div className="footer-cancel" onClick={cancel}>
                 取消
@@ -195,6 +205,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
             ? textContentObj?.[noticeType]
             : textContentObj?.[type]}
         </div>
+        {noticeType === "newVersionFound" && (
+          <div className="version">V {version}</div>
+        )}
       </Modal>
       {settingOpen ? (
         <SettingsModal
