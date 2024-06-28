@@ -1,6 +1,6 @@
 .app-close-module {
   .ant-modal-content {
-    height: 42.4vh;
+    height: 32vh;
     background-color: #3e3e4a;
     padding: 1.2vw 2.4vh;
   }
@@ -36,15 +36,24 @@
     }
 
     .content-confirm {
-      width: 6vw;
-      height: 3.6vh;
+      width: 9vw;
+      height: 4.5vh;
       margin-top: 4.5vh;
+      font-size: 1.4vw;
       background-color: #f86c34;
+      border-radius: 2.25vh;
+
+      &:active, &:hover {
+        background-color: #f86c34;
+      }
     }
 
     .content-no-tooltip {
-      width: 100%;
+      color: #fff;
+      font-size: 1.4vw;
       margin-top: 3vh;
+      line-height: 1.4vw;
+      text-align: center;
     }
 
     :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
@@ -56,9 +65,15 @@
     .ant-radio-inner {
       background: transparent;
     }
-      
-    .ant-radio-checked .ant-radio-inner {
+
+    .ant-radio-checked .ant-radio-inner, 
+    :where(.css-dev-only-do-not-override-usln0u).ant-checkbox-checked .ant-checkbox-inner {
       font-size: 1.4vw;
+      background-color: #f86c34;
+      border-color: #f86c34;
+    }
+
+    .ant-checkbox-wrapper:hover .ant-checkbox-checked .ant-checkbox-inner {
       background-color: #f86c34;
     }
   }

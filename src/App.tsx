@@ -460,7 +460,8 @@ const App: React.FC = (props: any) => {
               onClick={() => {
                 if (localStorage.getItem("close_window_sign") !== "1") {
                   let isSet = localStorage.getItem("settingsModified"); // 是否手动设置过关闭弹窗
-                  if (Boolean(isSet)) {
+
+                  if (isSet === "true") {
                     setExitOpen(true);
                   } else {
                     setIsAppCloseOpen(true);
@@ -541,7 +542,11 @@ const App: React.FC = (props: any) => {
       ) : null}
       {/* 提示修改关闭窗口设置 */}
       {isAppCloseOpen ? (
-        <AppCloseModal open={isAppCloseOpen} close={setIsAppCloseOpen} />
+        <AppCloseModal
+          open={isAppCloseOpen}
+          close={setIsAppCloseOpen}
+          onConfirm={setExitOpen}
+        />
       ) : null}
     </Layout>
   );
