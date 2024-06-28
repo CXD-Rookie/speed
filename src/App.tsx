@@ -284,8 +284,13 @@ const App: React.FC = (props: any) => {
 
   useEffect(() => {
     let time = new Date().getTime() / 1000;
+    let info = accountInfo?.userInfo;
 
-    if (accountInfo?.vip_expiration_time - time <= 432000) {
+    if (
+      accountInfo?.isLogin &&
+      info?.is_vip &&
+      info?.vip_expiration_time - time <= 432000
+    ) {
       setRenewalOpen(true);
     }
   }, []);
