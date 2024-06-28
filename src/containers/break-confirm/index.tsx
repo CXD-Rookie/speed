@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 15:10:02
+ * @LastEditTime: 2024-06-28 17:04:02
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -47,6 +47,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   const [version, setVersion] = useState(""); // 立即升级版本
 
+  // 内容文案
   const textContentObj: any = {
     accelerate: "启动加速将断开现有游戏加速，是否确认？",
     stopAccelerate: "停止加速可能导致游戏重连，是否要继续？",
@@ -65,8 +66,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       : "确定要退出加速器吗？",
     renewalReminder: "您的加速服务即将到期，请尽快续费以享受流畅的游戏体验。",
     accelMemEnd: "您的加速服务已到期，请续费继续使用",
+    serverDisconnected: "无法连接到服务器，请重新启动客户端。",
   };
 
+  // footer 确认按钮的文案
   const confirmObj: any = {
     netorkError: "好的",
     newVersionFound: "立即升级",
@@ -75,8 +78,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     delayTooHigh: "更换节点",
     renewalReminder: "立即充值",
     accelMemEnd: "好的",
+    serverDisconnected: "重启客户端",
   };
 
+  // footer 只显示一个按钮的类型
   const displaySingleButton = [
     "netorkError",
     "newVersionFound",
@@ -84,7 +89,11 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "delayTooHigh",
     "renewalReminder",
     "accelMemEnd",
+    "serverDisconnected",
   ];
+
+  // 不显示右上角关闭的类型
+  const hideClosedCategories = ["newVersionFound", "serverDisconnected"];
 
   // 停止加速
   const stopAcceleration = () => {
@@ -143,6 +152,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       case "accelerationServiceNotStarting":
         stopAcceleration();
         break;
+      case "serverDisconnected":
+        (window as any).native_restart();
+        break;
       default:
         break;
     }
@@ -170,7 +182,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       <Modal
         className="break-confirm"
         open={accelOpen || isNetworkError}
-        closable={noticeType === "newVersionFound" ? false : true}
+        closable={hideClosedCategories.includes(noticeType) ? false : true}
         onCancel={cancel}
         title="提示"
         centered
