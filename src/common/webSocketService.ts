@@ -2,13 +2,13 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-28 17:54:28
+ * @LastEditTime: 2024-06-28 18:05:22
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 // webSocketService.ts
 import { Dispatch } from 'redux';
-import eventBus from '../api/eventBus'; // 假设你有一个 eventBus 模块来处理事件
+import eventBus from '../api/eventBus'; 
 
 class WebSocketService {
   private ws: WebSocket | null = null;
@@ -16,8 +16,16 @@ class WebSocketService {
   private reconnectAttempts: number = 0;
   private readonly maxReconnectAttempts: number = 10;
   private readonly reconnectInterval: number = 3000; // 初始重连间隔为3秒
+  private messageQueue: any[] = []; // 缓存未发送的信息
+  private url: string = '';
+  private onMessage: (event: MessageEvent) => void = () => {};
+  private dispatch!: Dispatch; // 使用断言来表示该属性在实际使用前会被赋值
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
+    this.url = url;
+    this.onMessage = onMessage;
+    this.dispatch = dispatch;
+
     const token = localStorage.getItem('token');
     let userToken = '';
 
@@ -26,7 +34,7 @@ class WebSocketService {
     } catch (e) {
       console.log('Failed to parse token:', e);
     }
-    // console.log("发送消息的userToken-------------------------",userToken)
+
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => {
@@ -38,6 +46,7 @@ class WebSocketService {
       });
       this.startHeartbeat();
       this.reconnectAttempts = 0; // 重置重连尝试次数
+      this.flushMessageQueue(); // 连接恢复后发送缓存的信息
     };
 
     this.ws.onmessage = (event) => {
@@ -72,6 +81,14 @@ class WebSocketService {
       this.ws.send(JSON.stringify(message));
     } else {
       console.error('WebSocket is not open. Unable to send message:', message);
+      this.messageQueue.push(message); // 缓存未发送的信息
+    }
+  }
+
+  flushMessageQueue() {
+    while (this.ws && this.ws.readyState === WebSocket.OPEN && this.messageQueue.length > 0) {
+      const message = this.messageQueue.shift();
+      this.ws.send(JSON.stringify(message));
     }
   }
 
@@ -114,13 +131,16 @@ class WebSocketService {
   }
 
   checkNetworkStatus() {
-    console.log(11111111111111111)
     window.addEventListener('offline', () => {
-      eventBus.emit('showModal', { show: true, type: "netorkError" })
+      eventBus.emit('showModal', { show: true, type: "netorkError" });
+    });
+
+    window.addEventListener('online', () => {
+      console.log('Network reconnected, attempting to reconnect WebSocket');
+      this.reconnect(this.url, this.onMessage, this.dispatch);
     });
   }
 }
 
 const webSocketService = new WebSocketService();
 export default webSocketService;
-

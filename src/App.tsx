@@ -344,6 +344,11 @@ const App: React.FC = (props: any) => {
 
   (window as any).stopSpeed = stopSpeed;
 
+  const showSettingsForm = () => { //给客户端用的设置弹展示方法
+    setShowSettingsModal(true)
+  }
+  (window as any).showSettingsForm = showSettingsForm;
+
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
@@ -418,6 +423,33 @@ const App: React.FC = (props: any) => {
       setRenewalOpen(true);
     }
   }, []);
+
+  useEffect(() => {
+    const handleGlobalError = (event:any) => {
+      console.error('Global error handler:', event);
+      if (event.message === 'Network Error' || (event.error && event.error.message === 'Network Error')) {
+        eventBus.emit('showModal', { show: true, type: "netorkError" });
+        event.preventDefault(); // 阻止默认处理
+      }
+    };
+
+    const handleUnhandledRejection = (event:any) => {
+      console.error('Global unhandledrejection handler:', event);
+      if (event.reason.message === 'Network Error' || (event.reason && event.reason.message === 'Network Error')) {
+        eventBus.emit('showModal', { show: true, type: "netorkError" });
+        event.preventDefault(); // 阻止默认处理
+      }
+    };
+
+    window.addEventListener('error', handleGlobalError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('error', handleGlobalError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
+  }, []);
+  
 
   return (
     <Layout className="app-module">

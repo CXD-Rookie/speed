@@ -1,15 +1,14 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 10:53:34
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-06-28 18:29:00
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { store } from '@/redux/store';
-import { message, Modal } from 'antd';
+import { message } from 'antd';
 import { setAccountInfo } from '@/redux/actions/account-info';
-
 import axios from 'axios';
 import playSuitApi from './speed';
 import eventBus from './eventBus';
@@ -33,10 +32,6 @@ setupInterceptors();
 instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token') || '';
-
-    // config.headers.client_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiJyZGZnc2RmLWFtZmhmdC1tZm1lcnRhYS1hZGZhZGZnZHMtZ2Rmc2dmIiwiY2xpZW50X2lwIjoiMTI3LjAuMC4xIiwiZXhwIjoxNzE5NjMxOTI4fQ.r_n6n8fbRxpSNVr3R5DaHYh5plUu10SXPa6fYstsdRk';
-    // config.headers.client_id = 'rdfgsdf-amfhft-mfmertaa-adfadfgds-gdfsgf';
-
     if (token && token !== "undefined") {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
@@ -53,10 +48,10 @@ instance.interceptors.response.use(
     let code = response?.data?.error;
 
     if (code > 0) {
-      let erroeCode = [110001];
+      let errorCode = [110001];
 
       // token验证失败 退出登录
-      if (erroeCode.includes(code)) {
+      if (errorCode.includes(code)) {
         playSuitApi.playSpeedEnd({
           platform: 3,
           js_key: localStorage.getItem("StartKey"),
@@ -80,9 +75,6 @@ instance.interceptors.response.use(
 
             // 3个参数 用户信息 是否登录 是否显示登录
             store.dispatch(setAccountInfo({}, false, true));
-            // debugger
-            // 触发导航事件
-            // eventBus.emit('navigateToHome');
             const url = new URL(window.location.origin + "/home");
             window.location.href = url.toString();
           },
@@ -102,7 +94,8 @@ instance.interceptors.response.use(
         message.error('网络错误，请稍后再试');
       }
     } else if (error.request) {
-      eventBus.emit('showModal', { show: true, type: "netorkError" })
+      // 这里处理断网异常
+      eventBus.emit('showModal', { show: true, type: "netorkError" });
     } else {
       console.log('请求失败，请稍后再试');
     }
@@ -136,7 +129,7 @@ export const post = (url, data = {}) => {
   });
 };
 
-// 封装 post 请求
+// 封装 put 请求
 export const put = (url, data = {}) => {
   return new Promise((resolve, reject) => {
     instance.put(url, data)
