@@ -314,7 +314,8 @@ const App: React.FC = (props: any) => {
     );
   };
 
-  const stopSpeed = () => {  //全局只给客户端调用，业务不处理
+  const stopSpeed = () => {
+    //全局只给客户端调用，业务不处理
     playSuitApi.playSpeedEnd({
       platform: 3,
       js_key: localStorage.getItem("StartKey"),
@@ -344,9 +345,10 @@ const App: React.FC = (props: any) => {
 
   (window as any).stopSpeed = stopSpeed;
 
-  const showSettingsForm = () => { //给客户端用的设置弹展示方法
-    setShowSettingsModal(true)
-  }
+  const showSettingsForm = () => {
+    //给客户端用的设置弹展示方法
+    setShowSettingsModal(true);
+  };
   (window as any).showSettingsForm = showSettingsForm;
 
   useEffect(() => {
@@ -425,31 +427,39 @@ const App: React.FC = (props: any) => {
   }, []);
 
   useEffect(() => {
-    const handleGlobalError = (event:any) => {
-      console.error('Global error handler:', event);
-      if (event.message === 'Network Error' || (event.error && event.error.message === 'Network Error')) {
-        eventBus.emit('showModal', { show: true, type: "netorkError" });
+    const handleGlobalError = (event: any) => {
+      console.error("Global error handler:", event);
+      if (
+        event.message === "Network Error" ||
+        (event.error && event.error.message === "Network Error")
+      ) {
+        eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
     };
 
-    const handleUnhandledRejection = (event:any) => {
-      console.error('Global unhandledrejection handler:', event);
-      if (event.reason.message === 'Network Error' || (event.reason && event.reason.message === 'Network Error')) {
-        eventBus.emit('showModal', { show: true, type: "netorkError" });
+    const handleUnhandledRejection = (event: any) => {
+      console.error("Global unhandledrejection handler:", event);
+      if (
+        event.reason.message === "Network Error" ||
+        (event.reason && event.reason.message === "Network Error")
+      ) {
+        eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
     };
 
-    window.addEventListener('error', handleGlobalError);
-    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    window.addEventListener("error", handleGlobalError);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
     return () => {
-      window.removeEventListener('error', handleGlobalError);
-      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      window.removeEventListener("error", handleGlobalError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection
+      );
     };
   }, []);
-  
 
   return (
     <Layout className="app-module">
@@ -519,16 +529,16 @@ const App: React.FC = (props: any) => {
             />
             <img
               onClick={() => {
-                if (localStorage.getItem("close_window_sign") !== "1") {
-                  let isSet = localStorage.getItem("settingsModified"); // 是否手动设置过关闭弹窗
-
-                  if (isSet === "true") {
-                    setExitOpen(true);
-                  } else {
-                    setIsAppCloseOpen(true);
-                  }
+                let close = localStorage.getItem("client_config");
+                let action = close ? JSON.parse(close)?.close_button_action : 2;
+                console.log(action);
+                // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
+                if (action === 0) {
+                  (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+                } else if (action === 1) {
+                  setExitOpen(true); // 弹出关闭确认框
                 } else {
-                  (window as any).NativeApi_MinimizeToTray();
+                  setIsAppCloseOpen(true); // 弹出设置选择框
                 }
               }}
               className="closeType"

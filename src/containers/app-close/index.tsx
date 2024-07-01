@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-28 16:06:25
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 17:37:31
+ * @LastEditTime: 2024-07-01 14:14:14
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\app-close\index.tsx
@@ -22,7 +22,7 @@ interface AppCloseModalProps {
 const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
   const { open, close, onConfirm = () => {} } = props;
 
-  const [eventType, setEventType] = useState("");
+  const [eventType, setEventType] = useState("0");
   const [noMorePrompts, setNoMorePrompts] = useState(false);
 
   const onChange = (e: CheckboxChangeEvent) => {
@@ -33,7 +33,15 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
   };
 
   const clickConfirm = () => {
-    localStorage.setItem("settingsModified", String(noMorePrompts));
+    let close_obj = localStorage.getItem("client_config");
+    let action = close_obj ? JSON.parse(close_obj) : {};
+    let close_button_action = noMorePrompts
+      ? { close_button_action: Number(eventType) }
+      : {};
+    localStorage.setItem(
+      "client_config",
+      JSON.stringify({ ...action, ...close_button_action })
+    );
     close(false);
     onConfirm(true);
   };
@@ -51,6 +59,7 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
       title="关闭窗口"
       width={"40vw"}
       centered
+      destroyOnClose
       maskClosable={false}
       onCancel={() => close(false)}
       footer={null}
@@ -68,6 +77,7 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
         <div>
           <Button
             className="content-confirm"
+            disabled={!eventType}
             type="primary"
             onClick={clickConfirm}
           >
