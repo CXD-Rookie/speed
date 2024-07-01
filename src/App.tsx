@@ -374,9 +374,8 @@ const App: React.FC = (props: any) => {
       } else if (data.code === 0 || data.code === "0") {
         let userInfo = data?.data?.user_info || {};
         if (
-          !accountInfo?.userInfo?.user_ext?.is_adult ||
-          (accountInfo?.userInfo?.user_ext?.name === "" &&
-            accountInfo?.userInfo?.user_ext?.idcard === "")
+          !userInfo?.user_ext?.is_adult ||
+          (userInfo?.user_ext?.name === "" && userInfo?.user_ext?.idcard === "")
         ) {
           localStorage.setItem("isRealName", "1");
         } else {
