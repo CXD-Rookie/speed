@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 16:46:20
+ * @LastEditTime: 2024-07-02 17:18:38
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -238,19 +238,20 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       (response: any) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
-
+        accelerateGameToList(option); // 加速完后更新我的游戏
+        handleSuitDomList(option);
         // 暂时注释 实际生产打开
-        if (isCheck?.pre_check_status === 0) {
-          isPre = true;
-          accelerateGameToList(option); // 加速完后更新我的游戏
-          handleSuitDomList(option); // 通知客户端进行加速
-        } else {
-          console.log(`不是合法文件，请重新安装加速器`);
-          eventBus.emit("showModal", {
-            show: true,
-            type: "infectedOrHijacked",
-          });
-        }
+        // if (isCheck?.pre_check_status === 0) {
+        //   isPre = true;
+        //   accelerateGameToList(option); // 加速完后更新我的游戏
+        //   handleSuitDomList(option); // 通知客户端进行加速
+        // } else {
+        //   console.log(`不是合法文件，请重新安装加速器`);
+        //   eventBus.emit("showModal", {
+        //     show: true,
+        //     type: "infectedOrHijacked",
+        //   });
+        // }
       },
       (errorCode: any, errorMessage: any) => {
         console.error("Failure response from 校验是否合法文件:", errorCode);

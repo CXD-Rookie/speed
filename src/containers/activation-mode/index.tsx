@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 15:51:19
+ * @LastEditTime: 2024-07-02 18:22:36
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
@@ -80,9 +80,47 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     onClose(); // 关闭弹窗
   };
 
+  const a = () => {
+    new Promise(() => {});
+    // try {
+    //   playSuitApi.speedInfo({
+    //         platform: 3,
+    //         gid: options?.id,
+    //         pid: key,
+    //       })
+    // } catch (error) {
+
+    // }
+  };
+
   const handleMethod = async () => {
     try {
-      let res = await playSuitApi.pcPlatform();
+      let res = await playSuitApi.pcPlatform(); // 请求运营平台接口
+      let platform_list = Object?.keys(res?.data) || []; // 运营平台数据
+      let api_list: any = []; // 需要请求的api 数量
+      console.log(res);
+
+      // 对api数量进行处理
+      platform_list.forEach((key: string) => {
+        api_list.push(
+          playSuitApi.speedInfo({
+            platform: 3,
+            gid: options?.id,
+            pid: key,
+          })
+        );
+      });
+
+      const data: any = await Promise.all(api_list); // 请求等待统一请求完毕
+      // console.log(data);
+
+      // 聚合所以的api 数据中的 游戏平台
+      const result_excutable = data.reduce((acc: any, item: any) => {
+        if (item?.data?.pc_platfrom === "") {
+          return acc.concat(item.data.executable);
+        }
+        return acc;
+      }, []);
 
       setPlatforms(res?.data);
     } catch (error) {
