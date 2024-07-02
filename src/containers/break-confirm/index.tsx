@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 16:26:23
+ * @LastEditTime: 2024-07-02 19:33:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 
 import eventBus from "@/api/eventBus";
 import useCefQuery from "@/hooks/useCefQuery";
-import playSuitApi from "@/api/speed";
 
 import "./index.scss";
 import SettingsModal from "../setting";

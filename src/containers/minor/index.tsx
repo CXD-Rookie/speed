@@ -2,13 +2,13 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 19:08:04
+ * @LastEditTime: 2024-07-02 19:36:12
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
  */
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button, Modal } from "antd";
 import { closeRealNameModal } from "@/redux/actions/auth";
 import "./index.scss";
@@ -42,6 +42,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       recharge: 3,
       bind: 4,
       updatePhone: 5,
+      unbind: 6,
     };
 
     if (typeObj?.[type]) {
@@ -82,6 +83,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
             {realType === 1 && "恭喜，实名认证成功"}
             {realType === 4 && "您的手机号已成功绑定并注册至账户"}
             {realType === 5 && "恭喜，手机更换成功"}
+            {realType === 6 && "您的游戏账号已解除绑定"}
           </p>
           <Button className="real-sueccess-btn" onClick={handleClose}>
             好的

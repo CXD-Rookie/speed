@@ -50,6 +50,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
 
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 绑定手机号成功弹窗
+  const [minorType, setMinorType] = useState("");
 
   const modalTitle = typeObj?.[bindType]?.title;
   const modalText = typeObj?.[bindType]?.text;
@@ -196,12 +197,10 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
         let res = await handleUnbindPhone();
 
         if (res?.error === 0) {
-          setBindType("newPhone");
-          setCountdown(0);
-          setPhone("");
-          setCode("");
-          setVeryCodeErr(false);
-          setIsPhone(false);
+          close();
+          setIsMinorOpen(true);
+          setMinorType("unbind");
+          notifyFc(false);
         }
       } else if (bindType === "oldPhone") {
         let res = await verifyPhone();
@@ -220,6 +219,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
         if (res?.error === 0) {
           close();
           setIsMinorOpen(true);
+          setMinorType("updatePhone");
 
           localStorage.setItem("token", JSON.stringify(res.data.token));
           if (
@@ -313,7 +313,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
       </Modal>
       {isMinorOpen ? (
         <MinorModal
-          type={"updatePhone"}
+          type={minorType}
           isMinorOpen={isMinorOpen}
           setIsMinorOpen={setIsMinorOpen}
         />
