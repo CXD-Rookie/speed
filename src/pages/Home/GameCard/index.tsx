@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 15:51:16
+ * @LastEditTime: 2024-07-02 16:46:20
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -388,7 +388,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 />
                 <div
                   className="accelerate-immediately-button"
-                  onClick={() => accelerateDataHandling(option)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    accelerateDataHandling(option);
+                  }}
                 >
                   <span className="accelerate-immediately-text">立即加速</span>
                   <img
