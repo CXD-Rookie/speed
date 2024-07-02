@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 19:18:13
+ * @LastEditTime: 2024-07-02 19:40:46
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
@@ -219,7 +219,12 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
             </Button>
           )}
         </div>
-        <Button className="save-btn" type="default" onClick={handleSave}>
+        <Button
+          className="save-btn"
+          type="default"
+          onClick={handleSave}
+          disabled={!filePath}
+        >
           保存
         </Button>
       </div>
