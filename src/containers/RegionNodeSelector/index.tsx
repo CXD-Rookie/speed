@@ -98,10 +98,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const clickStartOn = async (node = selectedNode) => {
     let domInfo = updateGamesDom(node);
 
-    await playSuitApi.playSpeedEnd({
-      platform: 3,
-      js_key: localStorage.getItem("StartKey"),
-    }); // 游戏加速信息
+    // await playSuitApi.playSpeedEnd({
+    //   platform: 3,
+    //   js_key: localStorage.getItem("StartKey"),
+    // }); // 游戏加速信息
 
     sendMessageToBackend(
       JSON.stringify({

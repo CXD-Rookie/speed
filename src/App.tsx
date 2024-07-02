@@ -99,10 +99,10 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStop = async () => {
-    await playSuitApi.playSpeedEnd({
-      platform: 3,
-      js_key: localStorage.getItem("StartKey"),
-    }); // 游戏停止加速
+    // await playSuitApi.playSpeedEnd({
+    //   platform: 3,
+    //   js_key: localStorage.getItem("StartKey"),
+    // }); // 游戏停止加速
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",
@@ -196,10 +196,10 @@ const App: React.FC = (props: any) => {
 
   // 定义退出程序的处理函数
   const handleExitProcess = () => {
-    playSuitApi.playSpeedEnd({
-      platform: 3,
-      js_key: localStorage.getItem("StartKey"),
-    }); // 游戏停止加速
+    // playSuitApi.playSpeedEnd({
+    //   platform: 3,
+    //   js_key: localStorage.getItem("StartKey"),
+    // }); // 游戏停止加速
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",
@@ -288,10 +288,10 @@ const App: React.FC = (props: any) => {
 
   // 停止加速
   const stopProxy = () => {
-    playSuitApi.playSpeedEnd({
-      platform: 3,
-      js_key: localStorage.getItem("StartKey"),
-    }); // 游戏停止加速
+    // playSuitApi.playSpeedEnd({
+    //   platform: 3,
+    //   js_key: localStorage.getItem("StartKey"),
+    // }); // 游戏停止加速
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",
@@ -316,10 +316,10 @@ const App: React.FC = (props: any) => {
 
   const stopSpeed = () => {
     //全局只给客户端调用，业务不处理
-    playSuitApi.playSpeedEnd({
-      platform: 3,
-      js_key: localStorage.getItem("StartKey"),
-    }); // 游戏停止加速
+    // playSuitApi.playSpeedEnd({
+    //   platform: 3,
+    //   js_key: localStorage.getItem("StartKey"),
+    // }); // 游戏停止加速
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",

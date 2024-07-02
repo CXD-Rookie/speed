@@ -77,12 +77,12 @@ const GameDetail: React.FC = () => {
   // 停止加速
   const stopSpeed = async () => {
     setStopModalOpen(false);
-    const jsKey = localStorage.getItem("StartKey");
-    const stopInfo = await playSuitApi.playSpeedEnd({
-      platform: 3,
-      js_key: jsKey,
-    }); // 游戏停止加速
-    console.log("停止加速接口调用返回信息", stopInfo);
+    // const jsKey = localStorage.getItem("StartKey");
+    // const stopInfo = await playSuitApi.playSpeedEnd({
+    //   platform: 3,
+    //   js_key: jsKey,
+    // }); // 游戏停止加速
+
     sendMessageToBackend(
       JSON.stringify({
         method: "NativeApi_StopProxy",

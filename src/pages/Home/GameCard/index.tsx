@@ -92,10 +92,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 停止加速
   const stopAcceleration = () => {
     setStopModalOpen(false);
-    playSuitApi.playSpeedEnd({
-      platform: 3,
-      js_key: localStorage.getItem("StartKey"),
-    }); // 游戏停止加速
+    // playSuitApi.playSpeedEnd({
+    //   platform: 3,
+    //   js_key: localStorage.getItem("StartKey"),
+    // }); // 游戏停止加速
     // 停止加速
     sendMessageToBackend(
       JSON.stringify({
