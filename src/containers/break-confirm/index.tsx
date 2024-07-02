@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 16:07:07
+ * @LastEditTime: 2024-07-02 16:26:23
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -46,6 +46,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const [settingOpen, setSettingOpen] = useState(false);
 
   const [version, setVersion] = useState(""); // 立即升级版本
+  const [feedbackClose, setfeedbackClose] = useState<any>(); // 问题反馈回调函数
 
   // 内容文案
   const textContentObj: any = {
@@ -162,6 +163,11 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       case "serverDisconnected":
         (window as any).native_restart();
         break;
+      case "issueFeedback":
+        console.log(feedbackClose);
+
+        feedbackClose.onClose();
+        break;
       default:
         break;
     }
@@ -171,8 +177,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(option?.show || true);
     setNoticeType(option?.type || "");
 
-    if (noticeType === "newVersionFound") {
+    if (option?.type === "newVersionFound") {
       setVersion(option?.version);
+    } else if (option?.type === "issueFeedback") {
+      setfeedbackClose({ onClose: option?.onClose });
     }
   };
 

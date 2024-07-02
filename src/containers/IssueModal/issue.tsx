@@ -141,7 +141,11 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       console.log("Feedback submitted successfully:", response);
       // 提交成功后的处理逻辑
       // setFeedbackOpen(true);
-      eventBus.emit("showModal", { show: true, type: "issueFeedback" });
+      eventBus.emit("showModal", {
+        show: true,
+        type: "issueFeedback",
+        onClose,
+      });
       // Modal.success({
       //   title: "反馈成功",
       //   content: "感谢您的反馈，我们会尽快处理！",
