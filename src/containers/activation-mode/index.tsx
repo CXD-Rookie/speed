@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 18:22:36
+ * @LastEditTime: 2024-07-02 19:18:13
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
@@ -31,14 +31,10 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
 }) => {
   const { getGameList } = useGamesInitialize();
 
-  const [filePath, setFilePath] = useState(
-    options?.activation_method?.filePath
-  ); // 启动路径
-  const [selectPlatform, setSelectPlatform] = useState<string>(
-    options?.activation_method?.select_platforms_id
-  ); // 选择的游戏平台
+  const [filePath, setFilePath] = useState(); // 启动路径
+  const [selectPlatform, setSelectPlatform] = useState<string>(); // 选择的游戏平台
 
-  const [platforms, setPlatforms] = useState<any>({}); // 所有的运营平台
+  const [platforms, setPlatforms] = useState<any>([]); // 所有的运营平台
 
   const handleInputChange = () => {
     const requestData = JSON.stringify({
@@ -47,7 +43,7 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     (window as any).cefQuery({
       request: requestData,
       onSuccess: (response: any) => {
-        console.log("获取返回路径=========================:", response);
+        console.log("获取返回路径:", response);
         setFilePath(response.path);
       },
       onFailure: (errorCode: any, errorMessage: any) => {
@@ -80,17 +76,31 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     onClose(); // 关闭弹窗
   };
 
-  const a = () => {
-    new Promise(() => {});
-    // try {
-    //   playSuitApi.speedInfo({
-    //         platform: 3,
-    //         gid: options?.id,
-    //         pid: key,
-    //       })
-    // } catch (error) {
-
-    // }
+  // 处理请求 游戏平台信息
+  const fetchGamePlatformDetails = (option: any) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let res = await playSuitApi.speedInfo({
+          platform: 3,
+          gid: options?.id,
+          pid: option?.pid,
+        });
+        // 成功回调
+        resolve({
+          state: true,
+          data: {
+            ...res?.data,
+            option,
+          },
+        });
+      } catch (error) {
+        // 失败回调
+        reject({
+          state: false,
+          // response: { errorCode, errorMessage },
+        });
+      }
+    });
   };
 
   const handleMethod = async () => {
@@ -98,54 +108,72 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
       let res = await playSuitApi.pcPlatform(); // 请求运营平台接口
       let platform_list = Object?.keys(res?.data) || []; // 运营平台数据
       let api_list: any = []; // 需要请求的api 数量
-      console.log(res);
 
       // 对api数量进行处理
       platform_list.forEach((key: string) => {
         api_list.push(
-          playSuitApi.speedInfo({
-            platform: 3,
-            gid: options?.id,
-            pid: key,
-          })
+          fetchGamePlatformDetails({ pid: key, name: res?.data?.[key] })
         );
       });
 
       const data: any = await Promise.all(api_list); // 请求等待统一请求完毕
-      // console.log(data);
-
       // 聚合所以的api 数据中的 游戏平台
-      const result_excutable = data.reduce((acc: any, item: any) => {
-        if (item?.data?.pc_platfrom === "") {
-          return acc.concat(item.data.executable);
+      const result_excutable = data.reduce((acc: any = [], item: any) => {
+        let data = item?.data;
+
+        if (Number(data?.pc_platform) === Number(data?.option?.pid)) {
+          return acc.concat([
+            {
+              pc_platform: data?.pc_platform,
+              path: data?.start_path,
+              ...data?.option,
+            },
+          ]);
         }
         return acc;
       }, []);
 
-      setPlatforms(res?.data);
+      setPlatforms(result_excutable);
+
+      return result_excutable;
     } catch (error) {
       console.log(error);
     }
   };
 
   const clickSelectPlatform = async (e: string) => {
-    try {
-      let res = await playSuitApi.speedInfo({
-        platform: 3,
-        gid: options?.id,
-        pid: e,
-      });
+    let path = platforms.filter((item: any) => item?.pid === e)?.[0];
 
-      setSelectPlatform(e);
-      setFilePath(res?.data?.start_path);
-    } catch (error) {
-      console.log(error);
-    }
+    setSelectPlatform(e);
+    setFilePath(path?.path || "");
   };
 
   useEffect(() => {
+    const initialFetch = async () => {
+      let default_info = await handleMethod();
+
+      if (default_info) {
+        let info = options?.activation_method;
+        let pid, path;
+
+        if (info) {
+          pid = info?.select_platforms_id;
+          path = info?.filePath;
+        } else {
+          let arr = default_info.filter((item: any) => item?.pid !== "0"); // 查找不是自定义的平台
+          let is_true = arr?.length > 0; // 是否找到不是自定义的平台
+
+          pid = is_true ? arr?.[1]?.pid : default_info?.[0]?.pid;
+          path = is_true ? arr?.[1]?.path : default_info?.[0]?.path;
+        }
+
+        setSelectPlatform(pid);
+        setFilePath(path);
+      }
+    };
+
     if (open) {
-      handleMethod();
+      initialFetch();
     }
   }, [open]);
 
@@ -168,11 +196,11 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
           value={selectPlatform}
           onChange={(e) => clickSelectPlatform(e)}
         >
-          {Object?.keys(platforms)?.length > 0 &&
-            Object?.keys(platforms)?.map((key: any) => {
+          {platforms?.length > 0 &&
+            platforms.map((item: any) => {
               return (
-                <Option value={key} key={key}>
-                  {key === "0" ? "自定义" : platforms?.[key]}
+                <Option value={item?.pid} key={item?.pid}>
+                  {String(item?.pid) === "0" ? "自定义" : item?.name}
                 </Option>
               );
             })}
