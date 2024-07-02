@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 17:04:02
+ * @LastEditTime: 2024-07-02 16:07:07
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -67,6 +67,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     renewalReminder: "您的加速服务即将到期，请尽快续费以享受流畅的游戏体验。",
     accelMemEnd: "您的加速服务已到期，请续费继续使用",
     serverDisconnected: "无法连接到服务器，请重新启动客户端。",
+    issueFeedback: "感谢您的反馈，我们会尽快处理",
   };
 
   // footer 确认按钮的文案
@@ -79,6 +80,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     renewalReminder: "立即充值",
     accelMemEnd: "好的",
     serverDisconnected: "重启客户端",
+    issueFeedback: "确定",
   };
 
   // footer 只显示一个按钮的类型
@@ -90,10 +92,15 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "renewalReminder",
     "accelMemEnd",
     "serverDisconnected",
+    "issueFeedback",
   ];
 
   // 不显示右上角关闭的类型
-  const hideClosedCategories = ["newVersionFound", "serverDisconnected"];
+  const hideClosedCategories = [
+    "newVersionFound",
+    "serverDisconnected",
+    "issueFeedback",
+  ];
 
   // 停止加速
   const stopAcceleration = () => {
@@ -212,6 +219,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           </div>
         }
       >
+        {noticeType === "issueFeedback" && (
+          <div className="feedback">反馈成功</div>
+        )}
         <div className="accelerate-modal">
           {isNetworkError
             ? textContentObj?.[noticeType]

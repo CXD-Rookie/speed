@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Upload, Button, Input, message, Modal } from 'antd';
-import { UploadOutlined,CloseOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from "react";
+import { Upload, Button, Input, message, Modal } from "antd";
+import { UploadOutlined, CloseOutlined } from "@ant-design/icons";
+
+import axios from "axios";
 import feedbackApi from "../../api/issue";
-import './FeedbackForm.scss'; // 自定义的样式文件
+import "./FeedbackForm.scss"; // 自定义的样式文件
+import BreakConfirmModal from "../break-confirm";
+import eventBus from "@/api/eventBus";
 
 interface FeedbackFormProps {
   onClose: () => void; // 用于关闭表单的回调函数
@@ -17,12 +20,17 @@ message.config({
   maxCount: 1, // 最大显示数，超过限制时，最早的消息会被自动关闭，默认值为 1
 });
 
-const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
+const FeedbackForm: React.FC<FeedbackFormProps> = ({
+  onClose,
+  defaultInfo,
+}) => {
   const [types, setTypes] = useState<any[]>([]); // 反馈类型
   const [selectedType, setSelectedType] = useState<number | null>(null); // 当前选择的问题类型
-  const [description, setDescription] = useState<string>(''); // 问题描述
-  const [contact, setContact] = useState<string>(''); // 联系方式
+  const [description, setDescription] = useState<string>(""); // 问题描述
+  const [contact, setContact] = useState<string>(""); // 联系方式
   const [images, setImages] = useState<any[]>([]); // 上传的图片文件列表
+
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   useEffect(() => {
     fetchFeedbackTypes(); // 组件加载时获取反馈类型
@@ -51,7 +59,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
       setTypes(response.data.types);
       console.log(types);
     } catch (error) {
-      console.error('Failed to fetch feedback types:', error);
+      console.error("Failed to fetch feedback types:", error);
     }
   };
 
@@ -61,7 +69,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
   };
 
   // 处理问题描述变化
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     const { value } = e.target;
     if (value.length <= 500) {
       setDescription(value);
@@ -78,11 +88,11 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
 
   // 处理文件上传成功
   const handleUploadSuccess = (info: any) => {
-    if (info.file.status === 'done') {
+    if (info.file.status === "done") {
       message.success(`${info.file.name} 上传成功`);
       const imageUrl = info.file.response.data.url; // 获取服务器返回的图片 URL
       setImages([...images, { url: imageUrl, uid: info.file.uid }]); // 更新图片列表
-    } else if (info.file.status === 'error') {
+    } else if (info.file.status === "error") {
       message.error(`${info.file.name} 上传失败`);
     }
   };
@@ -103,19 +113,19 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
 
   // 检查表单是否填写完整
   const isFormValid = () => {
-    return selectedType !== null && description.trim() !== '';
+    return selectedType !== null && description.trim() !== "";
   };
 
   // 提交表单
   const handleSubmit = async () => {
     if (!isFormValid()) {
-      message.error('请选择问题类型并填写问题描述！');
+      message.error("请选择问题类型并填写问题描述！");
       return;
     }
     const imagesArr: string[] = [];
 
     images.forEach((image) => {
-      let filteredSrc = image.url.replace('https://cdn.accessorx.com/', '');
+      let filteredSrc = image.url.replace("https://cdn.accessorx.com/", "");
       imagesArr.push(filteredSrc);
     });
 
@@ -128,17 +138,19 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
 
     try {
       const response = await feedbackApi.feedback(JSON.stringify(params));
-      console.log('Feedback submitted successfully:', response);
+      console.log("Feedback submitted successfully:", response);
       // 提交成功后的处理逻辑
-      Modal.success({
-        title: '反馈成功',
-        content: '感谢您的反馈，我们会尽快处理！',
-        onOk: onClose, // 点击确定后关闭表单
-        className: 'popup-success', // 添加自定义类名
-        okText: '确定', // 修改按钮文本
-      });
+      // setFeedbackOpen(true);
+      eventBus.emit("showModal", { show: true, type: "issueFeedback" });
+      // Modal.success({
+      //   title: "反馈成功",
+      //   content: "感谢您的反馈，我们会尽快处理！",
+      //   onOk: onClose, // 点击确定后关闭表单
+      //   className: "popup-success", // 添加自定义类名
+      //   okText: "确定", // 修改按钮文本
+      // });
     } catch (error) {
-      console.error('Failed to submit feedback:', error);
+      console.error("Failed to submit feedback:", error);
       // message.error('反馈提交失败，请稍后重试！');
     }
   };
@@ -146,48 +158,69 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
   // 自定义上传逻辑
   const customRequest = async (file: any) => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
-      const response = await axios.post(`${feedbackApi.url}/feedback_upload_image?platform=3`, file, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          user_token: JSON.parse(localStorage.getItem('token') || ''), // 根据实际情况传递 token
-        },
-      });
+      const response = await axios.post(
+        `${feedbackApi.url}/feedback_upload_image?platform=3`,
+        file,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            user_token: JSON.parse(localStorage.getItem("token") || ""), // 根据实际情况传递 token
+          },
+        }
+      );
 
       // 处理上传成功的逻辑
-      console.log('上传成功：', response.data.data.url);
+      console.log("上传成功：", response.data.data.url);
       // message.success('上传成功');
-      const imageUrl = `${'https://cdn.accessorx.com/'}` + response.data.data.url; // 获取服务器返回的图片 URL
-      setImages((prevImages) => [...prevImages, { url: imageUrl, uid: file.uid }]); // 更新图片列表
+      const imageUrl =
+        `${"https://cdn.accessorx.com/"}` + response.data.data.url; // 获取服务器返回的图片 URL
+      setImages((prevImages) => [
+        ...prevImages,
+        { url: imageUrl, uid: file.uid },
+      ]); // 更新图片列表
       // onSuccess(response.data, file);
     } catch (error) {
       // 处理上传失败的逻辑
-      console.error('上传失败：', error);
+      console.error("上传失败：", error);
     }
   };
 
-  const itemRender = (originNode: any, file: any, fileList: any, actions: any) => {
+  const itemRender = (
+    originNode: any,
+    file: any,
+    fileList: any,
+    actions: any
+  ) => {
     return (
-      <div style={{ position: 'relative', display: 'inline-block', width: '4.5vw', height: '4.5vw', margin: '0px' }}>
+      <div
+        style={{
+          position: "relative",
+          display: "inline-block",
+          width: "4.5vw",
+          height: "4.5vw",
+          margin: "0px",
+        }}
+      >
         <img
           src={file.thumbUrl || file.url}
           alt={file.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <CloseOutlined
           onClick={() => handleImageRemove(file)}
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             right: 0,
-            cursor: 'pointer',
-            color: 'red',
-            background: 'white',
-            borderRadius: '50%',
-            padding: '2px',
-            fontSize: '12px',
+            cursor: "pointer",
+            color: "red",
+            background: "white",
+            borderRadius: "50%",
+            padding: "2px",
+            fontSize: "12px",
           }}
         />
       </div>
@@ -195,13 +228,18 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
   };
 
   const beforeUpload = (file: any) => {
-    const isValidFormat = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'].includes(file.type);
+    const isValidFormat = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/bmp",
+    ].includes(file.type);
     if (!isValidFormat) {
       message.error({
-        content: '抱歉，图片格式不支持，请上传JPG/JPEG/PNG/GIF/BMP格式的图片。',
+        content: "抱歉，图片格式不支持，请上传JPG/JPEG/PNG/GIF/BMP格式的图片。",
         duration: 2,
         style: {
-          marginTop: '20vh',
+          marginTop: "20vh",
         },
       });
       return false;
@@ -209,10 +247,11 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
     const isLessThan5MB = file.size / 1024 / 1024 < 5;
     if (!isLessThan5MB) {
       message.error({
-        content: '抱歉，图片尺寸过大（图片大小必须小于5MB），请尝试压缩文件或选择较小文件',
+        content:
+          "抱歉，图片尺寸过大（图片大小必须小于5MB），请尝试压缩文件或选择较小文件",
         duration: 2,
         style: {
-          marginTop: '20vh',
+          marginTop: "20vh",
         },
       });
       return false;
@@ -232,7 +271,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
           {types.map((type) => (
             <button
               key={type.id}
-              className={`type-btn ${selectedType === type.id ? 'selected' : ''}`}
+              className={`type-btn ${
+                selectedType === type.id ? "selected" : ""
+              }`}
               onClick={() => handleTypeSelect(type.id)}
             >
               {type.value}
@@ -243,7 +284,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
           <div className="matter-text">
             <span>*</span>
             问题描述
-
           </div>
           <div className="description-input-box">
             <textarea
@@ -251,7 +291,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
               placeholder="请描述您所遇到的问题，上传图片格式支持JPG/JPEG/PNG/GIF/BMP，大小<5MB"
               onChange={handleDescriptionChange}
               value={description}
-            ></textarea>
+            />
             <span className="char-count">{description.length}/500</span>
           </div>
         </div>
@@ -272,16 +312,12 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
                 <label id="ID-upload-demo-btn-2">
                   <i className="fas fa-plus"></i>
                 </label>
-                {/* <div style={{ marginTop: 8 }}></div> */}
               </div>
             )}
           </Upload>
         </div>
         <div className="contact">
-          <div className="matter-type">
-            联系方式（选填）
-            
-          </div>
+          <div className="matter-type">联系方式（选填）</div>
           <div className="contact-input-box">
             <Input
               className="contact-input"
@@ -293,7 +329,11 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onClose,defaultInfo }) => {
             <span className="char-count-mobile">{contact.length}/50</span>
           </div>
         </div>
-        <Button className="submit-btn" onClick={handleSubmit} disabled={!isFormValid()}>
+        <Button
+          className="submit-btn"
+          onClick={handleSubmit}
+          disabled={!isFormValid()}
+        >
           提交
         </Button>
       </div>
