@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 19:20:50
+ * @LastEditTime: 2024-07-03 19:08:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -218,6 +218,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
+    console.log(option);
+
     if (!option?.dom_info?.select_dom?.id) {
       setIsOpenRegion(true);
       return;
@@ -238,7 +240,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       (response: any) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
-
+        accelerateGameToList(option); // 加速完后更新我的游戏
+        handleSuitDomList(option); // 通知客户端进行加速
         // 暂时注释 实际生产打开
         if (isCheck?.pre_check_status === 0) {
           isPre = true;

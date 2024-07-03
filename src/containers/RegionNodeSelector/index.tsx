@@ -448,7 +448,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                       let node = dom.filter((value: any) => value?.id === id);
 
                       if (isFind && type === "details") {
-                        setSelectedNode(node);
+                        setSelectedNode(node?.[0]);
                         setAccelOpen(true);
                       } else {
                         clickStartOn(node?.[0]);
