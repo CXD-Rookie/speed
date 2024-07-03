@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 11:14:42
+ * @LastEditTime: 2024-07-03 19:17:12
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -68,6 +68,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     accelMemEnd: "您的加速服务已到期，请续费继续使用",
     serverDisconnected: "无法连接到服务器，请重新启动客户端。",
     issueFeedback: "感谢您的反馈，我们会尽快处理",
+    switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
   };
 
   // footer 确认按钮的文案

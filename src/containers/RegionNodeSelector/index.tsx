@@ -502,12 +502,14 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
           </TabPane>
         </Tabs>
       </Modal>
-      <BreakConfirmModal
-        accelOpen={accelOpen}
-        type={"accelerate"}
-        setAccelOpen={setAccelOpen}
-        onConfirm={clickStartOn}
-      />
+      {accelOpen ? (
+        <BreakConfirmModal
+          accelOpen={accelOpen}
+          type={"switchServer"}
+          setAccelOpen={setAccelOpen}
+          onConfirm={clickStartOn}
+        />
+      ) : null}
       {showIssueModal ? (
         <IssueModal
           showIssueModal={showIssueModal}
