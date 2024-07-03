@@ -222,8 +222,14 @@ const App: React.FC = (props: any) => {
     );
   };
 
-  const handleMinimize = () => {
+  const handleMinimize = async() => {
     (window as any).NativeApi_MinimumWindow();
+    try {
+      const t = (window as any).NativeApi_SynchronousRequest('00000000000000000')
+      console.log(t,'----------------------------------')
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
