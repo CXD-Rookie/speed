@@ -496,7 +496,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                   }
                 }}
               >
-                开始加速
+                {type === "details" ? "重新加速" : "开始加速"}
               </Button>
             </div>
           </TabPane>

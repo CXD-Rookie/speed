@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 19:08:01
+ * @LastEditTime: 2024-07-03 19:33:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -327,12 +327,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             setRenewalOpen(true);
             localStorage.setItem("renewalTime", String(time));
           } else {
-            if (type === "custom") {
-              setIsOpenRegion(true);
-            } else {
-              accelerateProcessing(option);
-            }
-
+            accelerateProcessing(option);
             setSelectAccelerateOption(option);
           }
         }
@@ -377,7 +372,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   alt=""
                   onClick={(e) => {
                     e.stopPropagation();
-                    accelerateDataHandling(option, "custom");
+                    setIsOpenRegion(true);
+                    setSelectAccelerateOption(option);
+                    // accelerateDataHandling(option, "custom");
                   }}
                 />
                 <img
