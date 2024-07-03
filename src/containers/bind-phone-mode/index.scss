@@ -122,10 +122,12 @@
         background: rgba(255,255,255,0.10);
         border-radius: 3.3vh;
         border: none;
-
+        cursor: no-drop;
+        
         &:enabled:hover, &:enabled:active {
           color: #fff;
           background-color: #F86C34;
+          cursor: pointer;
         }
       }
 

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-24 15:45:14
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-26 15:07:00
+ * @LastEditTime: 2024-07-03 15:17:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\ThirdPartyLogin\index.tsx
@@ -34,13 +34,16 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
       });
       console.log("token:", res, 11111111111111);
 
-      (window as any).NativeApi_YouXiaAuthComplete(res?.data?.token);
+      // (window as any).NativeApi_YouXiaAuthComplete(res?.data?.token);
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
     let code = searchParams.get("code");
+    let token = searchParams.get("token");
+    console.log(token);
+    localStorage.setItem("token", JSON.stringify(token));
     console.log(location, searchParams.get("code"), "进入第三方登录页");
     login({ code });
   }, []);

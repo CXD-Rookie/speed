@@ -33,9 +33,12 @@ const typeObj: any = {
   }, // 切换新手机号
 };
 const submitObj: any = ["unbind", "newPhone"];
+const lockPhoneObj: any = ["unbind", "third", "oldPhone"];
 
 const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   const { open, type, setOpen, notifyFc = () => {} } = props;
+
+  const token = localStorage.getItem("token") || "";
 
   const dispatch: any = useDispatch();
   const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
@@ -260,7 +263,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
       >
         <div className="bind-phone-module-content">
           <p className="bind-content-text">{modalText}</p>
-          {bindType === "third" || bindType === "oldPhone" ? (
+          {lockPhoneObj.includes(bindType) ? (
             <div className="old-phone">+86 {phone}</div>
           ) : null}
           {bindType === "newPhone" ? (
@@ -304,9 +307,11 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
               className="last-login-text"
               onClick={(e) => handlevisitorLogin(e)}
               disabled={!code || !phone}
-              data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
+              data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html?token=${JSON.parse(
+                token
+              )}&response_type=code&scope=webapi_login&state=state`}
             >
-              {submitObj?.[bindType] ? "提交" : "下一步"}
+              {submitObj.includes(bindType) ? "提交" : "下一步"}
             </button>
           </div>
         </div>
