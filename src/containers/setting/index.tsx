@@ -419,7 +419,17 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                       >
                         绑定
                       </div>
-                    ) : null}
+                    ) : (
+                      <div
+                        className="real-name-btn"
+                        onClick={() => {
+                          setBindType("unbind");
+                          setIsBindThirdOpen(true);
+                        }}
+                      >
+                        解绑
+                      </div>
+                    )}
                   </div>
                   <div className="info-box info-flex">
                     <div className="info-left">

@@ -47,6 +47,7 @@ const GameLibrary: React.FC = () => {
 
   const { appendGameToList } = useGamesInitialize();
 
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
   const enterSign = useSelector((state: any) => state.searchEnter);
@@ -162,15 +163,17 @@ const GameLibrary: React.FC = () => {
             <div className="empty-null-text">
               抱歉，没有找到“{oldSearchBarValue}”的相关游戏
             </div>
-            <div
-              className="empty-text"
-              onClick={() => {
-                setShowIssueModal(true);
-                setIssueDescription(`未找到“${oldSearchBarValue}”的相关游戏`);
-              }}
-            >
-              您可进行反馈，以便我们及时更新
-            </div>
+            {accountInfo?.isLogin && (
+              <div
+                className="empty-text"
+                onClick={() => {
+                  setShowIssueModal(true);
+                  setIssueDescription(`未找到“${oldSearchBarValue}”的相关游戏`);
+                }}
+              >
+                您可进行反馈，以便我们及时更新
+              </div>
+            )}
             <button
               className="browse-button"
               onClick={() => navigate("/gameLibrary")}

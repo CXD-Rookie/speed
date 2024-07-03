@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 17:04:02
+ * @LastEditTime: 2024-07-02 19:33:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 
 import eventBus from "@/api/eventBus";
 import useCefQuery from "@/hooks/useCefQuery";
-import playSuitApi from "@/api/speed";
 
 import "./index.scss";
 import SettingsModal from "../setting";
@@ -46,6 +45,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const [settingOpen, setSettingOpen] = useState(false);
 
   const [version, setVersion] = useState(""); // 立即升级版本
+  const [feedbackClose, setfeedbackClose] = useState<any>(); // 问题反馈回调函数
 
   // 内容文案
   const textContentObj: any = {
@@ -67,6 +67,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     renewalReminder: "您的加速服务即将到期，请尽快续费以享受流畅的游戏体验。",
     accelMemEnd: "您的加速服务已到期，请续费继续使用",
     serverDisconnected: "无法连接到服务器，请重新启动客户端。",
+    issueFeedback: "感谢您的反馈，我们会尽快处理",
   };
 
   // footer 确认按钮的文案
@@ -79,6 +80,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     renewalReminder: "立即充值",
     accelMemEnd: "好的",
     serverDisconnected: "重启客户端",
+    issueFeedback: "确定",
   };
 
   // footer 只显示一个按钮的类型
@@ -90,17 +92,22 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "renewalReminder",
     "accelMemEnd",
     "serverDisconnected",
+    "issueFeedback",
   ];
 
   // 不显示右上角关闭的类型
-  const hideClosedCategories = ["newVersionFound", "serverDisconnected"];
+  const hideClosedCategories = [
+    "newVersionFound",
+    "serverDisconnected",
+    "issueFeedback",
+  ];
 
   // 停止加速
   const stopAcceleration = () => {
-    playSuitApi.playSpeedEnd({
-      platform: 3,
-      js_key: localStorage.getItem("StartKey"),
-    }); // 游戏停止加速
+    // playSuitApi.playSpeedEnd({
+    //   platform: 3,
+    //   js_key: localStorage.getItem("StartKey"),
+    // }); // 游戏停止加速
     // 停止加速
     sendMessageToBackend(
       JSON.stringify({
@@ -155,6 +162,11 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       case "serverDisconnected":
         (window as any).native_restart();
         break;
+      case "issueFeedback":
+        console.log(feedbackClose);
+
+        feedbackClose.onClose();
+        break;
       default:
         break;
     }
@@ -164,8 +176,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(option?.show || true);
     setNoticeType(option?.type || "");
 
-    if (noticeType === "newVersionFound") {
+    if (option?.type === "newVersionFound") {
       setVersion(option?.version);
+    } else if (option?.type === "issueFeedback") {
+      setfeedbackClose({ onClose: option?.onClose });
     }
   };
 
@@ -212,6 +226,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           </div>
         }
       >
+        {noticeType === "issueFeedback" && (
+          <div className="feedback">反馈成功</div>
+        )}
         <div className="accelerate-modal">
           {isNetworkError
             ? textContentObj?.[noticeType]

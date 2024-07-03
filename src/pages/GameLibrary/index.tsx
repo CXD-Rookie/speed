@@ -184,12 +184,8 @@ const GameLibrary: React.FC = () => {
       </div>
       <div className="game-list" ref={gameListRef}>
         {games.map((game) => (
-          <div
-            key={game.id}
-            className="game-card"
-            onClick={() => clickAddGame(game)}
-          >
-            <div className="content-box">
+          <div key={game.id} className="game-card">
+            <div className="content-box" onClick={() => clickAddGame(game)}>
               {game?.free_time && (
                 <div className="exemption-box">
                   <div className="exemption">限免</div>

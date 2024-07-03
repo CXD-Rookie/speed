@@ -52,10 +52,10 @@ instance.interceptors.response.use(
 
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
-        playSuitApi.playSpeedEnd({
-          platform: 3,
-          js_key: localStorage.getItem("StartKey"),
-        }); // 游戏停止加速
+        // playSuitApi.playSpeedEnd({
+        //   platform: 3,
+        //   js_key: localStorage.getItem("StartKey"),
+        // }); // 游戏停止加速
         window.cefQuery({
           request: JSON.stringify({
             method: "NativeApi_StopProxy",

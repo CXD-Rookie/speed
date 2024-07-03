@@ -15,6 +15,10 @@ interface BindPhoneProps {
 }
 
 const typeObj: any = {
+  unbind: {
+    title: "解除绑定游侠账号",
+    text: "解除绑定游侠账号需先验证已绑定手机号码，点击“获取验证码”完成验证",
+  }, // 三方解绑
   third: {
     title: "绑定游侠账号",
     text: "绑定游侠账号需先验证已绑定手机号码，点击“获取验证码”完成验证",
@@ -28,6 +32,7 @@ const typeObj: any = {
     text: "请输入新手机号码，点击“获取验证码”完成验证",
   }, // 切换新手机号
 };
+const submitObj: any = ["unbind", "newPhone"];
 
 const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   const { open, type, setOpen, notifyFc = () => {} } = props;
@@ -45,6 +50,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
 
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 绑定手机号成功弹窗
+  const [minorType, setMinorType] = useState("");
 
   const modalTitle = typeObj?.[bindType]?.title;
   const modalText = typeObj?.[bindType]?.text;
@@ -145,6 +151,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
     }
   };
 
+  // 切换手机号api
   const handleUpdatePhone = async () => {
     try {
       let res = await loginApi.updatePhone({
@@ -158,7 +165,20 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
     }
   };
 
-  //
+  // 解绑手机号api
+  const handleUnbindPhone = async () => {
+    try {
+      let res = await loginApi.unbindPhone({
+        tid: 2,
+      });
+
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 点击按钮进行触发
   const handlevisitorLogin = async (event: any) => {
     try {
       if (bindType === "third") {
@@ -167,11 +187,20 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
         if (res?.error === 0) {
           close();
           notifyFc(false);
-        } else {
-          setVeryCodeErr(true);
           const target = document.querySelector(".last-login-text") as any;
           const dataTitle = target?.dataset?.title;
           (window as any).NativeApi_YouXiaAuth(dataTitle);
+        } else {
+          setVeryCodeErr(true);
+        }
+      } else if (bindType === "unbind") {
+        let res = await handleUnbindPhone();
+
+        if (res?.error === 0) {
+          close();
+          setIsMinorOpen(true);
+          setMinorType("unbind");
+          notifyFc(false);
         }
       } else if (bindType === "oldPhone") {
         let res = await verifyPhone();
@@ -190,6 +219,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
         if (res?.error === 0) {
           close();
           setIsMinorOpen(true);
+          setMinorType("updatePhone");
 
           localStorage.setItem("token", JSON.stringify(res.data.token));
           if (
@@ -276,14 +306,14 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
               disabled={!code || !phone}
               data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
             >
-              {bindType === "newPhone" ? "提交" : "下一步"}
+              {submitObj?.[bindType] ? "提交" : "下一步"}
             </button>
           </div>
         </div>
       </Modal>
       {isMinorOpen ? (
         <MinorModal
-          type={"updatePhone"}
+          type={minorType}
           isMinorOpen={isMinorOpen}
           setIsMinorOpen={setIsMinorOpen}
         />

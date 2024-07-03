@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 20:23:54
+ * @LastEditTime: 2024-07-01 11:08:29
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
@@ -106,7 +106,11 @@ export const useGamesInitialize = () => {
         sort_list.splice(is_accelerate ? 1 : 0, 0, option)
       }
     } else if (find_index === -1) {
-      sort_list.splice(is_accelerate ? 1 : 0, 0, option)
+      if (sort_list?.length < 4) {
+        sort_list.push(option)
+      } else {
+        sort_list.splice(is_accelerate ? 1 : 0, 0, option)
+      }
     }
 
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(sort_list));
