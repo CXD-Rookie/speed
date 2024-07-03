@@ -460,6 +460,23 @@ const App: React.FC = (props: any) => {
     };
   }, []);
 
+  useEffect(() => {
+    const handlePopState = (event: any) => {
+      // 阻止默认行为
+      event.preventDefault();
+      // 使用 navigate 进行导航，如果需要自定义导航逻辑
+      navigate(location.pathname, { replace: true });
+    };
+
+    // 添加事件监听器
+    window.onpopstate = handlePopState;
+
+    // 清理函数，移除事件监听器
+    return () => {
+      window.onpopstate = null;
+    };
+  }, [navigate, location]);
+
   return (
     <Layout className="app-module">
       <Header
