@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-28 16:11:38
+ * @LastEditTime: 2024-07-03 10:57:48
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -293,23 +293,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="off-item-content">
                   <Radio.Group
                     onChange={(e) => {
-                      let value = e.target.value;
-                      console.log(value, "-------------------");
-                      setCloseWindow(value);
-                      localStorage.setItem("close_window_sign", value);
-                      localStorage.setItem("settingsModified", String(true)); // 是否手动设置过关闭弹窗
+                      const value = e.target.value;
 
-                      if (value === "1" || value === 1) {
-                        (window as any).NativeApi_UpdateConfig(
-                          "close_button_action",
-                          0
-                        );
-                      } else {
-                        (window as any).NativeApi_UpdateConfig(
-                          "close_button_action",
-                          1
-                        );
-                      }
+                      setCloseWindow(value);
+                      (window as any).NativeApi_UpdateConfig(
+                        "close_button_action",
+                        String(value) === "1" ? 0 : 1
+                      );
                     }}
                     value={closeWindow}
                   >

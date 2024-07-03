@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 19:33:47
+ * @LastEditTime: 2024-07-03 11:12:20
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -85,14 +85,14 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   // footer 只显示一个按钮的类型
   const displaySingleButton = [
-    "netorkError",
-    "newVersionFound",
-    "accelerationServiceNotStarting",
-    "delayTooHigh",
-    "renewalReminder",
-    "accelMemEnd",
-    "serverDisconnected",
-    "issueFeedback",
+    "netorkError", // 断网
+    "newVersionFound", // 更新版本
+    "accelerationServiceNotStarting", // 无法启动加速服务
+    "delayTooHigh", // 延迟过高
+    "renewalReminder", // 会员快到期，续费提醒
+    "accelMemEnd", // 加速中并且会员到期 停止加速
+    "serverDisconnected", // 服务器断开连接
+    "issueFeedback", // 问题反馈
   ];
 
   // 不显示右上角关闭的类型

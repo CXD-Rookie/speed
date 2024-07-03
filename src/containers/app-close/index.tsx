@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-28 16:06:25
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-01 14:14:14
+ * @LastEditTime: 2024-07-03 11:06:21
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\app-close\index.tsx
@@ -33,22 +33,20 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
   };
 
   const clickConfirm = () => {
-    let close_obj = localStorage.getItem("client_config");
-    let action = close_obj ? JSON.parse(close_obj) : {};
-    let close_button_action = noMorePrompts
-      ? { close_button_action: Number(eventType) }
-      : {};
-    localStorage.setItem(
-      "client_config",
-      JSON.stringify({ ...action, ...close_button_action })
-    );
+    if (noMorePrompts) {
+      (window as any).NativeApi_UpdateConfig(
+        "close_button_action",
+        Number(eventType)
+      );
+    }
+
     close(false);
     onConfirm(true);
   };
 
   useEffect(() => {
     if (open) {
-      setEventType(String(localStorage.getItem("close_window_sign") || 0));
+      setEventType(String(localStorage.getItem("close_window_sign") || 1));
     }
   }, [open]);
 
