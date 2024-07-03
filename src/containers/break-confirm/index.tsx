@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 11:12:20
+ * @LastEditTime: 2024-07-03 11:14:42
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -72,7 +72,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   // footer 确认按钮的文案
   const confirmObj: any = {
-    netorkError: "好的",
+    netorkError: "重启加速器",
     newVersionFound: "立即升级",
     infectedOrHijacked: "修复",
     accelerationServiceNotStarting: "好的",
@@ -104,10 +104,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   // 停止加速
   const stopAcceleration = () => {
-    // playSuitApi.playSpeedEnd({
-    //   platform: 3,
-    //   js_key: localStorage.getItem("StartKey"),
-    // }); // 游戏停止加速
     // 停止加速
     sendMessageToBackend(
       JSON.stringify({
@@ -147,6 +143,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     switch (noticeType) {
       case "netorkError":
         stopAcceleration();
+        (window as any).native_restart();
         break;
       case "newVersionFound":
         (window as any).native_update();
@@ -163,8 +160,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         (window as any).native_restart();
         break;
       case "issueFeedback":
-        console.log(feedbackClose);
-
         feedbackClose.onClose();
         break;
       default:
