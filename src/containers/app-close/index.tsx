@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-28 16:06:25
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 18:22:14
+ * @LastEditTime: 2024-07-03 18:27:29
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\app-close\index.tsx
@@ -45,7 +45,9 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
 
   useEffect(() => {
     if (open) {
-      setEventType(String(localStorage.getItem("close_window_sign") || 1));
+      let sign = JSON.parse(localStorage.getItem("client_config") || "{}");
+
+      setEventType(String(sign?.close_button_action || 1));
     }
   }, [open]);
 

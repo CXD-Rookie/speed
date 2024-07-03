@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 10:57:48
+ * @LastEditTime: 2024-07-03 18:29:50
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -189,12 +189,12 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   };
 
   useEffect(() => {
-    let close_sign = localStorage.getItem("close_window_sign") || "2";
+    let sign = JSON.parse(localStorage.getItem("client_config") || "{}");
     let isRealName = localStorage.getItem("isRealName");
 
     isRealName = isRealName ? isRealName : "";
 
-    setCloseWindow(close_sign);
+    setCloseWindow(String(sign?.close_button_action || 2));
     setRealNameTag(isRealName);
 
     if (isLogin) {
