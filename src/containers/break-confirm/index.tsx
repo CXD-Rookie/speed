@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 19:17:12
+ * @LastEditTime: 2024-07-03 19:53:47
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -67,7 +67,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     renewalReminder: "您的加速服务即将到期，请尽快续费以享受流畅的游戏体验。",
     accelMemEnd: "您的加速服务已到期，请续费继续使用",
     serverDisconnected: "无法连接到服务器，请重新启动客户端。",
-    issueFeedback: "感谢您的反馈，我们会尽快处理",
+    issueFeedback: "提交成功，感谢您的反馈！",
     switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
   };
 
@@ -81,7 +81,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     renewalReminder: "立即充值",
     accelMemEnd: "好的",
     serverDisconnected: "重启客户端",
-    issueFeedback: "确定",
+    issueFeedback: "好的",
   };
 
   // footer 只显示一个按钮的类型
@@ -222,9 +222,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           </div>
         }
       >
-        {noticeType === "issueFeedback" && (
-          <div className="feedback">反馈成功</div>
-        )}
         <div className="accelerate-modal">
           {isNetworkError
             ? textContentObj?.[noticeType]
