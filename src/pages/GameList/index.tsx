@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { LeftOutlined } from "@ant-design/icons";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./style.scss";
 
@@ -43,6 +44,7 @@ interface Game {
 
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch: any = useDispatch();
   const historyContext: any = useHistoryContext();
 
   const { appendGameToList } = useGamesInitialize();
@@ -163,17 +165,19 @@ const GameLibrary: React.FC = () => {
             <div className="empty-null-text">
               抱歉，没有找到“{oldSearchBarValue}”的相关游戏
             </div>
-            {accountInfo?.isLogin && (
-              <div
-                className="empty-text"
-                onClick={() => {
+            <div
+              className="empty-text"
+              onClick={() => {
+                if (accountInfo?.isLogin) {
                   setShowIssueModal(true);
                   setIssueDescription(`未找到“${oldSearchBarValue}”的相关游戏`);
-                }}
-              >
-                您可进行反馈，以便我们及时更新
-              </div>
-            )}
+                } else {
+                  dispatch(setAccountInfo(undefined, undefined, true));
+                }
+              }}
+            >
+              您可进行反馈，以便我们及时更新
+            </div>
             <button
               className="browse-button"
               onClick={() => navigate("/gameLibrary")}
