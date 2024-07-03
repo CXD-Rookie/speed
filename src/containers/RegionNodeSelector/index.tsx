@@ -8,6 +8,7 @@ import "./index.scss";
 import playSuitApi from "@/api/speed";
 import useCefQuery from "@/hooks/useCefQuery";
 import BreakConfirmModal from "../break-confirm";
+import IssueModal from "@/containers/IssueModal/index";
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -34,6 +35,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   const { getGameList, identifyAccelerationData, removeGameList } =
     useGamesInitialize();
+
   const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
 
@@ -53,7 +55,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
 
-  const [accelOpen, setAccelOpen] = useState(false);
+  const [accelOpen, setAccelOpen] = useState(false); // 加速确认
+  const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
+
+  const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
 
   const togglePanel = (panelKey: string) => {
     if (expandedPanels.includes(panelKey)) {
@@ -416,7 +421,15 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                       ))
                   )}
               </div>
-              <div className="not-have-region">没有找到区服？</div>
+              <div
+                className="not-have-region"
+                onClick={() => {
+                  setShowIssueModal(true);
+                  setIssueDescription(`没有找到区服`);
+                }}
+              >
+                没有找到区服？
+              </div>
             </div>
           </TabPane>
           <TabPane tab="节点" key="2">
@@ -495,6 +508,13 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
         setAccelOpen={setAccelOpen}
         onConfirm={clickStartOn}
       />
+      {showIssueModal ? (
+        <IssueModal
+          showIssueModal={showIssueModal}
+          onClose={() => setShowIssueModal(false)}
+          defaultInfo={issueDescription} // 传递默认描述
+        />
+      ) : null}
     </Fragment>
   );
 };

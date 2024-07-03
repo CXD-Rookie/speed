@@ -45,7 +45,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   useEffect(() => {
     // 如果有 defaultInfo 且等于 "缺少游戏"，自动选择对应的按钮
     if (defaultInfo) {
-      const missingGameType = types.find((type) => type.value === "缺少游戏");
+      const missingGameType = types.find(
+        (type) => type.value === "缺少游戏/区服"
+      );
       if (missingGameType) {
         handleTypeSelect(missingGameType.id);
       }
