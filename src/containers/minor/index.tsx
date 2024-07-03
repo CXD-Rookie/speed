@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 19:36:12
+ * @LastEditTime: 2024-07-03 18:02:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
@@ -21,6 +21,7 @@ interface MinorModalProps {
   isMinorOpen: boolean;
   setIsMinorOpen: (open: boolean) => void;
 }
+const sucessStateMap = [1, 4, 5, 6, 7, 8];
 
 const MinorModal: React.FC<MinorModalProps> = (props) => {
   const { type, isMinorOpen, setIsMinorOpen } = props;
@@ -35,14 +36,15 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
   };
 
   useEffect(() => {
-    // 未成年 recharge充值 acceleration 加速 success 成功 bind 换绑手机号
     let typeObj: any = {
-      success: 1,
-      acceleration: 2,
-      recharge: 3,
-      bind: 4,
-      updatePhone: 5,
-      unbind: 6,
+      success: 1, // 未成年实名认证成功
+      acceleration: 2, // 未成年加速
+      recharge: 3, // 未成年充值
+      bind: 4, // 换绑手机号
+      updatePhone: 5, // 正常换绑
+      unbind: 6, // 解绑
+      thirdBind: 7, // 第三方绑定
+      thirdUpdateBind: 8, // 第三方换绑
     };
 
     if (typeObj?.[type]) {
@@ -76,7 +78,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
           </Button>
         </div>
       )}
-      {(realType === 1 || realType === 4 || realType === 5) && (
+      {sucessStateMap.includes(realType) && (
         <div className="real-sueccess-modal-content">
           <img src={realSucessIcon} width={69} height={69} alt="" />
           <p>
@@ -84,6 +86,8 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
             {realType === 4 && "您的手机号已成功绑定并注册至账户"}
             {realType === 5 && "恭喜，手机更换成功"}
             {realType === 6 && "您的游戏账号已解除绑定"}
+            {realType === 7 && "您的游侠账号已成功绑定至账户"}
+            {realType === 8 && "您已成功换绑游侠账户"}
           </p>
           <Button className="real-sueccess-btn" onClick={handleClose}>
             好的

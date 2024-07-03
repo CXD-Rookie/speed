@@ -24,6 +24,7 @@ import SettingsModal from "./containers/setting/index";
 import IssueModal from "./containers/IssueModal/index";
 import BreakConfirmModal from "@/containers/break-confirm";
 import VisitorLogin from "./containers/visitor-login";
+import MinorModal from "./containers/minor";
 
 import loginApi from "./api/login";
 import playSuitApi from "./api/speed";
@@ -84,6 +85,8 @@ const App: React.FC = (props: any) => {
   const [exitOpen, setExitOpen] = useState(false); // 是否关闭主程序
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
   const [isAppCloseOpen, setIsAppCloseOpen] = useState(false); // 是否手动设置关闭主程序操作
+  const [thirdBindType, setThirdBindType] = useState(""); // 第三方绑定成功之后返回状态 绑定还是换绑
+  const [bindOpen, setBindOpen] = useState(false); // 第三方绑定状态窗
 
   const menuList: CustomMenuProps[] = [
     {
@@ -222,11 +225,13 @@ const App: React.FC = (props: any) => {
     );
   };
 
-  const handleMinimize = async() => {
+  const handleMinimize = async () => {
     (window as any).NativeApi_MinimumWindow();
     try {
-      const t = (window as any).NativeApi_SynchronousRequest('00000000000000000')
-      console.log(t,'----------------------------------')
+      const t = (window as any).NativeApi_SynchronousRequest(
+        "00000000000000000"
+      );
+      console.log(t, "----------------------------------");
     } catch (error) {
       console.log(error);
     }
@@ -360,7 +365,7 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      // console.log(data,"ws返回的信息---------------")
+      // console.log(data, "ws返回的信息---------------");
       // const version = data?.data?.version;
 
       // let isTrue = compareVersions(version?.min_version, version?.now_version);
@@ -399,6 +404,18 @@ const App: React.FC = (props: any) => {
               show: true,
               type: "accelMemEnd",
             });
+          }
+
+          let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "0");
+          let type_obj: any = {
+            "1": "thirdBind",
+            "2": "thirdUpdateBind",
+          };
+
+          if (["1", "2"].includes(bind_type)) {
+            setThirdBindType(type_obj?.[bind_type]); // 定义成功类型
+            setBindOpen(true); // 触发成功弹窗
+            localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
           }
         } else {
           if (!isBindPhone) {
@@ -639,6 +656,13 @@ const App: React.FC = (props: any) => {
           open={isAppCloseOpen}
           close={setIsAppCloseOpen}
           onConfirm={setExitOpen}
+        />
+      ) : null}
+      {bindOpen ? (
+        <MinorModal
+          type={thirdBindType}
+          isMinorOpen={bindOpen}
+          setIsMinorOpen={setBindOpen}
         />
       ) : null}
     </Layout>
