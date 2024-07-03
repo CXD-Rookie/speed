@@ -570,6 +570,7 @@ const App: React.FC = (props: any) => {
               onClick={() => {
                 let close = localStorage.getItem("client_config");
                 let action = close ? JSON.parse(close)?.close_button_action : 2;
+                console.log(action);
 
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
                 if (action === 0) {
@@ -655,7 +656,19 @@ const App: React.FC = (props: any) => {
         <AppCloseModal
           open={isAppCloseOpen}
           close={setIsAppCloseOpen}
-          onConfirm={setExitOpen}
+          onConfirm={(state) => {
+            let is_acc = identifyAccelerationData()?.[0];
+
+            if (state === 1) {
+              if (is_acc) {
+                setExitOpen(is_acc); // 有加速的游戏，二次确认
+              } else {
+                handleExitProcess(); // 直接关闭
+              }
+            } else {
+              (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+            }
+          }}
         />
       ) : null}
       {bindOpen ? (

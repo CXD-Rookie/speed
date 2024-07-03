@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-28 16:06:25
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 11:06:21
+ * @LastEditTime: 2024-07-03 18:22:14
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\app-close\index.tsx
@@ -28,7 +28,6 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
   const onChange = (e: CheckboxChangeEvent) => {
     let checked = e.target.checked;
 
-    console.log(`checked = ${e.target.checked}`);
     setNoMorePrompts(checked);
   };
 
@@ -41,7 +40,7 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
     }
 
     close(false);
-    onConfirm(true);
+    onConfirm(Number(eventType));
   };
 
   useEffect(() => {
