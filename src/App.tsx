@@ -223,18 +223,29 @@ const App: React.FC = (props: any) => {
         console.error("Failure response from 停止加速:", errorCode);
       }
     );
+    // (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+    //   console.log(response,'----------------------------------')
+    //     removeGameList("initialize"); // 更新我的游戏
+    //     historyContext?.accelerateTime?.stopTimer();
+
+    //     if ((window as any).stopDelayTimer) {
+    //       (window as any).stopDelayTimer();
+    //     }
+
+    //     (window as any).NativeApi_ExitProcess();
+    // })
   };
 
   const handleMinimize = async () => {
     (window as any).NativeApi_MinimumWindow();
-    try {
-      const t = (window as any).NativeApi_SynchronousRequest(
-        "00000000000000000"
-      );
-      console.log(t, "----------------------------------");
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   const t = (window as any).NativeApi_SynchronousRequest(
+    //     "00000000000000000"
+    //   );
+    //   console.log(t, "----------------------------------");
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
