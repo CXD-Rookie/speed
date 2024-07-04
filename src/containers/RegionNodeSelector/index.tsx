@@ -40,7 +40,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const historyContext: any = useHistoryContext();
 
   const [presentGameInfo, setPresentGameInfo] = useState<any>({}); // 当前期望加速的游戏信息
-
   const [activeTab, setActiveTab] = useState("1"); // tab栏值
 
   const [domHistory, setDomHistory] = useState<any>([]); // 节点历史信息
@@ -60,7 +59,13 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
 
   // 刷新查询节点列表最短延迟节点
-  const refreshNodesMinLatency = () => {};
+  const refreshNodesMinLatency = (all: any = regionDomList) => {
+    const minDelayObject = all.reduce((min: any, current: any) => {
+      return current.delay < min.delay ? current : min;
+    });
+
+    setSelectedNode(minDelayObject);
+  };
 
   // 更新存储，展示的当前的游戏区服
   const refreshAndShowCurrentServer = (info: any) => {
@@ -268,19 +273,26 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       );
 
       setRegionDomList(updatedNodes);
+
+      return updatedNodes;
     } catch (error) {
       console.log("初始化获取所有的加速服务器列表:", error);
     }
   };
 
   // 切换 tabs 进行区服 节点切换
-  const tabsChange = (event: any) => {
+  const tabsChange = async (event: any) => {
     if (event === "2") {
+      let all = await fetchAllSpeedList(); // 暂时只有固定的几个节点，所以直接获取节点就行，不需要传区服id
       let dom_info = presentGameInfo?.dom_info || {};
-      setDomHistory(dom_info);
+      console.log(all);
 
-      if (Object.keys(dom_info)?.length < 1) {
-        refreshNodesMinLatency();
+      if (all) {
+        if (Object.keys(dom_info)?.length > 0) {
+          setDomHistory(dom_info);
+        } else {
+          refreshNodesMinLatency(all);
+        }
       }
     }
 
@@ -289,7 +301,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 点击 选择区服
   const clickRegion = (option: any) => {
-    fetchAllSpeedList(); // 暂时只有固定的几个节点，所以直接获取节点就行，不需要传区服id
     tabsChange("2");
     updateGamesRegion(presentGameInfo, option);
   };
@@ -297,11 +308,19 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   // 选择的服
   const togglePanel = (option: any) => {
     // 如果当前游戏服具有不同的区，进行更新节点操作
-    if (option?.children) {
-      setExpandedPanels(expandedPanels?.qu === option?.qu ? {} : option);
-    } else {
-      clickRegion(option);
+    let default_option = { ...option };
+
+    if (option?.fu) {
+      default_option = currentGameServer.filter(
+        (item: any) => item?.qu === option?.fu
+      )?.[0];
     }
+
+    if (default_option?.children) {
+      setExpandedPanels(default_option);
+    }
+
+    clickRegion(option);
   };
 
   useEffect(() => {
@@ -342,7 +361,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                     className="region-select"
                     value={regionInfo?.select_region?.qu}
                     onChange={(value) =>
-                      clickRegion(
+                      togglePanel(
                         regionInfo?.history_region?.filter(
                           (child: any) => child?.qu === value
                         )?.[0]
@@ -453,7 +472,12 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                       })}
                   </Select>
                 </div>
-                <Button className="refresh-button">刷新</Button>
+                <Button
+                  className="refresh-button"
+                  onClick={() => refreshNodesMinLatency()}
+                >
+                  刷新
+                </Button>
               </div>
               <Table
                 rowKey="id"
