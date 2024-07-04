@@ -68,6 +68,9 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
   };
 
+  // 刷新查询节点列表最短延迟节点
+  const refreshNodesMinLatency = () => {};
+
   // 更新游戏历史选择节点
   const updateGamesDom = (option: any = {}) => {
     let old_dom = presentGameInfo?.dom_info?.dom_history || []; // 现在已存在的数据
@@ -291,7 +294,12 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   // 切换 tabs 进行区服 节点切换
   const tabsChange = (event: any) => {
     if (event === "2") {
-      setDomHistory(presentGameInfo?.dom_info || {});
+      let dom_info = presentGameInfo?.dom_info || {};
+      setDomHistory(dom_info);
+
+      if (Object.keys(dom_info)?.length < 1) {
+        refreshNodesMinLatency();
+      }
     }
 
     setActiveTab(event);
@@ -316,7 +324,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     const initializeFetch = async () => {
       let region = updateGamesRegion(options); // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
 
-      setPresentGameInfo(options);
+      setPresentGameInfo(options); // 更新当前游戏信息
       // 初始化默认选择的区服不是智能匹配
       fetchAllSpeedList(region?.id !== "smart_match" && {});
       handleSubRegions(options?.id); // 改为调用 handleSubRegions 初始化获取所有的区服信息

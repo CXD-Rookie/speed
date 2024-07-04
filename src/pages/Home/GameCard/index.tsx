@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 19:33:01
+ * @LastEditTime: 2024-07-04 10:46:15
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -218,8 +218,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
-    console.log(option);
-
     if (!option?.dom_info?.select_dom?.id) {
       setIsOpenRegion(true);
       return;
