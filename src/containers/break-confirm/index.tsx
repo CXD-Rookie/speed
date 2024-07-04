@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 19:53:47
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-04 18:21:42
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -106,26 +106,44 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   // 停止加速
   const stopAcceleration = () => {
     // 停止加速
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_StopProxy",
-        params: null,
-      }),
-      (response: any) => {
-        console.log("Success response from 停止加速:", response);
-        removeGameList("initialize"); // 更新我的游戏
-        accelerateTime?.stopTimer();
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_StopProxy",
+    //     params: null,
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 停止加速:", response);
+    //     removeGameList("initialize"); // 更新我的游戏
+    //     accelerateTime?.stopTimer();
 
-        if ((window as any).stopDelayTimer) {
-          (window as any).stopDelayTimer();
-        }
+    //     if ((window as any).stopDelayTimer) {
+    //       (window as any).stopDelayTimer();
+    //     }
 
-        navigate("/home");
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 停止加速:", errorCode);
+    //     navigate("/home");
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 停止加速:", errorCode);
+    //   }
+    // );
+
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+
+      if (!response) {
+        console.warn("No response received from 停止加速没有成功");
+        return;
       }
-    );
+      console.log("Success response from 停止加速:", response);
+      removeGameList("initialize"); // 更新我的游戏
+      accelerateTime?.stopTimer();
+
+      if ((window as any).stopDelayTimer) {
+        (window as any).stopDelayTimer();
+      }
+
+      navigate("/home");
+      // (window as any).loginOut();
+  })
   };
 
   const cancel = () => {

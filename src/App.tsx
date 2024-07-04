@@ -106,12 +106,28 @@ const App: React.FC = (props: any) => {
     //   platform: 3,
     //   js_key: localStorage.getItem("StartKey"),
     // }); // 游戏停止加速
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_StopProxy",
-        params: null,
-      }),
-      (response: any) => {
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_StopProxy",
+    //     params: null,
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 停止加速:", response);
+    //     historyContext?.accelerateTime?.stopTimer();
+
+    //     if ((window as any).stopDelayTimer) {
+    //       (window as any).stopDelayTimer();
+    //     }
+
+    //     removeGameList("initialize"); // 更新我的游戏
+    //     loginOut();
+    //     // (window as any).loginOut();
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 停止加速:", errorCode);
+    //   }
+    // );
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();
 
@@ -122,11 +138,7 @@ const App: React.FC = (props: any) => {
         removeGameList("initialize"); // 更新我的游戏
         loginOut();
         // (window as any).loginOut();
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 停止加速:", errorCode);
-      }
-    );
+    })
   };
   // // 挂载到 window 对象上
   // (window as any).loginOutStop = loginOutStop;
@@ -203,28 +215,13 @@ const App: React.FC = (props: any) => {
     //   platform: 3,
     //   js_key: localStorage.getItem("StartKey"),
     // }); // 游戏停止加速
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_StopProxy",
-        params: null,
-      }),
-      (response: any) => {
-        console.log("Success response from 停止加速:", response);
-        removeGameList("initialize"); // 更新我的游戏
-        historyContext?.accelerateTime?.stopTimer();
-
-        if ((window as any).stopDelayTimer) {
-          (window as any).stopDelayTimer();
-        }
-
-        (window as any).NativeApi_ExitProcess();
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 停止加速:", errorCode);
-      }
-    );
-    // (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
-    //   console.log(response,'----------------------------------')
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_StopProxy",
+    //     params: null,
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 停止加速:", response);
     //     removeGameList("initialize"); // 更新我的游戏
     //     historyContext?.accelerateTime?.stopTimer();
 
@@ -233,7 +230,22 @@ const App: React.FC = (props: any) => {
     //     }
 
     //     (window as any).NativeApi_ExitProcess();
-    // })
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 停止加速:", errorCode);
+    //   }
+    // );
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+        console.log(response,'----------------------------------')
+        removeGameList("initialize"); // 更新我的游戏
+        historyContext?.accelerateTime?.stopTimer();
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        (window as any).NativeApi_ExitProcess();
+    })
   };
 
   const handleMinimize = async () => {
@@ -314,26 +326,37 @@ const App: React.FC = (props: any) => {
     //   platform: 3,
     //   js_key: localStorage.getItem("StartKey"),
     // }); // 游戏停止加速
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_StopProxy",
-        params: null,
-      }),
-      (response: any) => {
-        console.log("Success response from 停止加速:", response);
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_StopProxy",
+    //     params: null,
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 停止加速:", response);
 
-        if ((window as any).stopDelayTimer) {
-          (window as any).stopDelayTimer();
-        }
+    //     if ((window as any).stopDelayTimer) {
+    //       (window as any).stopDelayTimer();
+    //     }
 
-        historyContext?.accelerateTime?.stopTimer();
-        removeGameList("initialize"); // 更新我的游戏
-        navigate("/home");
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 停止加速:", errorCode);
+    //     historyContext?.accelerateTime?.stopTimer();
+    //     removeGameList("initialize"); // 更新我的游戏
+    //     navigate("/home");
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 停止加速:", errorCode);
+    //   }
+    // );
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+      console.log("Success response from 停止加速:", response);
+
+      if ((window as any).stopDelayTimer) {
+        (window as any).stopDelayTimer();
       }
-    );
+
+      historyContext?.accelerateTime?.stopTimer();
+      removeGameList("initialize"); // 更新我的游戏
+      navigate("/home");
+  })
   };
 
   const stopSpeed = () => {
@@ -342,27 +365,40 @@ const App: React.FC = (props: any) => {
     //   platform: 3,
     //   js_key: localStorage.getItem("StartKey"),
     // }); // 游戏停止加速
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_StopProxy",
-        params: null,
-      }),
-      (response: any) => {
-        console.log("Success response from 停止加速:", response);
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_StopProxy",
+    //     params: null,
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 停止加速:", response);
 
-        if ((window as any).stopDelayTimer) {
-          (window as any).stopDelayTimer();
-        }
+    //     if ((window as any).stopDelayTimer) {
+    //       (window as any).stopDelayTimer();
+    //     }
 
-        historyContext?.accelerateTime?.stopTimer();
-        removeGameList("initialize"); // 更新我的游戏
-        navigate("/home");
-        (window as any).NativeApi_ExitProcess();
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 停止加速:", errorCode);
+    //     historyContext?.accelerateTime?.stopTimer();
+    //     removeGameList("initialize"); // 更新我的游戏
+    //     navigate("/home");
+    //     (window as any).NativeApi_ExitProcess();
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 停止加速:", errorCode);
+    //   }
+    // );
+
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+      console.log("Success response from 停止加速:", response);
+
+      if ((window as any).stopDelayTimer) {
+        (window as any).stopDelayTimer();
       }
-    );
+
+      historyContext?.accelerateTime?.stopTimer();
+      removeGameList("initialize"); // 更新我的游戏
+      navigate("/home");
+      (window as any).NativeApi_ExitProcess();
+  })
   };
 
   (window as any).stopSpeed = stopSpeed;

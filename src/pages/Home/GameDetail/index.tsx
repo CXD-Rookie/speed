@@ -83,12 +83,28 @@ const GameDetail: React.FC = () => {
     //   js_key: jsKey,
     // }); // 游戏停止加速
 
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_StopProxy",
-        params: null,
-      }),
-      (response: any) => {
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_StopProxy",
+    //     params: null,
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 停止加速:", response);
+    //     historyContext?.accelerateTime?.stopTimer();
+
+    //     if ((window as any).stopDelayTimer) {
+    //       (window as any).stopDelayTimer();
+    //     }
+
+    //     removeGameList("initialize"); // 更新我的游戏
+    //     navigate("/home");
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 停止加速:", errorCode);
+    //   }
+    // );
+
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();
 
@@ -98,11 +114,7 @@ const GameDetail: React.FC = () => {
 
         removeGameList("initialize"); // 更新我的游戏
         navigate("/home");
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 停止加速:", errorCode);
-      }
-    );
+    })
   };
 
   function formatTime(seconds: any) {
@@ -150,12 +162,50 @@ const GameDetail: React.FC = () => {
     console.log(select_region);
 
     // 查看加速详情，获取延迟
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_GetIpDelayByICMP",
-        params: { ip },
-      }),
-      (response: any) => {
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_GetIpDelayByICMP",
+    //     params: { ip },
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 详情丢包信息:", response);
+
+    //     //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+    //     const delay = JSON.parse(response)?.delay;
+    //     const lost_bag = delay < 2 ? 2 : delay;
+    //     const chart_list = generateDataEvery10Seconds(lost_bag);
+
+    //     if (delay === 9999) {
+    //       setDelayOpen(true);
+    //     }
+
+    //     setChartData(chart_list); // 更新图表
+    //     setLostBag(lost_bag); // 更新延迟数
+    //     setPacketLoss(delay === 9999 ? 25 : 0); // 更新丢包率
+    //     setDetailData(find_accel);
+    //     setRegionInfo(select_region);
+
+    //     dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 详情丢包信息:", errorCode);
+    //     setDelayOpen(true);
+    //   }
+    // );
+
+
+    const jsonString = JSON.stringify({
+      params: { ip }
+    });
+
+    (window as any).NativeApi_AsynchronousRequest(
+      'NativeApi_GetIpDelayByICMP',
+      jsonString,
+      function (response: any) {
+        if (!response) {
+          console.error("Failure response from 详情丢包信息:", errorCode);
+          setDelayOpen(true);
+        }
         console.log("Success response from 详情丢包信息:", response);
 
         //{"delay":32(这个是毫秒,9999代表超时与丢包)}
@@ -174,10 +224,6 @@ const GameDetail: React.FC = () => {
         setRegionInfo(select_region);
 
         dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 详情丢包信息:", errorCode);
-        setDelayOpen(true);
       }
     );
   }, []);
@@ -189,12 +235,57 @@ const GameDetail: React.FC = () => {
       let ip = find_accel?.dom_info?.select_dom; // 存储的ip
 
       // 查看加速详情，获取延迟
-      sendMessageToBackend(
-        JSON.stringify({
-          method: "NativeApi_GetIpDelayByICMP",
-          params: { ip },
-        }),
-        (response: any) => {
+      // sendMessageToBackend(
+      //   JSON.stringify({
+      //     method: "NativeApi_GetIpDelayByICMP",
+      //     params: { ip },
+      //   }),
+      //   (response: any) => {
+      //     console.log("Success response from 详情丢包信息:", response);
+
+      //     //{"delay":32(这个是毫秒,9999代表超时与丢包)}
+      //     const delay = JSON.parse(response)?.delay;
+      //     const lost_bag = delay < 2 ? 2 : delay;
+      //     // 10秒比较一次是否到期，到期后停止加速
+      //     forceStopAcceleration(accountInfo, stopSpeed);
+
+      //     setChartData((chart: any) => {
+      //       let chart_list = [...chart];
+
+      //       chart_list.shift();
+
+      //       let lastElement = chart_list[chart_list.length - 1];
+
+      //       let time = lastElement?.timestamp
+      //         ? lastElement?.timestamp + 10000
+      //         : new Date().getTime();
+      //       let newData = {
+      //         timestamp: time,
+      //         value: lost_bag,
+      //       };
+
+      //       chart_list.push(newData);
+
+      //       return chart_list;
+      //     }); // 更新图表
+      //     setLostBag(lost_bag); // 更新延迟数
+      //     setPacketLoss(delay === 9999 ? 25 : 0); // 更新丢包率
+
+      //     dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
+      //   },
+      //   (errorCode: any, errorMessage: any) => {
+      //     console.error("Failure response from 详情丢包信息:", errorCode);
+      //   }
+      // );
+
+      const jsonString = JSON.stringify({
+        params: { ip }
+      });
+  
+      (window as any).NativeApi_AsynchronousRequest(
+        'NativeApi_GetIpDelayByICMP',
+        jsonString,
+        function (response: any) {
           console.log("Success response from 详情丢包信息:", response);
 
           //{"delay":32(这个是毫秒,9999代表超时与丢包)}
@@ -226,9 +317,6 @@ const GameDetail: React.FC = () => {
           setPacketLoss(delay === 9999 ? 25 : 0); // 更新丢包率
 
           dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
-        },
-        (errorCode: any, errorMessage: any) => {
-          console.error("Failure response from 详情丢包信息:", errorCode);
         }
       );
     }, 10000);

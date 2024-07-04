@@ -56,13 +56,35 @@ instance.interceptors.response.use(
         //   platform: 3,
         //   js_key: localStorage.getItem("StartKey"),
         // }); // 游戏停止加速
-        window.cefQuery({
-          request: JSON.stringify({
-            method: "NativeApi_StopProxy",
-            params: null,
-          }),
-          onSuccess: function (response) {
-            console.log("Success response from 停止加速:", response);
+        // window.cefQuery({
+        //   request: JSON.stringify({
+        //     method: "NativeApi_StopProxy",
+        //     params: null,
+        //   }),
+        //   onSuccess: function (response) {
+        //     console.log("Success response from 停止加速:", response);
+        //     localStorage.removeItem("token");
+        //     localStorage.removeItem("isRealName");
+
+        //     default_hooks.removeGameList("initialize");
+        //     default_hooks.historyContext?.accelerateTime?.stopTimer();
+
+        //     if (window.stopDelayTimer) {
+        //       window.stopDelayTimer();
+        //     }
+
+        //     // 3个参数 用户信息 是否登录 是否显示登录
+        //     store.dispatch(setAccountInfo({}, false, true));
+        //     const url = new URL(window.location.origin + "/home");
+        //     window.location.href = url.toString();
+        //   },
+        //   onFailure: function (errorCode, errorMessage) {
+        //     console.error("Failure response from 停止加速:", errorCode);
+        //   }
+        // });
+
+        window.NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+          console.log("Success response from 停止加速:", response);
             localStorage.removeItem("token");
             localStorage.removeItem("isRealName");
 
@@ -77,11 +99,7 @@ instance.interceptors.response.use(
             store.dispatch(setAccountInfo({}, false, true));
             const url = new URL(window.location.origin + "/home");
             window.location.href = url.toString();
-          },
-          onFailure: function (errorCode, errorMessage) {
-            console.error("Failure response from 停止加速:", errorCode);
-          }
-        });
+      })
       }
     }
     return response.data;

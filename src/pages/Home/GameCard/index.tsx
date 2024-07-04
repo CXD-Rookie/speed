@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 19:33:01
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-04 18:26:20
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -97,12 +97,28 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     //   js_key: localStorage.getItem("StartKey"),
     // }); // 游戏停止加速
     // 停止加速
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_StopProxy",
-        params: null,
-      }),
-      (response: any) => {
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_StopProxy",
+    //     params: null,
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 停止加速:", response);
+    //     removeGameList("initialize"); // 更新我的游戏
+    //     historyContext?.accelerateTime?.stopTimer();
+
+    //     if ((window as any).stopDelayTimer) {
+    //       (window as any).stopDelayTimer();
+    //     }
+
+    //     triggerDataUpdate(); // 更新显示数据
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 停止加速:", errorCode);
+    //   }
+    // );
+
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
@@ -112,11 +128,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         triggerDataUpdate(); // 更新显示数据
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 停止加速:", errorCode);
-      }
-    );
+    })
   };
 
   // 获取游戏运营平台列表
@@ -171,46 +183,69 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       localStorage.setItem("speedGid", option?.id);
 
       // 真实拼接
-      const jsonResult = {
-        process: [...result_excutable],
-        black_ip: ["42.201.128.0/17"],
-        black_domain: [
-          "re:.+\\.steamcommunity\\.com",
-          "steamcdn-a.akamaihd.net",
-        ],
-        tcp_tunnel_mode: 0,
-        udp_tunnel_mode: 1,
-        user_id: accountInfo?.userInfo?.id,
-        game_id: option?.id,
-        tunnel: {
-          address: ip,
-          server: server,
-        },
-        js_key,
-      };
+      // const jsonResult = {
+      //   process: [...result_excutable],
+      //   black_ip: ["42.201.128.0/17"],
+      //   black_domain: [
+      //     "re:.+\\.steamcommunity\\.com",
+      //     "steamcdn-a.akamaihd.net",
+      //   ],
+      //   tcp_tunnel_mode: 0,
+      //   udp_tunnel_mode: 1,
+      //   user_id: accountInfo?.userInfo?.id,
+      //   game_id: option?.id,
+      //   tunnel: {
+      //     address: ip,
+      //     server: server,
+      //   },
+      //   js_key,
+      // };
 
       // 真实加速
-      sendMessageToBackend(
-        JSON.stringify({
-          method: "NativeApi_StartProcessProxy",
-          params: jsonResult,
-        }),
-        (response: any) => {
-          console.log("Success response from 开启真实加速中:", response);
-        },
-        (errorCode: any, errorMessage: any) => {
-          console.error(
-            "Failure response from 加速失败:",
-            errorCode,
-            errorMessage
-          );
-          // 无法启动加速服务
-          eventBus.emit("showModal", {
-            show: true,
-            type: "accelerationServiceNotStarting",
-          });
+      // sendMessageToBackend(
+      //   JSON.stringify({
+      //     method: "NativeApi_StartProcessProxy",
+      //     params: jsonResult,
+      //   }),
+      //   (response: any) => {
+      //     console.log("Success response from 开启真实加速中:", response);
+      //   },
+      //   (errorCode: any, errorMessage: any) => {
+      //     console.error(
+      //       "Failure response from 加速失败:",
+      //       errorCode,
+      //       errorMessage
+      //     );
+      //     // 无法启动加速服务
+      //     eventBus.emit("showModal", {
+      //       show: true,
+      //       type: "accelerationServiceNotStarting",
+      //     });
+      //   }
+      // );
+      const jsonResult = JSON.stringify({
+        params: {
+          process: [...result_excutable],
+          black_ip: ["42.201.128.0/17"],
+          black_domain: [
+            "re:.+\\.steamcommunity\\.com",
+            "steamcdn-a.akamaihd.net",
+          ],
+          tcp_tunnel_mode: 0,
+          udp_tunnel_mode: 1,
+          user_id: accountInfo?.userInfo?.id,
+          game_id: option?.id,
+          tunnel: {
+            address: ip,
+            server: server,
+          },
+          js_key,
         }
-      );
+      });
+
+      (window as any).NativeApi_AsynchronousRequest('NativeApi_StartProcessProxy',jsonResult,function (response:any){
+        console.log("Success response from 开启真实加速中:", response);
+      })
     } catch (error) {
       console.log(error);
     }
@@ -233,12 +268,40 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let isPre: boolean;
 
     // 校验是否合法文件
-    sendMessageToBackend(
-      JSON.stringify({
-        method: "NativeApi_PreCheckEnv",
-      }),
-      (response: any) => {
-        console.log("Success response from 校验是否合法文件:", response);
+    // sendMessageToBackend(
+    //   JSON.stringify({
+    //     method: "NativeApi_PreCheckEnv",
+    //   }),
+    //   (response: any) => {
+    //     console.log("Success response from 校验是否合法文件:", response);
+    //     const isCheck = JSON.parse(response);
+    //     accelerateGameToList(option); // 加速完后更新我的游戏
+    //     handleSuitDomList(option); // 通知客户端进行加速
+    //     // 暂时注释 实际生产打开
+    //     if (isCheck?.pre_check_status === 0) {
+    //       isPre = true;
+    //       accelerateGameToList(option); // 加速完后更新我的游戏
+    //       handleSuitDomList(option); // 通知客户端进行加速
+    //     } else {
+    //       console.log(`不是合法文件，请重新安装加速器`);
+    //       eventBus.emit("showModal", {
+    //         show: true,
+    //         type: "infectedOrHijacked",
+    //       });
+    //     }
+    //   },
+    //   (errorCode: any, errorMessage: any) => {
+    //     console.error("Failure response from 校验是否合法文件:", errorCode);
+    //     eventBus.emit("showModal", { show: true, type: "infectedOrHijacked" });
+    //   }
+    // );
+
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_PreCheckEnv','',function (response:any){
+      console.log("Success response from 校验是否合法文件:", response);
+        if (!response) {
+          console.error("Failure response from 校验是否合法文件:", errorCode);
+          eventBus.emit("showModal", { show: true, type: "infectedOrHijacked" });
+        }
         const isCheck = JSON.parse(response);
         accelerateGameToList(option); // 加速完后更新我的游戏
         handleSuitDomList(option); // 通知客户端进行加速
@@ -254,12 +317,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             type: "infectedOrHijacked",
           });
         }
-      },
-      (errorCode: any, errorMessage: any) => {
-        console.error("Failure response from 校验是否合法文件:", errorCode);
-        eventBus.emit("showModal", { show: true, type: "infectedOrHijacked" });
-      }
-    );
+    })
 
     setTimeout(() => {
       setIsAllowAcceleration(true); // 启用立即加速
