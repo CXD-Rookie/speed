@@ -314,10 +314,9 @@
 }
 .up-triangle, .down-triangle {
   display: inline-block;
-  margin-left: 8px;
   width: 1vw;
+  margin-left: 0.8vw;
   margin-bottom: 0.1vw;
-  // height: 1vh;
   border-left: 0.5vw solid transparent;
   border-right: 0.5vw solid transparent;
 }

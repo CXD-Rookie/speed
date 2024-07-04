@@ -49,24 +49,17 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     options?.dom_info?.select_dom
   ); // 当前点击列表触发的节点
 
+  const [currentGameServer, setCurrentGameServer] = useState([]); // 当前游戏的区服
   const [subRegions, setSubRegions] = useState<any>({}); // 区服信息列表
   const [regions, setRegions] = useState([]); // 区服列表
   const [regionInfo, setRegionInfo] = useState<any>({}); // 当前选择的区服信息
 
-  const [expandedPanels, setExpandedPanels] = useState<string[]>([]);
+  const [expandedPanels, setExpandedPanels] = useState<any>({});
 
   const [accelOpen, setAccelOpen] = useState(false); // 加速确认
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
   const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
-
-  const togglePanel = (panelKey: string) => {
-    if (expandedPanels.includes(panelKey)) {
-      setExpandedPanels([]);
-    } else {
-      setExpandedPanels([panelKey]);
-    }
-  };
 
   // 刷新查询节点列表最短延迟节点
   const refreshNodesMinLatency = () => {};
@@ -165,23 +158,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
         gid,
       });
 
-      const subRegionsData = res?.data || [];
-      const subRegionsMap = subRegionsData.reduce((acc: any, region: any) => {
-        if (region.children && region.children.length > 0) {
-          acc[region.qu] = region.children;
-        } else {
-          acc[region.qu] = [];
-        }
-        return acc;
-      }, {});
-
-      setSubRegions(subRegionsMap);
-      setRegions(
-        subRegionsData.map((region: any) => ({
-          id: region.qu,
-          name: region.qu,
-        }))
-      );
+      setCurrentGameServer(res?.data || []);
     } catch (error) {
       console.log(error);
     }
@@ -320,6 +297,15 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
   };
 
+  // 选择的服
+  const togglePanel = (option: any) => {
+    // 如果当前游戏服具有不同的区，进行更新节点操作
+    if (option?.children) {
+      setExpandedPanels(expandedPanels?.qu === option?.qu ? {} : option);
+    } else {
+    }
+  };
+
   useEffect(() => {
     const initializeFetch = async () => {
       let region = updateGamesRegion(options); // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
@@ -334,6 +320,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       initializeFetch();
     }
   }, [open]);
+  console.log(expandedPanels);
 
   return (
     <Fragment>
@@ -392,28 +379,44 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 >
                   智能匹配
                 </div>
-                {regions
-                  .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
-                  .map((region: any) => (
-                    <Button
-                      key={region.id}
-                      onClick={() => togglePanel(region.id)}
-                      className="region-button public-button"
-                      style={{ marginBottom: 8 }}
-                    >
-                      {region.name}{" "}
-                      <span
-                        className={
-                          expandedPanels.includes(region.id)
-                            ? "up-triangle"
-                            : "down-triangle"
-                        }
-                      />
-                    </Button>
-                  ))}
+                {currentGameServer?.length > 0 &&
+                  currentGameServer?.map((item: any) => {
+                    return (
+                      <Button
+                        key={item.qu}
+                        onClick={() => togglePanel(item)}
+                        className="region-button public-button"
+                      >
+                        {item.qu}
+                        {item.children && (
+                          <span
+                            className={
+                              expandedPanels?.fu === item?.fu
+                                ? "up-triangle"
+                                : "down-triangle"
+                            }
+                          />
+                        )}
+                      </Button>
+                    );
+                  })}
               </div>
               <div className="sub-btns">
-                {regions
+                {expandedPanels?.children &&
+                  expandedPanels?.children?.map((item: any) => {
+                    console.log(item);
+
+                    return (
+                      <Button
+                        key={item.qu}
+                        className="region-button"
+                        // onClick={() => clickRegion(subRegion)}
+                      >
+                        {item.qu}
+                      </Button>
+                    );
+                  })}
+                {/* {regions
                   .filter((region: any) => subRegions[region.name]?.length > 0) // 过滤出有子区域的父级区域
                   .map(
                     (region: any) =>
@@ -427,7 +430,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                           {subRegion.qu}
                         </Button>
                       ))
-                  )}
+                  )} */}
               </div>
               <div
                 className="not-have-region"
