@@ -44,7 +44,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const [activeTab, setActiveTab] = useState("1"); // tab栏值
 
   const [domHistory, setDomHistory] = useState<any>([]); // 节点历史信息
-  const [regionDomList, setRegionDomList] = useState(); // 节点列表
+  const [regionDomList, setRegionDomList] = useState<any[]>([]); // 节点列表
   const [selectedNode, setSelectedNode] = useState<any>(
     options?.dom_info?.select_dom
   ); // 当前点击列表触发的节点
@@ -185,43 +185,122 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   };
 
   // 进行节表格数据 延迟 进行组合拼接
+  // const handleSuitDomList = async (nodes: any = []) => {
+  // // debugger
+
+  //   // 创建一个新的Promise数组，以便等待所有异步操作完成
+  //   const updatedNodes: any = await Promise.all(
+  //     nodes.map(async (node: any) => {
+  //       return new Promise<any>((resolve, reject) => {
+  //         let default_node = {
+  //           ...node,
+  //           delay: 9999,
+  //           packetLoss: 10,
+  //           mode: "进程模式",
+  //         };
+
+  //         // sendMessageToBackend(
+  //         //   JSON.stringify({
+  //         //     method: "NativeApi_GetIpDelayByICMP",
+  //         //     params: { ip: node.ip },
+  //         //   }),
+  //         //   (response: any) => {
+  //         //     console.log("Success response from 获取延迟:", response);
+  //         //     const jsonResponse = JSON.parse(response);
+
+  //         //     resolve({
+  //         //       ...default_node,
+  //         //       delay: jsonResponse.delay,
+  //         //     });
+  //         //   },
+  //         //   (errorCode: any, errorMessage: any) => {
+  //         //     console.error("Failure response from 获取延迟:", errorCode);
+  //         //     resolve(default_node);
+  //         //   }
+  //         // );
+          
+  //         // 重命名变量为 jsonString
+  //         // const jsonString = {
+  //         //   ip: node.ip
+  //         // };
+
+  //         const jsonString = JSON.stringify({
+  //           params: { ip: node.ip }
+  //         });
+
+
+  //         (window as any).NativeApi_AsynchronousRequest(
+  //           'NativeApi_GetIpDelayByICMP', 
+  //           jsonString, 
+  //           function (response: any) {
+              
+  //             console.log("Success response from 获取延迟:", response);
+  //             const jsonResponse = JSON.parse(response);
+    
+  //             resolve({
+  //               ...default_node,
+  //               delay: jsonResponse.delay,
+  //             });
+  //           }
+  //         );
+  //       });
+  //     })
+  //   );
+  //   console.log(updatedNodes, '52222222222222222222');
+  //   setRegionDomList(updatedNodes);
+  // };
   const handleSuitDomList = async (nodes: any = []) => {
-    // 创建一个新的Promise数组，以便等待所有异步操作完成
-    const updatedNodes: any = await Promise.all(
-      nodes.map(async (node: any) => {
-        return new Promise<any>((resolve, reject) => {
+    const updatedNodes: any[] = [];
+  
+    for (const node of nodes) {
+      try {
+        const updatedNode = await new Promise<any>((resolve, reject) => {
           let default_node = {
             ...node,
             delay: 9999,
             packetLoss: 10,
             mode: "进程模式",
           };
-
-          sendMessageToBackend(
-            JSON.stringify({
-              method: "NativeApi_GetIpDelayByICMP",
-              params: { ip: node.ip },
-            }),
-            (response: any) => {
+  
+          const jsonString = JSON.stringify({
+            params: { ip: node.ip }
+          });
+  
+          (window as any).NativeApi_AsynchronousRequest(
+            'NativeApi_GetIpDelayByICMP',
+            jsonString,
+            function (response: any) {
               console.log("Success response from 获取延迟:", response);
               const jsonResponse = JSON.parse(response);
-
+  
               resolve({
                 ...default_node,
                 delay: jsonResponse.delay,
               });
-            },
-            (errorCode: any, errorMessage: any) => {
-              console.error("Failure response from 获取延迟:", errorCode);
-              resolve(default_node);
             }
           );
+  
+          // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
+          setTimeout(() => {
+            resolve(default_node);
+          }, 5000); // 5秒超时，可以根据需要调整
         });
-      })
-    );
-
+  
+        updatedNodes.push(updatedNode);
+      } catch (error) {
+        console.error("Error processing node:", node, error);
+        updatedNodes.push({
+          ...node,
+          delay: 9999,
+          packetLoss: 10,
+          mode: "进程模式",
+        });
+      }
+    }
+  
+    console.log(updatedNodes, '52222222222222222222');
     setRegionDomList(updatedNodes);
-  };
+  };  
 
   // 更新游戏历史选择区服
   const updateGamesRegion = (option: any = {}, select_region: any = {}) => {
