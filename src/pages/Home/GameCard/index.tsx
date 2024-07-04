@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-04 10:46:15
+ * @LastEditTime: 2024-07-04 18:24:24
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -503,7 +503,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           open={isOpenRegion}
           type={"acelerate"}
           options={selectAccelerateOption}
-          onCancel={() => setIsOpenRegion(false)}
+          onCancel={() => {
+            triggerDataUpdate();
+            setIsOpenRegion(false);
+          }}
           notice={(e) => accelerateProcessing(e)}
         />
       ) : null}
