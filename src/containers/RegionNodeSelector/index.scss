@@ -274,6 +274,10 @@
       border-radius: 3.3vh;
       top: 48vh;
       left: 21.35vw;
+
+      &:hover, &:active {
+        background-color: #F86C34;
+      }
     }
   }
 }
