@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-04 18:26:20
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-07-04 18:24:24
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -253,8 +253,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
-    console.log(option);
-
     if (!option?.dom_info?.select_dom?.id) {
       setIsOpenRegion(true);
       return;
@@ -299,7 +297,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     (window as any).NativeApi_AsynchronousRequest('NativeApi_PreCheckEnv','',function (response:any){
       console.log("Success response from 校验是否合法文件:", response);
         if (!response) {
-          console.error("Failure response from 校验是否合法文件:", errorCode);
+          console.error("Failure response from 校验是否合法文件:");
           eventBus.emit("showModal", { show: true, type: "infectedOrHijacked" });
         }
         const isCheck = JSON.parse(response);
@@ -563,7 +561,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           open={isOpenRegion}
           type={"acelerate"}
           options={selectAccelerateOption}
-          onCancel={() => setIsOpenRegion(false)}
+          onCancel={() => {
+            triggerDataUpdate();
+            setIsOpenRegion(false);
+          }}
           notice={(e) => accelerateProcessing(e)}
         />
       ) : null}

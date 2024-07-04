@@ -203,7 +203,7 @@ const GameDetail: React.FC = () => {
       jsonString,
       function (response: any) {
         if (!response) {
-          console.error("Failure response from 详情丢包信息:", errorCode);
+          console.error("Failure response from 详情丢包信息:");
           setDelayOpen(true);
         }
         console.log("Success response from 详情丢包信息:", response);

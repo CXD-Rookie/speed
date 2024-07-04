@@ -123,10 +123,8 @@
         border-radius: 0.5vw;
       }
 
-      .smart-match {
-        text-align: center;
-        line-height: 6vh;
-        cursor: pointer;
+      .select-button {
+        background-color: #F86C34;
       }
 
       .region-button {
@@ -150,6 +148,10 @@
         border: none;
         background: transparent;
         border-radius: 0.5vw;
+      }
+
+      .select-button {
+        color: #F86C34;
       }
     }
 
@@ -210,6 +212,7 @@
         border-radius: 0.5vw;
         border: none;
         font-size: 1.4vw;
+        cursor: pointer;
       }
     }
 
@@ -271,6 +274,10 @@
       border-radius: 3.3vh;
       top: 48vh;
       left: 21.35vw;
+
+      &:hover, &:active {
+        background-color: #F86C34;
+      }
     }
   }
 }
@@ -314,10 +321,9 @@
 }
 .up-triangle, .down-triangle {
   display: inline-block;
-  margin-left: 8px;
   width: 1vw;
+  margin-left: 0.8vw;
   margin-bottom: 0.1vw;
-  // height: 1vh;
   border-left: 0.5vw solid transparent;
   border-right: 0.5vw solid transparent;
 }
