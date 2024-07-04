@@ -119,7 +119,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 开始加速
   const clickStartOn = async (node = selectedNode) => {
-    let domInfo = updateGamesDom(node);
     // await playSuitApi.playSpeedEnd({
     //   platform: 3,
     //   js_key: localStorage.getItem("StartKey"),
@@ -169,7 +168,38 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     // );
 
     (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
-      console.log("Success response from 停止加速:", response);
+        console.log("Success response from 停止加速:", response);
+        let domInfo = updateGamesDom(node);
+        historyContext?.accelerateTime?.stopTimer();
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        removeGameList("initialize"); // 更新我的游戏
+
+        // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
+        if (type === "acelerate") {
+          notice({
+            ...presentGameInfo,
+            dom_info: domInfo,
+          });
+
+          navigate("/home");
+        } else {
+          // 跳转到首页并触发自动加速autoAccelerate
+          navigate("/home", {
+            state: {
+              isNav: true,
+              data: {
+                ...presentGameInfo,
+                dom_info: domInfo,
+                router: "details",
+              },
+              autoAccelerate: true,
+            },
+          });
+        }
     })
   };
 
