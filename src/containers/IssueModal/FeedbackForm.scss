@@ -1,4 +1,5 @@
-.type-buttons, .matter-description {
+.type-buttons,
+.matter-description {
     margin-top: 1.6vh;
     display: flex;
     flex-direction: row;
@@ -13,12 +14,14 @@
     line-height: 4vh;
     margin-left: 1.05vw;
 }
+
 .matter-type {
     font-size: 1.5vw;
     color: #999999;
     line-height: 4vh;
     margin-left: 1.05vw;
 }
+
 .matter-type span {
     color: #F86C34;
 }
@@ -302,9 +305,11 @@
     // right: 0;
     // bottom: 0;
 }
+
 .popup-success .ant-modal-confirm-body {
     justify-content: space-evenly;
 }
+
 .popup-success .ant-btn-primary {
     background: #f86c34;
     width: 7.5vw;
@@ -317,13 +322,16 @@
     font-size: 1.5vw !important;
     color: #fff !important;
 }
-.popup-success .ant-modal-confirm-content{
+
+.popup-success .ant-modal-confirm-content {
     font-size: 1vw !important;
     color: #fff !important;
 }
+
 .popup-success .anticon-check-circle {
     display: none;
 }
+
 .popup-success .ant-modal-content {
     width: 30vw;
     height: 22vh;
@@ -339,6 +347,7 @@
     flex-direction: column;
     justify-content: center;
 }
+
 .popup-success .ant-modal-confirm-btns {
     display: flex;
     text-align: center;
@@ -346,7 +355,7 @@
     justify-content: center;
     margin-top: 2vw;
 }
-  
+
 .popup-success .ant-modal-title {
     color: white;
 }
@@ -377,12 +386,14 @@
 }
 
 #ID-upload-demo-btn-2 {
-    display: flex; /* 默认显示 */
+    display: flex;
+    /* 默认显示 */
     // margin-top: 1.8vw;
 }
 
 #ID-upload-demo-btn-2.hide {
-    display: none; /* 隐藏 */
+    display: none;
+    /* 隐藏 */
 }
 
 .feedback-popup {
@@ -414,6 +425,7 @@
     flex-wrap: wrap;
     flex-direction: row-reverse;
 }
+
 .custom-layer .layui-layer-content {
     font-size: 1.5vw !important;
     padding: 2vw !important;
@@ -422,7 +434,7 @@
 .custom-layer .layui-layer-btn a {
     width: 14.4vw;
     height: 6.4vh;
-    line-height:6.4vh;
+    line-height: 6.4vh;
     font-size: 1.4vw;
     color: #fff;
     background: rgba(255, 255, 255, 0.10);
@@ -443,7 +455,7 @@
 }
 
 .custom-layer .layui-layer-title {
-    border:0;
+    border: 0;
     text-align: left;
     color: white !important;
 }
@@ -466,11 +478,12 @@
     color: #fff !important;
 }
 
-.description-input-box, .contact-input-box {
+.description-input-box,
+.contact-input-box {
     position: relative;
-  }
-  
-  .char-count {
+}
+
+.char-count {
     position: absolute;
     bottom: -0.5vw;
     right: 0px;
@@ -483,12 +496,11 @@
     border-bottom-right-radius: 1vh;
     border-bottom-left-radius: 1vh;
     text-align: right;
-    z-index: 999999;
     border: 0;
     background-color: #52525c !important;
-  }
+}
 
-  span.char-count-mobile {
+span.char-count-mobile {
     position: relative;
     right: 3.8vw;
     font-size: 1vw;
@@ -498,4 +510,3 @@
     height: 4vh;
     line-height: 4vh;
 }
-  

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { store } from "@/redux/store";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { LeftOutlined } from "@ant-design/icons";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
@@ -168,7 +169,7 @@ const GameLibrary: React.FC = () => {
             <div
               className="empty-text"
               onClick={() => {
-                if (accountInfo?.isLogin) {
+                if (store.getState().accountInfo?.isLogin) {
                   setShowIssueModal(true);
                   setIssueDescription(`未找到“${oldSearchBarValue}”的相关游戏`);
                 } else {
