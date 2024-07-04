@@ -119,55 +119,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 开始加速
   const clickStartOn = async (node = selectedNode) => {
-    // await playSuitApi.playSpeedEnd({
-    //   platform: 3,
-    //   js_key: localStorage.getItem("StartKey"),
-    // }); // 游戏加速信息
-
-    // sendMessageToBackend(
-    //   JSON.stringify({
-    //     method: "NativeApi_StopProxy",
-    //     params: null,
-    //   }),
-    //   (response: any) => {
-    //     console.log("Success response from 停止加速:", response);
-    //     historyContext?.accelerateTime?.stopTimer();
-
-    //     if ((window as any).stopDelayTimer) {
-    //       (window as any).stopDelayTimer();
-    //     }
-
-    //     removeGameList("initialize"); // 更新我的游戏
-
-    //     // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
-    //     if (type === "acelerate") {
-    //       notice({
-    //         ...presentGameInfo,
-    //         dom_info: domInfo,
-    //       });
-
-    //       navigate("/home");
-    //     } else {
-    //       // 跳转到首页并触发自动加速autoAccelerate
-    //       navigate("/home", {
-    //         state: {
-    //           isNav: true,
-    //           data: {
-    //             ...presentGameInfo,
-    //             dom_info: domInfo,
-    //             router: "details",
-    //           },
-    //           autoAccelerate: true,
-    //         },
-    //       });
-    //     }
-    //   },
-    //   (errorCode: any, errorMessage: any) => {
-    //     console.error("Failure response from 停止加速:", errorCode);
-    //   }
-    // );
-
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      "",
+      function (response: any) {
         console.log("Success response from 停止加速:", response);
         let domInfo = updateGamesDom(node);
         historyContext?.accelerateTime?.stopTimer();
@@ -200,7 +155,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
             },
           });
         }
-    })
+
+        onCancel();
+      }
+    );
   };
 
   // 获取每个区服的子区服列表
