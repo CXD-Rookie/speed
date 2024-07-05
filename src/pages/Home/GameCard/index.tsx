@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-05 17:28:28
+ * @LastEditTime: 2024-07-05 18:14:25
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -456,6 +456,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       {options?.map((option: any) => {
         return (
           <div className={`game-card`} key={option?.id}>
+            {option?.free_time && (
+              <div className="exemption-box">
+                <div className="exemption">限免</div>
+                {option?.tags.includes("限时免费") &&
+                  option?.free_time !== "永久" && (
+                    <div className="time">剩余 {option?.free_time}</div>
+                  )}
+              </div>
+            )}
             <img
               className="background-img"
               src={option?.cover_img}

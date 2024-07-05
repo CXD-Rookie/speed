@@ -66,6 +66,11 @@ const gamesTitle: GamesTitleProps[] = [
     label: "游戏平台",
     t: "游戏平台",
   },
+  {
+    key: "5",
+    label: "限时免费",
+    t: "限时免费",
+  },
 ];
 
 const GameLibrary: React.FC = () => {
@@ -189,12 +194,12 @@ const GameLibrary: React.FC = () => {
               {game?.free_time && (
                 <div className="exemption-box">
                   <div className="exemption">限免</div>
-                  {game?.free_time !== "永久" && (
-                    <div className="time">剩余 {game?.free_time}</div>
-                  )}
+                  {game?.tags.includes("限时免费") &&
+                    game?.free_time !== "永久" && (
+                      <div className="time">剩余 {game?.free_time}</div>
+                    )}
                 </div>
               )}
-
               <img className="back-icon" src={game.cover_img} alt={game.name} />
               <div className="game-card-content">
                 <img className="add-icon" src={addThemeIcon} alt="" />
