@@ -37,7 +37,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   }, []);
 
   useEffect(() => {
-    if (defaultInfo) {
+    if (defaultInfo && defaultInfo !== "没有找到区服") {
       setDescription(defaultInfo);
     }
   }, [defaultInfo]);
@@ -148,13 +148,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         type: "issueFeedback",
         onClose,
       });
-      // Modal.success({
-      //   title: "反馈成功",
-      //   content: "感谢您的反馈，我们会尽快处理！",
-      //   onOk: onClose, // 点击确定后关闭表单
-      //   className: "popup-success", // 添加自定义类名
-      //   okText: "确定", // 修改按钮文本
-      // });
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       // message.error('反馈提交失败，请稍后重试！');

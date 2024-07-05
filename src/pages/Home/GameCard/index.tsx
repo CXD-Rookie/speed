@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-04 18:24:24
+ * @LastEditTime: 2024-07-05 17:21:58
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -26,6 +26,7 @@ import PayModal from "@/containers/Pay";
 import BreakConfirmModal from "@/containers/break-confirm";
 import eventBus from "@/api/eventBus";
 import playSuitApi from "@/api/speed";
+import gameApi from "@/api/gamelist";
 
 import addIcon from "@/assets/images/common/add.svg";
 import select from "@/assets/images/home/select@2x.png";
@@ -92,33 +93,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 停止加速
   const stopAcceleration = () => {
     setStopModalOpen(false);
-    // playSuitApi.playSpeedEnd({
-    //   platform: 3,
-    //   js_key: localStorage.getItem("StartKey"),
-    // }); // 游戏停止加速
-    // 停止加速
-    // sendMessageToBackend(
-    //   JSON.stringify({
-    //     method: "NativeApi_StopProxy",
-    //     params: null,
-    //   }),
-    //   (response: any) => {
-    //     console.log("Success response from 停止加速:", response);
-    //     removeGameList("initialize"); // 更新我的游戏
-    //     historyContext?.accelerateTime?.stopTimer();
-
-    //     if ((window as any).stopDelayTimer) {
-    //       (window as any).stopDelayTimer();
-    //     }
-
-    //     triggerDataUpdate(); // 更新显示数据
-    //   },
-    //   (errorCode: any, errorMessage: any) => {
-    //     console.error("Failure response from 停止加速:", errorCode);
-    //   }
-    // );
-
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      "",
+      function (response: any) {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
@@ -128,7 +106,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         triggerDataUpdate(); // 更新显示数据
-    })
+      }
+    );
   };
 
   // 获取游戏运营平台列表
@@ -142,16 +121,79 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     }
   };
 
-  // 通知客户端进行游戏加速
-  const handleSuitDomList = async (option: any) => {
-    try {
-      let res = await fetchPcPlatformList(); // 请求运营平台接口
-      let platform_list = Object?.keys(res) || []; // 运营平台数据
-      let api_list: any = []; // 需要请求的api 数量
+  // 多次请求同时触发函数
+  const triggerMultipleRequests = async (loopBody: any = []) => {
+    let api_group: any = [];
 
-      // 对api数量进行处理
-      platform_list.forEach((key: string) => {
-        api_list.push(
+    if (Array.isArray(loopBody) && loopBody.length > 0) {
+      loopBody.forEach((key: any) => {
+        const { list, pid } = key;
+
+        api_group.push(
+          playSuitApi.speedInfo({
+            platform: 3,
+            gid: list?.[0]?.id,
+            pid: pid,
+          })
+        );
+      });
+    }
+
+    const data: any = await Promise.all(api_group); // 请求等待统一请求完毕
+
+    const result_data = data.reduce(
+      (acc: any, item: any) => {
+        const { executable } = item.data;
+
+        // 聚合 executable 数据
+        if (Array.isArray(executable) && executable.length > 0) {
+          acc.executable = acc.executable.concat(executable);
+        }
+
+        return acc;
+      },
+      { executable: [] }
+    );
+
+    return result_data;
+  };
+
+  // 查询当前游戏所在平台对应的游戏id
+  const queryGameIdByPlatform = async (
+    platform: any = [],
+    pc_platform: any = {}
+  ) => {
+    let api_group: any = [];
+
+    if (Array.isArray(platform) && platform.length > 0) {
+      platform.forEach((key: any) => {
+        let param = {
+          t: "游戏平台",
+          s: pc_platform?.[key],
+        };
+        api_group.push(
+          gameApi.gameList(param).then((response: any) => {
+            return { pid: key, param, list: response?.data?.list };
+          })
+        );
+      });
+    }
+
+    const data: any = await Promise.all(api_group);
+    return data; // 请求等待统一请求完毕
+  };
+
+  // 查询当前游戏在各个平台的执行文件
+  const queryPlatformGameFiles = async (
+    platform: any = {},
+    option: any = {}
+  ) => {
+    const default_platform = Object?.keys(platform) || []; // 运营平台数据
+    let api_group: any = [];
+
+    if (Array.isArray(default_platform) && default_platform.length > 0) {
+      default_platform.forEach((key: any) => {
+        api_group.push(
           playSuitApi.speedInfo({
             platform: 3,
             gid: option?.id,
@@ -159,15 +201,53 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           })
         );
       });
+    }
 
-      const data: any = await Promise.all(api_list); // 请求等待统一请求完毕
-      // 聚合所以的api 数据中的 executable
-      const result_excutable = data.reduce((acc: any, item: any) => {
-        if (item.data.executable) {
-          return acc.concat(item.data.executable);
+    const data: any = await Promise.all(api_group); // 请求等待统一请求完毕
+
+    // 聚合所以的api 数据中的 executable
+    const result = data.reduce(
+      (acc: any, item: any) => {
+        const { executable, pc_platform } = item.data;
+        const isExecutable = Array.isArray(executable) && executable.length > 0;
+
+        // 聚合 executable 数据
+        if (isExecutable) {
+          acc.executable = acc.executable.concat(executable);
         }
+
+        // 聚合 pc_platform 数据
+        if (pc_platform !== 0 && isExecutable) {
+          acc.pc_platform.push(default_platform?.[pc_platform]);
+        }
+
         return acc;
-      }, []);
+      },
+      { executable: [], pc_platform: [] }
+    );
+
+    return result;
+  };
+
+  // 通知客户端进行游戏加速
+  const handleSuitDomList = async (option: any) => {
+    try {
+      let platform = await fetchPcPlatformList(); // 请求运营平台接口
+      let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
+
+      let { executable, pc_platform } = gameFiles;
+
+      if (pc_platform?.length > 0) {
+        const gameResult = await queryGameIdByPlatform(pc_platform, platform);
+        const processResult = await triggerMultipleRequests(gameResult);
+
+        executable = [...executable, ...processResult?.executable];
+      }
+
+      const uniqueExecutable = Array.from(
+        new Map(executable.map((item: any) => [item.path, item])).values()
+      );
+      console.log("去重后的数据", uniqueExecutable);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { ip, server, id } = option?.dom_info?.select_dom; //目前只有一个服务器，后期增多要遍历
@@ -183,49 +263,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       localStorage.setItem("speedGid", option?.id);
 
       // 真实拼接
-      // const jsonResult = {
-      //   process: [...result_excutable],
-      //   black_ip: ["42.201.128.0/17"],
-      //   black_domain: [
-      //     "re:.+\\.steamcommunity\\.com",
-      //     "steamcdn-a.akamaihd.net",
-      //   ],
-      //   tcp_tunnel_mode: 0,
-      //   udp_tunnel_mode: 1,
-      //   user_id: accountInfo?.userInfo?.id,
-      //   game_id: option?.id,
-      //   tunnel: {
-      //     address: ip,
-      //     server: server,
-      //   },
-      //   js_key,
-      // };
-
-      // 真实加速
-      // sendMessageToBackend(
-      //   JSON.stringify({
-      //     method: "NativeApi_StartProcessProxy",
-      //     params: jsonResult,
-      //   }),
-      //   (response: any) => {
-      //     console.log("Success response from 开启真实加速中:", response);
-      //   },
-      //   (errorCode: any, errorMessage: any) => {
-      //     console.error(
-      //       "Failure response from 加速失败:",
-      //       errorCode,
-      //       errorMessage
-      //     );
-      //     // 无法启动加速服务
-      //     eventBus.emit("showModal", {
-      //       show: true,
-      //       type: "accelerationServiceNotStarting",
-      //     });
-      //   }
-      // );
       const jsonResult = JSON.stringify({
         params: {
-          process: [...result_excutable],
+          process: [...uniqueExecutable],
           black_ip: ["42.201.128.0/17"],
           black_domain: [
             "re:.+\\.steamcommunity\\.com",
@@ -240,19 +280,39 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             server: server,
           },
           js_key,
-        }
+        },
       });
 
-      (window as any).NativeApi_AsynchronousRequest('NativeApi_StartProcessProxy',jsonResult,function (response:any){
-        console.log("Success response from 开启真实加速中:", response);
-      })
+      return new Promise((resolve, reject) => {
+        (window as any).NativeApi_AsynchronousRequest(
+          "NativeApi_StartProcessProxy",
+          jsonResult,
+          function (response: any) {
+            const isCheck = JSON.parse(response);
+            console.log(response, isCheck);
+
+            if (isCheck?.success === 1) {
+              console.log("成功开启真实加速中:", isCheck);
+              resolve(true);
+            } else {
+              eventBus.emit("showModal", {
+                show: true,
+                type: "infectedOrHijacked",
+              });
+              resolve(false);
+            }
+          }
+        );
+      });
     } catch (error) {
-      console.log(error);
+      return false;
     }
   };
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
+    console.log(option);
+
     if (!option?.dom_info?.select_dom?.id) {
       setIsOpenRegion(true);
       return;
@@ -266,48 +326,34 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let isPre: boolean;
 
     // 校验是否合法文件
-    // sendMessageToBackend(
-    //   JSON.stringify({
-    //     method: "NativeApi_PreCheckEnv",
-    //   }),
-    //   (response: any) => {
-    //     console.log("Success response from 校验是否合法文件:", response);
-    //     const isCheck = JSON.parse(response);
-    //     accelerateGameToList(option); // 加速完后更新我的游戏
-    //     handleSuitDomList(option); // 通知客户端进行加速
-    //     // 暂时注释 实际生产打开
-    //     if (isCheck?.pre_check_status === 0) {
-    //       isPre = true;
-    //       accelerateGameToList(option); // 加速完后更新我的游戏
-    //       handleSuitDomList(option); // 通知客户端进行加速
-    //     } else {
-    //       console.log(`不是合法文件，请重新安装加速器`);
-    //       eventBus.emit("showModal", {
-    //         show: true,
-    //         type: "infectedOrHijacked",
-    //       });
-    //     }
-    //   },
-    //   (errorCode: any, errorMessage: any) => {
-    //     console.error("Failure response from 校验是否合法文件:", errorCode);
-    //     eventBus.emit("showModal", { show: true, type: "infectedOrHijacked" });
-    //   }
-    // );
-
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_PreCheckEnv','',function (response:any){
-      console.log("Success response from 校验是否合法文件:", response);
-        if (!response) {
-          console.error("Failure response from 校验是否合法文件:");
-          eventBus.emit("showModal", { show: true, type: "infectedOrHijacked" });
-        }
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_PreCheckEnv",
+      "",
+      async function (response: any) {
+        console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
-        accelerateGameToList(option); // 加速完后更新我的游戏
-        handleSuitDomList(option); // 通知客户端进行加速
+
+        if (!response) {
+          eventBus.emit("showModal", {
+            show: true,
+            type: "infectedOrHijacked",
+          });
+        }
+
         // 暂时注释 实际生产打开
         if (isCheck?.pre_check_status === 0) {
-          isPre = true;
-          accelerateGameToList(option); // 加速完后更新我的游戏
-          handleSuitDomList(option); // 通知客户端进行加速
+          const state = await handleSuitDomList(option); // 通知客户端进行加速
+
+          if (state) {
+            accelerateGameToList(option); // 加速完后更新我的游戏
+            isPre = true;
+          } else {
+            isPre = false;
+            eventBus.emit("showModal", {
+              show: true,
+              type: "infectedOrHijacked",
+            });
+          }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
           eventBus.emit("showModal", {
@@ -315,7 +361,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             type: "infectedOrHijacked",
           });
         }
-    })
+      }
+    );
 
     setTimeout(() => {
       setIsAllowAcceleration(true); // 启用立即加速

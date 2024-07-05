@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 20:08:31
+ * @LastEditTime: 2024-07-05 17:13:37
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,8 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateDelay } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
-import useCefQuery from "@/hooks/useCefQuery";
-import playSuitApi from "@/api/speed";
+
 import "./style.scss";
 import BarChart from "@/containers/BarChart/index";
 import RegionNodeSelector from "@/containers/RegionNodeSelector";
@@ -37,7 +36,6 @@ const GameDetail: React.FC = () => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
-  const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
   const {
     identifyAccelerationData,
@@ -61,6 +59,9 @@ const GameDetail: React.FC = () => {
 
   // 使用 useMemo 确保只有 data 变化时才会重新计算
   const memoizedData = useMemo(() => chartData, [chartData]);
+  const domRegion =
+    regionInfo?.select_region?.fu &&
+    regionInfo?.select_region?.fu + "-" + regionInfo?.select_region?.qu;
 
   const showModalActive = () => {
     setIsOpen(true);
@@ -77,34 +78,11 @@ const GameDetail: React.FC = () => {
   // 停止加速
   const stopSpeed = async () => {
     setStopModalOpen(false);
-    // const jsKey = localStorage.getItem("StartKey");
-    // const stopInfo = await playSuitApi.playSpeedEnd({
-    //   platform: 3,
-    //   js_key: jsKey,
-    // }); // 游戏停止加速
 
-    // sendMessageToBackend(
-    //   JSON.stringify({
-    //     method: "NativeApi_StopProxy",
-    //     params: null,
-    //   }),
-    //   (response: any) => {
-    //     console.log("Success response from 停止加速:", response);
-    //     historyContext?.accelerateTime?.stopTimer();
-
-    //     if ((window as any).stopDelayTimer) {
-    //       (window as any).stopDelayTimer();
-    //     }
-
-    //     removeGameList("initialize"); // 更新我的游戏
-    //     navigate("/home");
-    //   },
-    //   (errorCode: any, errorMessage: any) => {
-    //     console.error("Failure response from 停止加速:", errorCode);
-    //   }
-    // );
-
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      "",
+      function (response: any) {
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();
 
@@ -114,7 +92,8 @@ const GameDetail: React.FC = () => {
 
         removeGameList("initialize"); // 更新我的游戏
         navigate("/home");
-    })
+      }
+    );
   };
 
   function formatTime(seconds: any) {
@@ -161,45 +140,12 @@ const GameDetail: React.FC = () => {
     historyContext?.accelerateTime?.startTimer();
     console.log(select_region);
 
-    // 查看加速详情，获取延迟
-    // sendMessageToBackend(
-    //   JSON.stringify({
-    //     method: "NativeApi_GetIpDelayByICMP",
-    //     params: { ip },
-    //   }),
-    //   (response: any) => {
-    //     console.log("Success response from 详情丢包信息:", response);
-
-    //     //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-    //     const delay = JSON.parse(response)?.delay;
-    //     const lost_bag = delay < 2 ? 2 : delay;
-    //     const chart_list = generateDataEvery10Seconds(lost_bag);
-
-    //     if (delay === 9999) {
-    //       setDelayOpen(true);
-    //     }
-
-    //     setChartData(chart_list); // 更新图表
-    //     setLostBag(lost_bag); // 更新延迟数
-    //     setPacketLoss(delay === 9999 ? 25 : 0); // 更新丢包率
-    //     setDetailData(find_accel);
-    //     setRegionInfo(select_region);
-
-    //     dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
-    //   },
-    //   (errorCode: any, errorMessage: any) => {
-    //     console.error("Failure response from 详情丢包信息:", errorCode);
-    //     setDelayOpen(true);
-    //   }
-    // );
-
-
     const jsonString = JSON.stringify({
-      params: { ip }
+      params: { ip },
     });
 
     (window as any).NativeApi_AsynchronousRequest(
-      'NativeApi_GetIpDelayByICMP',
+      "NativeApi_GetIpDelayByICMP",
       jsonString,
       function (response: any) {
         if (!response) {
@@ -234,56 +180,12 @@ const GameDetail: React.FC = () => {
       let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
       let ip = find_accel?.dom_info?.select_dom; // 存储的ip
 
-      // 查看加速详情，获取延迟
-      // sendMessageToBackend(
-      //   JSON.stringify({
-      //     method: "NativeApi_GetIpDelayByICMP",
-      //     params: { ip },
-      //   }),
-      //   (response: any) => {
-      //     console.log("Success response from 详情丢包信息:", response);
-
-      //     //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-      //     const delay = JSON.parse(response)?.delay;
-      //     const lost_bag = delay < 2 ? 2 : delay;
-      //     // 10秒比较一次是否到期，到期后停止加速
-      //     forceStopAcceleration(accountInfo, stopSpeed);
-
-      //     setChartData((chart: any) => {
-      //       let chart_list = [...chart];
-
-      //       chart_list.shift();
-
-      //       let lastElement = chart_list[chart_list.length - 1];
-
-      //       let time = lastElement?.timestamp
-      //         ? lastElement?.timestamp + 10000
-      //         : new Date().getTime();
-      //       let newData = {
-      //         timestamp: time,
-      //         value: lost_bag,
-      //       };
-
-      //       chart_list.push(newData);
-
-      //       return chart_list;
-      //     }); // 更新图表
-      //     setLostBag(lost_bag); // 更新延迟数
-      //     setPacketLoss(delay === 9999 ? 25 : 0); // 更新丢包率
-
-      //     dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
-      //   },
-      //   (errorCode: any, errorMessage: any) => {
-      //     console.error("Failure response from 详情丢包信息:", errorCode);
-      //   }
-      // );
-
       const jsonString = JSON.stringify({
-        params: { ip }
+        params: { ip },
       });
-  
+
       (window as any).NativeApi_AsynchronousRequest(
-        'NativeApi_GetIpDelayByICMP',
+        "NativeApi_GetIpDelayByICMP",
         jsonString,
         function (response: any) {
           console.log("Success response from 详情丢包信息:", response);
@@ -358,7 +260,7 @@ const GameDetail: React.FC = () => {
           </div>
           <div className="game-right">
             <div className="info-switch info-common-style" onClick={showModal}>
-              <span>{regionInfo?.select_region?.name}</span>
+              <span>{domRegion}</span>
               <span>切换</span>
             </div>
             <div className="info-speed info-common-style">
