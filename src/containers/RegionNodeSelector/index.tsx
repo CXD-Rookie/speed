@@ -60,8 +60,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const [tableLoading, setTableLoading] = useState(false);
 
   const domRegion =
-    regionInfo?.select_region?.fu &&
-    regionInfo?.select_region?.fu + "-" + regionInfo?.select_region?.qu;
+    (regionInfo?.select_region?.fu && regionInfo?.select_region?.fu + "-") +
+    regionInfo?.select_region?.qu;
 
   // 刷新查询节点列表最短延迟节点
   const refreshNodesMinLatency = (all: any = regionDomList) => {
@@ -245,7 +245,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
           const updatedNode = await new Promise<any>((resolve, reject) => {
             let default_node = {
               ...node,
-              delay: 9999,
+              delay: "超时",
               packetLoss: 10,
               mode: "进程模式",
             };
@@ -487,7 +487,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 </div>
                 <Button
                   className="refresh-button"
-                  onClick={() => refreshNodesMinLatency()}
+                  onClick={() => tabsChange("2")}
                 >
                   刷新
                 </Button>
@@ -504,10 +504,18 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 onRow={(record) => ({
                   onClick: () => setSelectedNode(record),
                 })}
-                className="nodes-table"
               >
                 <Column title="节点" dataIndex="name" key="name" />
-                <Column title="游戏延迟" dataIndex="delay" key="delay" />
+                <Column
+                  title="游戏延迟"
+                  dataIndex="delay"
+                  key="delay"
+                  render={(text) => (
+                    <span style={text === "超时" ? { color: "#FF0000" } : {}}>
+                      {text}
+                    </span>
+                  )}
+                />
                 <Column title="丢包" dataIndex="packetLoss" key="packetLoss" />
                 <Column title="模式" dataIndex="mode" key="mode" />
               </Table>
