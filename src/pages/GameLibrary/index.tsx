@@ -190,7 +190,7 @@ const GameLibrary: React.FC = () => {
                 <div className="exemption-box">
                   <div className="exemption">限免</div>
                   {game?.free_time !== "永久" && (
-                    <div className="time">剩余{game?.free_time}</div>
+                    <div className="time">剩余 {game?.free_time}</div>
                   )}
                 </div>
               )}
