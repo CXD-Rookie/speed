@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-05 17:10:46
+ * @LastEditTime: 2024-07-05 17:14:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -189,8 +189,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     <Fragment>
       <Modal
         className="break-confirm"
-        // open={accelOpen || isNetworkError}
-        open={true}
+        open={accelOpen || isNetworkError}
         closable={hideClosedCategories.includes(noticeType) ? false : true}
         onCancel={cancel}
         title="提示"
@@ -207,7 +206,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           >
             {isNetworkError
               ? textContentObj?.[noticeType]
-              : textContentObj?.["switchServer"]}
+              : textContentObj?.[type]}
           </div>
           {noticeType === "newVersionFound" && (
             <div className="version">V {version}</div>
