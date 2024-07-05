@@ -127,7 +127,10 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      "",
+      function (response: any) {
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();
 
@@ -138,7 +141,8 @@ const App: React.FC = (props: any) => {
         removeGameList("initialize"); // 更新我的游戏
         loginOut();
         // (window as any).loginOut();
-    })
+      }
+    );
   };
   // // 挂载到 window 对象上
   // (window as any).loginOutStop = loginOutStop;
@@ -235,8 +239,11 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
-        console.log(response,'----------------------------------')
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      "",
+      function (response: any) {
+        console.log(response, "----------------------------------");
         removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
 
@@ -245,7 +252,8 @@ const App: React.FC = (props: any) => {
         }
 
         (window as any).NativeApi_ExitProcess();
-    })
+      }
+    );
   };
 
   const handleMinimize = async () => {
@@ -346,17 +354,21 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
-      console.log("Success response from 停止加速:", response);
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      "",
+      function (response: any) {
+        console.log("Success response from 停止加速:", response);
 
-      if ((window as any).stopDelayTimer) {
-        (window as any).stopDelayTimer();
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        historyContext?.accelerateTime?.stopTimer();
+        removeGameList("initialize"); // 更新我的游戏
+        navigate("/home");
       }
-
-      historyContext?.accelerateTime?.stopTimer();
-      removeGameList("initialize"); // 更新我的游戏
-      navigate("/home");
-  })
+    );
   };
 
   const stopSpeed = () => {
@@ -387,20 +399,39 @@ const App: React.FC = (props: any) => {
     //   }
     // );
 
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
-      console.log("Success response from 停止加速:", response);
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      "",
+      function (response: any) {
+        console.log("Success response from 停止加速:", response);
 
-      if ((window as any).stopDelayTimer) {
-        (window as any).stopDelayTimer();
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        historyContext?.accelerateTime?.stopTimer();
+        removeGameList("initialize"); // 更新我的游戏
+        navigate("/home");
+        (window as any).NativeApi_ExitProcess();
       }
-
-      historyContext?.accelerateTime?.stopTimer();
-      removeGameList("initialize"); // 更新我的游戏
-      navigate("/home");
-      (window as any).NativeApi_ExitProcess();
-  })
+    );
   };
 
+  const closeTypeNew = () => {
+    let close = localStorage.getItem("client_config");
+    let action = close ? JSON.parse(close)?.close_button_action : 2;
+
+    //0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
+    if (action === 0) {
+      (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+    } else if (action === 1 && identifyAccelerationData()?.[0]) {
+      setExitOpen(true); // 弹出关闭确认框
+    } else {
+      setIsAppCloseOpen(true); // 弹出设置选择框
+    }
+  };
+
+  (window as any).closeTypeNew = closeTypeNew;
   (window as any).stopSpeed = stopSpeed;
 
   const showSettingsForm = () => {
