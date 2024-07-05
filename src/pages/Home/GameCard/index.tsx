@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-05 17:21:58
+ * @LastEditTime: 2024-07-05 17:28:28
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -311,9 +311,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
-    console.log(option);
-
-    if (!option?.dom_info?.select_dom?.id) {
+    if (!option?.dom_info?.select_dom?.id || !option?.region) {
       setIsOpenRegion(true);
       return;
     }
@@ -339,7 +337,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             type: "infectedOrHijacked",
           });
         }
-
+        handleSuitDomList(option);
+        accelerateGameToList(option);
         // 暂时注释 实际生产打开
         if (isCheck?.pre_check_status === 0) {
           const state = await handleSuitDomList(option); // 通知客户端进行加速

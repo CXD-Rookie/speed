@@ -110,7 +110,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
     if (find_index !== -1) {
       game_list[find_index] = game_info;
-
       localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
     }
 
@@ -343,7 +342,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       let region = updateGamesRegion(options); // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
       let select = region?.select_region;
 
-      setPresentGameInfo(options); // 更新当前游戏信息
       handleSubRegions(options?.id, select?.fu && select); // 改为调用 handleSubRegions 初始化获取所有的区服信息
     };
 
