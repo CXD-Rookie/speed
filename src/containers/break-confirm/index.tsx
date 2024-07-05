@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-04 18:21:42
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-07-05 17:10:46
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -105,45 +105,25 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   // 停止加速
   const stopAcceleration = () => {
-    // 停止加速
-    // sendMessageToBackend(
-    //   JSON.stringify({
-    //     method: "NativeApi_StopProxy",
-    //     params: null,
-    //   }),
-    //   (response: any) => {
-    //     console.log("Success response from 停止加速:", response);
-    //     removeGameList("initialize"); // 更新我的游戏
-    //     accelerateTime?.stopTimer();
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      "",
+      function (response: any) {
+        if (!response) {
+          console.warn("No response received from 停止加速没有成功");
+          return;
+        }
+        console.log("Success response from 停止加速:", response);
+        removeGameList("initialize"); // 更新我的游戏
+        accelerateTime?.stopTimer();
 
-    //     if ((window as any).stopDelayTimer) {
-    //       (window as any).stopDelayTimer();
-    //     }
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
 
-    //     navigate("/home");
-    //   },
-    //   (errorCode: any, errorMessage: any) => {
-    //     console.error("Failure response from 停止加速:", errorCode);
-    //   }
-    // );
-
-    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
-
-      if (!response) {
-        console.warn("No response received from 停止加速没有成功");
-        return;
+        navigate("/home");
       }
-      console.log("Success response from 停止加速:", response);
-      removeGameList("initialize"); // 更新我的游戏
-      accelerateTime?.stopTimer();
-
-      if ((window as any).stopDelayTimer) {
-        (window as any).stopDelayTimer();
-      }
-
-      navigate("/home");
-      // (window as any).loginOut();
-  })
+    );
   };
 
   const cancel = () => {
@@ -209,17 +189,30 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     <Fragment>
       <Modal
         className="break-confirm"
-        open={accelOpen || isNetworkError}
+        // open={accelOpen || isNetworkError}
+        open={true}
         closable={hideClosedCategories.includes(noticeType) ? false : true}
         onCancel={cancel}
         title="提示"
         centered
         maskClosable={false}
-        footer={
+        footer={null}
+      >
+        <div className="content">
           <div
-            className="accelerate-modal-footer"
-            style={noticeType === "newVersionFound" ? { marginTop: "2vh" } : {}}
+            className="accelerate-modal"
+            style={{
+              marginTop: noticeType === "newVersionFound" ? 0 : "3vh",
+            }}
           >
+            {isNetworkError
+              ? textContentObj?.[noticeType]
+              : textContentObj?.["switchServer"]}
+          </div>
+          {noticeType === "newVersionFound" && (
+            <div className="version">V {version}</div>
+          )}
+          <div className="accelerate-modal-footer">
             {!displaySingleButton.includes(noticeType) && (
               <div className="footer-cancel" onClick={cancel}>
                 取消
@@ -238,16 +231,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
               {confirmObj?.[noticeType] || "确定"}
             </div>
           </div>
-        }
-      >
-        <div className="accelerate-modal">
-          {isNetworkError
-            ? textContentObj?.[noticeType]
-            : textContentObj?.[type]}
         </div>
-        {noticeType === "newVersionFound" && (
-          <div className="version">V {version}</div>
-        )}
       </Modal>
       {settingOpen ? (
         <SettingsModal
