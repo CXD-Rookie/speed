@@ -15,6 +15,7 @@ import searchReducer from './search';  // 导入 search reducer
 import authReducer from './auth';  // 导入 search reducer
 import searchEnterReducer from './search-enter';
 import accountInfoReducer from './account-info';
+import gameListReducer from './gameList'; // 导入新的 reducer
 
 // 合并所有 reducers
 export default combineReducers({
@@ -25,5 +26,6 @@ export default combineReducers({
   auth:authReducer,
   searchEnter: searchEnterReducer,
   accountInfo: accountInfoReducer,
+  gameList: gameListReducer,
 });
 

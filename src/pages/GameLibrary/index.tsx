@@ -99,7 +99,7 @@ const GameLibrary: React.FC = () => {
     try {
       const param: any = {
         page: pageNum,
-        pagesize: 20,
+        pagesize: 600,
       };
       if (tParam) {
         param.t = tParam;
@@ -113,7 +113,7 @@ const GameLibrary: React.FC = () => {
         }`,
       }));
 
-      if (res.data.list.length < 20) {
+      if (res.data.list.length < 600) {
         hasMore.current = false;
       }
       setGames((prevGames) => [...prevGames, ...gamesWithFullImgUrl]);
@@ -123,35 +123,35 @@ const GameLibrary: React.FC = () => {
       isFetching.current = false;
     }
   };
+// 分页逻辑注释掉
+  // useEffect(() => {
+  //   fetchGames(page, t);
+  //   const handleScroll = () => {
+  //     if (gameListRef.current) {
+  //       const { scrollTop, scrollHeight, clientHeight } = gameListRef.current;
+  //       if (
+  //         clientHeight + scrollTop >= scrollHeight - 200 &&
+  //         !isFetching.current
+  //       ) {
+  //         setPage((prevPage) => prevPage + 1);
+  //       }
+  //     }
+  //   };
 
-  useEffect(() => {
-    fetchGames(page, t);
-    const handleScroll = () => {
-      if (gameListRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = gameListRef.current;
-        if (
-          clientHeight + scrollTop >= scrollHeight - 200 &&
-          !isFetching.current
-        ) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      }
-    };
+  //   const gameListElement = gameListRef.current;
+  //   if (gameListElement) {
+  //     gameListElement.addEventListener("scroll", handleScroll);
+  //     return () => {
+  //       gameListElement.removeEventListener("scroll", handleScroll);
+  //     };
+  //   }
+  // }, []);
 
-    const gameListElement = gameListRef.current;
-    if (gameListElement) {
-      gameListElement.addEventListener("scroll", handleScroll);
-      return () => {
-        gameListElement.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (page > 1) {
-      fetchGames(page, t);
-    }
-  }, [page]);
+  // useEffect(() => {
+  //   if (page > 1) {
+  //     fetchGames(page, t);
+  //   }
+  // }, [page]);
 
   useEffect(() => {
     if (t !== null) {
