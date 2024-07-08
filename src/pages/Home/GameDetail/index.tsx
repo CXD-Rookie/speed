@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-08 14:11:46
+ * @LastEditTime: 2024-07-08 15:56:13
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,7 +21,6 @@ import RegionNodeSelector from "@/containers/RegionNodeSelector";
 import ActivationModal from "@/containers/activation-mode";
 import BreakConfirmModal from "@/containers/break-confirm";
 
-import backGameIcon from "@/assets/images/common/back-game.svg";
 import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
 import activateIcon from "@/assets/images/common/activate.svg";
 import cessationIcon from "@/assets/images/common/cessation.svg";
@@ -50,7 +49,6 @@ const GameDetail: React.FC = () => {
   const [packetLoss, setPacketLoss] = useState<any>(); // 丢包率
 
   const [regionInfo, setRegionInfo] = useState<any>(); // 当前加速区服
-
   const [chartData, setChartData] = useState<any>([]); // 柱形图数据示例
 
   // 使用 useMemo 确保只有 data 变化时才会重新计算
@@ -244,7 +242,11 @@ const GameDetail: React.FC = () => {
 
   return (
     <div className="home-module-detail">
-      <img className="back-icon" src={backGameIcon} alt="" />
+      <img
+        className="back-icon"
+        src={`https://cdn.accessorx.com/${detailData?.background_img}`}
+        alt=""
+      />
       <img className="mask-back-icon" src={accelerateIcon} alt="" />
       <div className="cantainer">
         <div className="back" onClick={() => navigate("/home")}>

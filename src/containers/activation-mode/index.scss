@@ -63,6 +63,10 @@
 
       .content-input {
         width: 31vw;
+        font-size: 1.4vw;
+        white-space: nowrap;    /* 禁止换行 */
+        overflow: hidden;       /* 隐藏溢出内容 */
+        text-overflow: ellipsis;/* 使用省略号表示溢出 */
       }
 
       .content-btn {

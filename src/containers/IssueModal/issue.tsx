@@ -5,12 +5,11 @@ import { UploadOutlined, CloseOutlined } from "@ant-design/icons";
 import axios from "axios";
 import feedbackApi from "../../api/issue";
 import "./FeedbackForm.scss"; // 自定义的样式文件
-import BreakConfirmModal from "../break-confirm";
-import eventBus from "@/api/eventBus";
 
 interface FeedbackFormProps {
   onClose: () => void; // 用于关闭表单的回调函数
   defaultInfo?: string | null;
+  setIssueOpen: (value: boolean) => void;
 }
 
 // 配置全局 message 样式
@@ -23,6 +22,7 @@ message.config({
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onClose,
   defaultInfo,
+  setIssueOpen,
 }) => {
   const [types, setTypes] = useState<any[]>([]); // 反馈类型
   const [selectedType, setSelectedType] = useState<number | null>(null); // 当前选择的问题类型
@@ -142,12 +142,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       const response = await feedbackApi.feedback(JSON.stringify(params));
       console.log("Feedback submitted successfully:", response);
       // 提交成功后的处理逻辑
-      // setFeedbackOpen(true);
-      eventBus.emit("showModal", {
-        show: true,
-        type: "issueFeedback",
-        onClose,
-      });
+      setIssueOpen(true);
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       // message.error('反馈提交失败，请稍后重试！');

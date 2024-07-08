@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-08 14:14:09
+ * @LastEditTime: 2024-07-08 16:11:59
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -204,7 +204,11 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       <Modal
         className="break-confirm"
         open={accelOpen || isNetworkError}
-        closable={hideClosedCategories.includes(noticeType) ? false : true}
+        closable={
+          hideClosedCategories.includes(isNetworkError ? noticeType : type)
+            ? false
+            : true
+        }
         onCancel={cancel}
         title="提示"
         centered
@@ -226,7 +230,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
             <div className="version">V {version}</div>
           )}
           <div className="accelerate-modal-footer">
-            {!displaySingleButton.includes(noticeType) && (
+            {!displaySingleButton.includes(
+              isNetworkError ? noticeType : type
+            ) && (
               <div className="footer-cancel" onClick={cancel}>
                 取消
               </div>
@@ -241,7 +247,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
                 }
               }}
             >
-              {confirmObj?.[noticeType] || "确定"}
+              {confirmObj?.[isNetworkError ? noticeType : type] || "确定"}
             </div>
           </div>
         </div>
