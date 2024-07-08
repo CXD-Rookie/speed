@@ -123,7 +123,7 @@ const GameLibrary: React.FC = () => {
       isFetching.current = false;
     }
   };
-// 分页逻辑注释掉
+  // 分页逻辑注释掉
   // useEffect(() => {
   //   fetchGames(page, t);
   //   const handleScroll = () => {
@@ -191,13 +191,12 @@ const GameLibrary: React.FC = () => {
         {games.map((game) => (
           <div key={game.id} className="game-card">
             <div className="content-box" onClick={() => clickAddGame(game)}>
-              {game?.free_time && (
+              {game?.tags.includes("限时免费") && game?.free_time && (
                 <div className="exemption-box">
                   <div className="exemption">限免</div>
-                  {game?.tags.includes("限时免费") &&
-                    game?.free_time !== "永久" && (
-                      <div className="time">剩余 {game?.free_time}</div>
-                    )}
+                  {game?.free_time !== "永久" && (
+                    <div className="time">剩余 {game?.free_time}</div>
+                  )}
                 </div>
               )}
               <img className="back-icon" src={game.cover_img} alt={game.name} />

@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-05 18:02:40
+ * @LastEditTime: 2024-07-08 14:11:46
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -37,12 +37,8 @@ const GameDetail: React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
   const historyContext: any = useHistoryContext();
-  const {
-    identifyAccelerationData,
-    chooseDefaultNode,
-    removeGameList,
-    forceStopAcceleration,
-  } = useGamesInitialize();
+  const { identifyAccelerationData, removeGameList, forceStopAcceleration } =
+    useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // 启动游戏平台弹窗
@@ -62,7 +58,9 @@ const GameDetail: React.FC = () => {
 
   const domName = (data = regionInfo) => {
     let fu = data?.select_region?.fu ? data?.select_region?.fu + "-" : "";
-    return fu + data?.select_region?.qu;
+    let dom = detailData?.dom_info?.select_dom?.name || "";
+
+    return fu + data?.select_region?.qu + "-" + dom;
   };
 
   const showModalActive = () => {
@@ -83,15 +81,15 @@ const GameDetail: React.FC = () => {
     // const jsonString = JSON.stringify({
     //   params: {user_token:localStorage.getItem('token'),js_key:localStorage.getItem("StartKey")},
     // });
-    let jsonString = '';
+    let jsonString = "";
 
-    const userToken = localStorage.getItem('token');
-    const jsKey = localStorage.getItem('StartKey');
-    
+    const userToken = localStorage.getItem("token");
+    const jsKey = localStorage.getItem("StartKey");
+
     if (jsKey) {
       jsonString = JSON.stringify({
         params: {
-          user_token: userToken ? JSON.parse(userToken) : '',
+          user_token: userToken ? JSON.parse(userToken) : "",
           js_key: jsKey,
         },
       });

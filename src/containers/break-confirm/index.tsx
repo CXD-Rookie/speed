@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-28 20:11:13
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-05 17:14:04
+ * @LastEditTime: 2024-07-08 14:14:09
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\break-confirm\index.tsx
@@ -101,21 +101,20 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "newVersionFound",
     "serverDisconnected",
     "issueFeedback",
+    "netorkError",
   ];
 
-  let jsonString = '';
+  let jsonString = "";
 
-  const userToken = localStorage.getItem('token');
-  const jsKey = localStorage.getItem('StartKey');
-    
-
+  const userToken = localStorage.getItem("token");
+  const jsKey = localStorage.getItem("StartKey");
 
   // 停止加速
   const stopAcceleration = () => {
     if (jsKey) {
       jsonString = JSON.stringify({
         params: {
-          user_token: userToken ? JSON.parse(userToken) : '',
+          user_token: userToken ? JSON.parse(userToken) : "",
           js_key: jsKey,
         },
       });
