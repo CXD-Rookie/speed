@@ -58,18 +58,18 @@ const gamesTitle: GamesTitleProps[] = [
   },
   {
     key: "3",
+    label: "限时免费",
+    t: "限时免费",
+  },
+  {
+    key: "4",
     label: "吃鸡竞技",
     t: "吃鸡竞技",
   },
   {
-    key: "4",
+    key: "5",
     label: "游戏平台",
     t: "游戏平台",
-  },
-  {
-    key: "5",
-    label: "限时免费",
-    t: "限时免费",
   },
 ];
 
