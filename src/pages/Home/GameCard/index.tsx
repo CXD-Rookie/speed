@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-08 18:54:47
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-08 19:09:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
