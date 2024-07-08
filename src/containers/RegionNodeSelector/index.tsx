@@ -58,7 +58,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
   const [tableLoading, setTableLoading] = useState(false);
-
+  const userToken = localStorage.getItem('token');
+  const jsKey = localStorage.getItem('StartKey');
   const domRegion =
     regionInfo?.select_region?.fu &&
     regionInfo?.select_region?.fu + "-" + regionInfo?.select_region?.qu;
@@ -119,9 +120,19 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 开始加速
   const clickStartOn = async (node = selectedNode) => {
+
+    let jsonString = '';
+    if (jsKey) {
+      jsonString = JSON.stringify({
+        params: {
+          user_token: userToken ? JSON.parse(userToken) : '',
+          js_key: jsKey,
+        },
+      });
+    }
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      "",
+      jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
         let domInfo = updateGamesDom(node);

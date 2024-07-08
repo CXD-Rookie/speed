@@ -103,11 +103,26 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "issueFeedback",
   ];
 
+  let jsonString = '';
+
+  const userToken = localStorage.getItem('token');
+  const jsKey = localStorage.getItem('StartKey');
+    
+
+
   // 停止加速
   const stopAcceleration = () => {
+    if (jsKey) {
+      jsonString = JSON.stringify({
+        params: {
+          user_token: userToken ? JSON.parse(userToken) : '',
+          js_key: jsKey,
+        },
+      });
+    }
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      "",
+      jsonString,
       function (response: any) {
         if (!response) {
           console.warn("No response received from 停止加速没有成功");

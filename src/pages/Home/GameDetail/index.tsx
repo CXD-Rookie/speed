@@ -78,10 +78,25 @@ const GameDetail: React.FC = () => {
   // 停止加速
   const stopSpeed = async () => {
     setStopModalOpen(false);
+    // const jsonString = JSON.stringify({
+    //   params: {user_token:localStorage.getItem('token'),js_key:localStorage.getItem("StartKey")},
+    // });
+    let jsonString = '';
 
+    const userToken = localStorage.getItem('token');
+    const jsKey = localStorage.getItem('StartKey');
+    
+    if (jsKey) {
+      jsonString = JSON.stringify({
+        params: {
+          user_token: userToken ? JSON.parse(userToken) : '',
+          js_key: jsKey,
+        },
+      });
+    }
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      "",
+      jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();

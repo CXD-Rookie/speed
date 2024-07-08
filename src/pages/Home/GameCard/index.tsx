@@ -89,13 +89,26 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
-
+    
+  const userToken = localStorage.getItem('token');
+  const jsKey = localStorage.getItem('StartKey');
+    
+   
   // 停止加速
   const stopAcceleration = () => {
     setStopModalOpen(false);
+    let jsonString = '';
+    if (jsKey) {
+      jsonString = JSON.stringify({
+        params: {
+          user_token: userToken ? JSON.parse(userToken) : '',
+          js_key: jsKey,
+        },
+      });
+    }
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      "",
+      jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
         removeGameList("initialize"); // 更新我的游戏
@@ -341,26 +354,26 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         // 暂时注释 实际生产打开
-        if (isCheck?.pre_check_status === 0) {
-          const state = await handleSuitDomList(option); // 通知客户端进行加速
+        // if (isCheck?.pre_check_status === 0) {
+        //   const state = await handleSuitDomList(option); // 通知客户端进行加速
 
-          if (state) {
-            accelerateGameToList(option); // 加速完后更新我的游戏
-            isPre = true;
-          } else {
-            isPre = false;
-            eventBus.emit("showModal", {
-              show: true,
-              type: "infectedOrHijacked",
-            });
-          }
-        } else {
-          console.log(`不是合法文件，请重新安装加速器`);
-          eventBus.emit("showModal", {
-            show: true,
-            type: "infectedOrHijacked",
-          });
-        }
+        //   if (state) {
+        //     accelerateGameToList(option); // 加速完后更新我的游戏
+        //     isPre = true;
+        //   } else {
+        //     isPre = false;
+        //     eventBus.emit("showModal", {
+        //       show: true,
+        //       type: "infectedOrHijacked",
+        //     });
+        //   }
+        // } else {
+        //   console.log(`不是合法文件，请重新安装加速器`);
+        //   eventBus.emit("showModal", {
+        //     show: true,
+        //     type: "infectedOrHijacked",
+        //   });
+        // }
       }
     );
 
