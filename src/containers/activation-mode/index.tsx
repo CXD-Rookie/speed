@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-02 19:40:46
+ * @LastEditTime: 2024-07-08 15:39:51
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
@@ -118,7 +118,7 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
 
       const data: any = await Promise.all(api_list); // 请求等待统一请求完毕
       // 聚合所以的api 数据中的 游戏平台
-      const result_excutable = data.reduce((acc: any = [], item: any) => {
+      let result_excutable = data.reduce((acc: any = [], item: any) => {
         let data = item?.data;
 
         if (Number(data?.pc_platform) === Number(data?.option?.pid)) {
@@ -133,8 +133,19 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
         return acc;
       }, []);
 
-      setPlatforms(result_excutable);
+      result_excutable =
+        result_excutable?.length > 0
+          ? result_excutable
+          : [
+              {
+                pc_platform: 0,
+                path: "",
+                pid: "0",
+                name: "-",
+              },
+            ];
 
+      setPlatforms(result_excutable);
       return result_excutable;
     } catch (error) {
       console.log(error);

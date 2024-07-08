@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
@@ -9,6 +9,7 @@ import { updateBindPhoneState } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
+import { createBrowserHistory } from "history";
 
 import "@/assets/css/App.scss";
 import AppCloseModal from "./containers/app-close";
@@ -67,8 +68,11 @@ const App: React.FC = (props: any) => {
   const dispatch: any = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const history = createBrowserHistory();
 
   const sendMessageToBackend = useCefQuery();
+  const isInternalNavigation = useRef(false);
+
   const historyContext: any = useHistoryContext();
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
@@ -128,12 +132,15 @@ const App: React.FC = (props: any) => {
     //   }
     // );
     const jsonString = JSON.stringify({
-      params: {user_token:localStorage.getItem('token'),js_key:localStorage.getItem("StartKey")},
+      params: {
+        user_token: localStorage.getItem("token"),
+        js_key: localStorage.getItem("StartKey"),
+      },
     });
 
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      jsonString||'',
+      jsonString || "",
       function (response: any) {
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();
@@ -243,15 +250,15 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
-    let jsonString = '';
+    let jsonString = "";
 
-    const userToken = localStorage.getItem('token');
-    const jsKey = localStorage.getItem('StartKey');
-    
+    const userToken = localStorage.getItem("token");
+    const jsKey = localStorage.getItem("StartKey");
+
     if (jsKey) {
       jsonString = JSON.stringify({
         params: {
-          user_token: userToken ? JSON.parse(userToken) : '',
+          user_token: userToken ? JSON.parse(userToken) : "",
           js_key: jsKey,
         },
       });
@@ -372,15 +379,15 @@ const App: React.FC = (props: any) => {
     //   }
     // );
 
-    let jsonString = '';
+    let jsonString = "";
 
-    const userToken = localStorage.getItem('token');
-    const jsKey = localStorage.getItem('StartKey');
-    
+    const userToken = localStorage.getItem("token");
+    const jsKey = localStorage.getItem("StartKey");
+
     if (jsKey) {
       jsonString = JSON.stringify({
         params: {
-          user_token: userToken ? JSON.parse(userToken) : '',
+          user_token: userToken ? JSON.parse(userToken) : "",
           js_key: jsKey,
         },
       });
@@ -429,15 +436,15 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
-    let jsonString = '';
+    let jsonString = "";
 
-    const userToken = localStorage.getItem('token');
-    const jsKey = localStorage.getItem('StartKey');
-    
+    const userToken = localStorage.getItem("token");
+    const jsKey = localStorage.getItem("StartKey");
+
     if (jsKey) {
       jsonString = JSON.stringify({
         params: {
-          user_token: userToken ? JSON.parse(userToken) : '',
+          user_token: userToken ? JSON.parse(userToken) : "",
           js_key: jsKey,
         },
       });
@@ -461,7 +468,7 @@ const App: React.FC = (props: any) => {
   };
 
   const closeTypeNew = () => {
-    let close = localStorage.getItem("client_config");
+    let close = localStorage.getItem("client_settings");
     let action = close ? JSON.parse(close)?.close_button_action : 2;
 
     //0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
@@ -605,21 +612,22 @@ const App: React.FC = (props: any) => {
   }, []);
 
   useEffect(() => {
-    const handlePopState = (event: any) => {
-      // 阻止默认行为
-      event.preventDefault();
-      // 使用 navigate 进行导航，如果需要自定义导航逻辑
-      navigate(location.pathname, { replace: true });
+    const handleMouseButtons = (event: any) => {
+      // 在这里添加你的逻辑来处理鼠标按钮事件
+      // console.log("鼠标按钮事件：", event.button);
+      // 如果按下的是某个特定的鼠标按钮（例如第四个按钮），则执行导航操作
+      if (event.button > 2) {
+        // 假设按下的是第四个按钮
+        navigate(location.pathname); // 导航到当前页面
+      }
     };
 
-    // 添加事件监听器
-    window.onpopstate = handlePopState;
+    window.addEventListener("mousedown", handleMouseButtons);
 
-    // 清理函数，移除事件监听器
     return () => {
-      window.onpopstate = null;
+      window.removeEventListener("mousedown", handleMouseButtons);
     };
-  }, [navigate, location]);
+  }, [navigate, location.pathname]);
 
   return (
     <Layout className="app-module">
@@ -689,7 +697,7 @@ const App: React.FC = (props: any) => {
             />
             <img
               onClick={() => {
-                let close = localStorage.getItem("client_config");
+                let close = localStorage.getItem("client_settings");
                 let action = close ? JSON.parse(close)?.close_button_action : 2;
 
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框

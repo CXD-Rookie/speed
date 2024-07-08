@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 18:29:50
+ * @LastEditTime: 2024-07-08 11:02:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -57,6 +57,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
   const [thirdInfo, setThirdInfo] = useState([]);
+
+  const [startAutoLaunch, setStartAutoLaunch] = useState(true); // 开始自动启动
+  const [desktopQuickStart, setDesktopQuickStart] = useState(true); // 桌面快捷启动
 
   const dispatch = useDispatch();
 
@@ -189,23 +192,15 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   };
 
   useEffect(() => {
-    let sign = JSON.parse(localStorage.getItem("client_config") || "{}");
+    const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
     let isRealName = localStorage.getItem("isRealName");
 
     isRealName = isRealName ? isRealName : "";
 
     setCloseWindow(String(sign?.close_button_action || 2));
+    setStartAutoLaunch(!!sign?.auto_run);
+    setDesktopQuickStart(!!sign?.auto_create_shortcut);
     setRealNameTag(isRealName);
-
-    if (isLogin) {
-      handleUserInfo().then((res) => {
-        if (res) {
-          // 重新获取最新的 accountInfo
-          const latestAccountInfo = store.getState().accountInfo;
-          // setAccountInfo(latestAccountInfo);
-        }
-      });
-    }
   }, [isOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
 
   useEffect(() => {
@@ -255,34 +250,27 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   <span>
                     开机自动启动
                     <Switch
-                      defaultChecked
+                      value={startAutoLaunch}
                       onChange={(checked: boolean) => {
-                        console.log(checked);
-                        if (checked) {
-                          (window as any).NativeApi_UpdateConfig("auto_run", 1);
-                        } else {
-                          (window as any).NativeApi_UpdateConfig("auto_run", 0);
-                        }
+                        (window as any).NativeApi_UpdateConfig(
+                          "auto_run",
+                          checked ? 1 : 0
+                        );
+                        setStartAutoLaunch(checked);
                       }}
                     />
                   </span>
                   <span>
                     桌面快捷图标
                     <Switch
+                      value={desktopQuickStart}
                       defaultChecked
                       onChange={(checked: boolean) => {
-                        console.log(checked);
-                        if (checked) {
-                          (window as any).NativeApi_UpdateConfig(
-                            "auto_create_shortcut",
-                            1
-                          );
-                        } else {
-                          (window as any).NativeApi_UpdateConfig(
-                            "auto_create_shortcut",
-                            0
-                          );
-                        }
+                        (window as any).NativeApi_UpdateConfig(
+                          "auto_create_shortcut",
+                          checked ? 1 : 0
+                        );
+                        setDesktopQuickStart(checked);
                       }}
                     />
                   </span>
@@ -324,13 +312,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  data-title="https://cdn.accessorx.com/web/privacy_policy.html"
                 >
                   隐私协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  data-title="https://cdn.accessorx.com/web/children's_privacy.html"
                 >
                   儿童保护及监护人须知
                 </span>

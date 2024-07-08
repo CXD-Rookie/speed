@@ -1,17 +1,19 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-27 11:46:17
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-20 11:28:36
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-07-08 16:10:20
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\IssueModal\index.tsx
  */
 /* eslint-disable react/jsx-no-comment-textnodes */
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Modal } from "antd";
-import FeedbackForm from "./issue";
+
 import "./index.scss";
+import FeedbackForm from "./issue";
+import BreakConfirmModal from "../break-confirm";
 
 interface FeedbackPopupProps {
   showIssueModal?: boolean;
@@ -24,6 +26,8 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
   defaultInfo,
   onClose = () => {},
 }) => {
+  const [issueOpen, setIssueOpen] = useState(false);
+
   const closeFeedbackForm = () => {
     onClose();
   };
@@ -36,7 +40,7 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
 
       // 处理来自 iframe 的消息
       const message = event.data;
-      console.log(message);
+
       if (message.type === "GREETING") {
         onClose();
       }
@@ -44,18 +48,33 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
   }, []);
 
   return (
-    <Modal
-      className="overlay"
-      open={showIssueModal}
-      onCancel={onClose}
-      title="问题反馈"
-      width={"67.6vw"}
-      centered
-      maskClosable={false}
-      footer={null}
-    >
-      <FeedbackForm onClose={closeFeedbackForm} defaultInfo={defaultInfo} />
-    </Modal>
+    <Fragment>
+      <Modal
+        className="overlay"
+        open={showIssueModal}
+        onCancel={onClose}
+        title="问题反馈"
+        width={"67.6vw"}
+        centered
+        maskClosable={false}
+        footer={null}
+      >
+        <FeedbackForm
+          onClose={closeFeedbackForm}
+          defaultInfo={defaultInfo}
+          setIssueOpen={setIssueOpen}
+        />
+      </Modal>
+      <BreakConfirmModal
+        type={"issueFeedback"}
+        accelOpen={issueOpen}
+        setAccelOpen={setIssueOpen}
+        onConfirm={() => {
+          setIssueOpen(false);
+          closeFeedbackForm();
+        }}
+      />
+    </Fragment>
   );
 };
 
