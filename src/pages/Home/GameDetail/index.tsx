@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-05 17:13:37
+ * @LastEditTime: 2024-07-05 18:02:40
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -59,9 +59,11 @@ const GameDetail: React.FC = () => {
 
   // 使用 useMemo 确保只有 data 变化时才会重新计算
   const memoizedData = useMemo(() => chartData, [chartData]);
-  const domRegion =
-    regionInfo?.select_region?.fu &&
-    regionInfo?.select_region?.fu + "-" + regionInfo?.select_region?.qu;
+
+  const domName = (data = regionInfo) => {
+    let fu = data?.select_region?.fu ? data?.select_region?.fu + "-" : "";
+    return fu + data?.select_region?.qu;
+  };
 
   const showModalActive = () => {
     setIsOpen(true);
@@ -153,7 +155,6 @@ const GameDetail: React.FC = () => {
     let ip = find_accel?.dom_info?.select_dom; // 存储的ip
 
     historyContext?.accelerateTime?.startTimer();
-    console.log(select_region);
 
     const jsonString = JSON.stringify({
       params: { ip },
@@ -275,7 +276,7 @@ const GameDetail: React.FC = () => {
           </div>
           <div className="game-right">
             <div className="info-switch info-common-style" onClick={showModal}>
-              <span>{domRegion}</span>
+              <span>{domName(regionInfo)}</span>
               <span>切换</span>
             </div>
             <div className="info-speed info-common-style">

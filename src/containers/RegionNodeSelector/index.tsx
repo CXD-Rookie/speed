@@ -61,8 +61,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const userToken = localStorage.getItem('token');
   const jsKey = localStorage.getItem('StartKey');
   const domRegion =
-    regionInfo?.select_region?.fu &&
-    regionInfo?.select_region?.fu + "-" + regionInfo?.select_region?.qu;
+    (regionInfo?.select_region?.fu && regionInfo?.select_region?.fu + "-") +
+    regionInfo?.select_region?.qu;
 
   // 刷新查询节点列表最短延迟节点
   const refreshNodesMinLatency = (all: any = regionDomList) => {
@@ -111,7 +111,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
     if (find_index !== -1) {
       game_list[find_index] = game_info;
-
       localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
     }
 
@@ -257,7 +256,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
           const updatedNode = await new Promise<any>((resolve, reject) => {
             let default_node = {
               ...node,
-              delay: 9999,
+              delay: "超时",
               packetLoss: 10,
               mode: "进程模式",
             };
@@ -354,7 +353,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       let region = updateGamesRegion(options); // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
       let select = region?.select_region;
 
-      setPresentGameInfo(options); // 更新当前游戏信息
       handleSubRegions(options?.id, select?.fu && select); // 改为调用 handleSubRegions 初始化获取所有的区服信息
     };
 
@@ -500,7 +498,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 </div>
                 <Button
                   className="refresh-button"
-                  onClick={() => refreshNodesMinLatency()}
+                  onClick={() => tabsChange("2")}
                 >
                   刷新
                 </Button>
@@ -517,10 +515,18 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 onRow={(record) => ({
                   onClick: () => setSelectedNode(record),
                 })}
-                className="nodes-table"
               >
                 <Column title="节点" dataIndex="name" key="name" />
-                <Column title="游戏延迟" dataIndex="delay" key="delay" />
+                <Column
+                  title="游戏延迟"
+                  dataIndex="delay"
+                  key="delay"
+                  render={(text) => (
+                    <span style={text === "超时" ? { color: "#FF0000" } : {}}>
+                      {text}
+                    </span>
+                  )}
+                />
                 <Column title="丢包" dataIndex="packetLoss" key="packetLoss" />
                 <Column title="模式" dataIndex="mode" key="mode" />
               </Table>

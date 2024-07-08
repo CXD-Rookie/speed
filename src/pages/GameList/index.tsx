@@ -137,14 +137,10 @@ const GameLibrary: React.FC = () => {
                   className="back-icon"
                   src={game.cover_img}
                   alt={game.name}
+                  onClick={() => clickAddGame(game)}
                 />
                 <div className="game-card-content">
-                  <img
-                    className="add-icon"
-                    src={addThemeIcon}
-                    alt=""
-                    onClick={() => clickAddGame(game)}
-                  />
+                  <img className="add-icon" src={addThemeIcon} alt="" />
                   <img
                     className="game-card-active-icon"
                     src={acceleratedIcon}

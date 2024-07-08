@@ -221,6 +221,8 @@
       margin-top: 3.6vh;
 
       .ant-table-thead > tr > th {
+        height: 6vh;
+        line-height: 6vh;
         font-size: 1.2vw;
         font-weight: Regular;
         color: #999999;
@@ -235,6 +237,7 @@
         padding: 1.42vh 1.2vw;
         background-color: #3e3e4a;
         border-bottom: none;
+        cursor: pointer;
       }
 
       .ant-table-cell::before {
