@@ -9,7 +9,6 @@ import { updateBindPhoneState } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
-import { createBrowserHistory } from "history";
 
 import "@/assets/css/App.scss";
 import AppCloseModal from "./containers/app-close";
@@ -68,7 +67,6 @@ const App: React.FC = (props: any) => {
   const dispatch: any = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const history = createBrowserHistory();
 
   const sendMessageToBackend = useCefQuery();
   const isInternalNavigation = useRef(false);
