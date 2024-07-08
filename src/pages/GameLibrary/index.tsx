@@ -105,13 +105,18 @@ const GameLibrary: React.FC = () => {
         param.t = tParam;
       }
       const res = await gameApi.gameList(param);
-
-      const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
+      let gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
         cover_img: `https://cdn.accessorx.com/${
           game.cover_img ? game.cover_img : game.background_img
         }`,
       }));
+
+      if (gamesWithFullImgUrl?.length > 0 && param.t === "限时免费") {
+        gamesWithFullImgUrl = gamesWithFullImgUrl.filter(
+          (item: any) => item?.free_time
+        );
+      }
 
       if (res.data.list.length < 600) {
         hasMore.current = false;
