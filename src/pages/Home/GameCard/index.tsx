@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-08 18:54:47
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-08 19:09:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -16,7 +16,7 @@ import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
-
+import tracking from '@/common/tracking';
 import "./style.scss";
 import RegionNodeSelector from "@/containers/RegionNodeSelector";
 import useCefQuery from "@/hooks/useCefQuery";
@@ -244,6 +244,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
+      // tracking.trackBoostSuccess(option.name,option.region.select_region.u+option.region.select_region.fu,option.dom_info.select_dom.ip)
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
 
