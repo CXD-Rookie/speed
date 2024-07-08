@@ -127,9 +127,13 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
+    const jsonString = JSON.stringify({
+      params: {user_token:localStorage.getItem('token'),js_key:localStorage.getItem("StartKey")},
+    });
+
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      "",
+      jsonString||'',
       function (response: any) {
         console.log("Success response from 停止加速:", response);
         historyContext?.accelerateTime?.stopTimer();
@@ -239,9 +243,22 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
+    let jsonString = '';
+
+    const userToken = localStorage.getItem('token');
+    const jsKey = localStorage.getItem('StartKey');
+    
+    if (jsKey) {
+      jsonString = JSON.stringify({
+        params: {
+          user_token: userToken ? JSON.parse(userToken) : '',
+          js_key: jsKey,
+        },
+      });
+    }
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      "",
+      jsonString,
       function (response: any) {
         console.log(response, "----------------------------------");
         removeGameList("initialize"); // 更新我的游戏
@@ -354,9 +371,23 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
+
+    let jsonString = '';
+
+    const userToken = localStorage.getItem('token');
+    const jsKey = localStorage.getItem('StartKey');
+    
+    if (jsKey) {
+      jsonString = JSON.stringify({
+        params: {
+          user_token: userToken ? JSON.parse(userToken) : '',
+          js_key: jsKey,
+        },
+      });
+    }
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      "",
+      jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
 
@@ -398,10 +429,22 @@ const App: React.FC = (props: any) => {
     //     console.error("Failure response from 停止加速:", errorCode);
     //   }
     // );
+    let jsonString = '';
 
+    const userToken = localStorage.getItem('token');
+    const jsKey = localStorage.getItem('StartKey');
+    
+    if (jsKey) {
+      jsonString = JSON.stringify({
+        params: {
+          user_token: userToken ? JSON.parse(userToken) : '',
+          js_key: jsKey,
+        },
+      });
+    }
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
-      "",
+      jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
 
