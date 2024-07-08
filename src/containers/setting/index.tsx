@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 18:29:50
+ * @LastEditTime: 2024-07-08 10:37:13
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -324,13 +324,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  data-title="https://cdn.accessorx.com/web/privacy_policy.html"
                 >
                   隐私协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  data-title="https://cdn.accessorx.com/web/children's_privacy.html"
                 >
                   儿童保护及监护人须知
                 </span>
