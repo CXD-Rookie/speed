@@ -418,7 +418,7 @@ const App: React.FC = (props: any) => {
   };
 
   const closeTypeNew = () => {
-    let close = localStorage.getItem("client_config");
+    let close = localStorage.getItem("client_settings");
     let action = close ? JSON.parse(close)?.close_button_action : 2;
 
     //0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
@@ -646,7 +646,7 @@ const App: React.FC = (props: any) => {
             />
             <img
               onClick={() => {
-                let close = localStorage.getItem("client_config");
+                let close = localStorage.getItem("client_settings");
                 let action = close ? JSON.parse(close)?.close_button_action : 2;
 
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
