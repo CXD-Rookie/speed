@@ -52,7 +52,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     accelerate: "启动加速将断开现有游戏加速，是否确认？",
     stopAccelerate: "停止加速可能导致游戏重连，是否要继续？",
     loginOut: identifyAccelerationData()?.[0]
-      ? "退出登录将会中断正在加速的游戏"
+      ? "退出登录将会中断正在加速的游戏，是否确认退出？"
       : "确定退出当前账号登录吗？",
     netorkError: "网络连接异常，请检查网络设置。",
     newVersionFound: "发现新版本",
