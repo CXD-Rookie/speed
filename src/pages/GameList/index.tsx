@@ -132,12 +132,11 @@ const GameLibrary: React.FC = () => {
         <div className="game-list">
           {games.map((game: any) => (
             <div key={game.id} className="game-card">
-              <div className="content-box">
+              <div className="content-box" onClick={() => clickAddGame(game)}>
                 <img
                   className="back-icon"
                   src={game.cover_img}
                   alt={game.name}
-                  onClick={() => clickAddGame(game)}
                 />
                 <div className="game-card-content">
                   <img className="add-icon" src={addThemeIcon} alt="" />

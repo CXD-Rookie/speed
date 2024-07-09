@@ -58,8 +58,10 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
   const [tableLoading, setTableLoading] = useState(false);
-  const userToken = localStorage.getItem('token');
-  const jsKey = localStorage.getItem('StartKey');
+  const [allowTabSwitch, setAllowTabSwitch] = useState(false); // 是否允许切换节点
+
+  const userToken = localStorage.getItem("token");
+  const jsKey = localStorage.getItem("StartKey");
   const domRegion =
     (regionInfo?.select_region?.fu && regionInfo?.select_region?.fu + "-") +
     regionInfo?.select_region?.qu;
@@ -119,12 +121,11 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 开始加速
   const clickStartOn = async (node = selectedNode) => {
-
-    let jsonString = '';
+    let jsonString = "";
     if (jsKey) {
       jsonString = JSON.stringify({
         params: {
-          user_token: userToken ? JSON.parse(userToken) : '',
+          user_token: userToken ? JSON.parse(userToken) : "",
           js_key: jsKey,
         },
       });
@@ -331,7 +332,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   };
 
   // 选择的服
-  const togglePanel = (option: any) => {
+  const togglePanel = (option: any, type = "default") => {
     // 如果当前游戏服具有不同的区，进行更新节点操作
     let default_option = { ...option };
 
@@ -342,10 +343,15 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
 
     if (default_option?.children) {
-      setExpandedPanels(default_option);
+      let is_update =
+        Object.keys(expandedPanels)?.length > 0 &&
+        expandedPanels?.qu === default_option?.qu;
+      setExpandedPanels(is_update ? {} : default_option);
     }
 
-    clickRegion(option);
+    if (type === "default") {
+      clickRegion(option);
+    }
   };
 
   useEffect(() => {
@@ -411,7 +417,12 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                     return (
                       <Button
                         key={item.qu}
-                        onClick={() => togglePanel(item)}
+                        onClick={() => {
+                          togglePanel(
+                            item,
+                            item?.children ? "more" : "default"
+                          );
+                        }}
                         className={`${
                           (current?.qu === item?.qu ||
                             item?.children?.some(
@@ -466,7 +477,8 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
           <TabPane tab="节点" key="2">
             <div className="content">
               <div className="current-settings">
-                {presentGameInfo?.name} | {domRegion} | 所有服务器
+                {presentGameInfo?.name} | {domRegion} |{" "}
+                {selectedNode?.name || "所有服务器"}
               </div>
               <div className="node-select">
                 <div>
