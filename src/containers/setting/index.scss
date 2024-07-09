@@ -106,16 +106,16 @@
         color: #fff;
         margin-top: 1.2vh;
 
-        :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
+        :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper {
           font-size: 1.4vw;
           color: #fff !important;
           margin-inline-end: 3.8vw !important;
         }
-        
+
         .ant-radio-inner {
           background: transparent;
         }
-          
+
         .ant-radio-checked .ant-radio-inner {
           font-size: 1.4vw;
           background-color: #f86c34;
@@ -132,7 +132,7 @@
           height: 4.8vh;
           font-size: 1.4vw;
           color: #fff;
-          background: rgba(255,255,255,0.10);
+          background: rgba(255, 255, 255, 0.1);
           border-radius: 2.4vh;
           border: none;
           outline: none;
@@ -208,7 +208,6 @@
   }
 }
 
-
 .repair-tool-container {
   display: flex;
   flex-wrap: wrap;
@@ -221,11 +220,13 @@
   display: flex;
   align-items: flex-end;
 }
+
 .repair-tool .cardName {
   display: flex;
   flex-direction: column;
   align-items: baseline;
 }
+
 .repair-tool .icon-placeholder {
   display: flex;
   flex-direction: row;
@@ -233,10 +234,11 @@
 }
 
 .repair-tool {
-  width: calc(50% - 8px);
+  width: 100%;
+  // width: calc(50% - 8px);
   border-radius: 8px;
   color: white;
-  background: rgba(255,255,255,0.10);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 0.5vw;
 }
 
@@ -249,13 +251,25 @@
   font-weight: bold;
   margin-top: 8px;
   margin-bottom: 4px;
-  color: #FFA500;
+  // color: #ffa500;
   margin-left: 1.05vw;
+  position: relative;
+
+  &::after {
+    content: '>';
+    font-size: 16px; 
+    // color: #ffa500;
+    position: absolute;
+    line-height: 18px;
+    right: -20px;
+    top: 0;
+  }
 }
+
 
 .repair-tool-description {
   font-size: 12px;
-  color: #CCCCCC;
+  color: #cccccc;
 }
 
 .repair-tool .ant-tabs-tab {
@@ -263,19 +277,19 @@
 }
 
 .repair-tool .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: #FFA500 !important;
+  color: #ffa500 !important;
 }
 
 .repair-tool .ant-tabs-ink-bar {
-  background: #FFA500 !important;
+  background: #ffa500 !important;
 }
 
 .repair-tool .ant-card-hoverable:hover {
-  border-color: #FFA500;
+  border-color: #ffa500;
 }
 
-// 修复弹窗
-.popup-success-fix {
+.popup-success-fix,
+.popup-failure-fix {
   border-radius: 2vh;
   width: 32vw !important;
   height: 25.5vh !important;
@@ -285,50 +299,57 @@
   transform: translateY(-50%) !important;
 }
 
-.popup-success-fix .ant-modal-confirm-body {
+.popup-success-fix .ant-modal-confirm-body,
+.popup-failure-fix .ant-modal-confirm-body {
   justify-content: space-evenly;
 }
 
-.popup-success-fix .ant-btn-primary {
+.popup-success-fix .ant-btn-primary,
+.popup-failure-fix .ant-btn-primary {
   background: #f86c34;
   width: 7.5vw;
   font-size: 1.05vw;
   height: 2.5vw;
+  color: #fff;
   border-radius: 16px;
   display: flex;
   align-items: stretch;
   justify-content: space-evenly;
 }
 
-.popup-success-fix .ant-modal-confirm-title {
+.popup-success-fix .ant-modal-confirm-title,
+.popup-failure-fix .ant-modal-confirm-title {
   font-size: 1.5vw !important;
   color: #fff !important;
   text-align: left;
 }
-.popup-success-fix .ant-modal-confirm-content{
+
+.popup-success-fix .ant-modal-confirm-content,
+.popup-failure-fix .ant-modal-confirm-content {
   font-size: 1.1vw !important;
   color: #999999 !important;
-  // margin-top: 2vw;
 }
-.popup-success-fix .anticon-check-circle {
+
+.popup-success-fix .anticon-check-circle,
+.popup-failure-fix .anticon-check-circle {
   display: none;
 }
-.popup-success-fix .ant-modal-content {
+
+.popup-success-fix .ant-modal-content,
+.popup-failure-fix .ant-modal-content {
   width: 30vw;
   height: 30vh;
   font-size: 1.95vw;
   color: #fff;
   background: #3e3e4a;
   border-radius: 2vh;
-  box-shadow: 0px 0px 6vh 0px rgba(0, 0, 0, 0.50);
+  box-shadow: 0px 0px 6vh 0px rgba(0, 0, 0, 0.5);
   padding: 2vh 0.5vw;
   text-align: center;
-  // display: flex;
-  // align-content: center;
-  // flex-direction: column;
-  // justify-content: center;
 }
-.popup-success-fix .ant-modal-confirm-btns {
+
+.popup-success-fix .ant-modal-confirm-btns,
+.popup-failure-fix .ant-modal-confirm-btns {
   display: flex;
   text-align: center;
   flex-direction: row;
@@ -336,34 +357,38 @@
   margin-top: 2vw;
 }
 
-.popup-success-fix .ant-modal-title {
+.popup-success-fix .ant-modal-title,
+.popup-failure-fix .ant-modal-title {
   color: white;
 }
 
-.popup-success-fixcustom-modal .ant-modal-footer .ant-btn-primary {
+.popup-success-fixcustom-modal .ant-modal-footer .ant-btn-primary,
+.popup-failure-fixcustom-modal .ant-modal-footer .ant-btn-primary {
   background-color: white;
   color: black;
 }
 
-.popup-success-fix img {
+.popup-success-fix img,
+.popup-failure-fix img {
   margin-left: 45vw;
 }
 
-
-.popup-success-fix .fix-modal-content img {
+.popup-success-fix .fix-modal-content img,
+.popup-failure-fix .fix-modal-content img {
   width: 5vw;
   height: 5vw;
   margin-left: 0 !important;
   margin-bottom: 1vw;
 }
 
-
-.popup-success-fix .anticon-exclamation-circle {
+.popup-success-fix .anticon-exclamation-circle,
+.popup-failure-fix .anticon-exclamation-circle {
   display: none;
 }
 
-.popup-success-fix .ant-btn-default {
-  background: rgba(255,255,255,0.10);
+.popup-success-fix .ant-btn-default,
+.popup-failure-fix .ant-btn-default {
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   width: 7.5vw;
   font-size: 1.05vw;
@@ -376,7 +401,35 @@
   justify-content: space-around;
 }
 
-.popup-success-fix .modal-subtitle {
+.popup-success-fix .modal-subtitle,
+.popup-failure-fix .modal-subtitle {
   font-size: 1.05vw;
   color: #999999;
+}
+
+
+.popup-success-fix .ant-btn-primary:hover,
+.popup-success-fix .ant-btn-primary:focus {
+  background-color: #f86c34 !important; // 替换为你的按钮颜色
+  border-color: #f86c34 !important; // 替换为你的按钮边框颜色
+}
+
+.popup-success-fix .ant-btn-default:hover,
+.popup-success-fix .ant-btn-default:focus {
+  background-color: rgba(255, 255, 255, 0.10) !important; // 替换为你的按钮颜色
+  border-color: rgba(255, 255, 255, 0.10) !important; // 替换为你的按钮边框颜色
+  color: #fff !important; // 替换为你的按钮文本颜色
+}
+
+.popup-failure-fix .ant-btn-primary:hover,
+.popup-failure-fix .ant-btn-primary:focus {
+  background-color: #f86c34 !important; // 替换为你的按钮颜色
+  border-color: #f86c34 !important; // 替换为你的按钮边框颜色
+}
+
+.popup-failure-fix .ant-btn-default:hover,
+.popup-failure-fix .ant-btn-default:focus {
+  background-color: rgba(255, 255, 255, 0.10) !important; // 替换为你的按钮颜色
+  border-color: rgba(255, 255, 255, 0.10) !important; // 替换为你的按钮边框颜色
+  color: #fff !important; // 替换为你的按钮文本颜色
 }
