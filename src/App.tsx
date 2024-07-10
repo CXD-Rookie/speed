@@ -471,7 +471,7 @@ const App: React.FC = (props: any) => {
       // }
 
       if (data.code === "110001" || data.code === 110001) {
-        loginOutStop();
+        setRemoteLoginOpen(true);
       } else if (data.code === 0 || data.code === "0") {
         let userInfo = data?.data?.user_info || {};
         if (
@@ -744,13 +744,13 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       {/* 异地登录提醒弹窗 */}
-      {renewalOpen ? (
-        <BreakConfirmModal
-          accelOpen={remoteLoginOpen}
+      {remoteLoginOpen ? (
+        <MinorModal
+          isMinorOpen={remoteLoginOpen}
           type={"remoteLogin"}
-          setAccelOpen={setRemoteLoginOpen}
-          onConfirm={() => {
+          setIsMinorOpen={() => {
             setRemoteLoginOpen(false);
+            loginOutStop();
           }}
         />
       ) : null}
