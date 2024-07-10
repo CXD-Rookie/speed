@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-28 18:29:00
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-07-10 16:35:52
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -52,54 +52,23 @@ instance.interceptors.response.use(
 
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
-        // playSuitApi.playSpeedEnd({
-        //   platform: 3,
-        //   js_key: localStorage.getItem("StartKey"),
-        // }); // 游戏停止加速
-        // window.cefQuery({
-        //   request: JSON.stringify({
-        //     method: "NativeApi_StopProxy",
-        //     params: null,
-        //   }),
-        //   onSuccess: function (response) {
-        //     console.log("Success response from 停止加速:", response);
-        //     localStorage.removeItem("token");
-        //     localStorage.removeItem("isRealName");
-
-        //     default_hooks.removeGameList("initialize");
-        //     default_hooks.historyContext?.accelerateTime?.stopTimer();
-
-        //     if (window.stopDelayTimer) {
-        //       window.stopDelayTimer();
-        //     }
-
-        //     // 3个参数 用户信息 是否登录 是否显示登录
-        //     store.dispatch(setAccountInfo({}, false, true));
-        //     const url = new URL(window.location.origin + "/home");
-        //     window.location.href = url.toString();
-        //   },
-        //   onFailure: function (errorCode, errorMessage) {
-        //     console.error("Failure response from 停止加速:", errorCode);
-        //   }
-        // });
-
-        window.NativeApi_AsynchronousRequest('NativeApi_StopProxy','',function (response:any){
+        window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {
           console.log("Success response from 停止加速:", response);
-            localStorage.removeItem("token");
-            localStorage.removeItem("isRealName");
+          localStorage.removeItem("token");
+          localStorage.removeItem("isRealName");
 
-            default_hooks.removeGameList("initialize");
-            default_hooks.historyContext?.accelerateTime?.stopTimer();
+          default_hooks.removeGameList("initialize");
+          default_hooks.historyContext?.accelerateTime?.stopTimer();
 
-            if (window.stopDelayTimer) {
-              window.stopDelayTimer();
-            }
+          if (window.stopDelayTimer) {
+            window.stopDelayTimer();
+          }
 
-            // 3个参数 用户信息 是否登录 是否显示登录
-            store.dispatch(setAccountInfo({}, false, true));
-            const url = new URL(window.location.origin + "/home");
-            window.location.href = url.toString();
-      })
+          // 3个参数 用户信息 是否登录 是否显示登录
+          store.dispatch(setAccountInfo({}, false, true));
+          const url = new URL(window.location.origin + "/home");
+          window.location.href = url.toString();
+        })
       }
     }
     return response.data;

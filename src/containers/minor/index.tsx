@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 18:02:44
+ * @LastEditTime: 2024-07-10 17:22:52
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
@@ -15,6 +15,7 @@ import "./index.scss";
 
 import realErrorIcon from "@/assets/images/common/real_error.svg";
 import realSucessIcon from "@/assets/images/common/real-sucess.svg";
+import exclErrorIcon from "@/assets/images/common/excl.svg";
 
 interface MinorModalProps {
   type: string;
@@ -22,6 +23,7 @@ interface MinorModalProps {
   setIsMinorOpen: (open: boolean) => void;
 }
 const sucessStateMap = [1, 4, 5, 6, 7, 8];
+const errorStateMap = [2, 3, 9];
 
 const MinorModal: React.FC<MinorModalProps> = (props) => {
   const { type, isMinorOpen, setIsMinorOpen } = props;
@@ -45,6 +47,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       unbind: 6, // 解绑
       thirdBind: 7, // 第三方绑定
       thirdUpdateBind: 8, // 第三方换绑
+      remoteLogin: 9, // 异地登录
     };
 
     if (typeObj?.[type]) {
@@ -64,15 +67,25 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       footer={null}
       onCancel={() => handleClose()}
     >
-      {(realType === 2 || realType === 3) && (
+      {errorStateMap.includes(realType) && (
         <div className="real-sueccess-modal-content real-error-modal-content">
-          <img src={realErrorIcon} width={69} height={69} alt="" />
-          <p>
-            抱歉，根据国家相关法律法规要求，暂不支持未成年人使用
-            {realType === 2 && "加速"}
-            {realType === 3 && "充值"}
-            服务，感谢您的理解！
-          </p>
+          <img
+            src={realType === 9 ? exclErrorIcon : realErrorIcon}
+            width={69}
+            height={69}
+            alt=""
+          />
+          {[2, 3].includes(realType) && (
+            <p>
+              抱歉，根据国家相关法律法规要求，暂不支持未成年人使用
+              {realType === 2 && "加速"}
+              {realType === 3 && "充值"}
+              服务，感谢您的理解！
+            </p>
+          )}
+          {realType === 9 && (
+            <p>账号已在其他设备登录，如需使用加速服务，请重新登录。</p>
+          )}
           <Button className="real-sueccess-btn" onClick={() => handleClose()}>
             好的
           </Button>
