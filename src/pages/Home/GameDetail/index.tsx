@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 16:43:44
+ * @LastEditTime: 2024-07-10 19:30:45
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -29,6 +29,16 @@ import computingIcon from "@/assets/images/common/computing.svg";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
 import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 import backGameIcon from "@/assets/images/common/back-game.svg";
+import steamIcon from "@/assets/images/common/steam@2x.png";
+import rockstarIcon from "@/assets/images/common/rockstar@2x.png";
+import battleIcon from "@/assets/images/common/Battlenet@2x.png";
+import eaIcon from "@/assets/images/common/EA_App_2022_icon@2x.png";
+import epicIcon from "@/assets/images/common/Epic@2x.png";
+import faceitIcon from "@/assets/images/common/faceit@2x.png";
+import microsoftIcon from "@/assets/images/common/Microsoft store@2x.png";
+import oculusIcon from "@/assets/images/common/Oculus@2x.png";
+import originIcon from "@/assets/images/common/Origin@2x.png";
+import ubisoftIcon from "@/assets/images/common/Ubisoft@2x.png";
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -142,6 +152,40 @@ const GameDetail: React.FC = () => {
 
     return result;
   }
+
+  const findMappingIcon = (data: any) => {
+    const platform = data?.acc_platform || [];
+    const iconMap: any = {
+      "1": steamIcon,
+      "2": laptopsIcon,
+      "3": laptopsIcon,
+      "4": epicIcon,
+      "5": microsoftIcon,
+      "6": eaIcon,
+      "7": laptopsIcon,
+      "8": battleIcon,
+      "9": oculusIcon,
+      "10": rockstarIcon,
+      "11": laptopsIcon,
+      "12": laptopsIcon,
+    };
+    let resultData: any = [];
+
+    if (Array.isArray(platform) && platform?.length > 0) {
+      resultData = platform.map((child: any) => {
+        if (Object.keys(iconMap).includes(child)) {
+          console.log(child);
+
+          return {
+            id: child,
+            icon: iconMap?.[child],
+          };
+        }
+      });
+    }
+
+    return resultData;
+  };
 
   useEffect(() => {
     let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
@@ -257,6 +301,13 @@ const GameDetail: React.FC = () => {
         <div className="game-detail">
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>
+            <div className="platfrom">
+              已同步加速
+              {findMappingIcon(detailData)?.length > 0 &&
+                findMappingIcon(detailData)?.map((item: any) => {
+                  return <img key={item?.id} src={item?.icon} alt="" />;
+                })}
+            </div>
             <Button
               className="on-game game-btn"
               type="default"
