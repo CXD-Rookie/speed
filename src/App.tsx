@@ -93,6 +93,7 @@ const App: React.FC = (props: any) => {
   const [bindOpen, setBindOpen] = useState(false); // 第三方绑定状态窗
 
   const [versionNow, setVersionNow] = useState(""); // 当前版本
+  const versionNowRef = useRef(versionNow);
 
   const menuList: CustomMenuProps[] = [
     {
@@ -303,23 +304,26 @@ const App: React.FC = (props: any) => {
     // 将版本号按点号分割成数组
     const parts1 = version1.split(".").map(Number);
     const parts2 = version2.split(".").map(Number);
-
+  
     // 获取最长的版本号长度
     const maxLength = Math.max(parts1.length, parts2.length);
-
+  
     // 循环比较每个部分
     for (let i = 0; i < maxLength; i++) {
       const num1 = parts1[i] || 0;
       const num2 = parts2[i] || 0;
-
-      if (num1 <= num2) {
+  
+      if (num1 > num2) {
+        return false; // 如果前者大于后者版本，返回 false
+      } else if (num1 < num2) {
         return true; // 如果前者小于后者版本，返回 true
       }
     }
-
-    // 如果前者不小于后者版本，返回false
+  
+    // 如果版本号完全相等，返回 false
     return false;
   }
+  
 
   // 停止加速
   const stopProxy = () => {
@@ -442,33 +446,36 @@ const App: React.FC = (props: any) => {
       (response: string) => {
         const parsedResponse = JSON.parse(response);
         setVersionNow(parsedResponse.version);
+        versionNowRef.current = parsedResponse.version;
       }
     );
   };
 
   useEffect(() => {
     native_version();
-    console.log(versionNow, "app页面----------------");
+    console.log(versionNow, "客户端获取的版本----------------");
   }, [versionNow]);
 
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-
+      // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
-      // const version = data?.data?.version;
-      // dispatch(setVersion(version));
-      // let isTrue = compareVersions(versionNow, version?.min_version);
+      
+      const version = data?.data?.version;
+      dispatch(setVersion(version));
 
-      // if (isTrue) {
-      //   stopProxy();
-      //   eventBus.emit("showModal", {
-      //     show: true,
-      //     type: "newVersionFound",
-      //     version: version?.now_version,
-      //   });
-      //   return;
-      // }
+      let isTrue = compareVersions(versionNowRef.current, version?.min_version);
+
+      if (isTrue) {
+        stopProxy();
+        eventBus.emit("showModal", {
+          show: true,
+          type: "newVersionFound",
+          version: version?.now_version,
+        });
+        return;
+      }
 
       if (data.code === "110001" || data.code === 110001) {
         setRemoteLoginOpen(true);
@@ -664,13 +671,14 @@ const App: React.FC = (props: any) => {
                 console.log(action, "actionaction");
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
                 if (action === 0) {
-                  setIsAppCloseOpen(true); // 弹出设置选择框
+                  // setIsAppCloseOpen(true); // 弹出设置选择框
                   // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+                  setIsAppCloseOpen(true)
                 } else if (action === 1 && identifyAccelerationData()?.[0]) {
                   setExitOpen(true); // 弹出关闭确认框
                 } else {
-                  // setIsAppCloseOpen(true); // 弹出设置选择框
-                  (window as any).NativeApi_ExitProcess();
+                  setIsAppCloseOpen(true); // 弹出设置选择框
+                  // (window as any).NativeApi_ExitProcess();
                 }
               }}
               className="closeType"
@@ -760,16 +768,17 @@ const App: React.FC = (props: any) => {
           open={isAppCloseOpen}
           close={setIsAppCloseOpen}
           onConfirm={(state) => {
+            console.log(state,'----------------------------')
             let is_acc = identifyAccelerationData()?.[0];
 
             if (state === 1) {
+              (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+            } else {
               if (is_acc) {
                 setExitOpen(is_acc); // 有加速的游戏，二次确认
               } else {
                 handleExitProcess(); // 直接关闭
               }
-            } else {
-              (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
             }
           }}
         />
