@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-09 18:49:07
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-07-10 10:34:06
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -81,57 +81,57 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   };
   const native_fixup_network_lsp = () => {
     return new Promise((resolve, reject) => {
-        console.log("Fixing network LSP");
-        (window as any).NativeApi_AsynchronousRequest(
-            "FixupNetworkLsp",
-            '',
-            (response: string) => {
-                const parsedResponse = JSON.parse(response);
-                if (parsedResponse.success === 0) {
-                    resolve(parsedResponse);
-                } else {
-                    reject(parsedResponse);
-                }
-            }
-        );
+      console.log("Fixing network LSP");
+      (window as any).NativeApi_AsynchronousRequest(
+        "FixupNetworkLsp",
+        "",
+        (response: string) => {
+          const parsedResponse = JSON.parse(response);
+          if (parsedResponse.success === 0) {
+            resolve(parsedResponse);
+          } else {
+            reject(parsedResponse);
+          }
+        }
+      );
     });
-};
+  };
 
-const native_fixup_network_host = () => {
+  const native_fixup_network_host = () => {
     return new Promise((resolve, reject) => {
-        console.log("Fixing network HOST");
-        (window as any).NativeApi_AsynchronousRequest(
-            "FixupNetworkHosts",
-            '',
-            (response: string) => {
-                const parsedResponse = JSON.parse(response);
-                if (parsedResponse.success === 1) {
-                    resolve(parsedResponse);
-                } else {
-                    reject(parsedResponse);
-                }
-            }
-        );
+      console.log("Fixing network HOST");
+      (window as any).NativeApi_AsynchronousRequest(
+        "FixupNetworkHosts",
+        "",
+        (response: string) => {
+          const parsedResponse = JSON.parse(response);
+          if (parsedResponse.success === 1) {
+            resolve(parsedResponse);
+          } else {
+            reject(parsedResponse);
+          }
+        }
+      );
     });
-};
+  };
 
-const native_fixup_network_dns = () => {
+  const native_fixup_network_dns = () => {
     return new Promise((resolve, reject) => {
-        console.log("Fixing network DNS");
-        (window as any).NativeApi_AsynchronousRequest(
-            "FixupNetworkDns",
-            '',
-            (response: string) => {
-                const parsedResponse = JSON.parse(response);
-                if (parsedResponse.success === 1) {
-                    resolve(parsedResponse);
-                } else {
-                    reject(parsedResponse);
-                }
-            }
-        );
+      console.log("Fixing network DNS");
+      (window as any).NativeApi_AsynchronousRequest(
+        "FixupNetworkDns",
+        "",
+        (response: string) => {
+          const parsedResponse = JSON.parse(response);
+          if (parsedResponse.success === 1) {
+            resolve(parsedResponse);
+          } else {
+            reject(parsedResponse);
+          }
+        }
+      );
     });
-};
+  };
 
   const native_restart = () => {
     console.log("Restarting");
@@ -141,100 +141,123 @@ const native_fixup_network_dns = () => {
 
   const repairToolDetails = {
     修复LSP: {
-        successContent: "您的问题已成功修复。",
-        failureContent: "无法修复由于网络协议栈异常导致的问题，请检查您的代理设置或使用问题反馈联系技术支持。",
-        okText: "立即重启",
-        cancelText: "取消",
-        iconSuccess: <img src={fixImg_success} alt="成功图标" className="modal-icon" />,
-        iconfailure: <img src={fix_failure} alt="失败图标" className="modal-icon" />,
-        fixMethod: native_fixup_network_lsp,
+      successContent: "您的问题已成功修复。",
+      failureContent:
+        "无法修复由于网络协议栈异常导致的问题，请检查您的代理设置或使用问题反馈联系技术支持。",
+      okText: "立即重启",
+      cancelText: "取消",
+      iconSuccess: (
+        <img src={fixImg_success} alt="成功图标" className="modal-icon" />
+      ),
+      iconfailure: (
+        <img src={fix_failure} alt="失败图标" className="modal-icon" />
+      ),
+      fixMethod: native_fixup_network_lsp,
     },
     Host清理: {
-        successContent: "您的问题已成功修复。",
-        failureContent: "无法修复因Host文件篡改导致的问题，请手动检查Host文件或使用问题反馈联系技术支持。",
-        okText: "立即重启",
-        cancelText: "取消",
-        iconSuccess: <img src={fixImg_success} alt="成功图标" className="modal-icon" />,
-        iconfailure: <img src={fix_failure} alt="失败图标" className="modal-icon" />,
-        fixMethod: native_fixup_network_host,
+      successContent: "您的问题已成功修复。",
+      failureContent:
+        "无法修复因Host文件篡改导致的问题，请手动检查Host文件或使用问题反馈联系技术支持。",
+      okText: "立即重启",
+      cancelText: "取消",
+      iconSuccess: (
+        <img src={fixImg_success} alt="成功图标" className="modal-icon" />
+      ),
+      iconfailure: (
+        <img src={fix_failure} alt="失败图标" className="modal-icon" />
+      ),
+      fixMethod: native_fixup_network_host,
     },
     修复本地DNS: {
-        successContent: "您的问题已成功修复。",
-        failureContent: "无法修复本地DNS设置导致的问题，请检查您的DNS设置或使用问题反馈联系技术支持。",
-        okText: "立即重启",
-        cancelText: "取消",
-        iconSuccess: <img src={fixImg_success} alt="成功图标" className="modal-icon" />,
-        iconfailure: <img src={fix_failure} alt="失败图标" className="modal-icon" />,
-        fixMethod: native_fixup_network_dns,
+      successContent: "您的问题已成功修复。",
+      failureContent:
+        "无法修复本地DNS设置导致的问题，请检查您的DNS设置或使用问题反馈联系技术支持。",
+      okText: "立即重启",
+      cancelText: "取消",
+      iconSuccess: (
+        <img src={fixImg_success} alt="成功图标" className="modal-icon" />
+      ),
+      iconfailure: (
+        <img src={fix_failure} alt="失败图标" className="modal-icon" />
+      ),
+      fixMethod: native_fixup_network_dns,
     },
-};
+  };
 
   const openModal = async (title: string) => {
     const repairDetail = (repairToolDetails as any)[title];
 
     if (!repairDetail) {
-        console.error(`无效修复: ${title}`);
-        return;
+      console.error(`无效修复: ${title}`);
+      return;
     }
 
-    const { successContent,failureContent, okText, cancelText, iconSuccess, iconfailure, fixMethod } = repairDetail;
+    const {
+      successContent,
+      failureContent,
+      okText,
+      cancelText,
+      iconSuccess,
+      iconfailure,
+      fixMethod,
+    } = repairDetail;
 
     try {
-        await fixMethod();
-        Modal.confirm({
-            title: (
-                <div className="modal-header">
-                    <div className="modal-subtitle">{"提示"}</div>
-                </div>
-            ),
-            content: (
-                <div className="fix-modal-content">
-                    {iconSuccess}
-                    <p>{successContent}</p>
-                </div>
-            ),
-            okText,
-            cancelText,
-            className: "popup-success-fix",
-            closable: true,
-            closeIcon: <span>&times;</span>,
-            onOk: () => {
-                if (okText === "立即重启") {
-                    native_restart();
-                }
-                console.log("Modal closed");
-            },
-            onCancel: () => {
-                console.log("Modal cancelled");
-            },
-        });
+      await fixMethod();
+      Modal.confirm({
+        title: (
+          <div className="modal-header">
+            <div className="modal-subtitle">{"提示"}</div>
+          </div>
+        ),
+        content: (
+          <div className="fix-modal-content">
+            {iconSuccess}
+            <p>{successContent}</p>
+          </div>
+        ),
+        okText,
+        cancelText,
+        className: "popup-success-fix",
+        closable: true,
+        closeIcon: <span>&times;</span>,
+        onOk: () => {
+          if (okText === "立即重启") {
+            native_restart();
+          }
+          console.log("Modal closed");
+        },
+        onCancel: () => {
+          console.log("Modal cancelled");
+        },
+      });
     } catch (error) {
-        Modal.confirm({
-            title: (
-                <div className="modal-header">
-                    <div className="modal-subtitle">{"提示"}</div>
-                </div>
-            ),
-            content: (
-                <div className="fix-modal-content">
-                    {iconfailure}
-                    <p>{failureContent}</p>
-                </div>
-            ),
-            okText,
-            cancelText,
-            className: "popup-failure-fix",
-            closable: true,
-            closeIcon: <span>&times;</span>,
-            onOk: () => {
-                console.log("Modal closed");
-            },
-            onCancel: () => {
-                console.log("Modal cancelled");
-            },
-        });
+      Modal.confirm({
+        title: (
+          <div className="modal-header">
+            <div className="modal-subtitle">{"提示"}</div>
+          </div>
+        ),
+        content: (
+          <div className="fix-modal-content">
+            {iconfailure}
+            <p>{failureContent}</p>
+          </div>
+        ),
+        okText,
+        cancelText,
+        className: "popup-failure-fix",
+        closable: true,
+        closeIcon: <span>&times;</span>,
+        onOk: () => {
+          console.log("Modal closed");
+        },
+        onCancel: () => {
+          console.log("Modal cancelled");
+        },
+      });
     }
-};
+  };
 
   const handleBindThirdInfo = async () => {
     try {
@@ -440,7 +463,7 @@ const native_fixup_network_dns = () => {
                       <label>游侠账号</label>
                       <div>
                         {thirdInfo?.some((item: any) => item?.source === 2)
-                          ? "绑定"
+                          ? "已绑定"
                           : "未绑定"}
                       </div>
                     </div>
