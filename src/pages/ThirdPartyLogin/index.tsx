@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-24 15:45:14
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 11:22:20
+ * @LastEditTime: 2024-07-10 11:38:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\ThirdPartyLogin\index.tsx
@@ -36,9 +36,9 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
       let state = searchParams.get("token") ? res?.data?.user_bind_status : 0;
       console.log(1111, searchParams.get("token"), location, state);
 
-      // if (String(state)) {
-      //   (window as any).NativeApi_YouXiaAuthComplete(res?.data?.token, state);
-      // }
+      if (String(state)) {
+        (window as any).NativeApi_YouXiaAuthComplete(res?.data?.token, state);
+      }
     } catch (error) {
       console.log(error);
     }
