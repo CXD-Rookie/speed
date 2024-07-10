@@ -88,7 +88,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
             '',
             (response: string) => {
                 const parsedResponse = JSON.parse(response);
-                if (parsedResponse.success === 0) {
+                if (parsedResponse.success === 1) {
                     resolve(parsedResponse);
                 } else {
                     reject(parsedResponse);
@@ -228,7 +228,10 @@ const native_fixup_network_dns = () => {
             closable: true,
             closeIcon: <span>&times;</span>,
             onOk: () => {
-                console.log("Modal closed");
+              if (okText === "立即重启") {
+                native_restart();
+            }
+            console.log("Modal closed");
             },
             onCancel: () => {
                 console.log("Modal cancelled");
