@@ -203,7 +203,6 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           close();
           setIsMinorOpen(true);
           setMinorType("unbind");
-          notifyFc(false);
         }
       } else if (bindType === "oldPhone") {
         let res = await verifyPhone();
@@ -320,7 +319,12 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
         <MinorModal
           type={minorType}
           isMinorOpen={isMinorOpen}
-          setIsMinorOpen={setIsMinorOpen}
+          setIsMinorOpen={() => {
+            if (type === "unbind") {
+              notifyFc(false);
+            }
+            setIsMinorOpen(false);
+          }}
         />
       ) : null}
     </Fragment>
