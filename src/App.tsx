@@ -492,7 +492,7 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      
+
       // console.log(data, "ws返回的信息---------------");
       const version = data?.data?.version;
       dispatch(setVersion(version));
