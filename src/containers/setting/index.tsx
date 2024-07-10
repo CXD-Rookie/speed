@@ -657,14 +657,12 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
           type={minorType}
         />
       ) : null}
-      {isBindThirdOpen ? (
-        <BindPhoneMode
-          open={isBindThirdOpen}
-          setOpen={setIsBindThirdOpen}
-          notifyFc={onClose}
-          type={bindType}
-        />
-      ) : null}
+      <BindPhoneMode
+        open={isBindThirdOpen}
+        setOpen={setIsBindThirdOpen}
+        notifyFc={onClose}
+        type={bindType}
+      />
     </Fragment>
   );
 };
