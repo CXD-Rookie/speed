@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-10 14:35:53
+ * @LastEditTime: 2024-07-10 18:17:53
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -638,22 +638,6 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                   </p>
                 </div>
               </Card>
-              {/* <Card
-                className="repair-tool"
-                onClick={() => openModal("修复系统代理")}
-                bordered={false}
-                hoverable
-              >
-                <div className="icon-placeholder">
-                  <img src={fixImg_1} alt="修复系统代理" />
-                </div>
-                <div className="cardName">
-                  <div className="repair-tool-title">修复系统代理</div>
-                  <p className="repair-tool-description">
-                    修复系统配置代理导致无法加速等问题
-                  </p>
-                </div>
-              </Card> */}
               <Card
                 className="repair-tool"
                 onClick={() => openModal("Host清理")}
