@@ -240,6 +240,11 @@
   color: white;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 0.5vw;
+  transition: background-color 0.3s ease;
+}
+
+.repair-tool:hover {
+  background-color: rgba(255, 255, 255, 0.20);
 }
 
 .repair-tool .icon-placeholder img {

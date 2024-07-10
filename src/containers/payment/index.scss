@@ -48,10 +48,14 @@
       background: rgba(255,255,255,0.10);
       border-radius: 2.4vh;
       font-size: 1.4vw;
-      margin-top: 4.7vh;
-      margin-left: 14vw;
+      margin-top: 4.7vh !important;
       border: none;
       outline: none;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
     }
   }
 }

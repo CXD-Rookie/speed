@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-23 16:01:09
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-12 11:48:54
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-10 18:31:42
  * @FilePath: \speed\src\containers\login-user\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,7 +27,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   const { handleUserInfo } = useHandleUserInfo();
 
-  // const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
   const [open, setOpen] = useState(false);
@@ -38,7 +38,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
-  const [accountInfo, setAccountInfo] = useState<any>(); // 用户信息
+  // const [accountInfo, setAccountInfo] = useState<any>(); // 用户信息
   const [isFirst, setIsFirst] = useState(1);
 
   const hide = () => {
@@ -59,19 +59,23 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   };
 
   useEffect(() => {
-    const updateInfo = async () => {
-      let res = await handleUserInfo();
+    // const updateInfo = async () => {
+    //   let res = await handleUserInfo();
 
-      if (res) {
-        // 重新获取最新的 accountInfo
-        setAccountInfo(store.getState().accountInfo);
-      }
-    };
+    //   if (res) {
+    //     // 重新获取最新的 accountInfo
+    //     setAccountInfo(store.getState().accountInfo);
+    //   }
+    // };
 
     if (isFirst === 1 || open) {
-      updateInfo();
+      // updateInfo();
       setIsFirst(isFirst + 1);
     }
+  }, [open]);
+
+  useEffect(() => {
+ 
   }, [open]);
 
   const popoverContent = (isVip: boolean) => (

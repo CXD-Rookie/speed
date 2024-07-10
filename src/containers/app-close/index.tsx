@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-28 16:06:25
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-10 16:33:31
+ * @LastEditTime: 2024-07-10 18:43:43
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\app-close\index.tsx
@@ -23,20 +23,22 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
   const { open, close, onConfirm = () => {} } = props;
 
   const [eventType, setEventType] = useState("0");
-  const [noMorePrompts, setNoMorePrompts] = useState(false);
+  const [noMorePrompts, setNoMorePrompts] = useState(() => {
+    const storedValue = localStorage.getItem("noMorePrompts");
+    return storedValue === "true"; // 如果 storedValue 为 null，则默认返回 false
+  });
+
 
   const onChange = (e: CheckboxChangeEvent) => {
     let checked = e.target.checked;
-
     setNoMorePrompts(checked);
+    localStorage.setItem("noMorePrompts", String(checked));
   };
 
+  // 在点击确认按钮时，如果 noMorePrompts 为 true，则更新配置
   const clickConfirm = () => {
     if (noMorePrompts) {
-      (window as any).NativeApi_UpdateConfig(
-        "close_button_action",
-        Number(eventType)
-      );
+      (window as any).NativeApi_UpdateConfig("close_button_action", Number(eventType));
     }
 
     close(false);
