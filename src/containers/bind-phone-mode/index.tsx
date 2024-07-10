@@ -39,7 +39,7 @@ const lockPhoneObj: any = ["unbind", "third", "oldPhone"];
 const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   const { open, type, setOpen, notifyFc = () => {} } = props;
 
-  const token = localStorage.getItem("token") || "";
+  const token = localStorage.getItem("token") || "{}";
 
   const dispatch: any = useDispatch();
   const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
