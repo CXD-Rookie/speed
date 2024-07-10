@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-24 15:45:14
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-03 17:33:10
+ * @LastEditTime: 2024-07-10 11:38:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\ThirdPartyLogin\index.tsx
@@ -32,24 +32,24 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
         tid: 2,
         platform: 3,
       });
-      console.log("token:", res);
       // 服务端返回的绑定类型
-      let state = res?.data?.user_bind_status;
+      let state = searchParams.get("token") ? res?.data?.user_bind_status : 0;
+      console.log(1111, searchParams.get("token"), location, state);
 
       if (String(state)) {
         (window as any).NativeApi_YouXiaAuthComplete(res?.data?.token, state);
       }
-      // (window as any).NativeApi_YouXiaAuthComplete(res?.data?.token);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     let code = searchParams.get("code");
     let token = searchParams.get("token");
-    console.log(token);
+
     localStorage.setItem("token", JSON.stringify(token));
-    console.log(location, searchParams.get("code"), "进入第三方登录页");
+
     login({ code });
   }, []);
 

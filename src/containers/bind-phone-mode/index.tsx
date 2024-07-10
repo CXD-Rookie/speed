@@ -6,6 +6,7 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import "./index.scss";
 import MinorModal from "@/containers/minor";
 import loginApi from "@/api/login";
+import { error } from "console";
 
 interface BindPhoneProps {
   open: boolean;
@@ -203,7 +204,6 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           close();
           setIsMinorOpen(true);
           setMinorType("unbind");
-          notifyFc(false);
         }
       } else if (bindType === "oldPhone") {
         let res = await verifyPhone();
@@ -215,6 +215,8 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           setCode("");
           setVeryCodeErr(false);
           setIsPhone(false);
+        } else {
+          setVeryCodeErr(true);
         }
       } else if (bindType === "newPhone") {
         let res = await handleUpdatePhone();
@@ -320,7 +322,12 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
         <MinorModal
           type={minorType}
           isMinorOpen={isMinorOpen}
-          setIsMinorOpen={setIsMinorOpen}
+          setIsMinorOpen={() => {
+            if (["updatePhone", "unbind"].includes(minorType)) {
+              notifyFc(false);
+            }
+            setIsMinorOpen(false);
+          }}
         />
       ) : null}
     </Fragment>
