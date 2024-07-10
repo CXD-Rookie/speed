@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 16:32:05
+ * @LastEditTime: 2024-07-10 16:43:44
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -270,11 +270,11 @@ const GameDetail: React.FC = () => {
 
                   if (method) {
                     new Promise((resolve, reject) => {
-                      (window as any).NativeApi_StartProcess(
+                      (window as any).NativeApi_AsynchronousRequest(
+                        "NativeApi_StartProcess",
                         JSON.stringify({
                           params: { path: method?.filePath },
                         }),
-                        "",
                         (response: string) => {
                           const parsedResponse = JSON.parse(response);
                           if (parsedResponse.success === 1) {

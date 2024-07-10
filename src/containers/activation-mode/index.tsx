@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-08 15:39:51
+ * @LastEditTime: 2024-07-10 16:50:58
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
@@ -37,18 +37,21 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
   const [platforms, setPlatforms] = useState<any>([]); // 所有的运营平台
 
   const handleInputChange = () => {
-    const requestData = JSON.stringify({
-      method: "NativeApi_SelectFilePath",
-    });
-    (window as any).cefQuery({
-      request: requestData,
-      onSuccess: (response: any) => {
-        console.log("获取返回路径:", response);
-        setFilePath(response.path);
-      },
-      onFailure: (errorCode: any, errorMessage: any) => {
-        console.error("Query failed:", errorMessage);
-      },
+    new Promise((resolve, reject) => {
+      (window as any).NativeApi_AsynchronousRequest(
+        "NativeApi_SelectFilePath",
+        "",
+        function (response: any) {
+          const isCheck = JSON.parse(response);
+
+          if (isCheck?.path) {
+            console.log("获取返回路径:", response);
+            setFilePath(isCheck.path);
+          } else {
+            console.error("Query failed:", response);
+          }
+        }
+      );
     });
   };
 

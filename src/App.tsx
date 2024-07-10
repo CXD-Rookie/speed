@@ -82,6 +82,7 @@ const App: React.FC = (props: any) => {
 
   const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
   const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
+  const [remoteLoginOpen, setRemoteLoginOpen] = useState(false); // 异地登录
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
 
@@ -107,31 +108,6 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStop = async () => {
-    // await playSuitApi.playSpeedEnd({
-    //   platform: 3,
-    //   js_key: localStorage.getItem("StartKey"),
-    // }); // 游戏停止加速
-    // sendMessageToBackend(
-    //   JSON.stringify({
-    //     method: "NativeApi_StopProxy",
-    //     params: null,
-    //   }),
-    //   (response: any) => {
-    //     console.log("Success response from 停止加速:", response);
-    //     historyContext?.accelerateTime?.stopTimer();
-
-    //     if ((window as any).stopDelayTimer) {
-    //       (window as any).stopDelayTimer();
-    //     }
-
-    //     removeGameList("initialize"); // 更新我的游戏
-    //     loginOut();
-    //     // (window as any).loginOut();
-    //   },
-    //   (errorCode: any, errorMessage: any) => {
-    //     console.error("Failure response from 停止加速:", errorCode);
-    //   }
-    // );
     const jsonString = JSON.stringify({
       params: {
         user_token: localStorage.getItem("token"),
@@ -152,10 +128,10 @@ const App: React.FC = (props: any) => {
 
         removeGameList("initialize"); // 更新我的游戏
         loginOut();
-        // (window as any).loginOut();
       }
     );
   };
+
   // // 挂载到 window 对象上
   // (window as any).loginOutStop = loginOutStop;
   const loginOut = async (type = "default") => {
@@ -283,14 +259,6 @@ const App: React.FC = (props: any) => {
 
   const handleMinimize = async () => {
     (window as any).NativeApi_MinimumWindow();
-    // try {
-    //   const t = (window as any).NativeApi_SynchronousRequest(
-    //     "00000000000000000"
-    //   );
-    //   console.log(t, "----------------------------------");
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -772,6 +740,17 @@ const App: React.FC = (props: any) => {
           onConfirm={() => {
             setRenewalOpen(false);
             setIsModalOpenVip(true);
+          }}
+        />
+      ) : null}
+      {/* 异地登录提醒弹窗 */}
+      {renewalOpen ? (
+        <BreakConfirmModal
+          accelOpen={remoteLoginOpen}
+          type={"remoteLogin"}
+          setAccelOpen={setRemoteLoginOpen}
+          onConfirm={() => {
+            setRemoteLoginOpen(false);
           }}
         />
       ) : null}
