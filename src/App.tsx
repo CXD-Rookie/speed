@@ -728,13 +728,14 @@ const App: React.FC = (props: any) => {
                 console.log(action, "actionaction");
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
                 if (action === 0) {
-                  setIsAppCloseOpen(true); // 弹出设置选择框
+                  // setIsAppCloseOpen(true); // 弹出设置选择框
                   // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+                  setIsAppCloseOpen(true)
                 } else if (action === 1 && identifyAccelerationData()?.[0]) {
                   setExitOpen(true); // 弹出关闭确认框
                 } else {
-                  // setIsAppCloseOpen(true); // 弹出设置选择框
-                  (window as any).NativeApi_ExitProcess();
+                  setIsAppCloseOpen(true); // 弹出设置选择框
+                  // (window as any).NativeApi_ExitProcess();
                 }
               }}
               className="closeType"
@@ -813,16 +814,17 @@ const App: React.FC = (props: any) => {
           open={isAppCloseOpen}
           close={setIsAppCloseOpen}
           onConfirm={(state) => {
+            console.log(state,'----------------------------')
             let is_acc = identifyAccelerationData()?.[0];
 
             if (state === 1) {
+              (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+            } else {
               if (is_acc) {
                 setExitOpen(is_acc); // 有加速的游戏，二次确认
               } else {
                 handleExitProcess(); // 直接关闭
               }
-            } else {
-              (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
             }
           }}
         />
