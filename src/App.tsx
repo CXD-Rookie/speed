@@ -668,17 +668,21 @@ const App: React.FC = (props: any) => {
               onClick={() => {
                 let close = localStorage.getItem("client_settings");
                 let action = close ? JSON.parse(close)?.close_button_action : 2;
+                let noMorePrompts = localStorage.getItem('noMorePrompts');
+                console.log(noMorePrompts,'------------------------')
                 console.log(action, "actionaction");
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
-                if (action === 0) {
+                if (action === 0 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )) {
                   // setIsAppCloseOpen(true); // 弹出设置选择框
                   // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
                   setIsAppCloseOpen(true)
-                } else if (action === 1 && identifyAccelerationData()?.[0]) {
+                } else if (action === 1 && identifyAccelerationData()?.[0] && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )) {
                   setExitOpen(true); // 弹出关闭确认框
-                } else {
-                  setIsAppCloseOpen(true); // 弹出设置选择框
-                  // (window as any).NativeApi_ExitProcess();
+                } else if(action === 1 && noMorePrompts === 'true'){
+                  // setIsAppCloseOpen(true); // 弹出设置选择框
+                  (window as any).NativeApi_ExitProcess();
+                } else if (action === 0 && noMorePrompts === 'true'){
+                  (window as any).NativeApi_MinimizeToTray();
                 }
               }}
               className="closeType"
