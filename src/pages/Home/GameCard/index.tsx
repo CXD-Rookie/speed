@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 16:03:45
+ * @LastEditTime: 2024-07-10 18:08:36
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -424,7 +424,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsMinorOpen(true);
           setMinorType("acceleration");
           return;
-        } else if (!options?.free_time && !userInfo?.is_vip) {
+        } else if (!option?.free_time && !userInfo?.is_vip) {
           setIsModalOpenVip(true);
           return;
         } else if (find_accel?.[0]) {
@@ -469,15 +469,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       {options?.map((option: any) => {
         return (
           <div className={`game-card`} key={option?.id}>
-            {/* {option?.free_time && (
-              <div className="exemption-box">
-                <div className="exemption">限免</div>
-                {option?.tags.includes("限时免费") &&
-                  option?.free_time !== "永久" && (
-                    <div className="time">剩余 {option?.free_time}</div>
-                  )}
-              </div>
-            )} */}
             <img
               className="background-img"
               src={option?.cover_img}
@@ -496,9 +487,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   alt=""
                   onClick={(e) => {
                     e.stopPropagation();
-                    setIsOpenRegion(true);
-                    setSelectAccelerateOption(option);
-                    // accelerateDataHandling(option, "custom");
+                    // setIsOpenRegion(true);
+                    // setSelectAccelerateOption(option);
+                    accelerateDataHandling(option);
                   }}
                 />
                 <img
