@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-10 11:02:38
+ * @LastEditTime: 2024-07-10 14:35:53
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -52,9 +52,16 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const [isBindThirdOpen, setIsBindThirdOpen] = useState(false); // 手机号绑定第三方，切换手机号
   const [bindType, setBindType] = useState(""); // 绑定弹窗类型
-
+  const [versionNow, setVersionNow] = useState(""); // 
   const [activeTab, setActiveTab] = useState("system");
-  const [closeWindow, setCloseWindow] = useState<string>("2");
+  // 从 localStorage 获取初始值，如果没有则默认值为 "2"
+  const initialCloseWindow = () => {
+    const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
+    const closeButtonAction = sign?.close_button_action;
+    return String(closeButtonAction === 1 ? 1 : 2);
+  };
+
+  const [closeWindow, setCloseWindow] = useState<string>(initialCloseWindow);
 
   const [isRealNameTag, setRealNameTag] = useState<any>("");
   const [isModalOpenVip, setIsModalOpenVip] = useState(false);
@@ -252,17 +259,55 @@ const native_fixup_network_dns = () => {
     }
   };
 
+  const handleRadioChange = (e: any) => {
+    const value = e.target.value;
+    setCloseWindow(value);
+
+    const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
+    sign.close_button_action = value === "2" ? 1 : 0; // 1 表示关闭程序，0 表示隐藏到托盘
+    localStorage.setItem("client_settings", JSON.stringify(sign));
+
+    console.log("Updated client_settings in localStorage:", sign);
+
+    (window as any).NativeApi_UpdateConfig(
+      "close_button_action",
+      value === "2" ? 1 : 0
+    );
+  };
+
+  const native_version = () => {
+    return new Promise((resolve, reject) => {
+        console.log("Fixing network LSP");
+        (window as any).NativeApi_AsynchronousRequest(
+            "QueryCurrentVersion",
+            '',
+            (response: string) => {
+                const parsedResponse = JSON.parse(response);
+                setVersionNow(parsedResponse.version)
+            }
+        );
+    });
+  };
+
   useEffect(() => {
     const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
     let isRealName = localStorage.getItem("isRealName");
-
     isRealName = isRealName ? isRealName : "";
-
-    setCloseWindow(String(sign?.close_button_action || 2));
+    const closeButtonAction = sign?.close_button_action;
+    console.log("初始化设置值:", closeButtonAction);
+    setCloseWindow(String(closeButtonAction !== undefined ? (closeButtonAction === 1 ? 2 : 1) : 2));
     setStartAutoLaunch(!!sign?.auto_run);
     setDesktopQuickStart(!!sign?.auto_create_shortcut);
     setRealNameTag(isRealName);
   }, [isOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
+
+  // useEffect(() => {
+  //   const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
+  //   const closeButtonAction = sign?.close_button_action;
+
+  //   console.log("初始化设置值:", closeButtonAction);
+  //   setCloseWindow(String(closeButtonAction !== undefined ? closeButtonAction === 1 ? 1 : 2 : 2));
+  // }, [isOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
 
   useEffect(() => {
     if (type === "edit") {
@@ -285,9 +330,10 @@ const native_fixup_network_dns = () => {
     }, 2000); // 假设2秒后数据加载完毕
   }, []);
 
-//   useEffect(() => {
-//  console.log(version.version.now_version,'版本信息----------------')
-//   }, []);
+  useEffect(() => {
+    native_version()
+    console.log(versionNow,'----------------')
+  }, [versionNow]);
 
 
   return (
@@ -346,15 +392,7 @@ const native_fixup_network_dns = () => {
                 <div className="item-title">关闭窗口时</div>
                 <div className="off-item-content">
                   <Radio.Group
-                    onChange={(e) => {
-                      const value = e.target.value;
-
-                      setCloseWindow(value);
-                      (window as any).NativeApi_UpdateConfig(
-                        "close_button_action",
-                        String(value) === "1" ? 0 : 1
-                      );
-                    }}
+                    onChange={handleRadioChange}
                     value={closeWindow}
                   >
                     <Radio value={"1"}>隐藏任务到托盘</Radio>
@@ -365,7 +403,7 @@ const native_fixup_network_dns = () => {
               <div className="setting-item">
                 <div className="item-title">关于</div>
                 <div className="regard-item-content">
-                  版本号: {version.version.now_version}
+                  版本号: {versionNow}
                   {/* <Button type="default">检查新版本</Button> */}
                 </div>
               </div>
