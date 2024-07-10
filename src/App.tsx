@@ -5,6 +5,7 @@ import type { MenuProps } from "antd";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
+import { setVersion } from "@/redux/actions/version";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
@@ -491,9 +492,10 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
+      
       // console.log(data, "ws返回的信息---------------");
-      // const version = data?.data?.version;
-
+      const version = data?.data?.version;
+      dispatch(setVersion(version));
       // let isTrue = compareVersions(version?.min_version, version?.now_version);
 
       // if (isTrue) {

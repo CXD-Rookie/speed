@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 10:34:06
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-10 11:02:38
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -43,6 +43,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
   const accountInfo = useSelector((state: any) => state.accountInfo);
+  const version = useSelector((state: any) => state.version);
   const isLogin = useSelector((state: any) => state.isLogin);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -87,7 +88,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
         "",
         (response: string) => {
           const parsedResponse = JSON.parse(response);
-          if (parsedResponse.success === 0) {
+          if (parsedResponse.success === 1) {
             resolve(parsedResponse);
           } else {
             reject(parsedResponse);
@@ -250,6 +251,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
         closable: true,
         closeIcon: <span>&times;</span>,
         onOk: () => {
+          if (okText === "立即重启") {
+            native_restart();
+          }
           console.log("Modal closed");
         },
         onCancel: () => {
@@ -303,6 +307,10 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       setLoading(false);
     }, 2000); // 假设2秒后数据加载完毕
   }, []);
+
+  //   useEffect(() => {
+  //  console.log(version.version.now_version,'版本信息----------------')
+  //   }, []);
 
   return (
     <Fragment>
@@ -379,7 +387,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
               <div className="setting-item">
                 <div className="item-title">关于</div>
                 <div className="regard-item-content">
-                  版本号: 1.0.110
+                  版本号: {version.version.now_version}
                   {/* <Button type="default">检查新版本</Button> */}
                 </div>
               </div>
