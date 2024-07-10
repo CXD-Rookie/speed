@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-08 19:09:04
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-07-10 16:03:45
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -16,7 +16,7 @@ import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
-import tracking from '@/common/tracking';
+import tracking from "@/common/tracking";
 import "./style.scss";
 import RegionNodeSelector from "@/containers/RegionNodeSelector";
 import useCefQuery from "@/hooks/useCefQuery";
@@ -350,29 +350,29 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             type: "infectedOrHijacked",
           });
         }
-        // handleSuitDomList(option);
-        // accelerateGameToList(option);
+        handleSuitDomList(option);
+        accelerateGameToList(option);
         // 暂时注释 实际生产打开
-        if (isCheck?.pre_check_status === 0) {
-          const state = await handleSuitDomList(option); // 通知客户端进行加速
+        // if (isCheck?.pre_check_status === 0) {
+        //   const state = await handleSuitDomList(option); // 通知客户端进行加速
 
-          if (state) {
-            accelerateGameToList(option); // 加速完后更新我的游戏
-            isPre = true;
-          } else {
-            isPre = false;
-            eventBus.emit("showModal", {
-              show: true,
-              type: "infectedOrHijacked",
-            });
-          }
-        } else {
-          console.log(`不是合法文件，请重新安装加速器`);
-          eventBus.emit("showModal", {
-            show: true,
-            type: "infectedOrHijacked",
-          });
-        }
+        //   if (state) {
+        //     accelerateGameToList(option); // 加速完后更新我的游戏
+        //     isPre = true;
+        //   } else {
+        //     isPre = false;
+        //     eventBus.emit("showModal", {
+        //       show: true,
+        //       type: "infectedOrHijacked",
+        //     });
+        //   }
+        // } else {
+        //   console.log(`不是合法文件，请重新安装加速器`);
+        //   eventBus.emit("showModal", {
+        //     show: true,
+        //     type: "infectedOrHijacked",
+        //   });
+        // }
       }
     );
 

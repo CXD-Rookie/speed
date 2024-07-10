@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-08 15:56:13
+ * @LastEditTime: 2024-07-10 16:32:05
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -28,6 +28,7 @@ import computerIcon from "@/assets/images/common/computer.svg";
 import computingIcon from "@/assets/images/common/computing.svg";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
 import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
+import backGameIcon from "@/assets/images/common/back-game.svg";
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -76,9 +77,6 @@ const GameDetail: React.FC = () => {
   // 停止加速
   const stopSpeed = async () => {
     setStopModalOpen(false);
-    // const jsonString = JSON.stringify({
-    //   params: {user_token:localStorage.getItem('token'),js_key:localStorage.getItem("StartKey")},
-    // });
     let jsonString = "";
 
     const userToken = localStorage.getItem("token");
@@ -244,7 +242,11 @@ const GameDetail: React.FC = () => {
     <div className="home-module-detail">
       <img
         className="back-icon"
-        src={`https://cdn.accessorx.com/${detailData?.background_img}`}
+        src={`${
+          detailData?.background_img
+            ? "https://cdn.accessorx.com/" + detailData?.background_img
+            : backGameIcon
+        }`}
         alt=""
       />
       <img className="mask-back-icon" src={accelerateIcon} alt="" />
@@ -261,7 +263,35 @@ const GameDetail: React.FC = () => {
               onClick={showModalActive}
             >
               <img src={activateIcon} width={18} height={18} alt="" />
-              启动游戏
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const method = detailData?.activation_method;
+
+                  if (method) {
+                    new Promise((resolve, reject) => {
+                      (window as any).NativeApi_StartProcess(
+                        JSON.stringify({
+                          params: { path: method?.filePath },
+                        }),
+                        "",
+                        (response: string) => {
+                          const parsedResponse = JSON.parse(response);
+                          if (parsedResponse.success === 1) {
+                            resolve(parsedResponse);
+                          } else {
+                            reject(parsedResponse);
+                          }
+                        }
+                      );
+                    });
+                  } else {
+                    showModalActive();
+                  }
+                }}
+              >
+                启动游戏
+              </span>
               <div className="line" />
               <img src={detailsCustomIcon} width={18} height={18} alt="" />
             </Button>
