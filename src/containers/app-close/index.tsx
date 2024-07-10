@@ -45,9 +45,10 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
 
   useEffect(() => {
     if (open) {
-      let sign = JSON.parse(localStorage.getItem("client_setting") || "{}");
-
-      setEventType(String(sign?.close_button_action || 1));
+      const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
+      const closeButtonAction = sign?.close_button_action;
+      console.log("初始化设置值:", closeButtonAction);
+      setEventType(String(closeButtonAction !== undefined ? (closeButtonAction === 1 ? 2 : 1) : 2));
     }
   }, [open]);
 
@@ -70,8 +71,8 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
           value={eventType}
           onChange={(event) => setEventType(event.target.value)}
         >
-          <Radio value={"0"}>隐藏任务到托盘</Radio>
-          <Radio value={"1"}>关闭程序</Radio>
+          <Radio value={"1"}>隐藏任务到托盘</Radio>
+          <Radio value={"2"}>关闭程序</Radio>
         </Radio.Group>
         <div>
           <Button

@@ -91,6 +91,8 @@ const App: React.FC = (props: any) => {
   const [thirdBindType, setThirdBindType] = useState(""); // 第三方绑定成功之后返回状态 绑定还是换绑
   const [bindOpen, setBindOpen] = useState(false); // 第三方绑定状态窗
 
+  const [versionNow, setVersionNow] = useState(""); // 当前版本
+
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -489,6 +491,24 @@ const App: React.FC = (props: any) => {
   };
   (window as any).showSettingsForm = showSettingsForm;
 
+
+  const native_version = () => {
+    console.log("首页获取版本做对比");
+    (window as any).NativeApi_AsynchronousRequest(
+        "QueryCurrentVersion",
+        '',
+        (response: string) => {
+            const parsedResponse = JSON.parse(response);
+            setVersionNow(parsedResponse.version)
+        }
+    );
+  };
+
+  useEffect(() => {
+    native_version()
+    console.log(versionNow,'app页面----------------')
+  }, [versionNow]);
+
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
@@ -496,17 +516,17 @@ const App: React.FC = (props: any) => {
       // console.log(data, "ws返回的信息---------------");
       const version = data?.data?.version;
       dispatch(setVersion(version));
-      // let isTrue = compareVersions(version?.min_version, version?.now_version);
+      let isTrue = compareVersions(versionNow, version?.min_version);
 
-      // if (isTrue) {
-      //   stopProxy();
-      //   eventBus.emit("showModal", {
-      //     show: true,
-      //     type: "newVersionFound",
-      //     version: version?.now_version,
-      //   });
-      //   return;
-      // }
+      if (isTrue) {
+        stopProxy();
+        eventBus.emit("showModal", {
+          show: true,
+          type: "newVersionFound",
+          version: version?.now_version,
+        });
+        return;
+      }
 
       if (data.code === "110001" || data.code === 110001) {
         loginOutStop();
@@ -699,14 +719,17 @@ const App: React.FC = (props: any) => {
               onClick={() => {
                 let close = localStorage.getItem("client_settings");
                 let action = close ? JSON.parse(close)?.close_button_action : 2;
-
+                console.log(action,'actionaction')
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
                 if (action === 0) {
-                  (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+                  setIsAppCloseOpen(true); // 弹出设置选择框
+                  // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
                 } else if (action === 1 && identifyAccelerationData()?.[0]) {
                   setExitOpen(true); // 弹出关闭确认框
+                  
                 } else {
-                  setIsAppCloseOpen(true); // 弹出设置选择框
+                  // setIsAppCloseOpen(true); // 弹出设置选择框
+                  (window as any).NativeApi_ExitProcess();
                 }
               }}
               className="closeType"
