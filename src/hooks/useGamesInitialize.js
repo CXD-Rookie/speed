@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-07 18:00:32
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-01 11:08:29
+ * @LastEditTime: 2024-07-10 19:36:03
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
@@ -119,13 +119,14 @@ export const useGamesInitialize = () => {
   }
 
   // 加速我的游戏
-  const accelerateGameToList = (option) => {
+  const accelerateGameToList = (option, params = {}) => {
     let game_list = getGameList()
 
     if (game_list?.length > 0) {
       game_list = game_list.map(item => ({
         ...item,
-        is_accelerate: option?.id === item?.id
+        is_accelerate: option?.id === item?.id,
+        ...params
       }))
     }
 

@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 16:03:45
+ * @LastEditTime: 2024-07-10 19:36:09
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -306,13 +306,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
             if (isCheck?.success === 1) {
               console.log("成功开启真实加速中:", isCheck);
-              resolve(true);
+              resolve({ state: true, platform: pc_platform });
             } else {
               eventBus.emit("showModal", {
                 show: true,
                 type: "infectedOrHijacked",
               });
-              resolve(false);
+              resolve({ state: false });
             }
           }
         );
@@ -350,29 +350,30 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             type: "infectedOrHijacked",
           });
         }
-        handleSuitDomList(option);
-        accelerateGameToList(option);
-        // 暂时注释 实际生产打开
-        // if (isCheck?.pre_check_status === 0) {
-        //   const state = await handleSuitDomList(option); // 通知客户端进行加速
 
-        //   if (state) {
-        //     accelerateGameToList(option); // 加速完后更新我的游戏
-        //     isPre = true;
-        //   } else {
-        //     isPre = false;
-        //     eventBus.emit("showModal", {
-        //       show: true,
-        //       type: "infectedOrHijacked",
-        //     });
-        //   }
-        // } else {
-        //   console.log(`不是合法文件，请重新安装加速器`);
-        //   eventBus.emit("showModal", {
-        //     show: true,
-        //     type: "infectedOrHijacked",
-        //   });
-        // }
+        // 暂时注释 实际生产打开
+        if (isCheck?.pre_check_status === 0) {
+          const state: any = await handleSuitDomList(option); // 通知客户端进行加速
+
+          if (state?.state) {
+            accelerateGameToList(option, {
+              acc_platform: state?.platform,
+            }); // 加速完后更新我的游戏
+            isPre = true;
+          } else {
+            isPre = false;
+            eventBus.emit("showModal", {
+              show: true,
+              type: "infectedOrHijacked",
+            });
+          }
+        } else {
+          console.log(`不是合法文件，请重新安装加速器`);
+          eventBus.emit("showModal", {
+            show: true,
+            type: "infectedOrHijacked",
+          });
+        }
       }
     );
 
@@ -424,7 +425,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsMinorOpen(true);
           setMinorType("acceleration");
           return;
-        } else if (!options?.free_time && !userInfo?.is_vip) {
+        } else if (!option?.free_time && !userInfo?.is_vip) {
           setIsModalOpenVip(true);
           return;
         } else if (find_accel?.[0]) {
@@ -469,15 +470,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       {options?.map((option: any) => {
         return (
           <div className={`game-card`} key={option?.id}>
-            {/* {option?.free_time && (
-              <div className="exemption-box">
-                <div className="exemption">限免</div>
-                {option?.tags.includes("限时免费") &&
-                  option?.free_time !== "永久" && (
-                    <div className="time">剩余 {option?.free_time}</div>
-                  )}
-              </div>
-            )} */}
             <img
               className="background-img"
               src={option?.cover_img}
@@ -496,9 +488,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   alt=""
                   onClick={(e) => {
                     e.stopPropagation();
-                    setIsOpenRegion(true);
-                    setSelectAccelerateOption(option);
-                    // accelerateDataHandling(option, "custom");
+                    // setIsOpenRegion(true);
+                    // setSelectAccelerateOption(option);
+                    accelerateDataHandling(option);
                   }}
                 />
                 <img

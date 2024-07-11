@@ -304,26 +304,25 @@ const App: React.FC = (props: any) => {
     // 将版本号按点号分割成数组
     const parts1 = version1.split(".").map(Number);
     const parts2 = version2.split(".").map(Number);
-  
+
     // 获取最长的版本号长度
     const maxLength = Math.max(parts1.length, parts2.length);
-  
+
     // 循环比较每个部分
     for (let i = 0; i < maxLength; i++) {
       const num1 = parts1[i] || 0;
       const num2 = parts2[i] || 0;
-  
+
       if (num1 > num2) {
         return false; // 如果前者大于后者版本，返回 false
       } else if (num1 < num2) {
         return true; // 如果前者小于后者版本，返回 true
       }
     }
-  
+
     // 如果版本号完全相等，返回 false
     return false;
   }
-  
 
   // 停止加速
   const stopProxy = () => {
@@ -461,7 +460,7 @@ const App: React.FC = (props: any) => {
       const data = JSON.parse(event.data);
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
-      
+
       const version = data?.data?.version;
       dispatch(setVersion(version));
 
@@ -493,9 +492,14 @@ const App: React.FC = (props: any) => {
         if (String(userInfo?.phone)?.length > 1) {
           // 3个参数 用户信息 是否登录 是否显示登录
           dispatch(setAccountInfo(userInfo, true, false));
+          const data = identifyAccelerationData();
+
+          let isTrue = data?.[0];
+          let isFree =
+            data?.[1]?.free_time && data?.[1]?.tags.includes("限时免费");
 
           // 加速中并且会员到期 停止加速
-          if (identifyAccelerationData()?.[0] && !userInfo?.is_vip) {
+          if (isTrue && !isFree && !userInfo?.is_vip) {
             stopProxy();
             eventBus.emit("showModal", {
               show: true,
@@ -668,11 +672,11 @@ const App: React.FC = (props: any) => {
               onClick={() => {
                 let close = localStorage.getItem("client_settings");
                 let action = close ? JSON.parse(close)?.close_button_action : 2;
-                let noMorePrompts = localStorage.getItem('noMorePrompts');
-                console.log(noMorePrompts,'------------------------')
+                let noMorePrompts = localStorage.getItem("noMorePrompts");
+                console.log(noMorePrompts, "------------------------");
                 console.log(action, "actionaction");
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
-                if (action === 0 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )) {
+                if (action === 0 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined)){
                   // setIsAppCloseOpen(true); // 弹出设置选择框
                   // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
                   setIsAppCloseOpen(true)
@@ -681,11 +685,10 @@ const App: React.FC = (props: any) => {
                 } else if(action === 1 && noMorePrompts === 'true'){
                   // setIsAppCloseOpen(true); // 弹出设置选择框
                   (window as any).NativeApi_ExitProcess();
-                } else if (action === 0 && noMorePrompts === 'true'){
+                } else if (action === 0 && noMorePrompts === "true") {
                   (window as any).NativeApi_MinimizeToTray();
                 } else if (action === 1 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )){
                   setIsAppCloseOpen(true)
-                  
                 }
               }}
               className="closeType"
@@ -775,7 +778,7 @@ const App: React.FC = (props: any) => {
           open={isAppCloseOpen}
           close={setIsAppCloseOpen}
           onConfirm={(state) => {
-            console.log(state,'----------------------------')
+            console.log(state, "----------------------------");
             let is_acc = identifyAccelerationData()?.[0];
 
             if (state === 1) {
