@@ -418,6 +418,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                       <Button
                         key={item.qu}
                         onClick={() => {
+                          setRegionInfo({ ...regionInfo, select_region: item });
                           togglePanel(
                             item,
                             item?.children ? "more" : "default"
