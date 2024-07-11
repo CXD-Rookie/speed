@@ -31,7 +31,7 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
   const initialCloseWindow = () => {
     const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
     const closeButtonAction = sign?.close_button_action;
-    return String(closeButtonAction === 1 ? 1 : 2);
+    return String(closeButtonAction === 0 ? 1 : 2);
   };
 
   const [closeWindow, setCloseWindow] = useState<string>(initialCloseWindow);
