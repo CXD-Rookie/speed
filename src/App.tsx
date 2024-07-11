@@ -677,12 +677,15 @@ const App: React.FC = (props: any) => {
                   // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
                   setIsAppCloseOpen(true)
                 } else if (action === 1 && identifyAccelerationData()?.[0] && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )) {
-                  setExitOpen(true); // 弹出关闭确认框
+                  setExitOpen(true)//确定要退出加速器弹窗
                 } else if(action === 1 && noMorePrompts === 'true'){
                   // setIsAppCloseOpen(true); // 弹出设置选择框
                   (window as any).NativeApi_ExitProcess();
                 } else if (action === 0 && noMorePrompts === 'true'){
                   (window as any).NativeApi_MinimizeToTray();
+                } else if (action === 1 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )){
+                  setIsAppCloseOpen(true)
+                  
                 }
               }}
               className="closeType"
