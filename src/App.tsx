@@ -108,6 +108,31 @@ const App: React.FC = (props: any) => {
     },
   ];
 
+  const loginOutStopWidow = async () => {
+    // alert(1111)
+    setRemoteLoginOpen(true);
+  };
+  const errorReopenLogin = () => {
+    (window as any).NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response:any) {
+      console.log("Success response from 停止加速:", response);
+      localStorage.removeItem("token");
+      localStorage.removeItem("isRealName");
+
+      removeGameList("initialize");
+      historyContext?.accelerateTime?.stopTimer();
+
+      if ((window as any).stopDelayTimer) {
+        (window as any).stopDelayTimer();
+      }
+
+      // 3个参数 用户信息 是否登录 是否显示登录
+      dispatch(setAccountInfo({}, false, true));
+      navigate("/home");
+    })
+  }
+  (window as any).errorReopenLogin = errorReopenLogin;
+  (window as any).loginOutStopWidow = loginOutStopWidow;
+
   const loginOutStop = async (t: any = null) => {
     const jsonString = JSON.stringify({
       params: {
@@ -504,6 +529,7 @@ const App: React.FC = (props: any) => {
       if (data.code === "110001" || data.code === 110001) {
         setRemoteLoginOpen(true);
       } else if (data.code === 0 || data.code === "0") {
+        localStorage.removeItem('isClosed')
         let userInfo = data?.data?.user_info || {};
         if (
           !userInfo?.user_ext?.is_adult ||

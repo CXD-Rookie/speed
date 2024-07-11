@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-27 16:12:45
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-11 21:05:34
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -93,6 +93,7 @@ const Login: React.FC = () => {
 
       if (res?.error === 0) {
         localStorage.setItem("token", JSON.stringify(res.data.token));
+        localStorage.removeItem('isClosed')
 
         if (
           res.data.user_info.user_ext === null ||
