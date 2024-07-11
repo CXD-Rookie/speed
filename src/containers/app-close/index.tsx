@@ -81,6 +81,10 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
     }
   }, [open]);
 
+  useEffect(() => {
+    console.log("closeWindow",closeWindow)
+  }, [closeWindow]);
+
   return (
     <Modal
       className="app-close-module"
