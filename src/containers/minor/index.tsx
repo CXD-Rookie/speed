@@ -98,7 +98,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
             {realType === 1 && "恭喜，实名认证成功"}
             {realType === 4 && "您的手机号已成功绑定并注册至账户"}
             {realType === 5 && "恭喜，手机更换成功"}
-            {realType === 6 && "您的游戏账号已解除绑定"}
+            {realType === 6 && "您的游侠账号已解除绑定"}
             {realType === 7 && "您的游侠账号已成功绑定至账户"}
             {realType === 8 && "您已成功换绑游侠账户"}
           </p>
