@@ -423,11 +423,7 @@ const App: React.FC = (props: any) => {
       (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
     } else if (action === 1 && identifyAccelerationData()?.[0]) {
       setExitOpen(true); // 弹出关闭确认框
-    } else if(action === null || action === '' || action === undefined){
-
-      action.close_button_action =  0; // 1 表示关闭程序，0 表示隐藏到托盘
-      localStorage.setItem("client_settings", JSON.stringify(action));
-    }else {
+    }else { 
       setIsAppCloseOpen(true); // 弹出设置选择框
     }
   };
@@ -458,6 +454,28 @@ const App: React.FC = (props: any) => {
     native_version();
     console.log(versionNow, "客户端获取的版本----------------");
   }, [versionNow]);
+
+  useEffect(() => {
+    // 从 localStorage 获取 client_settings
+    let clientSettings = localStorage.getItem("client_settings");
+
+    try {
+      // 尝试解析 client_settings
+      let settingsObject = clientSettings ? JSON.parse(clientSettings) : {};
+
+      // 设置 close_button_action 的值，如果不存在则添加
+      if (settingsObject.close_button_action === null || settingsObject.close_button_action === '' || settingsObject.close_button_action === undefined) {
+        settingsObject.close_button_action = 0; // 1 表示关闭程序，0 表示隐藏到托盘
+      }
+
+      // 更新或者设置 client_settings
+      localStorage.setItem("client_settings", JSON.stringify(settingsObject));
+
+      console.log("client_settings updated:", localStorage.getItem("client_settings"));
+    } catch (error) {
+      console.error("Error parsing client_settings:", error);
+    }
+  }, []);
 
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
