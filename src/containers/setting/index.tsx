@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-10 18:17:53
+ * @LastEditTime: 2024-07-11 11:48:23
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -291,7 +291,10 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     localStorage.setItem("client_settings", JSON.stringify(sign));
 
     console.log("Updated client_settings in localStorage:", sign);
-
+    if (value === '2') {
+      localStorage.setItem("noMorePrompts", String(true));
+    }
+    
     (window as any).NativeApi_UpdateConfig(
       "close_button_action",
       value === "2" ? 1 : 0
