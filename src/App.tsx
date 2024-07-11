@@ -423,7 +423,11 @@ const App: React.FC = (props: any) => {
       (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
     } else if (action === 1 && identifyAccelerationData()?.[0]) {
       setExitOpen(true); // 弹出关闭确认框
-    } else {
+    } else if(action === null || action === '' || action === undefined){
+
+      action.close_button_action =  0; // 1 表示关闭程序，0 表示隐藏到托盘
+      localStorage.setItem("client_settings", JSON.stringify(action));
+    }else {
       setIsAppCloseOpen(true); // 弹出设置选择框
     }
   };
