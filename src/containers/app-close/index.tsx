@@ -28,6 +28,14 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
     return storedValue === "true"; // 如果 storedValue 为 null，则默认返回 false
   });
 
+  const initialCloseWindow = () => {
+    const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
+    const closeButtonAction = sign?.close_button_action;
+    return String(closeButtonAction === 1 ? 1 : 2);
+  };
+
+  const [closeWindow, setCloseWindow] = useState<string>(initialCloseWindow);
+
 
   const onChange = (e: CheckboxChangeEvent) => {
     let checked = e.target.checked;
@@ -43,6 +51,25 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
 
     close(false);
     onConfirm(Number(eventType));
+  };
+
+  const handleRadioChange = (e: any) => {
+    const value = e.target.value;
+    setCloseWindow(value);
+
+    const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
+    sign.close_button_action = value === "2" ? 1 : 0; // 1 表示关闭程序，0 表示隐藏到托盘
+    localStorage.setItem("client_settings", JSON.stringify(sign));
+
+    console.log("Updated client_settings in localStorage:", sign);
+    if (value === '2') {
+      localStorage.setItem("noMorePrompts", String(true));
+    }
+    
+    (window as any).NativeApi_UpdateConfig(
+      "close_button_action",
+      value === "2" ? 1 : 0
+    );
   };
 
   useEffect(() => {
@@ -70,8 +97,8 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
         <div>当关闭窗口时</div>
         <Radio.Group
           className="content-radio-group"
-          value={eventType}
-          onChange={(event) => setEventType(event.target.value)}
+          value={closeWindow}
+          onChange={handleRadioChange}
         >
           <Radio value={"1"}>隐藏任务到托盘</Radio>
           <Radio value={"2"}>关闭程序</Radio>

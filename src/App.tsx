@@ -689,6 +689,8 @@ const App: React.FC = (props: any) => {
                   (window as any).NativeApi_MinimizeToTray();
                 } else if (action === 1 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )){
                   setIsAppCloseOpen(true)
+                } else{
+                  setIsAppCloseOpen(true)
                 }
               }}
               className="closeType"
