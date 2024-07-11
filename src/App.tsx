@@ -91,7 +91,7 @@ const App: React.FC = (props: any) => {
   const [isAppCloseOpen, setIsAppCloseOpen] = useState(false); // 是否手动设置关闭主程序操作
   const [thirdBindType, setThirdBindType] = useState(""); // 第三方绑定成功之后返回状态 绑定还是换绑
   const [bindOpen, setBindOpen] = useState(false); // 第三方绑定状态窗
-
+  const [reopenLogin, setReopenLogin] = useState(false); // 第三方绑定状态窗
   const [versionNow, setVersionNow] = useState(""); // 当前版本
   const versionNowRef = useRef(versionNow);
 
@@ -108,7 +108,7 @@ const App: React.FC = (props: any) => {
     },
   ];
 
-  const loginOutStop = async () => {
+  const loginOutStop = async (t: any = null) => {
     const jsonString = JSON.stringify({
       params: {
         user_token: localStorage.getItem("token"),
@@ -128,14 +128,14 @@ const App: React.FC = (props: any) => {
         }
 
         removeGameList("initialize"); // 更新我的游戏
-        loginOut();
+        loginOut(t);
       }
     );
   };
 
   // // 挂载到 window 对象上
   // (window as any).loginOutStop = loginOutStop;
-  const loginOut = async (type = "default") => {
+  const loginOut = async (type: any = null) => {
     let res = await loginApi.loginOut();
 
     if (res.error === 0) {
@@ -145,6 +145,9 @@ const App: React.FC = (props: any) => {
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
+      if(type === 1){
+        setReopenLogin(true)
+      }
     }
   };
 
@@ -726,10 +729,18 @@ const App: React.FC = (props: any) => {
         <Content className="content">{routeView}</Content>
       </Layout>
 
-      {accountInfo?.isShowLogin && (
+      {/* {accountInfo?.isShowLogin && (
         <div
           className="login-mask"
           style={{ display: accountInfo?.isShowLogin ? "none" : "block" }}
+        >
+          <Login />
+        </div>
+      )} */}
+      {(accountInfo?.isShowLogin || reopenLogin) && (
+        <div
+          className="login-mask"
+          style={{ display: accountInfo?.isShowLogin || reopenLogin ? "block" : "none" }}
         >
           <Login />
         </div>
@@ -792,7 +803,7 @@ const App: React.FC = (props: any) => {
           type={"remoteLogin"}
           setIsMinorOpen={() => {
             setRemoteLoginOpen(false);
-            loginOutStop();
+            loginOutStop(1);
           }}
         />
       ) : null}
