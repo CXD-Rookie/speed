@@ -460,9 +460,7 @@ const App: React.FC = (props: any) => {
         }
       };
 
-      if (data.code === "110001" || data.code === 110001) {
-        setRemoteLoginOpen(true);
-      } else if (data.code === 0 || data.code === "0") {
+     if (data.code === 0 || data.code === "0") {
         localStorage.removeItem('isClosed')
         let userInfo = data?.data?.user_info || {};
         if (
