@@ -153,7 +153,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       failureContent:
         "无法修复由于网络协议栈异常导致的问题，请检查您的代理设置或使用问题反馈联系技术支持。",
       okText: "立即重启",
-      cancelText: "稍后重试",
+      cancelText: "稍后再说",
       iconSuccess: (
         <img src={fixImg_success} alt="成功图标" className="modal-icon" />
       ),
@@ -167,7 +167,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       failureContent:
         "无法修复因Host文件篡改导致的问题，请手动检查Host文件或使用问题反馈联系技术支持。",
       okText: "立即重启",
-      cancelText: "稍后重试",
+      cancelText: "稍后再说",
       iconSuccess: (
         <img src={fixImg_success} alt="成功图标" className="modal-icon" />
       ),
@@ -181,7 +181,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       failureContent:
         "无法修复本地DNS设置导致的问题，请检查您的DNS设置或使用问题反馈联系技术支持。",
       okText: "立即重启",
-      cancelText: "稍后重试",
+      cancelText: "稍后再说",
       iconSuccess: (
         <img src={fixImg_success} alt="成功图标" className="modal-icon" />
       ),
