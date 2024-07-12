@@ -149,11 +149,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const repairToolDetails = {
     修复LSP: {
-      successContent: "您的问题已成功修复。",
+      successContent: "修复成功，需要重启加速器生效",
       failureContent:
         "无法修复由于网络协议栈异常导致的问题，请检查您的代理设置或使用问题反馈联系技术支持。",
       okText: "立即重启",
-      cancelText: "取消",
+      cancelText: "稍后重试",
       iconSuccess: (
         <img src={fixImg_success} alt="成功图标" className="modal-icon" />
       ),
@@ -163,11 +163,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       fixMethod: native_fixup_network_lsp,
     },
     Host清理: {
-      successContent: "您的问题已成功修复。",
+      successContent: "修复成功，需要重启加速器生效",
       failureContent:
         "无法修复因Host文件篡改导致的问题，请手动检查Host文件或使用问题反馈联系技术支持。",
       okText: "立即重启",
-      cancelText: "取消",
+      cancelText: "稍后重试",
       iconSuccess: (
         <img src={fixImg_success} alt="成功图标" className="modal-icon" />
       ),
@@ -177,11 +177,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
       fixMethod: native_fixup_network_host,
     },
     修复本地DNS: {
-      successContent: "您的问题已成功修复。",
+      successContent: "修复成功，需要重启加速器生效",
       failureContent:
         "无法修复本地DNS设置导致的问题，请检查您的DNS设置或使用问题反馈联系技术支持。",
       okText: "立即重启",
-      cancelText: "取消",
+      cancelText: "稍后重试",
       iconSuccess: (
         <img src={fixImg_success} alt="成功图标" className="modal-icon" />
       ),

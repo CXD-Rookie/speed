@@ -508,23 +508,25 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
+      const token = localStorage.getItem('token');
+      const isClosed = localStorage.getItem('isClosed');
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
 
       const version = data?.data?.version;
       dispatch(setVersion(version));
-
-      let isTrue = compareVersions(versionNowRef.current, version?.min_version);
-
-      if (isTrue) {
-        stopProxy();
-        eventBus.emit("showModal", {
-          show: true,
-          type: "newVersionFound",
-          version: version?.now_version,
-        });
-        return;
-      }
+      if(token && (isClosed === null || isClosed === undefined || isClosed === '')){  //升级弹窗要在登录之后才会弹出
+        let isTrue = compareVersions(versionNowRef.current, version?.min_version);
+        if (isTrue) {
+          stopProxy();
+          eventBus.emit("showModal", {
+            show: true,
+            type: "newVersionFound",
+            version: version?.now_version,
+          });
+          return;
+        }
+      };
 
       if (data.code === "110001" || data.code === 110001) {
         setRemoteLoginOpen(true);

@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-11 21:23:39
+ * @LastEditTime: 2024-07-12 11:41:13
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -50,7 +50,14 @@ class WebSocketService {
       this.flushMessageQueue(); // 连接恢复后发送缓存的信息
     };
 
-    this.ws.onmessage = (event) => {
+    this.ws.onmessage = (event:any) => {
+      let t = JSON.parse(event.data)
+      if(t.code === 110001){
+        if (!localStorage.getItem('isClosed') && localStorage.getItem('token')) {
+          localStorage.setItem('isClosed', 'true'); // 标记为已关闭
+          (window as any).loginOutStopWidow();
+        }
+      }
       onMessage(event);
     };
 
@@ -58,10 +65,10 @@ class WebSocketService {
       console.log('WebSocket connection closed');
       this.stopHeartbeat();
 
-      if (!localStorage.getItem('isClosed') && localStorage.getItem('token')) {
-        localStorage.setItem('isClosed', 'true'); // 标记为已关闭
-        (window as any).loginOutStopWidow();
-      }
+      // if (!localStorage.getItem('isClosed') && localStorage.getItem('token')) {
+      //   localStorage.setItem('isClosed', 'true'); // 标记为已关闭
+      //   (window as any).loginOutStopWidow();
+      // }
 
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
         eventBus.emit('showModal', { show: true, type: "serverDisconnected" });

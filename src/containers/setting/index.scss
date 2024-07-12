@@ -304,6 +304,12 @@
   transform: translateY(-50%) !important;
 }
 
+.popup-success-fix,
+.popup-failure-fix .ant-modal-close-x {
+  font-size: 2.5vw;
+  font-family: none;
+}
+
 .popup-success-fix .ant-modal-confirm-body,
 .popup-failure-fix .ant-modal-confirm-body {
   justify-content: space-evenly;
@@ -319,7 +325,8 @@
   border-radius: 16px;
   display: flex;
   align-items: stretch;
-  justify-content: space-evenly;
+  flex-direction: column-reverse;
+  justify-content: center;
 }
 
 .popup-success-fix .ant-modal-confirm-title,
@@ -402,8 +409,9 @@
   display: flex;
   color: #fff;
   margin-right: 2vw;
-  align-items: baseline;
-  justify-content: space-around;
+  align-items: stretch;
+  flex-direction: column-reverse;
+  justify-content: center;
 }
 
 .popup-success-fix .modal-subtitle,
