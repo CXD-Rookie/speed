@@ -347,10 +347,11 @@ const App: React.FC = (props: any) => {
     //全局只给客户端调用，业务不处理,是到托盘之后邮件 弹出的关闭按钮的方法
     let close = localStorage.getItem("client_settings");
     let action = close ? JSON.parse(close)?.close_button_action : 2;
-
     //0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
     if (identifyAccelerationData()?.[0]) {
       setExitOpen(true); // 弹出关闭确认框
+    }else{
+      (window as any).NativeApi_ExitProcess();
     }
   };
   (window as any).stopSpeed = stopSpeed;
