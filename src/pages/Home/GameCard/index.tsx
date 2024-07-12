@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-12 15:51:08
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-07-12 16:55:46
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -425,7 +425,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsMinorOpen(true);
           setMinorType("acceleration");
           return;
-        } else if (!option?.free_time && !userInfo?.is_vip) {
+        } else if (
+          !(option?.free_time && option?.tags.includes("限时免费")) &&
+          !userInfo?.is_vip
+        ) {
           setIsModalOpenVip(true);
           return;
         } else if (find_accel?.[0]) {
@@ -602,12 +605,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       )}
       {/* 确认加速弹窗 */}
       {accelOpen ? (
-      <BreakConfirmModal
-        accelOpen={accelOpen}
-        type={"accelerate"}
-        setAccelOpen={setAccelOpen}
-        onConfirm={confirmStartAcceleration}
-      />
+        <BreakConfirmModal
+          accelOpen={accelOpen}
+          type={"accelerate"}
+          setAccelOpen={setAccelOpen}
+          onConfirm={confirmStartAcceleration}
+        />
       ) : null}
       {/* 停止加速确认弹窗 */}
       {stopModalOpen ? (
