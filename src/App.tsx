@@ -343,7 +343,7 @@ const App: React.FC = (props: any) => {
   };
 
   const stopSpeed = () => {
-    alert(111)
+   // alert(111)
     //全局只给客户端调用，业务不处理,是到托盘之后邮件 弹出的关闭按钮的方法
     let close = localStorage.getItem("client_settings");
     let action = close ? JSON.parse(close)?.close_button_action : 2;
