@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 17:22:52
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-12 14:58:59
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
@@ -84,7 +84,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
             </p>
           )}
           {realType === 9 && (
-            <p>账号已在其他设备登录，如需使用加速服务，请重新登录。</p>
+            <p>您的登录已失效，请重新登录。</p>
           )}
           <Button className="real-sueccess-btn" onClick={() => handleClose()}>
             好的
