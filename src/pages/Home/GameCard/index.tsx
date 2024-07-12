@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 19:36:09
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-12 15:51:08
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -601,12 +601,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         />
       )}
       {/* 确认加速弹窗 */}
+      {accelOpen ? (
       <BreakConfirmModal
         accelOpen={accelOpen}
         type={"accelerate"}
         setAccelOpen={setAccelOpen}
         onConfirm={confirmStartAcceleration}
       />
+      ) : null}
       {/* 停止加速确认弹窗 */}
       {stopModalOpen ? (
         <BreakConfirmModal
