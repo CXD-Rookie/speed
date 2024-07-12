@@ -110,6 +110,7 @@ const App: React.FC = (props: any) => {
 
   const loginOutStopWidow = async () => {
     // alert(1111)
+    //登录过期和异地登录使用的
     setRemoteLoginOpen(true);
   };
   (window as any).loginOutStopWidow = loginOutStopWidow;
@@ -342,37 +343,16 @@ const App: React.FC = (props: any) => {
   };
 
   const stopSpeed = () => {
-    //全局只给客户端调用，业务不处理
-    let jsonString = "";
+    //全局只给客户端调用，业务不处理,是到托盘之后邮件 弹出的关闭按钮的方法
+    let close = localStorage.getItem("client_settings");
+    let action = close ? JSON.parse(close)?.close_button_action : 2;
 
-    const userToken = localStorage.getItem("token");
-    const jsKey = localStorage.getItem("StartKey");
-
-    if (jsKey) {
-      jsonString = JSON.stringify({
-        params: {
-          user_token: userToken ? JSON.parse(userToken) : "",
-          js_key: jsKey,
-        },
-      });
+    //0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
+    if (action === 1 && identifyAccelerationData()?.[0]) {
+      setExitOpen(true); // 弹出关闭确认框
     }
-    (window as any).NativeApi_AsynchronousRequest(
-      "NativeApi_StopProxy",
-      jsonString,
-      function (response: any) {
-        console.log("Success response from 停止加速:", response);
-
-        if ((window as any).stopDelayTimer) {
-          (window as any).stopDelayTimer();
-        }
-
-        historyContext?.accelerateTime?.stopTimer();
-        removeGameList("initialize"); // 更新我的游戏
-        navigate("/home");
-        (window as any).NativeApi_ExitProcess();
-      }
-    );
   };
+  (window as any).stopSpeed = stopSpeed;
 
   const closeTypeNew = () => {
     let close = localStorage.getItem("client_settings");
@@ -389,7 +369,6 @@ const App: React.FC = (props: any) => {
   };
 
   (window as any).closeTypeNew = closeTypeNew;
-  (window as any).stopSpeed = stopSpeed;
 
   const showSettingsForm = () => {
     //给客户端用的设置弹展示方法
