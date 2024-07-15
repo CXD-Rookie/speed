@@ -244,7 +244,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
-      // tracking.trackBoostSuccess(option.name,option.region.select_region.u+option.region.select_region.fu,option.dom_info.select_dom.ip)
+      tracking.trackBoostStart(option.name);
+      tracking.trackBoostSuccess(option.name,option.region.select_region.u+option.region.select_region.fu,option?.dom_info?.select_dom);
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
 
