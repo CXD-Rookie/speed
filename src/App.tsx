@@ -634,28 +634,60 @@ const App: React.FC = (props: any) => {
             />
             <img
               onClick={() => {
-                let close = localStorage.getItem("client_settings");
-                let action = close ? JSON.parse(close)?.close_button_action : 2;
-                let noMorePrompts = localStorage.getItem("noMorePrompts");
-                console.log(noMorePrompts, "------------------------");
-                console.log(action, "actionaction");
-                // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
-                if (action === 0 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined)){
-                  // setIsAppCloseOpen(true); // 弹出设置选择框
-                  // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
-                  setIsAppCloseOpen(true)
-                } else if (action === 1 && identifyAccelerationData()?.[0] && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )) {
-                  setExitOpen(true)//确定要退出加速器弹窗
-                } else if(action === 1 && noMorePrompts === 'true'){
-                  // setIsAppCloseOpen(true); // 弹出设置选择框
-                  (window as any).NativeApi_ExitProcess();
-                } else if (action === 0 && noMorePrompts === "true") {
-                  (window as any).NativeApi_MinimizeToTray();
-                } else if (action === 1 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )){
-                  setIsAppCloseOpen(true)
-                } else{
-                  setIsAppCloseOpen(true)
+                // let close = localStorage.getItem("client_settings");
+                // let action = close ? JSON.parse(close)?.close_button_action : 2;
+                // let noMorePrompts = localStorage.getItem("noMorePrompts");
+                // console.log(noMorePrompts, "------------------------");
+                // console.log(action, "actionaction");
+                // debugger
+                // // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
+                // if (action === 0 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined)){
+                //   // setIsAppCloseOpen(true); // 弹出设置选择框
+                //   // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+                //   setIsAppCloseOpen(true)
+                // } else if (action === 0 && noMorePrompts === "true") {
+                //   (window as any).NativeApi_MinimizeToTray();
+                // } else if (action === 1 && identifyAccelerationData()?.[0] && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )) {
+                //   setExitOpen(true)//确定要退出加速器弹窗
+                // } else if (action === 1 && identifyAccelerationData()?.[0] && noMorePrompts === "true") {
+                //   setExitOpen(true)//确定要退出加速器弹窗
+                // } else if(action === 1 && noMorePrompts === 'true'){
+                //   // setIsAppCloseOpen(true); // 弹出设置选择框
+                //   (window as any).NativeApi_ExitProcess();
+                // } else if (action === 1 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )){
+                //   setIsAppCloseOpen(true)
+                // } else{
+                //   setIsAppCloseOpen(true)
+                // }
+                const close = localStorage.getItem("client_settings");
+                const action = close ? JSON.parse(close)?.close_button_action : 2;
+                const noMorePrompts = localStorage.getItem("noMorePrompts");
+                const noMorePromptsIsTrue: any = noMorePrompts === "true";
+                const noMorePromptsIsFalseOrUndefined = noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined;
+                const hasAccelerationData = identifyAccelerationData()?.[0];
+
+                const actionMap: any  = {
+                  0: {
+                    true: () => (window as any).NativeApi_MinimizeToTray(),
+                    false: () => setIsAppCloseOpen(true),
+                  },
+                  1: {
+                    true: () => setExitOpen(true),
+                    false: () => setIsAppCloseOpen(true),
+                  },
+                  default: () => setIsAppCloseOpen(true),
+                };
+
+                if (actionMap[action]) {
+                  if (action === 1 && hasAccelerationData) {
+                    setExitOpen(true);
+                  } else {
+                    actionMap[action][noMorePromptsIsTrue]();
+                  }
+                } else {
+                  actionMap.default();
                 }
+
               }}
               className="closeType"
               src={closeIcon}
