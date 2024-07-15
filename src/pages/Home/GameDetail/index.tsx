@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 19:30:45
+ * @LastEditTime: 2024-07-15 10:27:03
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -37,8 +37,9 @@ import epicIcon from "@/assets/images/common/Epic@2x.png";
 import faceitIcon from "@/assets/images/common/faceit@2x.png";
 import microsoftIcon from "@/assets/images/common/Microsoft store@2x.png";
 import oculusIcon from "@/assets/images/common/Oculus@2x.png";
-import originIcon from "@/assets/images/common/Origin@2x.png";
-import ubisoftIcon from "@/assets/images/common/Ubisoft@2x.png";
+import garenaIcon from "@/assets/images/common/Garena@2x.png";
+import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
+import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -157,17 +158,17 @@ const GameDetail: React.FC = () => {
     const platform = data?.acc_platform || [];
     const iconMap: any = {
       "1": steamIcon,
-      "2": laptopsIcon,
+      "2": garenaIcon,
       "3": laptopsIcon,
       "4": epicIcon,
       "5": microsoftIcon,
       "6": eaIcon,
-      "7": laptopsIcon,
+      "7": faceitIcon,
       "8": battleIcon,
       "9": oculusIcon,
       "10": rockstarIcon,
-      "11": laptopsIcon,
-      "12": laptopsIcon,
+      "11": galaxyIcon,
+      "12": primeGamIcon,
     };
     let resultData: any = [];
 
