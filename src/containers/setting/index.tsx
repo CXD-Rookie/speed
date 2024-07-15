@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-12 17:05:28
+ * @LastEditors: zhangda
+ * @LastEditTime: 2024-07-15 16:58:15
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -52,7 +52,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const [isBindThirdOpen, setIsBindThirdOpen] = useState(false); // 手机号绑定第三方，切换手机号
   const [bindType, setBindType] = useState(""); // 绑定弹窗类型
-  const [versionNow, setVersionNow] = useState(""); // 
+  const [versionNow, setVersionNow] = useState(""); //
   const [activeTab, setActiveTab] = useState("system");
   // 从 localStorage 获取初始值，如果没有则默认值为 "2"
   const initialCloseWindow = () => {
@@ -291,10 +291,10 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     localStorage.setItem("client_settings", JSON.stringify(sign));
 
     console.log("Updated client_settings in localStorage:", sign);
-    if (value === '2') {
+    if (value === "2") {
       localStorage.setItem("noMorePrompts", String(true));
     }
-    
+
     (window as any).NativeApi_UpdateConfig(
       "close_button_action",
       value === "2" ? 1 : 0
@@ -303,15 +303,15 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const native_version = () => {
     return new Promise((resolve, reject) => {
-        console.log("Fixing network LSP");
-        (window as any).NativeApi_AsynchronousRequest(
-            "QueryCurrentVersion",
-            '',
-            (response: string) => {
-                const parsedResponse = JSON.parse(response);
-                setVersionNow(parsedResponse.version)
-            }
-        );
+      console.log("Fixing network LSP");
+      (window as any).NativeApi_AsynchronousRequest(
+        "QueryCurrentVersion",
+        "",
+        (response: string) => {
+          const parsedResponse = JSON.parse(response);
+          setVersionNow(parsedResponse.version);
+        }
+      );
     });
   };
 
@@ -321,7 +321,11 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     isRealName = isRealName ? isRealName : "";
     const closeButtonAction = sign?.close_button_action;
     console.log("初始化设置值:", closeButtonAction);
-    setCloseWindow(String(closeButtonAction !== undefined ? (closeButtonAction === 1 ? 2 : 1) : 2));
+    setCloseWindow(
+      String(
+        closeButtonAction !== undefined ? (closeButtonAction === 1 ? 2 : 1) : 2
+      )
+    );
     setStartAutoLaunch(!!sign?.auto_run);
     setDesktopQuickStart(!!sign?.auto_create_shortcut);
     setRealNameTag(isRealName);
@@ -357,10 +361,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    native_version()
-    console.log(versionNow,'----------------')
+    native_version();
+    console.log(versionNow, "----------------");
   }, [versionNow]);
-
 
   return (
     <Fragment>
@@ -390,11 +393,23 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                     <Switch
                       value={startAutoLaunch}
                       onChange={(checked: boolean) => {
+                        const check = checked ? 1 : 0;
+                        const setting = JSON.parse(
+                          localStorage.getItem("client_settings") || "{}"
+                        );
+
+                        setStartAutoLaunch(checked);
+
                         (window as any).NativeApi_UpdateConfig(
                           "auto_run",
-                          checked ? 1 : 0
+                          check
                         );
-                        setStartAutoLaunch(checked);
+
+                        setting.auto_run = check; // 1 表示关闭程序，0 表示隐藏到托盘
+                        localStorage.setItem(
+                          "client_settings",
+                          JSON.stringify(setting)
+                        );
                       }}
                     />
                   </span>
@@ -404,11 +419,22 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                       value={desktopQuickStart}
                       defaultChecked
                       onChange={(checked: boolean) => {
+                        const check = checked ? 1 : 0;
+                        const setting = JSON.parse(
+                          localStorage.getItem("client_settings") || "{}"
+                        );
+
+                        setDesktopQuickStart(checked);
                         (window as any).NativeApi_UpdateConfig(
                           "auto_create_shortcut",
-                          checked ? 1 : 0
+                          check
                         );
-                        setDesktopQuickStart(checked);
+
+                        setting.auto_create_shortcut = check; // 1 表示关闭程序，0 表示隐藏到托盘
+                        localStorage.setItem(
+                          "client_settings",
+                          JSON.stringify(setting)
+                        );
                       }}
                     />
                   </span>
@@ -417,10 +443,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
               <div className="setting-item">
                 <div className="item-title">关闭窗口时</div>
                 <div className="off-item-content">
-                  <Radio.Group
-                    onChange={handleRadioChange}
-                    value={closeWindow}
-                  >
+                  <Radio.Group onChange={handleRadioChange} value={closeWindow}>
                     <Radio value={"1"}>隐藏任务到托盘</Radio>
                     <Radio value={"2"}>关闭程序</Radio>
                   </Radio.Group>
