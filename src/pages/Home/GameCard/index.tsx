@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-12 16:55:46
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-16 14:34:04
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -132,6 +132,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       console.log(error);
     }
   };
+  //查询黑白名单列表数据
+  const fetchPcWhiteBlackList = async () => {
+    try {
+      let res = await playSuitApi.playSpeedBlackWhitelist();
+
+      return res?.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // 多次请求同时触发函数
   const triggerMultipleRequests = async (loopBody: any = []) => {
@@ -247,8 +257,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       tracking.trackBoostStart(option.name);
       tracking.trackBoostSuccess(option.name,option.region.select_region.u+option.region.select_region.fu,option?.dom_info?.select_dom);
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
+      let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
-
+      console.log(WhiteBlackList.blacklist.domain)
+      console.log(WhiteBlackList.blacklist.ipv4)
       let { executable, pc_platform } = gameFiles;
 
       if (pc_platform?.length > 0) {
@@ -280,13 +292,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const jsonResult = JSON.stringify({
         params: {
           process: [...uniqueExecutable],
-          black_ip: ["42.201.128.0/17"],
-          black_domain: [
-            "re:.+\\.steamcommunity\\.com",
-            "steamcdn-a.akamaihd.net",
-          ],
-          tcp_tunnel_mode: 0,
-          udp_tunnel_mode: 1,
+          black_ip: WhiteBlackList.blacklist.ipv4,
+          black_domain: WhiteBlackList.blacklist.domain,
+          // tcp_tunnel_mode: 0,
+          // udp_tunnel_mode: 1,
           user_id: accountInfo?.userInfo?.id,
           game_id: option?.id,
           tunnel: {

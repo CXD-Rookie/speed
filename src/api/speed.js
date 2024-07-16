@@ -51,6 +51,13 @@ class PlaySuit {
     // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/game/speed/end`, params);
   }
+
+  playSpeedBlackWhitelist (params) {
+    // const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/black_white_list`, params);
+  }
+
+  
 }
 
 const playSuitApi = new PlaySuit();
