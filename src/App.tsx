@@ -140,7 +140,8 @@ const App: React.FC = (props: any) => {
     );
   };
 
-  const speedError = async (t: any = null) => { //客户端使用，业务不处理，用于判断加速异常的提示使用
+  const speedError = async (t: any = null) => {
+    //客户端使用，业务不处理，用于判断加速异常的提示使用
     const jsonString = JSON.stringify({
       params: {
         user_token: localStorage.getItem("token"),
@@ -152,7 +153,7 @@ const App: React.FC = (props: any) => {
       "NativeApi_StopProxy",
       jsonString || "",
       function (response: any) {
-        console.log(response,'------------加速异常-----------')
+        console.log(response, "------------加速异常-----------");
       }
     );
   };
@@ -170,8 +171,8 @@ const App: React.FC = (props: any) => {
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
-      if(type === 1){
-        setReopenLogin(true)
+      if (type === 1) {
+        setReopenLogin(true);
       }
     }
   };
@@ -248,16 +249,18 @@ const App: React.FC = (props: any) => {
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_StopProxy",
       jsonString,
-      function (response: any) {
+      async function (response: any) {
         console.log(response, "----------------------------------");
-        removeGameList("initialize"); // 更新我的游戏
+        let list = await removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
 
         if ((window as any).stopDelayTimer) {
           (window as any).stopDelayTimer();
         }
 
-        (window as any).NativeApi_ExitProcess();
+        if (list?.length) {
+          (window as any).NativeApi_ExitProcess();
+        }
       }
     );
   };
@@ -361,14 +364,14 @@ const App: React.FC = (props: any) => {
   };
 
   const stopSpeed = () => {
-   // alert(111)
+    // alert(111)
     //全局只给客户端调用，业务不处理,是到托盘之后邮件 弹出的关闭按钮的方法
     let close = localStorage.getItem("client_settings");
     let action = close ? JSON.parse(close)?.close_button_action : 2;
     //0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
     if (identifyAccelerationData()?.[0]) {
       setExitOpen(true); // 弹出关闭确认框
-    }else{
+    } else {
       (window as any).NativeApi_ExitProcess();
     }
   };
@@ -383,7 +386,7 @@ const App: React.FC = (props: any) => {
       (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
     } else if (action === 1 && identifyAccelerationData()?.[0]) {
       setExitOpen(true); // 弹出关闭确认框
-    }else { 
+    } else {
       setIsAppCloseOpen(true); // 弹出设置选择框
     }
   };
@@ -423,14 +426,21 @@ const App: React.FC = (props: any) => {
       let settingsObject = clientSettings ? JSON.parse(clientSettings) : {};
 
       // 设置 close_button_action 的值，如果不存在则添加
-      if (settingsObject.close_button_action === null || settingsObject.close_button_action === '' || settingsObject.close_button_action === undefined) {
+      if (
+        settingsObject.close_button_action === null ||
+        settingsObject.close_button_action === "" ||
+        settingsObject.close_button_action === undefined
+      ) {
         settingsObject.close_button_action = 0; // 1 表示关闭程序，0 表示隐藏到托盘
       }
 
       // 更新或者设置 client_settings
       localStorage.setItem("client_settings", JSON.stringify(settingsObject));
 
-      console.log("client_settings updated:", localStorage.getItem("client_settings"));
+      console.log(
+        "client_settings updated:",
+        localStorage.getItem("client_settings")
+      );
     } catch (error) {
       console.error("Error parsing client_settings:", error);
     }
@@ -439,15 +449,22 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      const token = localStorage.getItem('token');
-      const isClosed = localStorage.getItem('isClosed');
+      const token = localStorage.getItem("token");
+      const isClosed = localStorage.getItem("isClosed");
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
 
       const version = data?.data?.version;
       dispatch(setVersion(version));
-      if(token && (isClosed === null || isClosed === undefined || isClosed === '')){  //升级弹窗要在登录之后才会弹出
-        let isTrue = compareVersions(versionNowRef.current, version?.min_version);
+      if (
+        token &&
+        (isClosed === null || isClosed === undefined || isClosed === "")
+      ) {
+        //升级弹窗要在登录之后才会弹出
+        let isTrue = compareVersions(
+          versionNowRef.current,
+          version?.min_version
+        );
         if (isTrue) {
           stopProxy();
           eventBus.emit("showModal", {
@@ -457,10 +474,10 @@ const App: React.FC = (props: any) => {
           });
           return;
         }
-      };
+      }
 
-     if (data.code === 0 || data.code === "0") {
-        localStorage.removeItem('isClosed')
+      if (data.code === 0 || data.code === "0") {
+        localStorage.removeItem("isClosed");
         let userInfo = data?.data?.user_info || {};
         if (
           !userInfo?.user_ext?.is_adult ||
@@ -658,81 +675,101 @@ const App: React.FC = (props: any) => {
                 console.log(noMorePrompts, "------------------------");
                 console.log(action, "actionaction");
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
-                if (action === 0 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined)){
+                if (
+                  action === 0 &&
+                  (noMorePrompts === "false" ||
+                    noMorePrompts === null ||
+                    noMorePrompts === undefined)
+                ) {
                   // setIsAppCloseOpen(true); // 弹出设置选择框
                   // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
-                  setIsAppCloseOpen(true)
+                  setIsAppCloseOpen(true);
                 } else if (action === 0 && noMorePrompts === "true") {
-                  (window as any).NativeApi_MinimizeToTray();// 最小化托盘
-                } else if (action === 1 && identifyAccelerationData()?.[0] && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )) {
-                  setExitOpen(true)//确定要退出加速器弹窗
-                } else if (action === 1 && identifyAccelerationData()?.[0] && noMorePrompts === "true") {
-                  setExitOpen(true)//确定要退出加速器弹窗
-                } else if(action === 1 && noMorePrompts === 'true'){
+                  (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+                } else if (
+                  action === 1 &&
+                  identifyAccelerationData()?.[0] &&
+                  (noMorePrompts === "false" ||
+                    noMorePrompts === null ||
+                    noMorePrompts === undefined)
+                ) {
+                  setExitOpen(true); //确定要退出加速器弹窗
+                } else if (
+                  action === 1 &&
+                  identifyAccelerationData()?.[0] &&
+                  noMorePrompts === "true"
+                ) {
+                  setExitOpen(true); //确定要退出加速器弹窗
+                } else if (action === 1 && noMorePrompts === "true") {
                   // setIsAppCloseOpen(true); // 弹出设置选择框
-                  (window as any).NativeApi_ExitProcess();//关闭主程序
-                } else if (action === 1 && (noMorePrompts === "false" || noMorePrompts === null || noMorePrompts === undefined )){
-                  setIsAppCloseOpen(true)
-                } else{
-                  setIsAppCloseOpen(true)
+                  (window as any).NativeApi_ExitProcess(); //关闭主程序
+                } else if (
+                  action === 1 &&
+                  (noMorePrompts === "false" ||
+                    noMorePrompts === null ||
+                    noMorePrompts === undefined)
+                ) {
+                  setIsAppCloseOpen(true);
+                } else {
+                  setIsAppCloseOpen(true);
                 }
 
-              // let close = localStorage.getItem("client_settings");
-              // let action = close ? JSON.parse(close)?.close_button_action : 2;
-              // let noMorePrompts = localStorage.getItem("noMorePrompts");
+                // let close = localStorage.getItem("client_settings");
+                // let action = close ? JSON.parse(close)?.close_button_action : 2;
+                // let noMorePrompts = localStorage.getItem("noMorePrompts");
 
-              // const identifyData = identifyAccelerationData()?.[0];
+                // const identifyData = identifyAccelerationData()?.[0];
 
-              // const actionMap:any = {
-              //     0: {
-              //         true: () => (window as any).NativeApi_MinimizeToTray(),
-              //         false: () => setIsAppCloseOpen(true),
-              //         null: () => setIsAppCloseOpen(true),
-              //         undefined: () => setIsAppCloseOpen(true)
-              //     },
-              //     1: {
-              //         true: () => {
-              //             if (identifyData) {
-              //                 setExitOpen(true);
-              //             } else {
-              //                 (window as any).NativeApi_ExitProcess();
-              //             }
-              //         },
-              //         false: () => {
-              //             if (identifyData) {
-              //                 setExitOpen(true);
-              //             } else {
-              //                 setIsAppCloseOpen(true);
-              //             }
-              //         },
-              //         null: () => {
-              //             if (identifyData) {
-              //                 setExitOpen(true);
-              //             } else {
-              //                 setIsAppCloseOpen(true);
-              //             }
-              //         },
-              //         undefined: () => {
-              //             if (identifyData) {
-              //                 setExitOpen(true);
-              //             } else {
-              //                 setIsAppCloseOpen(true);
-              //             }
-              //         }
-              //     },
-              //     2: {
-              //         default: () => setIsAppCloseOpen(true)
-              //     }
-              // };
+                // const actionMap:any = {
+                //     0: {
+                //         true: () => (window as any).NativeApi_MinimizeToTray(),
+                //         false: () => setIsAppCloseOpen(true),
+                //         null: () => setIsAppCloseOpen(true),
+                //         undefined: () => setIsAppCloseOpen(true)
+                //     },
+                //     1: {
+                //         true: () => {
+                //             if (identifyData) {
+                //                 setExitOpen(true);
+                //             } else {
+                //                 (window as any).NativeApi_ExitProcess();
+                //             }
+                //         },
+                //         false: () => {
+                //             if (identifyData) {
+                //                 setExitOpen(true);
+                //             } else {
+                //                 setIsAppCloseOpen(true);
+                //             }
+                //         },
+                //         null: () => {
+                //             if (identifyData) {
+                //                 setExitOpen(true);
+                //             } else {
+                //                 setIsAppCloseOpen(true);
+                //             }
+                //         },
+                //         undefined: () => {
+                //             if (identifyData) {
+                //                 setExitOpen(true);
+                //             } else {
+                //                 setIsAppCloseOpen(true);
+                //             }
+                //         }
+                //     },
+                //     2: {
+                //         default: () => setIsAppCloseOpen(true)
+                //     }
+                // };
 
-              // const noMorePromptsKey:any = noMorePrompts === "true" ? "true" : (noMorePrompts === "false" ? "false" : noMorePrompts);
-              // if (actionMap[action] && actionMap[action][noMorePromptsKey] !== undefined) {
-              //     actionMap[action][noMorePromptsKey]();
-              // } else if (actionMap[action] && actionMap[action]["default"] !== undefined) {
-              //     actionMap[action]["default"]();
-              // } else {
-              //     setIsAppCloseOpen(true);
-              // }
+                // const noMorePromptsKey:any = noMorePrompts === "true" ? "true" : (noMorePrompts === "false" ? "false" : noMorePrompts);
+                // if (actionMap[action] && actionMap[action][noMorePromptsKey] !== undefined) {
+                //     actionMap[action][noMorePromptsKey]();
+                // } else if (actionMap[action] && actionMap[action]["default"] !== undefined) {
+                //     actionMap[action]["default"]();
+                // } else {
+                //     setIsAppCloseOpen(true);
+                // }
               }}
               className="closeType"
               src={closeIcon}
@@ -756,7 +793,9 @@ const App: React.FC = (props: any) => {
       {(accountInfo?.isShowLogin || reopenLogin) && (
         <div
           className="login-mask"
-          style={{ display: accountInfo?.isShowLogin || reopenLogin ? "block" : "none" }}
+          style={{
+            display: accountInfo?.isShowLogin || reopenLogin ? "block" : "none",
+          }}
         >
           <Login />
         </div>
