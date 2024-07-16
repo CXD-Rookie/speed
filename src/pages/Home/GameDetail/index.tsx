@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: zhangda
- * @LastEditTime: 2024-07-15 10:27:03
+ * @LastEditTime: 2024-07-16 16:47:21
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -191,7 +191,8 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
     let select_region = find_accel?.region; // 当前选择区服
-    let ip = find_accel?.dom_info?.select_dom; // 存储的ip
+    let ip = find_accel?.dom_info?.select_dom?.ip; // 存储的ip
+    console.log("ip", ip);
 
     historyContext?.accelerateTime?.startTimer();
 
@@ -233,7 +234,8 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-      let ip = find_accel?.dom_info?.select_dom; // 存储的ip
+      let ip = find_accel?.dom_info?.select_dom?.ip; // 存储的ip
+      console.log("ip", ip);
 
       const jsonString = JSON.stringify({
         params: { ip },
