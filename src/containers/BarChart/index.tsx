@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-04-23 10:37:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-09 15:57:57
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-17 11:33:59
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\BarChart\index.tsx
@@ -41,7 +41,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
         axisLine: { show: true }, // 显示 Y 轴的轴线
         splitLine: { show: false }, // 隐藏 Y 轴的网格线
         type: "value",
-        splitNumber: 3, // 只显示两个刻度值
+        splitNumber: 5, // 只显示两个刻度值
         interval: "auto",
       },
       series: [
@@ -65,7 +65,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     };
   }, [data]);
 
-  return <div ref={chartRef} style={{ width: "65vw", height: "13.5vh" }} />;
+  return <div ref={chartRef} style={{ width: "65vw", height: "20.5vh" }} />;
 };
 
 export default BarChart;
