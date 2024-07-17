@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-16 14:34:04
+ * @LastEditTime: 2024-07-17 11:24:11
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -336,7 +336,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
-    if (!option?.dom_info?.select_dom?.id || !option?.region) {
+    if (!option?.dom_info?.select_dom?.id) {
       setIsOpenRegion(true);
       return;
     }
