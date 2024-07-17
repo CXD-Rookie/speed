@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-28 16:06:25
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-10 18:43:43
+ * @LastEditTime: 2024-07-17 18:07:21
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\app-close\index.tsx
@@ -59,13 +59,14 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
 
     const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
     sign.close_button_action = value === "2" ? 1 : 0; // 1 表示关闭程序，0 表示隐藏到托盘
+    const closeButtonAction = sign?.close_button_action;
     localStorage.setItem("client_settings", JSON.stringify(sign));
 
     console.log("Updated client_settings in localStorage:", sign);
     if (value === '2') {
       localStorage.setItem("noMorePrompts", String(true));
     }
-    
+    setEventType(String(closeButtonAction !== undefined ? (closeButtonAction === 1 ? 2 : 1) : 2));
     (window as any).NativeApi_UpdateConfig(
       "close_button_action",
       value === "2" ? 1 : 0
