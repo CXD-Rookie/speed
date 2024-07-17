@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 16:35:52
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-17 10:37:24
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,6 +10,7 @@ import { store } from '@/redux/store';
 import { message } from 'antd';
 import { setAccountInfo } from '@/redux/actions/account-info';
 import axios from 'axios';
+import tracking from "@/common/tracking";
 import playSuitApi from './speed';
 import eventBus from './eventBus';
 
@@ -78,6 +79,7 @@ instance.interceptors.response.use(
       if (error.response.status === 401) {
         message.error('登录过期，请重新登录');
       } else {
+        tracking.trackNetworkError(error.response.status)
         message.error('网络错误，请稍后再试');
       }
     } else if (error.request) {

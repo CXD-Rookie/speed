@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { smart_config } from "./config";
-
+import tracking from "@/common/tracking";
 import "./index.scss";
 import playSuitApi from "@/api/speed";
 import useCefQuery from "@/hooks/useCefQuery";
@@ -135,6 +135,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
+        tracking.trackBoostDisconnectManual("手动停止加速")
         let domInfo = updateGamesDom(node);
         historyContext?.accelerateTime?.stopTimer();
 

@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-15 10:27:03
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-17 11:06:51
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateDelay } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
-
+import tracking from "@/common/tracking";
 import "./style.scss";
 import BarChart from "@/containers/BarChart/index";
 import RegionNodeSelector from "@/containers/RegionNodeSelector";
@@ -106,6 +106,7 @@ const GameDetail: React.FC = () => {
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
+        tracking.trackBoostDisconnectManual("手动停止加速")
         historyContext?.accelerateTime?.stopTimer();
 
         if ((window as any).stopDelayTimer) {

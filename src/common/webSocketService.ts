@@ -9,7 +9,7 @@
 // webSocketService.ts
 import { Dispatch } from 'redux';
 import eventBus from '../api/eventBus'; 
-
+import tracking from "@/common/tracking";
 class WebSocketService {
   private ws: WebSocket | null = null;
   private heartbeatInterval: NodeJS.Timeout | null = null;
@@ -153,6 +153,7 @@ class WebSocketService {
 
   checkNetworkStatus() {
     window.addEventListener('offline', () => {
+      tracking.trackNetworkError("网络断开offline")
       eventBus.emit('showModal', { show: true, type: "netorkError" });
     });
 

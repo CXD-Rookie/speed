@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Modal } from "antd";
-
+import tracking from "@/common/tracking";
 import "./index.scss";
 
 interface PayModalProps {

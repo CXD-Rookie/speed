@@ -12,7 +12,7 @@ import { Modal } from "antd";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useNavigate } from "react-router-dom";
-
+import tracking from "@/common/tracking";
 import eventBus from "@/api/eventBus";
 import useCefQuery from "@/hooks/useCefQuery";
 
@@ -128,6 +128,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           return;
         }
         console.log("Success response from 停止加速:", response);
+        tracking.trackBoostDisconnectManual("手动停止加速")
         removeGameList("initialize"); // 更新我的游戏
         accelerateTime?.stopTimer();
 

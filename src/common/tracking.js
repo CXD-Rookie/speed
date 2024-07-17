@@ -27,7 +27,7 @@ class Tracking {
       this.trackEvent("登录注册", "signUp_success", "status", status);
     }
   
-    trackLoginSuccess(isYouXia: boolean) {
+    trackLoginSuccess(isYouXia: string) {
       this.trackEvent("登录注册", "login_success", "youXia", isYouXia);
     }
   
@@ -61,12 +61,12 @@ class Tracking {
     //   this.trackEvent("加速", "boost_success", "packetLoss", packetLoss);
     // }
   
-    trackBoostFailure() {
-      this.trackEvent("加速", "boost_failure");
+    trackBoostFailure(errorCode: string) {
+      this.trackEvent("加速", "boost_failure",errorCode);
     }
   
-    trackBoostDisconnectManual() {
-      this.trackEvent("加速", "boost_disconnect_manual");
+    trackBoostDisconnectManual(t: string) {
+      this.trackEvent("加速", "boost_disconnect_manual",t);
     }
   
     trackBoostDisconnectPassive(reason: number) {
@@ -85,9 +85,9 @@ class Tracking {
       this.trackEvent("付费页", "purchase_success", "buyCount", buyCount);
     }
   
-    trackNetworkError(errorCode: string, retryCount: number) {
+    trackNetworkError(errorCode: string) {
       this.trackEvent("其他异常情况", "network_error", "errorCode", errorCode);
-      this.trackEvent("其他异常情况", "network_error", "retryCount", retryCount);
+      // this.trackEvent("其他异常情况", "network_error", "retryCount", retryCount);
     }
   
     trueOrFalseYouXia() {

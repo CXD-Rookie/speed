@@ -110,6 +110,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
+        tracking.trackBoostDisconnectManual("手动停止加速")
         removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
 
@@ -318,6 +319,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               console.log("成功开启真实加速中:", isCheck);
               resolve({ state: true, platform: pc_platform });
             } else {
+              tracking.trackBoostFailure("加速失败，检查文件合法性")
               eventBus.emit("showModal", {
                 show: true,
                 type: "infectedOrHijacked",
@@ -355,6 +357,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const isCheck = JSON.parse(response);
 
         if (!response) {
+          tracking.trackBoostFailure("加速失败，检查文件合法性")
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",
@@ -371,6 +374,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             }); // 加速完后更新我的游戏
             isPre = true;
           } else {
+            tracking.trackBoostFailure("加速失败，检查文件合法性")
             isPre = false;
             eventBus.emit("showModal", {
               show: true,
@@ -379,6 +383,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
+          tracking.trackBoostFailure("加速失败，检查文件合法性")
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",

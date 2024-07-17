@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
-
+import tracking from "@/common/tracking";
 import "./index.scss";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
@@ -185,6 +185,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   useEffect(() => {
+    tracking.trackPurchasePageShow();
     updateQrCode();
   }, [activeTabIndex, commodities, userToken]);
 

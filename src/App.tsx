@@ -10,7 +10,7 @@ import { updateBindPhoneState } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
-
+import tracking from "@/common/tracking";
 import "@/assets/css/App.scss";
 import AppCloseModal from "./containers/app-close";
 import PayModal from "./containers/Pay";
@@ -128,6 +128,7 @@ const App: React.FC = (props: any) => {
       jsonString || "",
       function (response: any) {
         console.log("Success response from 停止加速:", response);
+        tracking.trackBoostDisconnectManual("手动停止加速")
         historyContext?.accelerateTime?.stopTimer();
 
         if ((window as any).stopDelayTimer) {
@@ -153,6 +154,7 @@ const App: React.FC = (props: any) => {
       "NativeApi_StopProxy",
       jsonString || "",
       function (response: any) {
+        tracking.trackBoostDisconnectPassive(0);
         console.log(response, "------------加速异常-----------");
       }
     );
@@ -251,6 +253,7 @@ const App: React.FC = (props: any) => {
       jsonString,
       async function (response: any) {
         console.log(response, "----------------------------------");
+        tracking.trackBoostDisconnectManual("手动停止加速")
         let list = await removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
 
@@ -351,7 +354,7 @@ const App: React.FC = (props: any) => {
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
-
+        tracking.trackBoostDisconnectManual("手动停止加速")
         if ((window as any).stopDelayTimer) {
           (window as any).stopDelayTimer();
         }
@@ -514,6 +517,7 @@ const App: React.FC = (props: any) => {
 
           if (["1", "2"].includes(bind_type)) {
             setThirdBindType(type_obj?.[bind_type]); // 定义成功类型
+            tracking.trackLoginSuccess("0");
             setBindOpen(true); // 触发成功弹窗
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
           }
@@ -555,6 +559,7 @@ const App: React.FC = (props: any) => {
         event.message === "Network Error" ||
         (event.error && event.error.message === "Network Error")
       ) {
+        tracking.trackNetworkError(event.error.message)
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -566,6 +571,7 @@ const App: React.FC = (props: any) => {
         event.reason.message === "Network Error" ||
         (event.reason && event.reason.message === "Network Error")
       ) {
+        tracking.trackNetworkError(event.error.message)
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
