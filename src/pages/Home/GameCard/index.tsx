@@ -67,6 +67,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     identifyAccelerationData,
     removeGameList,
     accelerateGameToList,
+    checkGameisFree,
   } = useGamesInitialize();
 
   const { handleUserInfo } = useHandleUserInfo();
@@ -420,7 +421,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 点击立即加速
-  const accelerateDataHandling = async (option: any, type = "default") => {
+  const accelerateDataHandling = async (option: any) => {
     // 是否登录
     if (accountInfo?.isLogin) {
       let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
@@ -432,6 +433,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         let game_list = getGameList(); // 获取当前我的游戏列表
         let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
+
+        option = await checkGameisFree(option);
 
         // 是否实名认证 isRealNamel === "1" 是
         // 是否是未成年

@@ -8,6 +8,7 @@
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
  */
 import { useHandleUserInfo } from "./useHandleUserInfo";
+import gameApi from "@/api/gamelist";
 
 export const useGamesInitialize = () => {
   const { handleUserInfo } = useHandleUserInfo();
@@ -176,6 +177,36 @@ export const useGamesInitialize = () => {
     }
   }
 
+  const checkGameisFree = async (option) => {
+    try {
+      const res = await gameApi.gameList({ s: option?.name });
+      const data = res?.data?.list || []
+      const result = data.filter(item => item?.id === option?.id)?.[0] || { ...option }
+      const return_result = {
+        ...option,
+        // tags: result?.tags,
+        // free_time: result?.free_time
+        tags: ["限时免费"],
+        free_time: "永久"
+      };
+      let game_list = getGameList();
+
+      game_list = game_list.map(item => {
+        if (item?.id === option?.id) {
+          return return_result
+        }
+
+        return item
+      })
+
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(game_list));
+
+      return return_result
+    } catch (error) {
+      console.error("Error fetching games:", error);
+    }
+  }
+
   return {
     getGameList,
     appendGameToList,
@@ -183,6 +214,7 @@ export const useGamesInitialize = () => {
     removeGameList,
     accelerateGameToList,
     chooseDefaultNode,
-    forceStopAcceleration
+    forceStopAcceleration,
+    checkGameisFree
   };
 };
