@@ -106,7 +106,7 @@ const GameDetail: React.FC = () => {
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速")
+        tracking.trackBoostDisconnectManual("手动停止加速");
         historyContext?.accelerateTime?.stopTimer();
 
         if ((window as any).stopDelayTimer) {
@@ -156,7 +156,8 @@ const GameDetail: React.FC = () => {
   }
 
   const findMappingIcon = (data: any) => {
-    const platform = data?.acc_platform || [];
+    // const platform = data?.pc_platform || [];
+    const platform = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const iconMap: any = {
       "1": steamIcon,
       "2": garenaIcon,
@@ -175,7 +176,7 @@ const GameDetail: React.FC = () => {
 
     if (Array.isArray(platform) && platform?.length > 0) {
       resultData = platform.map((child: any) => {
-        if (Object.keys(iconMap).includes(child)) {
+        if (Object.keys(iconMap).includes(String(child))) {
           console.log(child);
 
           return {
@@ -306,11 +307,13 @@ const GameDetail: React.FC = () => {
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>
             <div className="platfrom">
-              已同步加速
-              {findMappingIcon(detailData)?.length > 0 &&
-                findMappingIcon(detailData)?.map((item: any) => {
-                  return <img key={item?.id} src={item?.icon} alt="" />;
-                })}
+              <div className="text">已同步加速</div>
+              <div className="icon-box">
+                {findMappingIcon(detailData)?.length > 0 &&
+                  findMappingIcon(detailData)?.map((item: any) => {
+                    return <img key={item?.id} src={item?.icon} alt="" />;
+                  })}
+              </div>
             </div>
             <Button
               className="on-game game-btn"

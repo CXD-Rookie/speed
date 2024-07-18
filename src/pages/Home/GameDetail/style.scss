@@ -65,7 +65,7 @@
         }
 
         .platfrom {
-          width: 15.4vw;
+          width: 18vw;
           color: #999;
           font-size: 1.4vw;
           margin: 0 auto;
@@ -74,11 +74,23 @@
           justify-content: center;
           column-gap: 0.4vw;
 
-          img {
-            width: 1.6vw;
-            height: 1.6vw;
+          & .text {
+            width: 14vw;
+          }
+
+          & .icon-box {
+            display: flex;
+            column-gap: 0.4vw;
+            row-gap: 1vh;
+            flex-wrap: wrap;
+
+            img {
+              width: 1.6vw;
+              height: 1.6vw;
+            }
           }
         }
+
         .game-btn {
           width: 16vw;
           height: 6.6vh;
