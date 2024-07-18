@@ -320,7 +320,37 @@ const GameDetail: React.FC = () => {
               type="default"
               onClick={showModalActive}
             >
-              <img src={activateIcon} width={18} height={18} alt="" />
+              <img
+                src={activateIcon}
+                width={18}
+                height={18}
+                alt=""
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const method = detailData?.activation_method;
+
+                  if (method) {
+                    new Promise((resolve, reject) => {
+                      (window as any).NativeApi_AsynchronousRequest(
+                        "NativeApi_StartProcess",
+                        JSON.stringify({
+                          params: { path: method?.filePath },
+                        }),
+                        (response: string) => {
+                          const parsedResponse = JSON.parse(response);
+                          if (parsedResponse.success === 1) {
+                            resolve(parsedResponse);
+                          } else {
+                            reject(parsedResponse);
+                          }
+                        }
+                      );
+                    });
+                  } else {
+                    showModalActive();
+                  }
+                }}
+              />
               <span
                 onClick={(e) => {
                   e.stopPropagation();
