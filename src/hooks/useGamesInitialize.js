@@ -184,10 +184,8 @@ export const useGamesInitialize = () => {
       const result = data.filter(item => item?.id === option?.id)?.[0] || { ...option }
       const return_result = {
         ...option,
-        // tags: result?.tags,
-        // free_time: result?.free_time
-        tags: ["限时免费"],
-        free_time: "永久"
+        tags: result?.tags,
+        free_time: result?.free_time
       };
       let game_list = getGameList();
 
