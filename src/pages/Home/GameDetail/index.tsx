@@ -156,8 +156,7 @@ const GameDetail: React.FC = () => {
   }
 
   const findMappingIcon = (data: any) => {
-    // const platform = data?.pc_platform || [];
-    const platform = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const platform = data?.pc_platform || [];
     const iconMap: any = {
       "1": steamIcon,
       "2": garenaIcon,
@@ -177,8 +176,6 @@ const GameDetail: React.FC = () => {
     if (Array.isArray(platform) && platform?.length > 0) {
       resultData = platform.map((child: any) => {
         if (Object.keys(iconMap).includes(String(child))) {
-          console.log(child);
-
           return {
             id: child,
             icon: iconMap?.[child],
@@ -253,7 +250,9 @@ const GameDetail: React.FC = () => {
           const delay = JSON.parse(response)?.delay;
           const lost_bag = delay < 2 ? 2 : delay;
           // 10秒比较一次是否到期，到期后停止加速
-          forceStopAcceleration(accountInfo, stopSpeed);
+
+          if (accountInfo?.userInfo?.is_vip)
+            forceStopAcceleration(accountInfo, stopSpeed);
 
           setChartData((chart: any) => {
             let chart_list = [...chart];
