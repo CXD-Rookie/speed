@@ -367,8 +367,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             type: "infectedOrHijacked",
           });
         }
-        handleSuitDomList(option);
-        accelerateGameToList(option);
+
         // 暂时注释 实际生产打开
         if (isCheck?.pre_check_status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
@@ -460,6 +459,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
 
           if (
+            userInfo?.is_vip &&
             time - renewalTime > 86400 &&
             userInfo?.vip_expiration_time - time <= 432000
           ) {
