@@ -110,7 +110,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速")
+        tracking.trackBoostDisconnectManual("手动停止加速");
         removeGameList("initialize"); // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
 
@@ -256,12 +256,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const handleSuitDomList = async (option: any) => {
     try {
       tracking.trackBoostStart(option.name);
-      tracking.trackBoostSuccess(option.name,option.region.select_region.u+option.region.select_region.fu,option?.dom_info?.select_dom);
+      tracking.trackBoostSuccess(
+        option.name,
+        option.region.select_region.u + option.region.select_region.fu,
+        option?.dom_info?.select_dom
+      );
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
-      console.log(WhiteBlackList.blacklist.domain)
-      console.log(WhiteBlackList.blacklist.ipv4)
+      console.log(WhiteBlackList.blacklist.domain);
+      console.log(WhiteBlackList.blacklist.ipv4);
       let { executable, pc_platform } = gameFiles;
 
       if (pc_platform?.length > 0) {
@@ -319,7 +323,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               console.log("成功开启真实加速中:", isCheck);
               resolve({ state: true, platform: pc_platform });
             } else {
-              tracking.trackBoostFailure("加速失败，检查文件合法性")
+              tracking.trackBoostFailure("加速失败，检查文件合法性");
               eventBus.emit("showModal", {
                 show: true,
                 type: "infectedOrHijacked",
@@ -357,7 +361,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const isCheck = JSON.parse(response);
 
         if (!response) {
-          tracking.trackBoostFailure("加速失败，检查文件合法性")
+          tracking.trackBoostFailure("加速失败，检查文件合法性");
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",
@@ -374,7 +378,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             }); // 加速完后更新我的游戏
             isPre = true;
           } else {
-            tracking.trackBoostFailure("加速失败，检查文件合法性")
+            tracking.trackBoostFailure("加速失败，检查文件合法性");
             isPre = false;
             eventBus.emit("showModal", {
               show: true,
@@ -383,7 +387,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
-          tracking.trackBoostFailure("加速失败，检查文件合法性")
+          tracking.trackBoostFailure("加速失败，检查文件合法性");
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",
@@ -506,9 +510,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   alt=""
                   onClick={(e) => {
                     e.stopPropagation();
-                    // setIsOpenRegion(true);
-                    // setSelectAccelerateOption(option);
-                    accelerateDataHandling(option);
+                    setIsOpenRegion(true);
+                    setSelectAccelerateOption(option);
+                    // accelerateDataHandling(option);
                   }}
                 />
                 <img
@@ -636,6 +640,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           onConfirm={stopAcceleration}
         />
       ) : null}
+      {/* 节点区服弹窗 */}
       {isOpenRegion ? (
         <RegionNodeSelector
           open={isOpenRegion}
@@ -645,7 +650,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             triggerDataUpdate();
             setIsOpenRegion(false);
           }}
-          notice={(e) => accelerateProcessing(e)}
+          notice={(e) => accelerateDataHandling(e)}
         />
       ) : null}
       {/* 续费提醒确认弹窗 */}
