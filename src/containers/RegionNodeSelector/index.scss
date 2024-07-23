@@ -330,3 +330,11 @@
   border-left: 0.5vw solid transparent;
   border-right: 0.5vw solid transparent;
 }
+
+/* 覆盖默认表头样式，去掉多余的边框 */
+.ant-table th {
+  border-bottom: none; /* 移除底部边框 */
+}
+.ant-table-cell-scrollbar {
+  display: none; /* 隐藏表头的滚动条补丁 */
+}

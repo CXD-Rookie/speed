@@ -520,6 +520,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
               <Table
                 rowKey="id"
+                scroll={{ y: 200 }} // 设置表格的最大高度为240px，超过部分滚动
                 dataSource={regionDomList}
                 pagination={false}
                 loading={tableLoading}

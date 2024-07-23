@@ -106,25 +106,25 @@ const Home: React.FC = () => {
     }
   }, [location]);
 
-  useEffect(() => {
-    const handleWheel = throttle((event: WheelEvent) => {
-      if (event.deltaY > 0) {
-        // 滑轮向下滑动，跳转到 A 页面
+  // useEffect(() => {
+  //   const handleWheel = throttle((event: WheelEvent) => {
+  //     if (event.deltaY > 0) {
+  //       // 滑轮向下滑动，跳转到 A 页面
 
-        navigate("/myGames");
-      } else if (event.deltaY < 0) {
-        // 滑轮向上滑动，返回上一页
+  //       navigate("/myGames");
+  //     } else if (event.deltaY < 0) {
+  //       // 滑轮向上滑动，返回上一页
 
-        navigate("/home");
-      }
-    }, 500); // 设置节流间隔时间为500ms
+  //       navigate("/home");
+  //     }
+  //   }, 500); // 设置节流间隔时间为500ms
 
-    window.addEventListener("wheel", handleWheel);
+  //   window.addEventListener("wheel", handleWheel);
 
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-    };
-  }, [navigate]);
+  //   return () => {
+  //     window.removeEventListener("wheel", handleWheel);
+  //   };
+  // }, [navigate]);
 
   return (
     <div className="home-module">
