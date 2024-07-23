@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-24 11:57:30
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-15 16:58:15
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-23 18:41:27
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\setting\index.tsx
@@ -660,7 +660,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="cardName">
                   <div className="repair-tool-title">修复LSP</div>
                   <p className="repair-tool-description">
-                    修复病毒感染或被劫持导致的加速器安全问题
+                  修复由于网络协议栈异常导致的应用程序无法连接、网络请求超时等问题
                   </p>
                 </div>
               </Card>
