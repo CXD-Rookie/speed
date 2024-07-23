@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-22 14:34:24
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-17 14:58:21
+ * @LastEditTime: 2024-07-23 18:47:56
  * @FilePath: \speed\src\containers\searchBar\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -32,7 +32,7 @@ const SearchBar: React.FC = () => {
   const navigate = useNavigate();
 
   const { appendGameToList } = useGamesInitialize();
-
+  const [placeholder, setPlaceholder] = useState('搜索游戏');
   const enterSign = useSelector((state: any) => state.searchEnter);
   const query = useSelector((state: RootState) => state.search.query);
   const results = useSelector((state: RootState) => state.search.results) || [];
@@ -71,11 +71,21 @@ const SearchBar: React.FC = () => {
         </div>
         <input
           type="text"
-          placeholder="搜索游戏"
+          placeholder={placeholder}
           value={query}
           onChange={handleSearch}
-          onFocus={() => query.trim().length > 0 && setShowDropdown(true)}
-          onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+          // onFocus={() =>  query.trim().length > 0 && setShowDropdown(true)}
+          onFocus={() => {
+            setPlaceholder('');
+            if (query.trim().length > 0) {
+              setShowDropdown(true);
+            }
+          }}
+          // onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+          onBlur={() => {
+            setTimeout(() => setShowDropdown(false), 200);
+            setPlaceholder('搜索游戏');
+          }}
           onKeyDown={handleEnterKeyPress}
         />
       </div>
