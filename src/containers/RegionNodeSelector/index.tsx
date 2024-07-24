@@ -135,7 +135,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速")
+        tracking.trackBoostDisconnectManual("手动停止加速");
         let domInfo = updateGamesDom(node);
         historyContext?.accelerateTime?.stopTimer();
 
@@ -259,7 +259,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
             let default_node = {
               ...node,
               delay: "超时",
-              packetLoss: 10,
+              packetLoss: 25,
               mode: "进程模式",
             };
 
@@ -277,6 +277,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 resolve({
                   ...default_node,
                   delay: jsonResponse.delay,
+                  packetLoss: jsonResponse.delay === 9999 ? 25 : 0,
                 });
               }
             );
