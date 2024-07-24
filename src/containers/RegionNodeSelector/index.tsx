@@ -531,7 +531,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                   onClick: () => setSelectedNode(record),
                 })}
               >
-                <Column title="节点" dataIndex="name" key="name" />
+                <Column title="节点" dataIndex="name" key="name" width={500} />
                 <Column
                   title="游戏延迟"
                   dataIndex="delay"
