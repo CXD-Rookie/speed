@@ -496,7 +496,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("8888888888888888888888888888888888")
         event.stopPropagation();
         setIsOpenRegion(true);
-        setSelectAccelerateOption(options);
+        setSelectAccelerateOption(option);
         // accelerateDataHandling(option);
       }
     } else {
