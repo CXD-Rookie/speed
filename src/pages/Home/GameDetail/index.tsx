@@ -1,8 +1,8 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-16 16:47:21
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-24 14:51:17
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -315,71 +315,50 @@ const GameDetail: React.FC = () => {
               </div>
             </div>
             <Button
-              className="on-game game-btn"
+              className="on-game game-btn game-out"
               type="default"
-              onClick={showModalActive}
+              onClick={(e) => {
+                e.stopPropagation();
+                const method = detailData?.activation_method;
+
+                if (method) {
+                  new Promise((resolve, reject) => {
+                    (window as any).NativeApi_AsynchronousRequest(
+                      "NativeApi_StartProcess",
+                      JSON.stringify({
+                        params: { path: method?.filePath },
+                      }),
+                      (response: string) => {
+                        const parsedResponse = JSON.parse(response);
+                        if (parsedResponse.success === 1) {
+                          resolve(parsedResponse);
+                        } else {
+                          reject(parsedResponse);
+                        }
+                      }
+                    );
+                  });
+                } else {
+                  showModalActive();
+                }
+              }}
             >
               <img
                 src={activateIcon}
                 width={18}
                 height={18}
-                alt=""
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const method = detailData?.activation_method;
-
-                  if (method) {
-                    new Promise((resolve, reject) => {
-                      (window as any).NativeApi_AsynchronousRequest(
-                        "NativeApi_StartProcess",
-                        JSON.stringify({
-                          params: { path: method?.filePath },
-                        }),
-                        (response: string) => {
-                          const parsedResponse = JSON.parse(response);
-                          if (parsedResponse.success === 1) {
-                            resolve(parsedResponse);
-                          } else {
-                            reject(parsedResponse);
-                          }
-                        }
-                      );
-                    });
-                  } else {
-                    showModalActive();
-                  }
-                }}
-              />
-              <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const method = detailData?.activation_method;
-
-                  if (method) {
-                    new Promise((resolve, reject) => {
-                      (window as any).NativeApi_AsynchronousRequest(
-                        "NativeApi_StartProcess",
-                        JSON.stringify({
-                          params: { path: method?.filePath },
-                        }),
-                        (response: string) => {
-                          const parsedResponse = JSON.parse(response);
-                          if (parsedResponse.success === 1) {
-                            resolve(parsedResponse);
-                          } else {
-                            reject(parsedResponse);
-                          }
-                        }
-                      );
-                    });
-                  } else {
-                    showModalActive();
-                  }
-                }}
-              >
+                alt=""/>
+              <span>
                 启动游戏
               </span>
               <div className="line" />
+            </Button>
+
+            <Button
+              className="on-game game-btn game-in"
+              type="default"
+              onClick={showModalActive}
+            >
               <img src={detailsCustomIcon} width={18} height={18} alt="" />
             </Button>
             <Button

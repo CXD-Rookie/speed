@@ -101,7 +101,18 @@
           margin-left: 5.1vw;
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
+        }
+
+        .game-in {
+          width: 5vw !important;
+          /* display: flex !important; */
+          /* text-align: right; */
+          float: right;
+          /* justify-content: flex-end; */
+          position: relative;
+          bottom: 8.4vw;
+          right: 5.5vw;
         }
 
         .on-game {
