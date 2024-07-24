@@ -460,8 +460,7 @@ const App: React.FC = (props: any) => {
       const version = data?.data?.version;
       dispatch(setVersion(version));
       if (
-        token &&
-        (isClosed === null || isClosed === undefined || isClosed === "")
+        token && (isClosed === null || isClosed === undefined || isClosed === "") && (version != null || version != undefined || version != "")
       ) {
         //升级弹窗要在登录之后才会弹出
         let isTrue = compareVersions(
