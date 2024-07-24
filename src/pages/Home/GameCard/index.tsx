@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-17 11:24:11
+ * @LastEditTime: 2024-07-24 10:58:22
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -91,8 +91,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const userToken = localStorage.getItem("token");
   const jsKey = localStorage.getItem("StartKey");
+
+  const isRealNamel = localStorage.getItem("isRealName");
 
   // 停止加速
   const stopAcceleration = () => {
@@ -476,6 +479,33 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     }
   };
 
+
+  const openModal = async (event: React.MouseEvent<HTMLImageElement>, option: any) => {
+
+    const latestAccountInfo = store.getState().accountInfo;
+
+    if (accountInfo?.isLogin) {
+      if (isRealNamel === "1") {
+        dispatch(openRealNameModal());
+        return;
+      } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
+        setIsMinorOpen(true);
+        setMinorType("recharge");
+        return;
+      } else {
+        console.log("8888888888888888888888888888888888")
+        event.stopPropagation();
+        setIsOpenRegion(true);
+        setSelectAccelerateOption(options);
+        // accelerateDataHandling(option);
+      }
+    } else {
+      // 3个参数 用户信息 是否登录 是否显示登录
+      dispatch(setAccountInfo(undefined, undefined, true));
+    }
+
+  };
+
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
@@ -509,12 +539,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   className="select-game-img"
                   src={select}
                   alt=""
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsOpenRegion(true);
-                    setSelectAccelerateOption(option);
-                    // accelerateDataHandling(option);
-                  }}
+                  onClick={(event) => openModal(event, option)}
                 />
                 <img
                   className="clear-game-img"
