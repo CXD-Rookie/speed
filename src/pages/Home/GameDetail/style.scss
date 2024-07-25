@@ -105,16 +105,17 @@
         }
 
         .game-in {
-          width: 5vw !important;
-          /* display: flex !important; */
-          /* text-align: right; */
+          // width: 5vw !important;
           float: right;
-          /* justify-content: flex-end; */
           position: relative;
           bottom: 8.4vw;
           right: 5.5vw;
         }
 
+        .Launching {
+
+        }
+        
         .on-game {
           color: #fff;
           background-color: #f86c34;

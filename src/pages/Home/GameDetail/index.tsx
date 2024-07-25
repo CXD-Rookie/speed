@@ -314,53 +314,50 @@ const GameDetail: React.FC = () => {
                   })}
               </div>
             </div>
-            <Button
-              className="on-game game-btn game-out"
-              type="default"
-              onClick={(e) => {
-                e.stopPropagation();
-                const method = detailData?.activation_method;
+            <div className="game-btn" style={{ background: "red" }}>
+              <Button
+                className="Launching"
+                type="default"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const method = detailData?.activation_method;
 
-                if (method) {
-                  new Promise((resolve, reject) => {
-                    (window as any).NativeApi_AsynchronousRequest(
-                      "NativeApi_StartProcess",
-                      JSON.stringify({
-                        params: { path: method?.filePath },
-                      }),
-                      (response: string) => {
-                        const parsedResponse = JSON.parse(response);
-                        if (parsedResponse.success === 1) {
-                          resolve(parsedResponse);
-                        } else {
-                          reject(parsedResponse);
+                  if (method) {
+                    new Promise((resolve, reject) => {
+                      (window as any).NativeApi_AsynchronousRequest(
+                        "NativeApi_StartProcess",
+                        JSON.stringify({
+                          params: { path: method?.filePath },
+                        }),
+                        (response: string) => {
+                          const parsedResponse = JSON.parse(response);
+                          if (parsedResponse.success === 1) {
+                            resolve(parsedResponse);
+                          } else {
+                            reject(parsedResponse);
+                          }
                         }
-                      }
-                    );
-                  });
-                } else {
-                  showModalActive();
-                }
-              }}
-            >
-              <img
-                src={activateIcon}
-                width={18}
-                height={18}
-                alt=""/>
-              <span>
-                启动游戏
-              </span>
-              <div className="line" />
-            </Button>
+                      );
+                    });
+                  } else {
+                    showModalActive();
+                  }
+                }}
+              >
+                <img src={activateIcon} width={18} height={18} alt="" />
+                <span>启动游戏</span>
+                <div className="line" />
+              </Button>
 
-            <Button
-              className="on-game game-btn game-in"
-              type="default"
-              onClick={showModalActive}
-            >
-              <img src={detailsCustomIcon} width={18} height={18} alt="" />
-            </Button>
+              <Button
+                className="on-game game-in"
+                type="default"
+                onClick={showModalActive}
+              >
+                <img src={detailsCustomIcon} width={18} height={18} alt="" />
+              </Button>
+            </div>
+
             <Button
               className="down-game game-btn"
               type="default"
