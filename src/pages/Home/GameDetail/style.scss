@@ -94,29 +94,43 @@
         .game-btn {
           width: 16vw;
           height: 6.6vh;
-          font-size: 1.4vw;
+          font-size: 1.6vw;
           border-radius: 3.3vh;
           border: none;
           margin-top: 6vh;
           margin-left: 5.1vw;
           display: flex;
           align-items: center;
-          justify-content: flex-start;
-        }
-
-        .game-in {
-          // width: 5vw !important;
-          float: right;
-          position: relative;
-          bottom: 8.4vw;
-          right: 5.5vw;
+          justify-content: center;
         }
 
         .Launching {
+          width: 11vw;
+          height: 6.6vh;
+          font-size: 1.4vw;
+          border-radius: 3.3vh 0 0 3.3vh;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          color: #fff;
+          background-color: #f86c34;
 
+          img {
+            width: 1.8vw;
+            height: 2.4vh;
+            margin-right: 0.4vw;
+          }
         }
         
-        .on-game {
+        .path {
+          width: 5vw;
+          height: 6.6vh;
+          font-size: 1.4vw;
+          border-radius: 0 3.3vh 3.3vh 0;
+          border: none;
+          display: flex;
+          align-items: center;
           color: #fff;
           background-color: #f86c34;
 
@@ -125,13 +139,12 @@
             height: 3vh;
             opacity: 0.4;
             border: 0.05vw solid #ffffff;
-            margin: 0 0.8vw 0 1.4vw;
+            margin-right: 0.8vw;
           }
 
           img {
             width: 1.8vw;
             height: 2.4vh;
-            margin-right: 0.4vw;
           }
         }
 

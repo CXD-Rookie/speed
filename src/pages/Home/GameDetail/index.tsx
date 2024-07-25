@@ -314,9 +314,9 @@ const GameDetail: React.FC = () => {
                   })}
               </div>
             </div>
-            <div className="game-btn" style={{ background: "red" }}>
+            <div className="game-btn">
               <Button
-                className="Launching"
+                className="Launching on-game"
                 type="default"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -346,14 +346,10 @@ const GameDetail: React.FC = () => {
               >
                 <img src={activateIcon} width={18} height={18} alt="" />
                 <span>启动游戏</span>
-                <div className="line" />
               </Button>
 
-              <Button
-                className="on-game game-in"
-                type="default"
-                onClick={showModalActive}
-              >
+              <Button className="path" type="default" onClick={showModalActive}>
+                <div className="line" />
                 <img src={detailsCustomIcon} width={18} height={18} alt="" />
               </Button>
             </div>
