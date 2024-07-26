@@ -311,7 +311,7 @@ const App: React.FC = (props: any) => {
     };
   }, [navigate]);
 
-  function compareVersions(version1: string, version2: string) {
+  function compareVersions(version1: string = "", version2: string = "") {
     // 将版本号按点号分割成数组
     const parts1 = version1.split(".").map(Number);
     const parts2 = version2.split(".").map(Number);
