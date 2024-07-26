@@ -128,7 +128,7 @@ const App: React.FC = (props: any) => {
       jsonString || "",
       function (response: any) {
         console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速")
+        tracking.trackBoostDisconnectManual("手动停止加速");
         historyContext?.accelerateTime?.stopTimer();
 
         if ((window as any).stopDelayTimer) {
@@ -253,15 +253,16 @@ const App: React.FC = (props: any) => {
       jsonString,
       async function (response: any) {
         console.log(response, "----------------------------------");
-        tracking.trackBoostDisconnectManual("手动停止加速")
-        let list = await removeGameList("initialize"); // 更新我的游戏
+        tracking.trackBoostDisconnectManual("手动停止加速");
+        let list = (await removeGameList("initialize")) || []; // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
 
         if ((window as any).stopDelayTimer) {
           (window as any).stopDelayTimer();
         }
+        console.log(list);
 
-        if (list?.length) {
+        if (list?.length >= 0) {
           (window as any).NativeApi_ExitProcess();
         }
       }
@@ -354,7 +355,7 @@ const App: React.FC = (props: any) => {
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速")
+        tracking.trackBoostDisconnectManual("手动停止加速");
         if ((window as any).stopDelayTimer) {
           (window as any).stopDelayTimer();
         }
@@ -460,7 +461,9 @@ const App: React.FC = (props: any) => {
       const version = data?.data?.version;
       dispatch(setVersion(version));
       if (
-        token && (isClosed === null || isClosed === undefined || isClosed === "") && (version != null || version != undefined || version != "")
+        token &&
+        (isClosed === null || isClosed === undefined || isClosed === "") &&
+        (version != null || version != undefined || version != "")
       ) {
         //升级弹窗要在登录之后才会弹出
         let isTrue = compareVersions(
@@ -558,7 +561,7 @@ const App: React.FC = (props: any) => {
         event.message === "Network Error" ||
         (event.error && event.error.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error.message)
+        tracking.trackNetworkError(event.error.message);
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -570,7 +573,7 @@ const App: React.FC = (props: any) => {
         event.reason.message === "Network Error" ||
         (event.reason && event.reason.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error.message)
+        tracking.trackNetworkError(event.error.message);
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -677,104 +680,71 @@ const App: React.FC = (props: any) => {
                 let close = localStorage.getItem("client_settings");
                 let action = close ? JSON.parse(close)?.close_button_action : 2;
                 let noMorePrompts = localStorage.getItem("noMorePrompts");
-                console.log(noMorePrompts, "------------------------");
-                console.log(action, "actionaction");
+
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
-                if (
-                  action === 0 &&
-                  (noMorePrompts === "false" ||
-                    noMorePrompts === null ||
-                    noMorePrompts === undefined)
-                ) {
-                  // setIsAppCloseOpen(true); // 弹出设置选择框
-                  // (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
-                  setIsAppCloseOpen(true);
-                } else if (action === 0 && noMorePrompts === "true") {
-                  (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
-                } else if (
-                  action === 1 &&
-                  identifyAccelerationData()?.[0] &&
-                  (noMorePrompts === "false" ||
-                    noMorePrompts === null ||
-                    noMorePrompts === undefined)
-                ) {
+                // 如果当前游戏是加速中并且是关闭主程序
+                if (action === 1 && identifyAccelerationData()?.[0]) {
+                  console.log(11);
                   setExitOpen(true); //确定要退出加速器弹窗
-                } else if (
-                  action === 1 &&
-                  identifyAccelerationData()?.[0] &&
-                  noMorePrompts === "true"
-                ) {
-                  setExitOpen(true); //确定要退出加速器弹窗
-                } else if (action === 1 && noMorePrompts === "true") {
-                  // setIsAppCloseOpen(true); // 弹出设置选择框
-                  (window as any).NativeApi_ExitProcess(); //关闭主程序
-                } else if (
-                  action === 1 &&
-                  (noMorePrompts === "false" ||
-                    noMorePrompts === null ||
-                    noMorePrompts === undefined)
-                ) {
-                  setIsAppCloseOpen(true);
                 } else {
-                  setIsAppCloseOpen(true);
+                  console.log(22);
+
+                  // 提示存在
+                  if (!(String(noMorePrompts) === "true")) {
+                    console.log(33);
+
+                    setIsAppCloseOpen(true);
+                  } else {
+                    console.log(66);
+
+                    if (action === 0) {
+                      console.log(44);
+
+                      (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+                    } else if (action === 1) {
+                      console.log(555);
+
+                      (window as any).NativeApi_ExitProcess(); //关闭主程序
+                    }
+                  }
                 }
 
-                // let close = localStorage.getItem("client_settings");
-                // let action = close ? JSON.parse(close)?.close_button_action : 2;
-                // let noMorePrompts = localStorage.getItem("noMorePrompts");
-
-                // const identifyData = identifyAccelerationData()?.[0];
-
-                // const actionMap:any = {
-                //     0: {
-                //         true: () => (window as any).NativeApi_MinimizeToTray(),
-                //         false: () => setIsAppCloseOpen(true),
-                //         null: () => setIsAppCloseOpen(true),
-                //         undefined: () => setIsAppCloseOpen(true)
-                //     },
-                //     1: {
-                //         true: () => {
-                //             if (identifyData) {
-                //                 setExitOpen(true);
-                //             } else {
-                //                 (window as any).NativeApi_ExitProcess();
-                //             }
-                //         },
-                //         false: () => {
-                //             if (identifyData) {
-                //                 setExitOpen(true);
-                //             } else {
-                //                 setIsAppCloseOpen(true);
-                //             }
-                //         },
-                //         null: () => {
-                //             if (identifyData) {
-                //                 setExitOpen(true);
-                //             } else {
-                //                 setIsAppCloseOpen(true);
-                //             }
-                //         },
-                //         undefined: () => {
-                //             if (identifyData) {
-                //                 setExitOpen(true);
-                //             } else {
-                //                 setIsAppCloseOpen(true);
-                //             }
-                //         }
-                //     },
-                //     2: {
-                //         default: () => setIsAppCloseOpen(true)
-                //     }
-                // };
-
-                // const noMorePromptsKey:any = noMorePrompts === "true" ? "true" : (noMorePrompts === "false" ? "false" : noMorePrompts);
-                // if (actionMap[action] && actionMap[action][noMorePromptsKey] !== undefined) {
-                //     actionMap[action][noMorePromptsKey]();
-                // } else if (actionMap[action] && actionMap[action]["default"] !== undefined) {
-                //     actionMap[action]["default"]();
-                // } else {
+                //   if (
+                //     action === 0 &&
+                //     (noMorePrompts === "false" ||
+                //       noMorePrompts === null ||
+                //       noMorePrompts === undefined)
+                //   ) {
                 //     setIsAppCloseOpen(true);
-                // }
+                //   } else if (action === 0 && noMorePrompts == "true") {
+                //     (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+                //   } else if (
+                //     action === 1 &&
+                //     identifyAccelerationData()?.[0] &&
+                //     (noMorePrompts === "false" ||
+                //       noMorePrompts === null ||
+                //       noMorePrompts === undefined)
+                //   ) {
+                //     setExitOpen(true); //确定要退出加速器弹窗
+                //   } else if (
+                //     action === 1 &&
+                //     identifyAccelerationData()?.[0] &&
+                //     noMorePrompts == "true"
+                //   ) {
+                //     setExitOpen(true); //确定要退出加速器弹窗
+                //   } else if (action === 1 && noMorePrompts === "true") {
+                //     // setIsAppCloseOpen(true); // 弹出设置选择框
+                //     (window as any).NativeApi_ExitProcess(); //关闭主程序
+                //   } else if (
+                //     action === 1 &&
+                //     (noMorePrompts === "false" ||
+                //       noMorePrompts === null ||
+                //       noMorePrompts === undefined)
+                //   ) {
+                //     setIsAppCloseOpen(true);
+                //   } else {
+                //     setIsAppCloseOpen(true);
+                //   }
               }}
               className="closeType"
               src={closeIcon}
@@ -875,13 +845,22 @@ const App: React.FC = (props: any) => {
           onConfirm={(state) => {
             console.log(state, "----------------------------");
             let is_acc = identifyAccelerationData()?.[0];
+            console.log(state);
 
-            if (state === 1) {
+            if (state === 0) {
+              console.log(11);
+
               (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
             } else {
+              console.log(22);
+
               if (is_acc) {
+                console.log(33);
+
                 setExitOpen(is_acc); // 有加速的游戏，二次确认
               } else {
+                console.log(44);
+
                 handleExitProcess(); // 直接关闭
               }
             }

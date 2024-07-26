@@ -284,21 +284,17 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const handleRadioChange = (e: any) => {
     const value = e.target.value;
-    setCloseWindow(value);
-
     const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
-    sign.close_button_action = value === "2" ? 1 : 0; // 1 表示关闭程序，0 表示隐藏到托盘
-    localStorage.setItem("client_settings", JSON.stringify(sign));
+    const action_value = value === "2" ? 1 : 0;
+
+    sign.close_button_action = action_value; // 1 表示关闭程序，0 表示隐藏到托盘
 
     console.log("Updated client_settings in localStorage:", sign);
-    if (value === "2") {
-      localStorage.setItem("noMorePrompts", String(true));
-    }
 
-    (window as any).NativeApi_UpdateConfig(
-      "close_button_action",
-      value === "2" ? 1 : 0
-    );
+    setCloseWindow(value);
+    localStorage.setItem("noMorePrompts", String(true));
+    localStorage.setItem("client_settings", JSON.stringify(sign));
+    (window as any).NativeApi_UpdateConfig("close_button_action", action_value);
   };
 
   const native_version = () => {
@@ -660,7 +656,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="cardName">
                   <div className="repair-tool-title">修复LSP</div>
                   <p className="repair-tool-description">
-                  修复由于网络协议栈异常导致的应用程序无法连接、网络请求超时等问题
+                    修复由于网络协议栈异常导致的应用程序无法连接、网络请求超时等问题
                   </p>
                 </div>
               </Card>
