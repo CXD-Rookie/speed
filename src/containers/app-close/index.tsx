@@ -94,8 +94,14 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
           value={eventType}
           onChange={handleRadioChange}
         >
-          <Radio value={"0"}>隐藏任务到托盘</Radio>
-          <Radio value={"1"}>关闭程序</Radio>
+          <Radio value={"0"}>
+            <span style={{ color: "#fff", fontSize: "1.4vw" }}>
+              隐藏任务到托盘
+            </span>
+          </Radio>
+          <Radio value={"1"}>
+            <span style={{ color: "#fff", fontSize: "1.4vw" }}>关闭程序</span>
+          </Radio>
         </Radio.Group>
         <div>
           <Button

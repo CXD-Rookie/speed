@@ -432,8 +432,16 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="item-title">关闭窗口时</div>
                 <div className="off-item-content">
                   <Radio.Group onChange={handleRadioChange} value={closeWindow}>
-                    <Radio value={"1"}>隐藏任务到托盘</Radio>
-                    <Radio value={"2"}>关闭程序</Radio>
+                    <Radio value={"1"}>
+                      <span style={{ color: "#fff", fontSize: "1.4vw" }}>
+                        隐藏任务到托盘
+                      </span>
+                    </Radio>
+                    <Radio value={"2"}>
+                      <span style={{ color: "#fff", fontSize: "1.4vw" }}>
+                        关闭程序
+                      </span>
+                    </Radio>
                   </Radio.Group>
                 </div>
               </div>
