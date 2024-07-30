@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-30 10:59:00
+ * @LastEditTime: 2024-07-30 16:49:02
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -20,6 +20,7 @@ import { store } from "@/redux/store";
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
+import PayModalNew from "../../containers/Pay/new";
 import Swiper from "../../containers/swiper/index";
 import Modal from '../../containers/active/index';
 import GameCardCopy from "./GameCard";
@@ -39,9 +40,10 @@ const Home: React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState<number | null>(null);
   const [status, setStatus] = useState<number>(0); // 触发首页展示数据更新的状态
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isModalOpenNew, setIsModalOpenNew] = useState(false);
   const [homeList, setHomeList] = useState([]);
   const [accelTag, setAccelTag] = useState({});
 
@@ -92,13 +94,30 @@ const Home: React.FC = () => {
     };
   };
 
-  const handleShowModal = () => {
-    setModalVisible(true);
+  const handleShowModal = (type :number) => {
+    console.log(type,"图片的type值---------------------")
+    
+    setModalType(type);
+    if(type === 1){
+      setIsModalOpenNew(true)
+    }else{
+      setModalVisible(true);
+    }  
   };
 
   const handleCloseModal = () => {
     setModalVisible(false);
   };
+
+  // const handleImageClick = (type: number) => {
+  //   setModalType(type);
+  //   setIsVisible(true);
+  // };
+
+  // const handleCloseModal = () => {
+  //   setIsVisible(false);
+  //   setModalType(null);
+  // };
 
   useEffect(() => {
     setHomeList(getGameList()?.slice(0, 4));
@@ -179,6 +198,13 @@ const Home: React.FC = () => {
         <PayModal
           isModalOpen={isModalOpen}
           setIsModalOpen={(e) => setIsModalOpen(e)}
+        />
+      )}
+      {!!isModalOpenNew && (
+        <PayModalNew
+          isModalOpen={isModalOpenNew}
+          setIsModalOpen={(e) => setIsModalOpenNew(e)}
+          type={1}
         />
       )}
       {isRealOpen ? <RealNameModal /> : null}
