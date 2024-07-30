@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 20:16:41
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-07-30 10:59:00
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -20,6 +20,8 @@ import { store } from "@/redux/store";
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
+import Swiper from "../../containers/swiper/index";
+import Modal from '../../containers/active/index';
 import GameCardCopy from "./GameCard";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
@@ -36,7 +38,7 @@ const Home: React.FC = () => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
-
+  const [isModalVisible, setModalVisible] = useState(false);
   const [status, setStatus] = useState<number>(0); // 触发首页展示数据更新的状态
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -88,6 +90,14 @@ const Home: React.FC = () => {
         }, limit - (Date.now() - lastRan));
       }
     };
+  };
+
+  const handleShowModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
 
   useEffect(() => {
@@ -148,7 +158,11 @@ const Home: React.FC = () => {
           </Button>
         </div>
       )}
+      <Modal isVisible={isModalVisible} onClose={handleCloseModal}/>
       <div className="functional-areas">
+        <div className="swiper">
+        <Swiper onImageClick={handleShowModal} />
+        </div>
         <div className="membership-recharge areas-list-box" onClick={openModal}>
           <img src={rechargeIcon} alt="" />
           会员充值
