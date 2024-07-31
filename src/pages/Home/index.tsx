@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-30 16:49:02
+ * @LastEditTime: 2024-07-31 19:43:31
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -17,6 +17,7 @@ import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
 
+import activePayApi from "@/api/activePay";
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
@@ -39,6 +40,11 @@ const Home: React.FC = () => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  const [images, setImages] = useState<{ image_url: string; params: any }[]>([]);
+  const firstAuth = useSelector((state: any) => state.firstAuth);
+
+  //@ts-ignore
+  const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
   const [isModalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<number | null>(null);
   const [status, setStatus] = useState<number>(0); // 触发首页展示数据更新的状态
@@ -94,14 +100,16 @@ const Home: React.FC = () => {
     };
   };
 
-  const handleShowModal = (type :number) => {
+  const handleShowModal = (type :any) => {
     console.log(type,"图片的type值---------------------")
     
-    setModalType(type);
-    if(type === 1){
-      setIsModalOpenNew(true)
-    }else{
+    setModalType(Number(type));
+    // setIsModalOpenNew(true) first_renewed
+    if(type === "1"){
       setModalVisible(true);
+    }else{
+      setIsModalOpenNew(true)
+      
     }  
   };
 
@@ -134,6 +142,44 @@ const Home: React.FC = () => {
       setAccelTag(location?.state?.data);
     }
   }, [location]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await activePayApi.getBanner();
+
+        const firstPurchase = response.data.first_purchase; // 首次充值
+        const firstRenewal = response.data.first_renewal;   // 首次续费
+        const newUser = response.data.new_user;
+
+        let combinedData: { image_url: string; params: any }[] = [];
+
+        const { first_purchase, first_renewal } = firstAuth.firstAuth;
+
+        if (!first_purchase && !first_renewal) {
+          // 如果 first_purchase 和 first_renewal 都是 false
+          combinedData = [];
+        } else if (first_purchase && !first_renewal) {
+          // 如果 first_purchase 是 true 且 first_renewal 是 false
+          combinedData = [...firstPurchase];
+        } else if (!first_purchase && first_renewal) {
+          // 如果 first_purchase 是 false 且 first_renewal 是 true
+          combinedData = [...firstRenewal];
+        } else {
+          // 如果 first_purchase 和 first_renewal 都是 true
+          combinedData = [...newUser, ...firstPurchase, ...firstRenewal];
+        }
+        console.log(response, '----------------------');
+        setImages(combinedData);
+      } catch (error) {
+        console.error("Failed to fetch feedback types:", error);
+      }
+    };
+
+    if (userToken) {
+      fetchData();
+    }
+  }, [userToken, firstAuth.firstAuth]);
 
   // useEffect(() => {
   //   const handleWheel = throttle((event: WheelEvent) => {
@@ -179,9 +225,7 @@ const Home: React.FC = () => {
       )}
       <Modal isVisible={isModalVisible} onClose={handleCloseModal}/>
       <div className="functional-areas">
-        <div className="swiper">
-        <Swiper onImageClick={handleShowModal} />
-        </div>
+        <Swiper images={images} onImageClick={handleShowModal} />
         <div className="membership-recharge areas-list-box" onClick={openModal}>
           <img src={rechargeIcon} alt="" />
           会员充值
@@ -204,7 +248,7 @@ const Home: React.FC = () => {
         <PayModalNew
           isModalOpen={isModalOpenNew}
           setIsModalOpen={(e) => setIsModalOpenNew(e)}
-          type={1}
+          type={modalType}
         />
       )}
       {isRealOpen ? <RealNameModal /> : null}

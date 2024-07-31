@@ -10,6 +10,18 @@
     text-align: center;
     position: relative;
 }
+.new-design2 {
+    background: url('../../assets/images/home/first1@2x.png') no-repeat center top;
+    background-size: cover;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    /* padding: 60px 20px; */
+    text-align: center;
+    position: relative;
+}
 p.highlight {
     background: #ffd665;
     border-radius: 25px;
@@ -23,12 +35,12 @@ p.highlight {
     color: #f86c34;
 }
 
-.pay-module .ant-modal-header {
+.pay-module-new .ant-modal-header {
     color: #fff;
     background-color: transparent !important;
 }
 
-.pay-module .ant-modal-content {
+.pay-module-new .ant-modal-content {
     width: 67.6vw;
     height: 75vh;
     background-color: transparent !important;
@@ -51,7 +63,7 @@ p.highlight {
     align-items: flex-start;
 }
 
-.pay-module .pay-modal .carousel .carousel-item .priceBigNew {
+.pay-module-new .pay-modal .carousel .carousel-item .priceBigNew {
     font-size: 4vw;
     font-family: Roboto, Roboto-Bold;
     font-weight: Bold;

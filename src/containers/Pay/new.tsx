@@ -14,7 +14,7 @@ import PaymentModal from "../payment";
 interface PayModalProps {
   isModalOpen?: boolean;
   setIsModalOpen?: (e: any) => void;
-  type:number;
+  type:any;
 }
 
 interface Commodity {
@@ -46,9 +46,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const dispatch: any = useDispatch();
   //@ts-ignore
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-
+  const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
+  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -96,15 +97,16 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [payTypeResponse, commodityResponse] = await Promise.all([
+        const [payTypeResponse, commodityResponse, firstPurchaseResponse] = await Promise.all([
           payApi.getPayTypeList(),
           payApi.getCommodityList(),
+          payApi.getfirst_purchase_renewed_discount(),
         ]);
 
-        if (payTypeResponse.error === 0 && commodityResponse.error === 0) {
+        if (payTypeResponse.error === 0 && commodityResponse.error === 0 ) {
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
-
+          setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
             const newKey = guid();
@@ -244,10 +246,15 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     }
   }, [paymentStatus, pollingKey]);
 
+
+ useEffect(() => {
+    console.log(firstAuth,'是否新用户充值信息--------------')
+ }, [firstAuth])
+
   return (
     <Fragment>
       <Modal
-        className="pay-module"
+        className="pay-module pay-module-new"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         title=""
@@ -258,9 +265,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         footer={null}
       >
         <div className="pay-modal">
-          <div className="new-design">
+          <div className={type === 2 ? 'new-design' : type === 3 ? 'new-design2' : ''}>
             <div className="newMain">
-              <p className="highlight">月卡8折</p>
               <div className="carousel">
               {commodities.map((item, index) => (
                 <div
@@ -268,6 +274,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   className="carousel-item dl"
                   style={{ display: index === activeTabIndex ? "block" : "none" }}
                 >
+                  <p className="highlight">月卡{Number(firstPayTypes[item.type]) / 10}折</p>
                   <div className="priceAllNew" data-price={item.price}>
                     <ul>
                       <li>
