@@ -227,6 +227,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           setMinorType("updatePhone");
 
           localStorage.setItem("token", JSON.stringify(res.data.token));
+          localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
           if (
             res.data.user_info.user_ext === null ||
             res.data.user_info.user_ext.idcard === ""

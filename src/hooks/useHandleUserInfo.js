@@ -21,6 +21,7 @@ export const useHandleUserInfo = () => {
 
       dispatch(setAccountInfo(res?.data?.user_info, undefined, undefined));
       localStorage.setItem("token", JSON.stringify(res?.data?.token));
+      localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
 
       return res
     } catch (error) {

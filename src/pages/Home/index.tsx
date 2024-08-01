@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-31 19:43:31
+ * @LastEditTime: 2024-08-01 11:32:22
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -144,6 +144,8 @@ const Home: React.FC = () => {
   }, [location]);
 
   useEffect(() => {
+    const isNewUser = localStorage.getItem("is_new_user") === 'true';
+
     const fetchData = async () => {
       try {
         const response = await activePayApi.getBanner();
@@ -158,7 +160,7 @@ const Home: React.FC = () => {
 
         if (!first_purchase && !first_renewal) {
           // 如果 first_purchase 和 first_renewal 都是 false
-          combinedData = [];
+          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [...firstPurchase, ...firstRenewal];
         } else if (first_purchase && !first_renewal) {
           // 如果 first_purchase 是 true 且 first_renewal 是 false
           combinedData = [...firstPurchase];
@@ -167,9 +169,9 @@ const Home: React.FC = () => {
           combinedData = [...firstRenewal];
         } else {
           // 如果 first_purchase 和 first_renewal 都是 true
-          combinedData = [...newUser, ...firstPurchase, ...firstRenewal];
+          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [...firstPurchase, ...firstRenewal];
         }
-        console.log(response, '----------------------');
+
         setImages(combinedData);
       } catch (error) {
         console.error("Failed to fetch feedback types:", error);
@@ -225,7 +227,11 @@ const Home: React.FC = () => {
       )}
       <Modal isVisible={isModalVisible} onClose={handleCloseModal}/>
       <div className="functional-areas">
-        <Swiper images={images} onImageClick={handleShowModal} />
+        {images.length > 0 && (
+          <div className="swiper">
+            <Swiper images={images} onImageClick={handleShowModal} />
+          </div>
+        )}
         <div className="membership-recharge areas-list-box" onClick={openModal}>
           <img src={rechargeIcon} alt="" />
           会员充值

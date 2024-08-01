@@ -170,7 +170,7 @@ const App: React.FC = (props: any) => {
     if (res.error === 0) {
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
-
+      localStorage.removeItem("is_new_user");
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
