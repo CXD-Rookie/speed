@@ -6,6 +6,7 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
 import { setVersion } from "@/redux/actions/version";
+import { setFirstAuth } from "@/redux/actions/firstAuth";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
@@ -169,7 +170,7 @@ const App: React.FC = (props: any) => {
     if (res.error === 0) {
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
-
+      localStorage.removeItem("is_new_user");
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
@@ -459,7 +460,9 @@ const App: React.FC = (props: any) => {
       // console.log(data, "ws返回的信息---------------");
 
       const version = data?.data?.version;
+      const firstAuth = data?.data?.first_purchase_renewed;
       dispatch(setVersion(version));
+      dispatch(setFirstAuth(firstAuth));
       if (
         token &&
         (isClosed === null || isClosed === undefined || isClosed === "") &&
