@@ -3,6 +3,7 @@ import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import tracking from "@/common/tracking";
+import eventBus from "@/api/eventBus";
 import "./index.scss";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
@@ -44,7 +45,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const dispatch: any = useDispatch();
   //@ts-ignore
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-
+  const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
   const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
@@ -59,7 +60,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
 
   const [payErrorModalOpen, setPayErrorModalOpen] = useState(false);
-
+  const [firstPurchase, setFirstPurchase] = useState(false);
+  const [firstRenewal, setFirstRenewal] = useState(false);
   // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
   // const dispatch = useDispatch();
 
@@ -95,19 +97,43 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   useEffect(() => {
+    const isNewUser = localStorage.getItem("is_new_user") === "true";
     const fetchData = async () => {
       try {
-        const [payTypeResponse, commodityResponse, firstPurchaseResponse] =
-          await Promise.all([
-            payApi.getPayTypeList(),
-            payApi.getCommodityList(),
-            payApi.getfirst_purchase_renewed_discount(),
-          ]);
-
-        if (payTypeResponse.error === 0 && commodityResponse.error === 0) {
+        const [
+          payTypeResponse,
+          commodityResponse,
+          firstPurchaseResponse,
+          unpaidOrder,
+        ] = await Promise.all([
+          payApi.getPayTypeList(),
+          payApi.getCommodityList(),
+          payApi.getfirst_purchase_renewed_discount(),
+          payApi.UnpaidOrder(),
+        ]);
+        if (
+          payTypeResponse.error === 0 &&
+          commodityResponse.error === 0 &&
+          (unpaidOrder.data != null ||
+            unpaidOrder.data != "" ||
+            unpaidOrder.data != undefined)
+        ) {
+          // eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
-          setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+
+          const { first_purchase, first_renewal } = firstAuth.firstAuth;
+          if (!first_purchase && !first_renewal) {
+            //测试数据
+            setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+            setFirstPurchase(true);
+          } else if (isNewUser && first_purchase && !first_renewal) {
+            setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+            setFirstPurchase(true);
+          } else if (isNewUser && !first_purchase && first_renewal) {
+            setFirstPayTypes(firstPurchaseResponse.data.first_renewal);
+            setFirstRenewal(true);
+          }
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
             const newKey = guid();
@@ -116,6 +142,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               `https://test-api.accessorx.com/api/v1/pay/qrcode?cid=${commodityResponse.data.list[0].id}&user_id=${userToken}&key=${newKey}`
             );
           }
+        } else {
+          eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
         }
       } catch (error) {
         console.error("Error fetching data", error);

@@ -5,6 +5,7 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import tracking from "@/common/tracking";
 import "./index.scss";
 import "./new.scss";
+import eventBus from "@/api/eventBus";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
@@ -97,13 +98,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [payTypeResponse, commodityResponse, firstPurchaseResponse] = await Promise.all([
+        const [payTypeResponse, commodityResponse, firstPurchaseResponse, unpaidOrder] = await Promise.all([
           payApi.getPayTypeList(),
           payApi.getCommodityList(),
           payApi.getfirst_purchase_renewed_discount(),
+          payApi.UnpaidOrder(),
         ]);
 
-        if (payTypeResponse.error === 0 && commodityResponse.error === 0 ) {
+        if (payTypeResponse.error === 0 && commodityResponse.error === 0 && (unpaidOrder.data != null || unpaidOrder.data != '' || unpaidOrder.data != undefined)) {
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
           setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
@@ -115,6 +117,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               `https://test-api.accessorx.com/api/v1/pay/qrcode?cid=${commodityResponse.data.list[0].id}&user_id=${userToken}&key=${newKey}`
             );
           }
+        } else {
+          eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
         }
       } catch (error) {
         console.error("Error fetching data", error);
@@ -320,17 +324,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                       >
                         用户协议
                       </div>》
-                      {/* 》及《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
-                      >
-                        自动续费协议
-                      </div>
-                      》到期按每月29元自动续费，可随时取消 <TooltipCom /> */}
                     </li>
                   </ul>
                 </div>
