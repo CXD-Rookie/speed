@@ -320,17 +320,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                       >
                         用户协议
                       </div>》
-                      {/* 》及《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
-                      >
-                        自动续费协议
-                      </div>
-                      》到期按每月29元自动续费，可随时取消 <TooltipCom /> */}
                     </li>
                   </ul>
                 </div>

@@ -44,7 +44,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const dispatch: any = useDispatch();
   //@ts-ignore
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-
+  const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
   const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
@@ -57,7 +57,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
 
   const [payErrorModalOpen, setPayErrorModalOpen] = useState(false);
-
+  const [firstPurchase, setFirstPurchase] = useState(false);
+  const [firstRenewal, setFirstRenewal] = useState(false);
   // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
   // const dispatch = useDispatch();
 
@@ -93,6 +94,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   useEffect(() => {
+    const isNewUser = localStorage.getItem("is_new_user") === 'true';
     const fetchData = async () => {
       try {
         const [payTypeResponse, commodityResponse, firstPurchaseResponse] = await Promise.all([
@@ -104,7 +106,20 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         if (payTypeResponse.error === 0 && commodityResponse.error === 0) {
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
-          setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+
+
+          const { first_purchase, first_renewal } = firstAuth.firstAuth;
+          if (!first_purchase && !first_renewal) {
+            //测试数据
+            setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+            setFirstPurchase(true);
+          } else if (isNewUser && first_purchase && !first_renewal) {
+            setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+            setFirstPurchase(true);
+          } else if (isNewUser && !first_purchase && first_renewal) {
+            setFirstPayTypes(firstPurchaseResponse.data.first_renewal);
+            setFirstRenewal(true);
+          } 
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
             const newKey = guid();
@@ -275,7 +290,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                 >
                   <ul>
                     <li>{payTypes[item.type]}</li>
-                    <li>续费{Number(firstPayTypes[item.type]) / 10}折</li>                   
+                    {firstPayTypes && firstPayTypes[item.type] && firstPurchase && (
+                      <li>首充{Number(firstPayTypes[item.type]) / 10}折</li>
+                    )}
+                    {firstPayTypes && firstPayTypes[item.type] && firstRenewal && (
+                      <p className="highlight">续费{Number(firstPayTypes[item.type]) / 10}折</p>
+                    )}                      
                     <li>
                       ¥<span className="price">{item.month_price}</span>/月
                     </li>
