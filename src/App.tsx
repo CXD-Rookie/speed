@@ -87,7 +87,7 @@ const App: React.FC = (props: any) => {
   const [remoteLoginOpen, setRemoteLoginOpen] = useState(false); // 异地登录
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
-
+  const token = localStorage.getItem("token");
   const [exitOpen, setExitOpen] = useState(false); // 是否关闭主程序
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
   const [isAppCloseOpen, setIsAppCloseOpen] = useState(false); // 是否手动设置关闭主程序操作
@@ -883,8 +883,7 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal}/>
-      {/* <ActiveNew onClose={handleCloseModalNew}/> */}
-      {(!!accountInfo?.isShowLogin) && (
+      {(!accountInfo?.isLogin) && (
         <ActiveNew isVisible={isModalVisibleNew} onClose={handleCloseModalNew}/>
       )}
     </Layout>

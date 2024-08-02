@@ -50,9 +50,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
-    {}
-  );
+  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -111,7 +109,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           payApi.getfirst_purchase_renewed_discount(),
           payApi.UnpaidOrder(),
         ]);
-
+        console.log(commodityResponse,'6666666666666666666666')
         if (
           payTypeResponse.error === 0 &&
           commodityResponse.error === 0 &&
@@ -206,6 +204,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   useEffect(() => {
+    console.log(commodities,"commoditiescommodities")
     tracking.trackPurchasePageShow();
     updateQrCode();
   }, [activeTabIndex, commodities, userToken]);
