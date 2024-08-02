@@ -47,7 +47,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
+  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
+    {}
+  );
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -95,11 +97,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [payTypeResponse, commodityResponse, firstPurchaseResponse] = await Promise.all([
-          payApi.getPayTypeList(),
-          payApi.getCommodityList(),
-          payApi.getfirst_purchase_renewed_discount(),
-        ]);
+        const [payTypeResponse, commodityResponse, firstPurchaseResponse] =
+          await Promise.all([
+            payApi.getPayTypeList(),
+            payApi.getCommodityList(),
+            payApi.getfirst_purchase_renewed_discount(),
+          ]);
 
         if (payTypeResponse.error === 0 && commodityResponse.error === 0) {
           setPayTypes(payTypeResponse.data);
@@ -273,16 +276,18 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   className={`tab ${index === activeTabIndex ? "active" : ""}`}
                   onClick={() => updateActiveTabIndex(index)}
                 >
-                  <ul>
-                    <li>{payTypes[item.type]}</li>
-                    <li>续费{Number(firstPayTypes[item.type]) / 10}折</li>                   
-                    <li>
-                      ¥<span className="price">{item.month_price}</span>/月
-                    </li>
-                    <li>
-                      总价：¥<span>{item.price}</span>
-                    </li>
-                  </ul>
+                  <div className="discount">
+                    续费{Number(firstPayTypes[item.type]) / 10}折
+                  </div>
+                  <div className="term">{payTypes[item.type]}</div>
+                  <div className="price">
+                    ¥<span className="price-text">{item.month_price}</span>/月
+                    <span className="text">¥19.9</span>
+                  </div>
+                  <div className="amount">
+                    总价：¥<span>{item.price}</span>
+                    <span className="text">原价: ¥239</span>
+                  </div>
                 </div>
               ))}
             </div>
