@@ -56,7 +56,7 @@
       text-align: center;
     }
 
-    :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
+    & :where(.css-dev-only-do-not-override-usln0u).ant-radio-wrapper  {
       font-size: 1.4vw;
       color: #fff !important;
       margin-inline-end: 3.8vw !important;

@@ -8,11 +8,9 @@
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { Fragment, useState, useEffect } from "react";
-import { Modal, Tabs, Button, Switch, Radio, Card, Spin } from "antd";
+import { Modal, Tabs, Switch, Radio, Card, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
-import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
-import { store } from "@/redux/store";
 
 import "./index.scss";
 import MinorModal from "../minor";
@@ -20,8 +18,6 @@ import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
 import PayModal from "../Pay";
 import fixImg from "@/assets/images/fixUtils/fix@2x.png";
-import fixImg_1 from "@/assets/images/fixUtils/fix1@2x.png";
-import fixImg_2 from "@/assets/images/fixUtils/fix2@2x.png";
 import fixImg_3 from "@/assets/images/fixUtils/fix3@2x.png";
 import fixImg_6 from "@/assets/images/fixUtils/fix6@2x.png";
 import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
@@ -39,12 +35,7 @@ interface SettingsModalProps {
 const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const { isOpen, onClose, type = "default" } = props;
 
-  const { handleUserInfo } = useHandleUserInfo();
-
-  const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
   const accountInfo = useSelector((state: any) => state.accountInfo);
-  const version = useSelector((state: any) => state.version);
-  const isLogin = useSelector((state: any) => state.isLogin);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
@@ -54,6 +45,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const [bindType, setBindType] = useState(""); // 绑定弹窗类型
   const [versionNow, setVersionNow] = useState(""); //
   const [activeTab, setActiveTab] = useState("system");
+
   // 从 localStorage 获取初始值，如果没有则默认值为 "2"
   const initialCloseWindow = () => {
     const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
@@ -440,8 +432,16 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <div className="item-title">关闭窗口时</div>
                 <div className="off-item-content">
                   <Radio.Group onChange={handleRadioChange} value={closeWindow}>
-                    <Radio value={"1"}>隐藏任务到托盘</Radio>
-                    <Radio value={"2"}>关闭程序</Radio>
+                    <Radio value={"1"}>
+                      <span style={{ color: "#fff", fontSize: "1.4vw" }}>
+                        隐藏任务到托盘
+                      </span>
+                    </Radio>
+                    <Radio value={"2"}>
+                      <span style={{ color: "#fff", fontSize: "1.4vw" }}>
+                        关闭程序
+                      </span>
+                    </Radio>
                   </Radio.Group>
                 </div>
               </div>

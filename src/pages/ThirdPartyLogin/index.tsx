@@ -37,7 +37,12 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
       console.log(1111, searchParams.get("token"), location, state);
 
       if (String(state)) {
-        (window as any).NativeApi_YouXiaAuthComplete(res?.data?.token, res?.data?.is_new_user,state);
+        // 关闭第三方登录 并且将token 是否第三方登录 是否新用户 3个参数存储在 加速器项目中
+        (window as any).NativeApi_YouXiaAuthComplete(
+          res?.data?.token,
+          state,
+          res?.data?.is_new_user
+        );
       }
     } catch (error) {
       console.log(error);
@@ -47,10 +52,8 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
   useEffect(() => {
     let code = searchParams.get("code");
     let token = searchParams.get("token");
-    let is_new_user = searchParams.get("is_new_user");
 
     localStorage.setItem("token", JSON.stringify(token));
-    localStorage.setItem("is_new_user", JSON.stringify(is_new_user));
 
     login({ code });
   }, []);
