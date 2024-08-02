@@ -3,6 +3,7 @@ import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import tracking from "@/common/tracking";
+import eventBus from "@/api/eventBus";
 import "./index.scss";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
@@ -97,13 +98,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     const isNewUser = localStorage.getItem("is_new_user") === 'true';
     const fetchData = async () => {
       try {
-        const [payTypeResponse, commodityResponse, firstPurchaseResponse] = await Promise.all([
+        const [payTypeResponse, commodityResponse, firstPurchaseResponse, unpaidOrder] = await Promise.all([
           payApi.getPayTypeList(),
           payApi.getCommodityList(),
           payApi.getfirst_purchase_renewed_discount(),
+          payApi.UnpaidOrder()
         ]);
-
-        if (payTypeResponse.error === 0 && commodityResponse.error === 0) {
+        if (payTypeResponse.error === 0 && commodityResponse.error === 0  && (unpaidOrder.data != null || unpaidOrder.data != '' || unpaidOrder.data != undefined)) {
+          eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
 
@@ -128,6 +130,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               `https://test-api.accessorx.com/api/v1/pay/qrcode?cid=${commodityResponse.data.list[0].id}&user_id=${userToken}&key=${newKey}`
             );
           }
+        } else {
+          eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
         }
       } catch (error) {
         console.error("Error fetching data", error);
@@ -146,10 +150,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       if (tabsContainer) {
         const scrollAmount =
           tabsContainer.scrollLeft - tabsContainer.offsetWidth;
-        tabsContainer.scrollTo({
-          left: scrollAmount,
-          behavior: "smooth",
-        });
+          tabsContainer.scrollTo({
+            left: scrollAmount,
+            behavior: "smooth",
+          });
       }
     };
 

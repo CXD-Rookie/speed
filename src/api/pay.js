@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-28 21:16:10
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-30 18:49:23
+ * @LastEditTime: 2024-08-02 14:27:26
  * @FilePath: \speed\src\api\pay.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -40,7 +40,10 @@ class PayApi {
     const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/commodity/first_purchase_renewed_discount?platform=3`);
   }
-
+  UnpaidOrder (params) {
+    const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/pay/unpaid_order?platform=3`);
+  }
 }
 
 const payApi = new PayApi();
