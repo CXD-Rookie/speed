@@ -13,7 +13,6 @@ import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
 
@@ -23,7 +22,7 @@ import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
 import PayModalNew from "../../containers/Pay/new";
 import Swiper from "../../containers/swiper/index";
-import Active from '../../containers/active/index';
+import Active from "../../containers/active/index";
 import GameCardCopy from "./GameCard";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
@@ -35,12 +34,13 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { handleUserInfo } = useHandleUserInfo();
   const { getGameList } = useGamesInitialize();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
-  const [images, setImages] = useState<{ image_url: string; params: any }[]>([]);
+  const [images, setImages] = useState<{ image_url: string; params: any }[]>(
+    []
+  );
   const firstAuth = useSelector((state: any) => state.firstAuth);
 
   //@ts-ignore
@@ -60,25 +60,23 @@ const Home: React.FC = () => {
   const isRealNamel = localStorage.getItem("isRealName");
 
   const openModal = async () => {
+    const latestAccountInfo = store.getState().accountInfo;
 
-      const latestAccountInfo = store.getState().accountInfo;
-
-      if (accountInfo?.isLogin) {
-        if (isRealNamel === "1") {
-          dispatch(openRealNameModal());
-          return;
-        } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
-          setIsMinorOpen(true);
-          setMinorType("recharge");
-          return;
-        } else {
-          setIsModalOpen(true);
-        }
+    if (accountInfo?.isLogin) {
+      if (isRealNamel === "1") {
+        dispatch(openRealNameModal());
+        return;
+      } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
+        setIsMinorOpen(true);
+        setMinorType("recharge");
+        return;
       } else {
-        // 3个参数 用户信息 是否登录 是否显示登录
-        dispatch(setAccountInfo(undefined, undefined, true));
+        setIsModalOpen(true);
       }
-  
+    } else {
+      // 3个参数 用户信息 是否登录 是否显示登录
+      dispatch(setAccountInfo(undefined, undefined, true));
+    }
   };
 
   const throttle = (func: (...args: any[]) => void, limit: number) => {
@@ -100,21 +98,20 @@ const Home: React.FC = () => {
     };
   };
 
-  const handleShowModal = (type :any) => {
-    console.log(type,"图片的type值---------------------")
-    
+  const handleShowModal = (type: any) => {
+    console.log(type, "图片的type值---------------------");
+
     setModalType(Number(type));
     // setIsModalOpenNew(true) first_renewed
     if (accountInfo?.isLogin) {
-      if(type === "1"){
-        setModalVisible(true);//新用户三天vip
-      }else{
-        setIsModalOpenNew(true)//非新用户充值
+      if (type === "1") {
+        setModalVisible(true); //新用户三天vip
+      } else {
+        setIsModalOpenNew(true); //非新用户充值
       }
     } else {
-      dispatch(setAccountInfo(undefined, undefined, true))
+      dispatch(setAccountInfo(undefined, undefined, true));
     }
-
   };
 
   const handleCloseModal = () => {
@@ -148,14 +145,14 @@ const Home: React.FC = () => {
   }, [location]);
 
   useEffect(() => {
-    const isNewUser = localStorage.getItem("is_new_user") === 'true';
+    const isNewUser = localStorage.getItem("is_new_user") === "true";
 
     const fetchData = async () => {
       try {
         const response = await activePayApi.getBanner();
 
         const firstPurchase = response.data.first_purchase; // 首次充值
-        const firstRenewal = response.data.first_renewal;   // 首次续费
+        const firstRenewal = response.data.first_renewal; // 首次续费
         const newUser = response.data.new_user;
 
         let combinedData: { image_url: string; params: any }[] = [];
@@ -165,7 +162,9 @@ const Home: React.FC = () => {
         if (!first_purchase && !first_renewal) {
           // 如果 first_purchase 和 first_renewal 都是 false
           //测试使用
-          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [...firstPurchase, ...firstRenewal];  
+          combinedData = isNewUser
+            ? [...newUser, ...firstPurchase, ...firstRenewal]
+            : [...firstPurchase, ...firstRenewal];
           //上线使用
           // combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [];
         } else if (first_purchase && !first_renewal) {
@@ -176,7 +175,9 @@ const Home: React.FC = () => {
           combinedData = [...firstRenewal];
         } else {
           // 如果 first_purchase 和 first_renewal 都是 true
-          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [...firstPurchase, ...firstRenewal];
+          combinedData = isNewUser
+            ? [...newUser, ...firstPurchase, ...firstRenewal]
+            : [...firstPurchase, ...firstRenewal];
         }
 
         setImages(combinedData);
@@ -232,19 +233,26 @@ const Home: React.FC = () => {
           </Button>
         </div>
       )}
-      <Active isVisible={isModalVisible} onClose={handleCloseModal}/>
+      <Active isVisible={isModalVisible} onClose={handleCloseModal} />
       <div className="functional-areas">
         {images.length > 0 && (
           <div className="swiper">
             <Swiper images={images} onImageClick={handleShowModal} />
           </div>
         )}
-        <div className="membership-recharge areas-list-box" onClick={openModal}>
+        <div
+          className={`membership-recharge ${
+            images.length > 0 ? "areas-list-box-auto" : "areas-list-box"
+          }`}
+          onClick={openModal}
+        >
           <img src={rechargeIcon} alt="" />
           会员充值
         </div>
         <div
-          className="may-games areas-list-box"
+          className={`may-games ${
+            images.length > 0 ? "areas-list-box-auto" : "areas-list-box"
+          }`}
           onClick={() => navigate("/myGames")}
         >
           <img src={gamesIcon} alt="" />
