@@ -308,7 +308,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   onClick={() => updateActiveTabIndex(index)}
                 >
                   <div className="discount">
-                    续费{Number(firstPayTypes[item.type]) / 10}折
+                    {firstPayTypes &&
+                      firstPayTypes[item.type] &&
+                      firstPurchase &&
+                      `首充${Number(firstPayTypes[item.type]) / 10}折`}
+                    {firstPayTypes &&
+                      firstPayTypes[item.type] &&
+                      firstRenewal &&
+                      `续费${Number(firstPayTypes[item.type]) / 10}折`}
                   </div>
                   <div className="term">{payTypes[item.type]}</div>
                   <div className="price">

@@ -10,6 +10,8 @@ import React, { useEffect } from "react";
 import { Carousel } from "antd";
 
 import "./index.scss";
+import rightIcon from "@/assets/images/common/you@2x.png";
+import leftIcon from "@/assets/images/common/zuo@2x.png";
 
 interface SwiperProps {
   images: { image_url: string; params: any }[];
@@ -22,17 +24,27 @@ const Swiper: React.FC<SwiperProps> = ({ images, onImageClick }) => {
   }, [images]);
 
   return (
-    <Carousel arrows infinite={false}>
-      {images.map(({ image_url, params }, index) => (
-        <div key={index} onClick={() => onImageClick(params)}>
-          <img
-            className="imgalt"
-            src={"https://cdn.accessorx.com/" + image_url}
-            alt={`活动 ${index + 1}`}
-          />
-        </div>
-      ))}
-    </Carousel>
+    <div className="swiper-box">
+      <Carousel arrows infinite={false}>
+        {images.map(({ image_url, params }, index) => (
+          <div key={index} onClick={() => onImageClick(params)}>
+            <img
+              className="imgalt"
+              src={"https://cdn.accessorx.com/" + image_url}
+              alt={`活动 ${index + 1}`}
+            />
+          </div>
+        ))}
+      </Carousel>
+      <img className="left-btn" src={leftIcon} width={20} height={32} alt="" />
+      <img
+        className="right-btn"
+        src={rightIcon}
+        width={20}
+        height={32}
+        alt=""
+      />
+    </div>
   );
 };
 export default Swiper;

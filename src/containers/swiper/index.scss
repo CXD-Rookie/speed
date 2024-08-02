@@ -17,3 +17,19 @@
 .swiper {
     width: 45vw !important;
 }
+
+.swiper-box {
+    position: relative;
+
+    .left-btn {
+        position: absolute;
+        top: calc(50% - 16px);
+        left: 12px;
+    }
+
+    .right-btn {
+        position: absolute;
+        top: calc(50% - 16px);
+        right: 12px;
+    }
+}
