@@ -24,12 +24,14 @@
     .left-btn {
         position: absolute;
         top: calc(50% - 16px);
+        cursor: pointer;
         left: 12px;
     }
 
     .right-btn {
         position: absolute;
         top: calc(50% - 16px);
+        cursor: pointer;
         right: 12px;
     }
 }

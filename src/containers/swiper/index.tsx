@@ -6,7 +6,7 @@
  * @FilePath: \speed\src\containers\swiper\indeX.tsX
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Carousel } from "antd";
 
 import "./index.scss";
@@ -19,13 +19,15 @@ interface SwiperProps {
 }
 
 const Swiper: React.FC<SwiperProps> = ({ images, onImageClick }) => {
+  const carouselRef: any = useRef(null);
+
   useEffect(() => {
     console.log(images, "----------------images");
   }, [images]);
 
   return (
     <div className="swiper-box">
-      <Carousel arrows infinite={false}>
+      <Carousel arrows infinite={false} ref={carouselRef}>
         {images.map(({ image_url, params }, index) => (
           <div key={index} onClick={() => onImageClick(params)}>
             <img
@@ -36,13 +38,21 @@ const Swiper: React.FC<SwiperProps> = ({ images, onImageClick }) => {
           </div>
         ))}
       </Carousel>
-      <img className="left-btn" src={leftIcon} width={20} height={32} alt="" />
+      <img
+        className="left-btn"
+        src={leftIcon}
+        width={20}
+        height={32}
+        alt=""
+        onClick={() => carouselRef?.current?.prev()}
+      />
       <img
         className="right-btn"
         src={rightIcon}
         width={20}
         height={32}
         alt=""
+        onClick={() => carouselRef?.current?.next()}
       />
     </div>
   );
