@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-01 11:32:22
+ * @LastEditTime: 2024-08-01 19:02:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -23,7 +23,7 @@ import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
 import PayModalNew from "../../containers/Pay/new";
 import Swiper from "../../containers/swiper/index";
-import Modal from '../../containers/active/index';
+import Active from '../../containers/active/index';
 import GameCardCopy from "./GameCard";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
@@ -105,12 +105,16 @@ const Home: React.FC = () => {
     
     setModalType(Number(type));
     // setIsModalOpenNew(true) first_renewed
-    if(type === "1"){
-      setModalVisible(true);
-    }else{
-      setIsModalOpenNew(true)
-      
-    }  
+    if (accountInfo?.isLogin) {
+      if(type === "1"){
+        setModalVisible(true);//新用户三天vip
+      }else{
+        setIsModalOpenNew(true)//非新用户充值
+      }
+    } else {
+      dispatch(setAccountInfo(undefined, undefined, true))
+    }
+
   };
 
   const handleCloseModal = () => {
@@ -160,7 +164,10 @@ const Home: React.FC = () => {
 
         if (!first_purchase && !first_renewal) {
           // 如果 first_purchase 和 first_renewal 都是 false
-          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [...firstPurchase, ...firstRenewal];
+          //测试使用
+          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [...firstPurchase, ...firstRenewal];  
+          //上线使用
+          // combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [];
         } else if (first_purchase && !first_renewal) {
           // 如果 first_purchase 是 true 且 first_renewal 是 false
           combinedData = [...firstPurchase];
@@ -225,7 +232,7 @@ const Home: React.FC = () => {
           </Button>
         </div>
       )}
-      <Modal isVisible={isModalVisible} onClose={handleCloseModal}/>
+      <Active isVisible={isModalVisible} onClose={handleCloseModal}/>
       <div className="functional-areas">
         {images.length > 0 && (
           <div className="swiper">

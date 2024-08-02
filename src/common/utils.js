@@ -55,3 +55,22 @@ export const debounce = (func, delay) => {
     }, delay);
   };
 };
+
+export const formatDate = (timestamp: number) => {
+  const date = new Date(timestamp * 1000);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+export const getRemainingDays = (timestamp) => {
+  const currentTime = Math.floor(Date.now() / 1000); // 当前时间戳（秒）
+
+  // 计算剩余时间（秒）
+  const remainingTime = timestamp - currentTime;
+
+  // 将剩余时间转换为天数，并向上取整
+  return Math.ceil(remainingTime / (60 * 60 * 24));
+};

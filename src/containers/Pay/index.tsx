@@ -47,6 +47,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
+  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -94,15 +95,16 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [payTypeResponse, commodityResponse] = await Promise.all([
+        const [payTypeResponse, commodityResponse, firstPurchaseResponse] = await Promise.all([
           payApi.getPayTypeList(),
           payApi.getCommodityList(),
+          payApi.getfirst_purchase_renewed_discount(),
         ]);
 
         if (payTypeResponse.error === 0 && commodityResponse.error === 0) {
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
-
+          setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
             const newKey = guid();
@@ -273,6 +275,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                 >
                   <ul>
                     <li>{payTypes[item.type]}</li>
+                    <li>续费{Number(firstPayTypes[item.type]) / 10}折</li>                   
                     <li>
                       ¥<span className="price">{item.month_price}</span>/月
                     </li>
