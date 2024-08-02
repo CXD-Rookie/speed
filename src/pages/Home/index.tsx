@@ -162,11 +162,11 @@ const Home: React.FC = () => {
         if (!first_purchase && !first_renewal) {
           // 如果 first_purchase 和 first_renewal 都是 false
           //测试使用
-          combinedData = isNewUser
-            ? [...newUser, ...firstPurchase, ...firstRenewal]
-            : [...firstPurchase, ...firstRenewal];
+          // combinedData = isNewUser
+          //   ? [...newUser, ...firstPurchase, ...firstRenewal]
+          //   : [...firstPurchase, ...firstRenewal];
           //上线使用
-          // combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [];
+          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [];
         } else if (first_purchase && !first_renewal) {
           // 如果 first_purchase 是 true 且 first_renewal 是 false
           combinedData = [...firstPurchase];

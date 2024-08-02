@@ -63,7 +63,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [payErrorModalOpen, setPayErrorModalOpen] = useState(false);
   const [firstPurchase, setFirstPurchase] = useState(false);
   const [firstRenewal, setFirstRenewal] = useState(false);
-
+  const [isOldUser, setIsOldUser] = useState(false);
   const [connectionPayOpen, setConnectionPayOpen] = useState(false); // 当前是否有订单处理中弹窗
   // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
   // const dispatch = useDispatch();
@@ -128,8 +128,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           const { first_purchase, first_renewal } = firstAuth.firstAuth;
           if (!first_purchase && !first_renewal) {
             //测试数据
-            setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
-            setFirstPurchase(true);
+            // setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+            // setFirstPurchase(true);
+            setIsOldUser(true);//正式
           } else if (isNewUser && first_purchase && !first_renewal) {
             setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
             setFirstPurchase(true);
@@ -307,7 +308,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   className={`tab ${index === activeTabIndex ? "active" : ""}`}
                   onClick={() => updateActiveTabIndex(index)}
                 >
-                  <div className="discount">
+                  <div className={`${isOldUser ? '' : 'discount'}`}>
                     {firstPayTypes &&
                       firstPayTypes[item.type] &&
                       firstPurchase &&
