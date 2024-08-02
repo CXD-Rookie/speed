@@ -15,7 +15,7 @@ import PaymentModal from "../payment";
 interface PayModalProps {
   isModalOpen?: boolean;
   setIsModalOpen?: (e: any) => void;
-  type:any;
+  type: any;
 }
 
 interface Commodity {
@@ -50,7 +50,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
+  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
+    {}
+  );
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -98,14 +100,25 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [payTypeResponse, commodityResponse, firstPurchaseResponse, unpaidOrder] = await Promise.all([
+        const [
+          payTypeResponse,
+          commodityResponse,
+          firstPurchaseResponse,
+          unpaidOrder,
+        ] = await Promise.all([
           payApi.getPayTypeList(),
           payApi.getCommodityList(),
           payApi.getfirst_purchase_renewed_discount(),
           payApi.UnpaidOrder(),
         ]);
 
-        if (payTypeResponse.error === 0 && commodityResponse.error === 0 && (unpaidOrder.data != null || unpaidOrder.data != '' || unpaidOrder.data != undefined)) {
+        if (
+          payTypeResponse.error === 0 &&
+          commodityResponse.error === 0 &&
+          (unpaidOrder.data != null ||
+            unpaidOrder.data != "" ||
+            unpaidOrder.data != undefined)
+        ) {
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
           setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
@@ -250,10 +263,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     }
   }, [paymentStatus, pollingKey]);
 
-
- useEffect(() => {
-    console.log(firstAuth,'是否新用户充值信息--------------')
- }, [firstAuth])
+  useEffect(() => {
+    console.log(firstAuth, "是否新用户充值信息--------------");
+  }, [firstAuth]);
 
   return (
     <Fragment>
@@ -269,68 +281,78 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         footer={null}
       >
         <div className="pay-modal">
-          <div className={type === 2 ? 'new-design' : type === 3 ? 'new-design2' : ''}>
+          <div
+            className={
+              type === 2 ? "new-design" : type === 3 ? "new-design2" : ""
+            }
+          >
             <div className="newMain">
               <div className="carousel">
+                {commodities.map((item, index) => (
+                  <div
+                    key={index}
+                    className="carousel-item dl"
+                    style={{
+                      display: index === activeTabIndex ? "block" : "none",
+                    }}
+                  >
+                    <p className="highlight">
+                      月卡
+                      <span>{Number(firstPayTypes[item.type]) / 10}</span>折
+                    </p>
+                    <div className="priceAllNew" data-price={item.price}>
+                      <div>
+                        ¥<span className="priceBigNew">{item.price}</span>/月
+                      </div>
+                      <div className="term">原价：￥25</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="main">
+            {qrCodeUrl && (
+              <div className="qrcode">
+                <img className="header-icon" src={qrCodeUrl} alt="" />
+              </div>
+            )}
+            <div className="carousel">
               {commodities.map((item, index) => (
                 <div
                   key={index}
-                  className="carousel-item dl"
-                  style={{ display: index === activeTabIndex ? "block" : "none" }}
+                  className="carousel-item"
+                  style={{
+                    display: index === activeTabIndex ? "block" : "none",
+                  }}
                 >
-                  <p className="highlight">月卡{Number(firstPayTypes[item.type]) / 10}折</p>
-                  <div className="priceAllNew" data-price={item.price}>
+                  <div className="priceAll" data-price={item.price}>
                     <ul>
                       <li>
-                        ￥<span className="priceBigNew">{item.price}</span>/月
+                        <span className="txt">支付宝或微信扫码支付</span>
+                      </li>
+                      <li>
+                        <span className="priceBig">{item.price}</span>
+                      </li>
+                      <li>
+                        我已同意《
+                        <div
+                          style={{ cursor: "pointer" }}
+                          className="txt"
+                          onClick={handleClick}
+                          ref={divRef}
+                          data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                        >
+                          用户协议
+                        </div>
+                        》
                       </li>
                     </ul>
                   </div>
                 </div>
               ))}
-              </div>
-              <h6>原价：￥25</h6>
             </div>
           </div>
-          <div className="main">
-          {qrCodeUrl && (
-            <div className="qrcode">
-              <img className="header-icon" src={qrCodeUrl} alt="" />
-            </div>
-          )}
-          <div className="carousel">
-            {commodities.map((item, index) => (
-              <div
-                key={index}
-                className="carousel-item"
-                style={{ display: index === activeTabIndex ? "block" : "none" }}
-              >
-                <div className="priceAll" data-price={item.price}>
-                  <ul>
-                    <li>
-                      <span className="txt">支付宝或微信扫码支付</span>
-                    </li>
-                    <li>
-                      <span className="priceBig">{item.price}</span>
-                    </li>
-                    <li>
-                      我已同意《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/terms_of_service.html"
-                      >
-                        用户协议
-                      </div>》
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-          </div>    
         </div>
       </Modal>
       <PaymentModal

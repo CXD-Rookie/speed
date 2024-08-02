@@ -25,14 +25,21 @@
 p.highlight {
     background: #ffd665;
     border-radius: 25px;
-    width: 176px;
-    height: 50px;
-    background: #ffd665;
-    border-radius: 25px;
-    line-height: 50px;
+    width: 8.8vw;
+    height: 2.5vw;
+    font-size: 1.2vw;
     font-weight: Bold;
-    /* text-align: left; */
     color: #f86c34;
+    background: #ffd665;
+    border-radius: 1.25vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & span {
+        font-size: 1.8vw;
+        margin: 0 0.2vw;
+    }
 }
 
 .pay-module-new .ant-modal-header {
@@ -63,12 +70,23 @@ p.highlight {
     align-items: flex-start;
 }
 
-.pay-module-new .pay-modal .carousel .carousel-item .priceBigNew {
-    font-size: 4vw;
-    font-family: Roboto, Roboto-Bold;
-    font-weight: Bold;
-    color: #fff !important;
-    line-height: 6.9vh;
+.pay-module-new .pay-modal .carousel .carousel-item .priceAllNew {
+    font-size: 1.2vw;
+    margin-top: 2vh;
+
+    .priceBigNew {
+        font-size: 4vw;
+        font-family: Roboto, Roboto-Bold;
+        font-weight: Bold;
+        color: #fff !important;
+        margin: 0 0.2vw;
+    }
+
+    .term {
+        color: #fff;
+        text-decoration:  line-through;
+        opacity: 0.4;
+    }
 }
 
 .newMain h6 {

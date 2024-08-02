@@ -235,14 +235,14 @@ const Home: React.FC = () => {
       )}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
       <div className="functional-areas">
-        {images.length > 0 && (
+        {images?.length > 0 && (
           <div className="swiper">
             <Swiper images={images} onImageClick={handleShowModal} />
           </div>
         )}
         <div
           className={`membership-recharge ${
-            images.length > 0 ? "areas-list-box-auto" : "areas-list-box"
+            images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
           }`}
           onClick={openModal}
         >
@@ -251,7 +251,7 @@ const Home: React.FC = () => {
         </div>
         <div
           className={`may-games ${
-            images.length > 0 ? "areas-list-box-auto" : "areas-list-box"
+            images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
           }`}
           onClick={() => navigate("/myGames")}
         >

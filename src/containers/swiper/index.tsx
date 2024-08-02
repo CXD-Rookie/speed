@@ -6,12 +6,9 @@
  * @FilePath: \speed\src\containers\swiper\indeX.tsX
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useEffect, useState } from 'react';
-import { Carousel } from 'antd';
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setAccountInfo } from "@/redux/actions/account-info";
-import activePayApi from "@/api/activePay";
+import React, { useEffect } from "react";
+import { Carousel } from "antd";
+
 import "./index.scss";
 
 interface SwiperProps {
@@ -21,18 +18,21 @@ interface SwiperProps {
 
 const Swiper: React.FC<SwiperProps> = ({ images, onImageClick }) => {
   useEffect(() => {
-  console.log(images,"----------------images")
-  }, [images])
+    console.log(images, "----------------images");
+  }, [images]);
+
   return (
     <Carousel arrows infinite={false}>
       {images.map(({ image_url, params }, index) => (
         <div key={index} onClick={() => onImageClick(params)}>
-          <img className="imgalt" src={'https://cdn.accessorx.com/' + image_url} alt={`活动 ${index + 1}`} />
+          <img
+            className="imgalt"
+            src={"https://cdn.accessorx.com/" + image_url}
+            alt={`活动 ${index + 1}`}
+          />
         </div>
       ))}
     </Carousel>
   );
 };
 export default Swiper;
-
-
