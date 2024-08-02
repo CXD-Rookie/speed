@@ -426,6 +426,7 @@ const App: React.FC = (props: any) => {
   const handleCloseModalNew = () => { 
     setIsModalVisibleNew(false);
     dispatch(setAccountInfo(undefined, undefined, true))
+    localStorage.setItem("isActiveNew", "1");
   }
 
   
@@ -882,10 +883,13 @@ const App: React.FC = (props: any) => {
           setIsMinorOpen={setBindOpen}
         />
       ) : null}
-      <Active isVisible={isModalVisible} onClose={handleCloseModal}/>
-      {/* <ActiveNew onClose={handleCloseModalNew}/> */}
-      {(!!accountInfo?.isShowLogin) && (
-        <ActiveNew isVisible={isModalVisibleNew} onClose={handleCloseModalNew}/>
+      <Active isVisible={isModalVisible} onClose={handleCloseModal} />
+      {console.log(accountInfo?.isLogin)}
+      {!accountInfo?.isShowLogin && !(String(localStorage.getItem("isActiveNew")) === "1") && (
+        <ActiveNew
+          isVisible={isModalVisibleNew}
+          onClose={handleCloseModalNew}
+        />
       )}
     </Layout>
   );

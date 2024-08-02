@@ -232,7 +232,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           <div
             className="accelerate-modal"
             style={{
-              ...(customStyleObj?.[noticeType || type] || { marginTop: 0 }),
+              ...(customStyleObj?.[noticeType || type] || { marginTop: "3vh" }),
             }}
           >
             {isNetworkError
