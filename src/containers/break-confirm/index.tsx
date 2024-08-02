@@ -68,7 +68,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     accelMemEnd: "您的加速服务已到期，请续费继续使用",
     serverDisconnected: "无法连接到服务器，请重新启动客户端。",
     issueFeedback: "提交成功，感谢您的反馈！",
-    connectionPay:"当前有一笔订单正在支付处理中。如需切换支付方式或会员套餐，请等待该订单自动关闭（约20分钟）后再尝试提交新订单.",
+    connectionPay:
+      "当前有一笔订单正在支付处理中。如需切换支付方式或会员套餐，请等待该订单自动关闭（约20分钟）后再尝试提交新订单.",
     switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
   };
 
@@ -83,7 +84,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     accelMemEnd: "好的",
     serverDisconnected: "重启客户端",
     issueFeedback: "好的",
-    connectionPay: "继续支付"
+    connectionPay: "继续支付",
   };
 
   // footer 只显示一个按钮的类型
@@ -105,8 +106,14 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "serverDisconnected",
     "issueFeedback",
     "netorkError",
-    'connectionPay',
+    "connectionPay",
   ];
+
+  // 修改样式类型
+  const customStyleObj: any = {
+    newVersionFound: { marginTop: 0 },
+    connectionPay: { marginTop: "1vh" },
+  };
 
   let jsonString = "";
 
@@ -132,7 +139,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           return;
         }
         console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速")
+        tracking.trackBoostDisconnectManual("手动停止加速");
         removeGameList("initialize"); // 更新我的游戏
         accelerateTime?.stopTimer();
 
@@ -185,6 +192,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const showModal = (option: any = {}) => {
     setIsNetworkError(option?.show || true);
     setNoticeType(option?.type || "");
@@ -224,7 +232,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           <div
             className="accelerate-modal"
             style={{
-              marginTop: noticeType === "newVersionFound" ? 0 : "3vh",
+              ...(customStyleObj?.[noticeType || type] || { marginTop: 0 }),
             }}
           >
             {isNetworkError

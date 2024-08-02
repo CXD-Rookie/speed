@@ -68,7 +68,6 @@
         display: flex;
 
         .tab {
-          // flex: 0 0 auto;
           width: 14vw;
           height: 11.7vh;
           background: rgba(153, 153, 153, 0.1);
@@ -138,7 +137,8 @@
         }
 
         .active {
-          background-color: #f97d4c;
+          // background-color: #f97d4c;
+          background-color: #9D8461;
         }
       }
 

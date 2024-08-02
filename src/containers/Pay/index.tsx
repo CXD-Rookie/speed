@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
+
 import tracking from "@/common/tracking";
-import eventBus from "@/api/eventBus";
 import "./index.scss";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
 import loginApi from "@/api/login";
 import PaymentModal from "../payment";
+import BreakConfirmModal from "../break-confirm";
 
 interface PayModalProps {
   isModalOpen?: boolean;
@@ -62,6 +63,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [payErrorModalOpen, setPayErrorModalOpen] = useState(false);
   const [firstPurchase, setFirstPurchase] = useState(false);
   const [firstRenewal, setFirstRenewal] = useState(false);
+
+  const [connectionPayOpen, setConnectionPayOpen] = useState(false); // 当前是否有订单处理中弹窗
   // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
   // const dispatch = useDispatch();
 
@@ -118,7 +121,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             unpaidOrder.data != "" ||
             unpaidOrder.data != undefined)
         ) {
-          // eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
+          // setConnectionPayOpen(true); //发现重复订单继续支付
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
 
@@ -143,7 +146,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             );
           }
         } else {
-          eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
+          setConnectionPayOpen(true); //发现重复订单继续支付
         }
       } catch (error) {
         console.error("Error fetching data", error);
@@ -390,6 +393,18 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           onConfirm={() => {
             updateQrCode();
             setPayErrorModalOpen(false);
+          }}
+        />
+      ) : null}
+
+      {connectionPayOpen ? (
+        <BreakConfirmModal
+          accelOpen={connectionPayOpen}
+          type={"connectionPay"}
+          setAccelOpen={setConnectionPayOpen}
+          onConfirm={() => {
+            setConnectionPayOpen(false);
+            setIsModalOpen(false);
           }}
         />
       ) : null}
