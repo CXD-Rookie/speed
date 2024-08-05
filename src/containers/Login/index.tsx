@@ -95,6 +95,7 @@ const Login: React.FC = () => {
         tracking.trackSignUpSuccess("1");
         tracking.trackLoginSuccess("1");
         localStorage.setItem("token", JSON.stringify(res.data.token));
+        localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
         localStorage.removeItem('isClosed')
 
         if (

@@ -1,0 +1,37 @@
+.swiper .slick-slide img {
+    display: block;
+    width: 100%;
+    display: block;
+    background-size: contain;
+    height: 20vh;
+    cursor: pointer;
+}
+.imgalt {
+    display: block;
+    width: 100%;
+    display: block;
+    background-size: contain;
+    height: 20vh;
+}
+
+.swiper {
+    width: 45vw !important;
+}
+
+.swiper-box {
+    position: relative;
+
+    .left-btn {
+        position: absolute;
+        top: calc(50% - 16px);
+        cursor: pointer;
+        left: 12px;
+    }
+
+    .right-btn {
+        position: absolute;
+        top: calc(50% - 16px);
+        cursor: pointer;
+        right: 12px;
+    }
+}

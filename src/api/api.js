@@ -57,7 +57,7 @@ instance.interceptors.response.use(
           console.log("Success response from 停止加速:", response);
           localStorage.removeItem("token");
           localStorage.removeItem("isRealName");
-
+          localStorage.removeItem("is_new_user");
           default_hooks.removeGameList("initialize");
           default_hooks.historyContext?.accelerateTime?.stopTimer();
 

@@ -2,19 +2,20 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
-
 import tracking from "@/common/tracking";
 import "./index.scss";
+import "./new.scss";
+import eventBus from "@/api/eventBus";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
 import loginApi from "@/api/login";
 import PaymentModal from "../payment";
-import BreakConfirmModal from "../break-confirm";
 
 interface PayModalProps {
   isModalOpen?: boolean;
   setIsModalOpen?: (e: any) => void;
+  type: any;
 }
 
 interface Commodity {
@@ -42,7 +43,7 @@ interface OrderInfo {
 
 const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {} } = props;
-
+  const { type } = props;
   const dispatch: any = useDispatch();
   //@ts-ignore
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
@@ -61,10 +62,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
 
   const [payErrorModalOpen, setPayErrorModalOpen] = useState(false);
-  const [firstPurchase, setFirstPurchase] = useState(false);
-  const [firstRenewal, setFirstRenewal] = useState(false);
-  const [isOldUser, setIsOldUser] = useState(false);
-  const [connectionPayOpen, setConnectionPayOpen] = useState(false); // 当前是否有订单处理中弹窗
+
   // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
   // const dispatch = useDispatch();
 
@@ -100,7 +98,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   useEffect(() => {
-    const isNewUser = localStorage.getItem("is_new_user") === "true";
     const fetchData = async () => {
       try {
         const [
@@ -114,6 +111,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           payApi.getfirst_purchase_renewed_discount(),
           payApi.UnpaidOrder(),
         ]);
+
         if (
           payTypeResponse.error === 0 &&
           commodityResponse.error === 0 &&
@@ -121,23 +119,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             unpaidOrder.data != "" ||
             unpaidOrder.data != undefined)
         ) {
-          // setConnectionPayOpen(true); //发现重复订单继续支付
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
-
-          const { first_purchase, first_renewal } = firstAuth.firstAuth;
-          if (!first_purchase && !first_renewal) {
-            //测试数据
-            // setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
-            // setFirstPurchase(true);
-            setIsOldUser(true);//正式
-          } else if (isNewUser && first_purchase && !first_renewal) {
-            setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
-            setFirstPurchase(true);
-          } else if (isNewUser && !first_purchase && first_renewal) {
-            setFirstPayTypes(firstPurchaseResponse.data.first_renewal);
-            setFirstRenewal(true);
-          }
+          setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
             const newKey = guid();
@@ -147,7 +131,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             );
           }
         } else {
-          setConnectionPayOpen(true); //发现重复订单继续支付
+          eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
         }
       } catch (error) {
         console.error("Error fetching data", error);
@@ -279,13 +263,17 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     }
   }, [paymentStatus, pollingKey]);
 
+  useEffect(() => {
+    console.log(firstAuth, "是否新用户充值信息--------------");
+  }, [firstAuth]);
+
   return (
     <Fragment>
       <Modal
-        className="pay-module"
+        className="pay-module pay-module-new"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
-        title="会员充值"
+        title=""
         destroyOnClose
         width={"67.6vw"}
         centered
@@ -293,93 +281,77 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         footer={null}
       >
         <div className="pay-modal">
-          <div className="headerAll">
-            <div className="title">全平台会员特权</div>
-            <div className="description">
-              电竞专线/海外专线/超低延迟/动态多包/智能加速/多平台加速
+          <div
+            className={
+              type === 2 ? "new-design" : type === 3 ? "new-design2" : ""
+            }
+          >
+            <div className="newMain">
+              <div className="carousel">
+                {commodities.map((item, index) => (
+                  <div
+                    key={index}
+                    className="carousel-item dl"
+                    style={{
+                      display: index === activeTabIndex ? "block" : "none",
+                    }}
+                  >
+                    <p className="highlight">
+                      月卡
+                      <span>{Number(firstPayTypes[item.type]) / 10}</span>折
+                    </p>
+                    <div className="priceAllNew" data-price={item.price}>
+                      <div>
+                        ¥<span className="priceBigNew">{item.price}</span>/月
+                      </div>
+                      <div className="term">原价：￥25</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="tabs-container">
-            <div className="arrow left"></div>
-            <div className="tabs">
+          <div className="main">
+            {qrCodeUrl && (
+              <div className="qrcode">
+                <img className="header-icon" src={qrCodeUrl} alt="" />
+              </div>
+            )}
+            <div className="carousel">
               {commodities.map((item, index) => (
                 <div
                   key={index}
-                  className={`tab ${index === activeTabIndex ? "active" : ""}`}
-                  onClick={() => updateActiveTabIndex(index)}
+                  className="carousel-item"
+                  style={{
+                    display: index === activeTabIndex ? "block" : "none",
+                  }}
                 >
-                  <div className={`${isOldUser ? '' : 'discount'}`}>
-                    {firstPayTypes &&
-                      firstPayTypes[item.type] &&
-                      firstPurchase &&
-                      `首充${Number(firstPayTypes[item.type]) / 10}折`}
-                    {firstPayTypes &&
-                      firstPayTypes[item.type] &&
-                      firstRenewal &&
-                      `续费${Number(firstPayTypes[item.type]) / 10}折`}
-                  </div>
-                  <div className="term">{payTypes[item.type]}</div>
-                  <div className="price">
-                    ¥<span className="price-text">{item.month_price}</span>/月
-                    <span className="text">¥19.9</span>
-                  </div>
-                  <div className="amount">
-                    总价：¥<span>{item.price}</span>
-                    <span className="text">原价: ¥239</span>
+                  <div className="priceAll" data-price={item.price}>
+                    <ul>
+                      <li>
+                        <span className="txt">支付宝或微信扫码支付</span>
+                      </li>
+                      <li>
+                        <span className="priceBig">{item.price}</span>
+                      </li>
+                      <li>
+                        我已同意《
+                        <div
+                          style={{ cursor: "pointer" }}
+                          className="txt"
+                          onClick={handleClick}
+                          ref={divRef}
+                          data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                        >
+                          用户协议
+                        </div>
+                        》
+                      </li>
+                    </ul>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="arrow right"></div>
-          </div>
-          <div className="line"></div>
-          {qrCodeUrl && (
-            <div className="qrcode">
-              <img className="header-icon" src={qrCodeUrl} alt="" />
-            </div>
-          )}
-          <div className="carousel">
-            {commodities.map((item, index) => (
-              <div
-                key={index}
-                className="carousel-item"
-                style={{ display: index === activeTabIndex ? "block" : "none" }}
-              >
-                <div className="priceAll" data-price={item.price}>
-                  <ul>
-                    <li>
-                      <span className="txt">支付宝或微信扫码支付</span>
-                    </li>
-                    <li>
-                      <span className="priceBig">{item.price}</span>
-                    </li>
-                    <li>
-                      我已同意《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/terms_of_service.html"
-                      >
-                        用户协议
-                      </div>
-                      》及《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
-                      >
-                        自动续费协议
-                      </div>
-                      》到期按每月29元自动续费，可随时取消 <TooltipCom />
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </Modal>
@@ -401,18 +373,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           onConfirm={() => {
             updateQrCode();
             setPayErrorModalOpen(false);
-          }}
-        />
-      ) : null}
-
-      {connectionPayOpen ? (
-        <BreakConfirmModal
-          accelOpen={connectionPayOpen}
-          type={"connectionPay"}
-          setAccelOpen={setConnectionPayOpen}
-          onConfirm={() => {
-            setConnectionPayOpen(false);
-            setIsModalOpen(false);
           }}
         />
       ) : null}

@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-25 20:16:41
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-08-01 19:02:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -13,13 +13,16 @@ import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
 
+import activePayApi from "@/api/activePay";
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
+import PayModalNew from "../../containers/Pay/new";
+import Swiper from "../../containers/swiper/index";
+import Active from "../../containers/active/index";
 import GameCardCopy from "./GameCard";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
@@ -31,15 +34,22 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { handleUserInfo } = useHandleUserInfo();
   const { getGameList } = useGamesInitialize();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  const [images, setImages] = useState<{ image_url: string; params: any }[]>(
+    []
+  );
+  const firstAuth = useSelector((state: any) => state.firstAuth);
 
+  //@ts-ignore
+  const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState<number | null>(null);
   const [status, setStatus] = useState<number>(0); // 触发首页展示数据更新的状态
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isModalOpenNew, setIsModalOpenNew] = useState(false);
   const [homeList, setHomeList] = useState([]);
   const [accelTag, setAccelTag] = useState({});
 
@@ -50,25 +60,23 @@ const Home: React.FC = () => {
   const isRealNamel = localStorage.getItem("isRealName");
 
   const openModal = async () => {
+    const latestAccountInfo = store.getState().accountInfo;
 
-      const latestAccountInfo = store.getState().accountInfo;
-
-      if (accountInfo?.isLogin) {
-        if (isRealNamel === "1") {
-          dispatch(openRealNameModal());
-          return;
-        } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
-          setIsMinorOpen(true);
-          setMinorType("recharge");
-          return;
-        } else {
-          setIsModalOpen(true);
-        }
+    if (accountInfo?.isLogin) {
+      if (isRealNamel === "1") {
+        dispatch(openRealNameModal());
+        return;
+      } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
+        setIsMinorOpen(true);
+        setMinorType("recharge");
+        return;
       } else {
-        // 3个参数 用户信息 是否登录 是否显示登录
-        dispatch(setAccountInfo(undefined, undefined, true));
+        setIsModalOpen(true);
       }
-  
+    } else {
+      // 3个参数 用户信息 是否登录 是否显示登录
+      dispatch(setAccountInfo(undefined, undefined, true));
+    }
   };
 
   const throttle = (func: (...args: any[]) => void, limit: number) => {
@@ -90,6 +98,36 @@ const Home: React.FC = () => {
     };
   };
 
+  const handleShowModal = (type: any) => {
+    console.log(type, "图片的type值---------------------");
+
+    setModalType(Number(type));
+    // setIsModalOpenNew(true) first_renewed
+    if (accountInfo?.isLogin) {
+      if (type === "1") {
+        setModalVisible(true); //新用户三天vip
+      } else {
+        setIsModalOpenNew(true); //非新用户充值
+      }
+    } else {
+      dispatch(setAccountInfo(undefined, undefined, true));
+    }
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  // const handleImageClick = (type: number) => {
+  //   setModalType(type);
+  //   setIsVisible(true);
+  // };
+
+  // const handleCloseModal = () => {
+  //   setIsVisible(false);
+  //   setModalType(null);
+  // };
+
   useEffect(() => {
     setHomeList(getGameList()?.slice(0, 4));
   }, [status, location]);
@@ -105,6 +143,53 @@ const Home: React.FC = () => {
       setAccelTag(location?.state?.data);
     }
   }, [location]);
+
+  useEffect(() => {
+    const isNewUser = localStorage.getItem("is_new_user") === "true";
+
+    const fetchData = async () => {
+      try {
+        const response = await activePayApi.getBanner();
+
+        const firstPurchase = response.data.first_purchase; // 首次充值
+        const firstRenewal = response.data.first_renewal; // 首次续费
+        const newUser = response.data.new_user;
+
+        let combinedData: { image_url: string; params: any }[] = [];
+
+        const { first_purchase, first_renewal } = firstAuth.firstAuth;
+
+        if (!first_purchase && !first_renewal) {
+          // 如果 first_purchase 和 first_renewal 都是 false
+          //测试使用
+          // combinedData = isNewUser
+          //   ? [...newUser, ...firstPurchase, ...firstRenewal]
+          //   : [...firstPurchase, ...firstRenewal];
+          //上线使用
+          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [];
+        } else if (first_purchase && !first_renewal) {
+          // 如果 first_purchase 是 true 且 first_renewal 是 false
+          combinedData = [...firstPurchase];
+        } else if (!first_purchase && first_renewal) {
+          // 如果 first_purchase 是 false 且 first_renewal 是 true
+          combinedData = [...firstRenewal];
+        } else {
+          // 如果 first_purchase 和 first_renewal 都是 true
+          combinedData = isNewUser
+            ? [...newUser, ...firstPurchase, ...firstRenewal]
+            : [...firstPurchase, ...firstRenewal];
+        }
+
+        setImages(combinedData);
+      } catch (error) {
+        console.error("Failed to fetch feedback types:", error);
+      }
+    };
+
+    if (userToken) {
+      fetchData();
+    }
+  }, [userToken, firstAuth.firstAuth]);
 
   // useEffect(() => {
   //   const handleWheel = throttle((event: WheelEvent) => {
@@ -148,13 +233,26 @@ const Home: React.FC = () => {
           </Button>
         </div>
       )}
+      <Active isVisible={isModalVisible} onClose={handleCloseModal} />
       <div className="functional-areas">
-        <div className="membership-recharge areas-list-box" onClick={openModal}>
+        {images?.length > 0 && (
+          <div className="swiper">
+            <Swiper images={images} onImageClick={handleShowModal} />
+          </div>
+        )}
+        <div
+          className={`membership-recharge ${
+            images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
+          }`}
+          onClick={openModal}
+        >
           <img src={rechargeIcon} alt="" />
           会员充值
         </div>
         <div
-          className="may-games areas-list-box"
+          className={`may-games ${
+            images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
+          }`}
           onClick={() => navigate("/myGames")}
         >
           <img src={gamesIcon} alt="" />
@@ -165,6 +263,13 @@ const Home: React.FC = () => {
         <PayModal
           isModalOpen={isModalOpen}
           setIsModalOpen={(e) => setIsModalOpen(e)}
+        />
+      )}
+      {!!isModalOpenNew && (
+        <PayModalNew
+          isModalOpen={isModalOpenNew}
+          setIsModalOpen={(e) => setIsModalOpenNew(e)}
+          type={modalType}
         />
       )}
       {isRealOpen ? <RealNameModal /> : null}

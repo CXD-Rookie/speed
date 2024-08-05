@@ -1,0 +1,97 @@
+/* index.scss ../../assets/images/home/success.png */
+.modal-wrapper {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  
+    &.visible {
+      display: flex;
+    }
+
+    .modal-content {
+        background: url('../../assets/images/home/new_user_success@2x.png') no-repeat center top;
+        background-size: contain;
+        width: 22vw;
+        height: 31vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 20px;
+        text-align: center;
+        position: relative;
+    
+        h3 {
+            font-family: Source Han Sans SC, Source Han Sans SC-Bold;
+            font-weight: Bold;
+            text-align: center;
+            color: #222222;
+            font-size: 1.6vw;
+            margin-top: 3.9vw;
+        }
+        h6 {
+            font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+            font-weight: Regular;
+            text-align: center;
+            color: #999999;
+            font-size: 1vw;
+        }
+      }
+      
+      .close-button {
+        position: absolute;
+        background: #ffffff;
+        border-radius: 50%;
+        text-align: center;
+        cursor: pointer;
+        bottom: -5vw;
+        width: 56px;
+        height: 56px;
+        background: #333333;
+        border-radius: 50%;
+        line-height: 51px;
+        color: rgb(255 255 255 / 30%);
+        font-size: 1.8vw;
+      }
+      
+      .confirm-button {
+        width: 80%;
+        padding: 1vw 0;
+        margin-top: 20px;
+        background: #f86c34;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2vw;
+        border-radius: 1.5vw;
+        cursor: pointer;
+      }
+      
+      p {
+        margin: 10px 0;
+        font-family: Source Han Sans SC, Source Han Sans SC-Regular;
+        font-weight: Regular;
+        text-align: center;
+        font-size: 1.2vw;
+        margin-bottom: 2vw;
+      
+        .highlight {
+          color: #f86c34;
+        }
+      }
+  }
+  
+  
+  
+
+
+  
+
+

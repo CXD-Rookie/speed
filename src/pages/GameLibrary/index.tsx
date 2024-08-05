@@ -47,6 +47,11 @@ interface GamesTitleProps {
 
 const gamesTitle: GamesTitleProps[] = [
   {
+    key: "3",
+    label: "限时免费",
+    t: "限时免费",
+  },
+  {
     key: "1",
     label: "热门游戏",
     t: "热门游戏",
@@ -57,14 +62,9 @@ const gamesTitle: GamesTitleProps[] = [
     t: "最新推荐",
   },
   {
-    key: "3",
-    label: "限时免费",
-    t: "限时免费",
-  },
-  {
     key: "4",
-    label: "吃鸡竞技",
-    t: "吃鸡竞技",
+    label: "国服游戏",
+    t: "国服游戏",
   },
   {
     key: "5",
@@ -79,9 +79,9 @@ const GameLibrary: React.FC = () => {
   const { appendGameToList } = useGamesInitialize();
 
   const [games, setGames] = useState<Game[]>([]);
-  const [gameActiveType, setGameActiveType] = useState<string>("1");
+  const [gameActiveType, setGameActiveType] = useState<string>("3");
   const [page, setPage] = useState<number>(1);
-  const [t, setT] = useState<string | null>("热门游戏"); // 默认选中热门游戏
+  const [t, setT] = useState<string | null>("限时免费"); // 默认选中热门游戏
 
   const isFetching = useRef<boolean>(false);
   const hasMore = useRef<boolean>(true);

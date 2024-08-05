@@ -1,9 +1,9 @@
 /*
  * @Author: steven libo@rongma.com
- * @Date: 2024-05-28 21:16:10
+ * @Date: 2024-07-30 16:49:34
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-02 14:27:26
- * @FilePath: \speed\src\api\pay.js
+ * @LastEditTime: 2024-07-30 18:01:23
+ * @FilePath: \speed\src\api\activePay.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 // /pay/qrcode
@@ -36,16 +36,14 @@ class PayApi {
     console.log(params, "params------------")
     return get(`${this.url}/commodity/info?platform=3&cid=${params}`);
   }
-  getfirst_purchase_renewed_discount (params) {
-    const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/commodity/first_purchase_renewed_discount?platform=3`);
-  }
-  UnpaidOrder (params) {
-    const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/pay/unpaid_order?platform=3`);
+  
+  getBanner (params) {
+    // const queryString = new URLSearchParams(params).toString();
+    console.log(params, "params------------")
+    return get(`${this.url}/banner/list?platform=3&cid=${params}`);
   }
 }
 
-const payApi = new PayApi();
+const activePayApi = new PayApi();
 
-export default payApi;
+export default activePayApi;

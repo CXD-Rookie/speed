@@ -6,6 +6,7 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
 import { setVersion } from "@/redux/actions/version";
+import { setFirstAuth } from "@/redux/actions/firstAuth";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
@@ -26,10 +27,10 @@ import IssueModal from "./containers/IssueModal/index";
 import BreakConfirmModal from "@/containers/break-confirm";
 import VisitorLogin from "./containers/visitor-login";
 import MinorModal from "./containers/minor";
-
+import Active from '@/containers/active/index'
+import ActiveNew from '@/containers/active/newOpen';
 import loginApi from "./api/login";
 import playSuitApi from "./api/speed";
-
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
@@ -79,7 +80,8 @@ const App: React.FC = (props: any) => {
   const routeView = useRoutes(routes); // 获得路由表
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-
+  const [isModalVisible, setModalVisible] = useState(false);//是否展示新用户获取vip成功通知
+  const [isModalVisibleNew, setIsModalVisibleNew] = useState(true);//是否展示新用户获取vip成功通知
   const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
   const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [remoteLoginOpen, setRemoteLoginOpen] = useState(false); // 异地登录
@@ -169,7 +171,7 @@ const App: React.FC = (props: any) => {
     if (res.error === 0) {
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
-
+      localStorage.removeItem("is_new_user");
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
@@ -416,6 +418,19 @@ const App: React.FC = (props: any) => {
     );
   };
 
+      // 是否关闭新用户三天会员
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleCloseModalNew = () => { 
+    setIsModalVisibleNew(false);
+    dispatch(setAccountInfo(undefined, undefined, true))
+    localStorage.setItem("isActiveNew", "1");
+  }
+
+  
+
   useEffect(() => {
     native_version();
     console.log(versionNow, "客户端获取的版本----------------");
@@ -455,11 +470,25 @@ const App: React.FC = (props: any) => {
       const data = JSON.parse(event.data);
       const token = localStorage.getItem("token");
       const isClosed = localStorage.getItem("isClosed");
+          // 获取localStorage中是否展示过标志
+      const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
+      const isNewUser = localStorage.getItem('is_new_user') === 'true';
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
 
       const version = data?.data?.version;
+      const firstAuth = data?.data?.first_purchase_renewed;
       dispatch(setVersion(version));
+      dispatch(setFirstAuth(firstAuth));
+
+      // 判断是否为新用户且弹窗尚未展示过
+      if (isNewUser && !isModalDisplayed) {
+        setTimeout(() => {
+          setModalVisible(true); // 新用户弹出
+          // 标记弹窗已展示
+          localStorage.setItem('isModalDisplayed', 'true');
+        }, 2000);
+      }
       if (
         token &&
         (isClosed === null || isClosed === undefined || isClosed === "") &&
@@ -854,6 +883,14 @@ const App: React.FC = (props: any) => {
           setIsMinorOpen={setBindOpen}
         />
       ) : null}
+      <Active isVisible={isModalVisible} onClose={handleCloseModal} />
+      {console.log(accountInfo?.isLogin)}
+      {!accountInfo?.isShowLogin && !(String(localStorage.getItem("isActiveNew")) === "1") && (
+        <ActiveNew
+          isVisible={isModalVisibleNew}
+          onClose={handleCloseModalNew}
+        />
+      )}
     </Layout>
   );
 };
