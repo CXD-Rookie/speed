@@ -884,12 +884,13 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
-      {(!accountInfo?.isShowLogin) && !(String(localStorage.getItem("isActiveNew")) === "1") && (
-        <ActiveNew
-          isVisible={isModalVisibleNew}
-          onClose={handleCloseModalNew}
-        />
-      )}
+      {!accountInfo?.isLogin &&
+        !(String(localStorage.getItem("isActiveNew")) === "1") && (
+          <ActiveNew
+            isVisible={isModalVisibleNew}
+            onClose={handleCloseModalNew}
+          />
+        )}
     </Layout>
   );
 };
