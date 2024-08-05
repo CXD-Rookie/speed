@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-02 18:56:23
+ * @LastEditTime: 2024-08-05 14:48:59
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -156,39 +156,45 @@ const Home: React.FC = () => {
         const newUser = response.data.new_user;
 
         let combinedData: { image_url: string; params: any }[] = [];
+        if (userToken) {
+          const { first_purchase, first_renewal } = firstAuth.firstAuth;
 
-        const { first_purchase, first_renewal } = firstAuth.firstAuth;
-
-        if (!first_purchase && !first_renewal) {
-          // 如果 first_purchase 和 first_renewal 都是 false
-          //测试使用
-          // combinedData = isNewUser
-          //   ? [...newUser, ...firstPurchase, ...firstRenewal]
-          //   : [...firstPurchase, ...firstRenewal];
-          //上线使用
-          combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [];
-        } else if (first_purchase && !first_renewal) {
-          // 如果 first_purchase 是 true 且 first_renewal 是 false
-          combinedData = [...firstPurchase];
-        } else if (!first_purchase && first_renewal) {
-          // 如果 first_purchase 是 false 且 first_renewal 是 true
-          combinedData = [...firstRenewal];
-        } else {
-          // 如果 first_purchase 和 first_renewal 都是 true
-          combinedData = isNewUser
-            ? [...newUser, ...firstPurchase, ...firstRenewal]
-            : [...firstPurchase, ...firstRenewal];
+          if (!first_purchase && !first_renewal) {
+            // 如果 first_purchase 和 first_renewal 都是 false
+            //测试使用
+            // combinedData = isNewUser
+            //   ? [...newUser, ...firstPurchase, ...firstRenewal]
+            //   : [...firstPurchase, ...firstRenewal];
+            //上线使用
+            combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [];
+          } else if (first_purchase && !first_renewal) {
+            // 如果 first_purchase 是 true 且 first_renewal 是 false
+            combinedData = [...firstPurchase];
+          } else if (!first_purchase && first_renewal) {
+            // 如果 first_purchase 是 false 且 first_renewal 是 true
+            combinedData = [...firstRenewal];
+          } else {
+            // 如果 first_purchase 和 first_renewal 都是 true
+            combinedData = isNewUser
+              ? [...newUser, ...firstPurchase, ...firstRenewal]
+              : [...firstPurchase, ...firstRenewal];
+          }
+  
+          setImages(combinedData);
+        }else{
+          combinedData = [...newUser, ...firstPurchase, ...firstRenewal];
+          setImages(combinedData);
         }
-
-        setImages(combinedData);
+       
       } catch (error) {
         console.error("Failed to fetch feedback types:", error);
       }
     };
 
-    if (userToken) {
-      fetchData();
-    }
+    // if (userToken) {
+    //   fetchData();
+    // }
+    fetchData();
   }, [userToken, firstAuth.firstAuth]);
 
   // useEffect(() => {
