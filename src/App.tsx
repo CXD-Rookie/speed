@@ -884,7 +884,6 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
-      {console.log(accountInfo?.isLogin)}
       {!accountInfo?.isShowLogin && !(String(localStorage.getItem("isActiveNew")) === "1") && (
         <ActiveNew
           isVisible={isModalVisibleNew}
