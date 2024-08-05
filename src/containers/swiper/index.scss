@@ -14,13 +14,13 @@
     height: 20vh;
 }
 
-.swiper {
-    width: 45vw !important;
-}
+// .swiper {
+//     width: 45vw !important;
+// }
 
 .swiper-box {
     position: relative;
-
+    width: 45vw !important;
     .left-btn {
         position: absolute;
         top: calc(50% - 16px);
