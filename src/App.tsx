@@ -523,13 +523,13 @@ const App: React.FC = (props: any) => {
         eventBus.emit('dataUpdated', allData);
       }
       // 判断是否为新用户且弹窗尚未展示过
-      // if (isNewUser && !isModalDisplayed) {
-      //   setTimeout(() => {
-      //     setModalVisible(true); // 新用户弹出
-      //     // 标记弹窗已展示
-      //     localStorage.setItem('isModalDisplayed', 'true');
-      //   }, 2000);
-      // }
+      if (isNewUser && !isModalDisplayed) {
+        setTimeout(() => {
+          setModalVisible(true); // 新用户弹出
+          // 标记弹窗已展示
+          localStorage.setItem('isModalDisplayed', 'true');
+        }, 2000);
+      }
 
       if (token && (isClosed === null || isClosed === undefined || isClosed === "") && (version != null || version != undefined || version != "")) {
         //升级弹窗要在登录之后才会弹出
@@ -703,7 +703,7 @@ const App: React.FC = (props: any) => {
       if (!lastPopupTime) {
         // 如果从未展示过弹窗，则直接展示
         setTimeout(() => {
-          setModalVisible(true); // 新用户弹出
+          setIsModalVisibleNew(true); // 新用户弹出
           // 标记弹窗已展示
           localStorage.setItem('lastPopupTime', now.toISOString());
         }, 2000);
@@ -714,7 +714,7 @@ const App: React.FC = (props: any) => {
         // 如果距离上次展示超过24小时，则再次展示
         if (hoursDiff >= 24) {
           setTimeout(() => {
-            setModalVisible(true); // 新用户弹出
+            setIsModalVisibleNew(true); // 新用户弹出
             // 更新弹窗展示时间
             localStorage.setItem('lastPopupTime', now.toISOString());
           }, 2000);
