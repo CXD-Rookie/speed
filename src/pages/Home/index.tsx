@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-05 14:48:59
+ * @LastEditTime: 2024-08-06 10:54:28
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -38,9 +38,7 @@ const Home: React.FC = () => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
-  const [images, setImages] = useState<{ image_url: string; params: any }[]>(
-    []
-  );
+  const [images, setImages] = useState<{ image_url: string; params: any }[]>([]);
   const firstAuth = useSelector((state: any) => state.firstAuth);
 
   //@ts-ignore
