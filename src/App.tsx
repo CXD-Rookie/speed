@@ -16,7 +16,6 @@ import "@/assets/css/App.scss";
 import AppCloseModal from "./containers/app-close";
 import PayModal from "./containers/Pay";
 import eventBus from "./api/eventBus";
-import useCefQuery from "./hooks/useCefQuery";
 import webSocketService from "./common/webSocketService";
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
@@ -30,7 +29,6 @@ import MinorModal from "./containers/minor";
 import Active from '@/containers/active/index'
 import ActiveNew from '@/containers/active/newOpen';
 import loginApi from "./api/login";
-import playSuitApi from "./api/speed";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
@@ -70,9 +68,6 @@ const App: React.FC = (props: any) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const sendMessageToBackend = useCefQuery();
-  const isInternalNavigation = useRef(false);
-
   const historyContext: any = useHistoryContext();
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
@@ -87,7 +82,7 @@ const App: React.FC = (props: any) => {
   const [remoteLoginOpen, setRemoteLoginOpen] = useState(false); // 异地登录
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
-  const token = localStorage.getItem("token");
+
   const [exitOpen, setExitOpen] = useState(false); // 是否关闭主程序
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
   const [isAppCloseOpen, setIsAppCloseOpen] = useState(false); // 是否手动设置关闭主程序操作
@@ -262,7 +257,6 @@ const App: React.FC = (props: any) => {
         if ((window as any).stopDelayTimer) {
           (window as any).stopDelayTimer();
         }
-        console.log(list);
 
         if (list?.length >= 0) {
           (window as any).NativeApi_ExitProcess();
@@ -361,7 +355,7 @@ const App: React.FC = (props: any) => {
         if ((window as any).stopDelayTimer) {
           (window as any).stopDelayTimer();
         }
-
+        
         historyContext?.accelerateTime?.stopTimer();
         removeGameList("initialize"); // 更新我的游戏
         navigate("/home");
@@ -638,6 +632,10 @@ const App: React.FC = (props: any) => {
     };
   }, [navigate, location.pathname]);
 
+  useEffect(() => {
+    stopProxy()
+  }, []);
+
   return (
     <Layout className="app-module">
       <Header
@@ -742,14 +740,6 @@ const App: React.FC = (props: any) => {
         <Content className="content">{routeView}</Content>
       </Layout>
 
-      {/* {accountInfo?.isShowLogin && (
-        <div
-          className="login-mask"
-          style={{ display: accountInfo?.isShowLogin ? "none" : "block" }}
-        >
-          <Login />
-        </div>
-      )} */}
       {(accountInfo?.isShowLogin || reopenLogin) && (
         <div
           className="login-mask"
