@@ -536,14 +536,24 @@ const App: React.FC = (props: any) => {
 
           let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "0");
           let type_obj: any = {
-            "1": "thirdBind",
-            "2": "thirdUpdateBind",
+            "2": "thirdBind",
+            "3": "thirdUpdateBind",
           };
+          console.log(bind_type);
+          
+          if (bind_type >= 0) {
+            let isNewUser = JSON.parse(localStorage.getItem("isNewUser") || "0");
 
-          if (["1", "2"].includes(bind_type)) {
-            setThirdBindType(type_obj?.[bind_type]); // 定义成功类型
-            tracking.trackLoginSuccess("0");
-            setBindOpen(true); // 触发成功弹窗
+            if (isNewUser === 1) {
+              setThirdBindType("bind"); // 定义成功类型
+              tracking.trackLoginSuccess("0");
+              setBindOpen(true); // 触发成功弹窗
+            } else if (["2", "3"].includes(bind_type)) {
+              setThirdBindType(type_obj?.[bind_type]); // 定义成功类型
+              tracking.trackLoginSuccess("0");
+              setBindOpen(true); // 触发成功弹窗
+            }
+
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
           }
         } else {

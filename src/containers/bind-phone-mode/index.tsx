@@ -1,12 +1,11 @@
-import { useState, useEffect, Fragment, HtmlHTMLAttributes } from "react";
-import { Input, Modal, Button } from "antd";
+import { useState, useEffect, Fragment } from "react";
+import { Input, Modal } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./index.scss";
 import MinorModal from "@/containers/minor";
 import loginApi from "@/api/login";
-import { error } from "console";
 
 interface BindPhoneProps {
   open: boolean;
