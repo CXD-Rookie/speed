@@ -522,7 +522,6 @@ const App: React.FC = (props: any) => {
 
         eventBus.emit('dataUpdated', allData);
       }
-
       // 判断是否为新用户且弹窗尚未展示过
       if (isNewUser && !isModalDisplayed) {
         setTimeout(() => {
@@ -691,6 +690,38 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     stopProxy()
   }, []);
+
+  useEffect(() => {
+    const isNewUser = localStorage.getItem('is_new_user') === 'true';
+    const lastPopupTime:any = localStorage.getItem('lastPopupTime');
+
+    // 当前时间
+    const now:any = new Date();
+
+    // 判断是否为新用户且弹窗需要展示
+    if (isNewUser) {
+      if (!lastPopupTime) {
+        // 如果从未展示过弹窗，则直接展示
+        setTimeout(() => {
+          setIsModalVisibleNew(true); // 新用户弹出
+          // 标记弹窗已展示
+          localStorage.setItem('lastPopupTime', now.toISOString());
+        }, 2000);
+      } else {
+        const lastPopupDate:any = new Date(lastPopupTime);
+        const hoursDiff = (now - lastPopupDate) / (1000 * 60 * 60);
+
+        // 如果距离上次展示超过24小时，则再次展示
+        if (hoursDiff >= 24) {
+          setTimeout(() => {
+            setIsModalVisibleNew(true); // 新用户弹出
+            // 更新弹窗展示时间
+            localStorage.setItem('lastPopupTime', now.toISOString());
+          }, 2000);
+        }
+      }
+    }
+  }, [])
 
   return (
     <Layout className="app-module">

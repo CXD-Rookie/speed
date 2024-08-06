@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-06 17:48:34
+ * @LastEditTime: 2024-08-06 18:27:28
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -188,6 +188,39 @@ const Home: React.FC = () => {
     // }
     fetchData();
   }, []);
+
+
+  useEffect(() => {
+    const isNewUser = localStorage.getItem('is_new_user') === 'true';
+    const lastPopupTime:any = localStorage.getItem('lastPopupTime');
+
+    // 当前时间
+    const now:any = new Date();
+
+    // 判断是否为新用户且弹窗需要展示
+    if (isNewUser) {
+      if (!lastPopupTime) {
+        // 如果从未展示过弹窗，则直接展示
+        setTimeout(() => {
+          setIsModalOpenNew(true); // 新用户弹出
+          // 标记弹窗已展示
+          localStorage.setItem('lastPopupTime', now.toISOString());
+        }, 2000);
+      } else {
+        const lastPopupDate:any = new Date(lastPopupTime);
+        const hoursDiff = (now - lastPopupDate) / (1000 * 60 * 60);
+
+        // 如果距离上次展示超过24小时，则再次展示
+        if (hoursDiff >= 24) {
+          setTimeout(() => {
+            setIsModalOpenNew(true); // 新用户弹出
+            // 更新弹窗展示时间
+            localStorage.setItem('lastPopupTime', now.toISOString());
+          }, 2000);
+        }
+      }
+    }
+  }, [])
 
   // useEffect(() => {
   //   const handleWheel = throttle((event: WheelEvent) => {
