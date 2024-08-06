@@ -11,8 +11,11 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Modal, Tabs, Switch, Radio, Card, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { useHistoryContext } from "@/hooks/usePreviousRoute";
 
 import "./index.scss";
+import tracking from "@/common/tracking";
 import MinorModal from "../minor";
 import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
@@ -37,6 +40,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const accountInfo = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  const historyContext: any = useHistoryContext();
+  const { removeGameList } = useGamesInitialize();
+
   const [loading, setLoading] = React.useState<boolean>(true);
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
@@ -79,6 +85,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     (window as any).NativeApi_OpenBrowser(dataTitle);
     console.log("data-title:", dataTitle);
   };
+
   const native_fixup_network_lsp = () => {
     return new Promise((resolve, reject) => {
       console.log("Fixing network LSP");
@@ -135,8 +142,40 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   const native_restart = () => {
     console.log("Restarting");
-    (window as any).native_restart();
+    let jsonString = "";
+
+    const userToken = localStorage.getItem("token");
+    const jsKey = localStorage.getItem("StartKey");
+
+    if (jsKey) {
+      jsonString = JSON.stringify({
+        params: {
+          user_token: userToken ? JSON.parse(userToken) : "",
+          js_key: jsKey,
+        },
+      });
+    }
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      jsonString,
+      async function (response: any) {
+        console.log(response, "----------------------------------");
+        tracking.trackBoostDisconnectManual("手动停止加速");
+        let list = (await removeGameList("initialize")) || []; // 更新我的游戏
+        historyContext?.accelerateTime?.stopTimer();
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        if (list?.length >= 0) {
+          (window as any).NativeApi_ExitProcess();
+        }
+      }
+    );
+    
     // 调用重启方法
+    (window as any).native_restart();
   };
 
   const repairToolDetails = {

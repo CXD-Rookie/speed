@@ -62,8 +62,6 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
   };
 
   const handleLogin = async () => {
-    setIsMinorOpen(true);
-
     if (!isPhoneNumberValid) {
       setIsPhone(true);
       return;
@@ -95,7 +93,9 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
           localStorage.setItem("isRealName", "0");
         }
         // 3个参数 用户信息 是否登录 是否显示登录
+        setIsMinorOpen(true);
         dispatch(setAccountInfo(res.data.user_info, true, false));
+        dispatch(updateBindPhoneState(false));
       } else {
         setVeryCode(false);
         setVeryCodeErr(true);

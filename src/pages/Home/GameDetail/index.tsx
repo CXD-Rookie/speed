@@ -156,7 +156,7 @@ const GameDetail: React.FC = () => {
   }
 
   const findMappingIcon = (data: any) => {
-    const platform = data?.pc_platform || [];
+    const platform = data?.acc_platform || [];
     const iconMap: any = {
       "1": steamIcon,
       "2": garenaIcon,
@@ -172,7 +172,7 @@ const GameDetail: React.FC = () => {
       "12": primeGamIcon,
     };
     let resultData: any = [];
-
+    
     if (Array.isArray(platform) && platform?.length > 0) {
       resultData = platform.map((child: any) => {
         if (Object.keys(iconMap).includes(String(child))) {
@@ -220,7 +220,7 @@ const GameDetail: React.FC = () => {
 
         setChartData(chart_list); // 更新图表
         setLostBag(lost_bag); // 更新延迟数
-        setPacketLoss(delay === 9999 ? 25 : 0); // 更新丢包率
+        setPacketLoss(delay === 9999 ? 100 : 0); // 更新丢包率
         setDetailData(find_accel);
         setRegionInfo(select_region);
 
@@ -274,7 +274,7 @@ const GameDetail: React.FC = () => {
             return chart_list;
           }); // 更新图表
           setLostBag(lost_bag); // 更新延迟数
-          setPacketLoss(delay === 9999 ? 25 : 0); // 更新丢包率
+          setPacketLoss(delay === 9999 ? 100 : 0); // 更新丢包率
 
           dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
         }
@@ -305,15 +305,17 @@ const GameDetail: React.FC = () => {
         <div className="game-detail">
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>
-            <div className="platfrom">
-              <div className="text">已同步加速</div>
-              <div className="icon-box">
-                {findMappingIcon(detailData)?.length > 0 &&
-                  findMappingIcon(detailData)?.map((item: any) => {
-                    return <img key={item?.id} src={item?.icon} alt="" />;
-                  })}
+            {detailData?.acc_platform?.length > 0 && (
+              <div className="platfrom">
+                <div className="text">已同步加速</div>
+                <div className="icon-box">
+                  {findMappingIcon(detailData)?.length > 0 &&
+                    findMappingIcon(detailData)?.map((item: any) => {
+                      return <img key={item?.id} src={item?.icon} alt="" />;
+                    })}
+                </div>
               </div>
-            </div>
+            )}
             <div className="game-btn">
               <Button
                 className="Launching on-game"

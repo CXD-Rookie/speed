@@ -37,12 +37,14 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
       console.log(1111, searchParams.get("token"), location, state);
 
       if (String(state)) {
-        // 关闭第三方登录 并且将token 是否第三方登录 是否新用户 3个参数存储在 加速器项目中
-        (window as any).NativeApi_YouXiaAuthComplete(
-          res?.data?.token,
-          state,
-          res?.data?.is_new_user
-        );
+        setTimeout(() => {
+          // 关闭第三方登录 并且将token 是否第三方登录 是否新用户 3个参数存储在 加速器项目中
+          (window as any).NativeApi_YouXiaAuthComplete(
+            res?.data?.token,
+            state,
+            res?.data?.is_new_user
+          );
+        }, 5000);
       }
     } catch (error) {
       console.log(error);

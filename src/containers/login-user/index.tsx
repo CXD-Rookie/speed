@@ -10,8 +10,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Popover } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
-import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
-import { store } from "@/redux/store";
 
 import MinorModal from "../minor";
 import RealNameModal from "../real-name";
@@ -24,8 +22,6 @@ interface CustomDropdownProps {}
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const dispatch = useDispatch();
-
-  const { handleUserInfo } = useHandleUserInfo();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
@@ -59,17 +55,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   };
 
   useEffect(() => {
-    // const updateInfo = async () => {
-    //   let res = await handleUserInfo();
-
-    //   if (res) {
-    //     // 重新获取最新的 accountInfo
-    //     setAccountInfo(store.getState().accountInfo);
-    //   }
-    // };
-
     if (isFirst === 1 || open) {
-      // updateInfo();
       setIsFirst(isFirst + 1);
     }
   }, [open]);

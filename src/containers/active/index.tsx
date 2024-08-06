@@ -7,8 +7,8 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 // index.tsx 
-import React, { useState, useEffect, useRef, Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { getRemainingDays,formatDate } from "@/common/utils";
 import './index.scss';
 
@@ -18,12 +18,12 @@ interface ActiveModalProps {
 }
 
 const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
+  const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
-    const accountInfo: any = useSelector((state: any) => state.accountInfo);
-    useEffect(() => {
-    console.log(accountInfo,"---------------用户信息")
-    }, [accountInfo])
-
+  useEffect(() => {
+    // console.log(accountInfo,"---------------用户信息")
+  }, [accountInfo])
+  
   return (
     <div className={`modal-wrapper ${isVisible ? 'visible' : ''}`}>
       <div className="modal-content">

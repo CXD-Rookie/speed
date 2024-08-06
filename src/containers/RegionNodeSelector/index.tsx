@@ -259,7 +259,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
             let default_node = {
               ...node,
               delay: "超时",
-              packetLoss: 25,
+              packetLoss: 100,
               mode: "进程模式",
             };
 
@@ -276,8 +276,9 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
                 resolve({
                   ...default_node,
-                  delay: jsonResponse.delay,
-                  packetLoss: jsonResponse.delay === 9999 ? 25 : 0,
+                  delay:
+                    jsonResponse.delay === 9999 ? "超时" : jsonResponse.delay,
+                  packetLoss: jsonResponse.delay === 9999 ? 100 : 0,
                 });
               }
             );

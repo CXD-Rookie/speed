@@ -16,7 +16,6 @@ import "@/assets/css/App.scss";
 import AppCloseModal from "./containers/app-close";
 import PayModal from "./containers/Pay";
 import eventBus from "./api/eventBus";
-import useCefQuery from "./hooks/useCefQuery";
 import webSocketService from "./common/webSocketService";
 import routes from "./routes/index";
 import SearchBar from "./containers/searchBar/index";
@@ -30,7 +29,6 @@ import MinorModal from "./containers/minor";
 import Active from '@/containers/active/index'
 import ActiveNew from '@/containers/active/newOpen';
 import loginApi from "./api/login";
-import playSuitApi from "./api/speed";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
@@ -70,9 +68,6 @@ const App: React.FC = (props: any) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const sendMessageToBackend = useCefQuery();
-  const isInternalNavigation = useRef(false);
-
   const historyContext: any = useHistoryContext();
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
@@ -87,7 +82,7 @@ const App: React.FC = (props: any) => {
   const [remoteLoginOpen, setRemoteLoginOpen] = useState(false); // 异地登录
   const [showSettingsModal, setShowSettingsModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
-  const token = localStorage.getItem("token");
+
   const [exitOpen, setExitOpen] = useState(false); // 是否关闭主程序
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认退出登录
   const [isAppCloseOpen, setIsAppCloseOpen] = useState(false); // 是否手动设置关闭主程序操作
@@ -111,7 +106,6 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStopWidow = async () => {
-    // alert(1111)
     //登录过期和异地登录使用的
     setRemoteLoginOpen(true);
   };
@@ -262,7 +256,6 @@ const App: React.FC = (props: any) => {
         if ((window as any).stopDelayTimer) {
           (window as any).stopDelayTimer();
         }
-        console.log(list);
 
         if (list?.length >= 0) {
           (window as any).NativeApi_ExitProcess();
@@ -361,7 +354,7 @@ const App: React.FC = (props: any) => {
         if ((window as any).stopDelayTimer) {
           (window as any).stopDelayTimer();
         }
-
+        
         historyContext?.accelerateTime?.stopTimer();
         removeGameList("initialize"); // 更新我的游戏
         navigate("/home");
@@ -370,7 +363,6 @@ const App: React.FC = (props: any) => {
   };
 
   const stopSpeed = () => {
-    // alert(111)
     //全局只给客户端调用，业务不处理,是到托盘之后邮件 弹出的关闭按钮的方法
     let close = localStorage.getItem("client_settings");
     let action = close ? JSON.parse(close)?.close_button_action : 2;
@@ -428,8 +420,6 @@ const App: React.FC = (props: any) => {
     dispatch(setAccountInfo(undefined, undefined, true))
     localStorage.setItem("isActiveNew", "1");
   }
-
-  
 
   useEffect(() => {
     native_version();
@@ -574,8 +564,8 @@ const App: React.FC = (props: any) => {
         } else {
           localStorage.setItem("isRealName", "0");
         }
-
-        if (String(userInfo?.phone)?.length > 1) {
+        // delete userInfo.phone // 测试代码
+        if (!!userInfo?.phone) {
           // 3个参数 用户信息 是否登录 是否显示登录
           dispatch(setAccountInfo(userInfo, true, false));
           const data = identifyAccelerationData();
@@ -595,18 +585,29 @@ const App: React.FC = (props: any) => {
 
           let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "0");
           let type_obj: any = {
-            "1": "thirdBind",
-            "2": "thirdUpdateBind",
+            "2": "thirdBind",
+            "3": "thirdUpdateBind",
           };
+          
+          if (bind_type >= 0) {
+            let isNewUser = JSON.parse(localStorage.getItem("isNewUser") || "0");
 
-          if (["1", "2"].includes(bind_type)) {
-            setThirdBindType(type_obj?.[bind_type]); // 定义成功类型
-            tracking.trackLoginSuccess("0");
-            setBindOpen(true); // 触发成功弹窗
+            if (isNewUser === 1) {
+              setThirdBindType("bind"); // 定义成功类型
+              tracking.trackLoginSuccess("0");
+              setBindOpen(true); // 触发成功弹窗
+            } else if (["2", "3"].includes(bind_type)) {
+              setThirdBindType(type_obj?.[bind_type]); // 定义成功类型
+              tracking.trackLoginSuccess("0");
+              setBindOpen(true); // 触发成功弹窗
+            }
+
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
           }
         } else {
+          // && !(localStorage.getItem("isFirstPhone") === "1")
           if (!isBindPhone) {
+            localStorage.setItem("isFirstPhone", "1");
             dispatch(updateBindPhoneState(true));
           }
         }
@@ -691,6 +692,10 @@ const App: React.FC = (props: any) => {
     };
   }, [navigate, location.pathname]);
 
+  useEffect(() => {
+    stopProxy()
+  }, []);
+
   return (
     <Layout className="app-module">
       <Header
@@ -765,7 +770,11 @@ const App: React.FC = (props: any) => {
 
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
                 // 如果当前游戏是加速中并且是关闭主程序
-                if (action === 1 && identifyAccelerationData()?.[0]) {
+                if (
+                  action === 1 &&
+                  identifyAccelerationData()?.[0] &&
+                  String(noMorePrompts) === "true"
+                ) {
                   setExitOpen(true); //确定要退出加速器弹窗
                 } else {
                   // 提示存在
@@ -779,43 +788,6 @@ const App: React.FC = (props: any) => {
                     }
                   }
                 }
-
-                //   if (
-                //     action === 0 &&
-                //     (noMorePrompts === "false" ||
-                //       noMorePrompts === null ||
-                //       noMorePrompts === undefined)
-                //   ) {
-                //     setIsAppCloseOpen(true);
-                //   } else if (action === 0 && noMorePrompts == "true") {
-                //     (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
-                //   } else if (
-                //     action === 1 &&
-                //     identifyAccelerationData()?.[0] &&
-                //     (noMorePrompts === "false" ||
-                //       noMorePrompts === null ||
-                //       noMorePrompts === undefined)
-                //   ) {
-                //     setExitOpen(true); //确定要退出加速器弹窗
-                //   } else if (
-                //     action === 1 &&
-                //     identifyAccelerationData()?.[0] &&
-                //     noMorePrompts == "true"
-                //   ) {
-                //     setExitOpen(true); //确定要退出加速器弹窗
-                //   } else if (action === 1 && noMorePrompts === "true") {
-                //     // setIsAppCloseOpen(true); // 弹出设置选择框
-                //     (window as any).NativeApi_ExitProcess(); //关闭主程序
-                //   } else if (
-                //     action === 1 &&
-                //     (noMorePrompts === "false" ||
-                //       noMorePrompts === null ||
-                //       noMorePrompts === undefined)
-                //   ) {
-                //     setIsAppCloseOpen(true);
-                //   } else {
-                //     setIsAppCloseOpen(true);
-                //   }
               }}
               className="closeType"
               src={closeIcon}
@@ -828,14 +800,6 @@ const App: React.FC = (props: any) => {
         <Content className="content">{routeView}</Content>
       </Layout>
 
-      {/* {accountInfo?.isShowLogin && (
-        <div
-          className="login-mask"
-          style={{ display: accountInfo?.isShowLogin ? "none" : "block" }}
-        >
-          <Login />
-        </div>
-      )} */}
       {(accountInfo?.isShowLogin || reopenLogin) && (
         <div
           className="login-mask"
