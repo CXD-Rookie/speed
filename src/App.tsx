@@ -712,7 +712,11 @@ const App: React.FC = (props: any) => {
 
                 // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
                 // 如果当前游戏是加速中并且是关闭主程序
-                if (action === 1 && identifyAccelerationData()?.[0]) {
+                if (
+                  action === 1 &&
+                  identifyAccelerationData()?.[0] &&
+                  String(noMorePrompts) === "true"
+                ) {
                   setExitOpen(true); //确定要退出加速器弹窗
                 } else {
                   // 提示存在
@@ -726,43 +730,6 @@ const App: React.FC = (props: any) => {
                     }
                   }
                 }
-
-                //   if (
-                //     action === 0 &&
-                //     (noMorePrompts === "false" ||
-                //       noMorePrompts === null ||
-                //       noMorePrompts === undefined)
-                //   ) {
-                //     setIsAppCloseOpen(true);
-                //   } else if (action === 0 && noMorePrompts == "true") {
-                //     (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
-                //   } else if (
-                //     action === 1 &&
-                //     identifyAccelerationData()?.[0] &&
-                //     (noMorePrompts === "false" ||
-                //       noMorePrompts === null ||
-                //       noMorePrompts === undefined)
-                //   ) {
-                //     setExitOpen(true); //确定要退出加速器弹窗
-                //   } else if (
-                //     action === 1 &&
-                //     identifyAccelerationData()?.[0] &&
-                //     noMorePrompts == "true"
-                //   ) {
-                //     setExitOpen(true); //确定要退出加速器弹窗
-                //   } else if (action === 1 && noMorePrompts === "true") {
-                //     // setIsAppCloseOpen(true); // 弹出设置选择框
-                //     (window as any).NativeApi_ExitProcess(); //关闭主程序
-                //   } else if (
-                //     action === 1 &&
-                //     (noMorePrompts === "false" ||
-                //       noMorePrompts === null ||
-                //       noMorePrompts === undefined)
-                //   ) {
-                //     setIsAppCloseOpen(true);
-                //   } else {
-                //     setIsAppCloseOpen(true);
-                //   }
               }}
               className="closeType"
               src={closeIcon}

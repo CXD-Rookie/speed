@@ -32,7 +32,7 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
     let checked = e.target.checked;
 
     setNoMorePrompts(checked);
-    localStorage.setItem("noMorePrompts", String(checked));
+    // localStorage.setItem("noMorePrompts", String(checked));
   };
 
   // 在点击确认按钮时，如果 noMorePrompts 为 true，则更新配置
@@ -43,7 +43,7 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
 
     sign.close_button_action = action_value; // 1 表示关闭程序，0 表示隐藏到托盘
 
-    if (String(eventType) === "1" || noMorePrompts) {
+    if (noMorePrompts) {
       localStorage.setItem("noMorePrompts", String(true));
     }
 
