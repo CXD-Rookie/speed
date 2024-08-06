@@ -33,13 +33,13 @@ class PayApi {
 
   getCommodityInfo (params) {
     // const queryString = new URLSearchParams(params).toString();
-    console.log(params, "params------------")
+    // console.log(params, "params------------")
     return get(`${this.url}/commodity/info?platform=3&cid=${params}`);
   }
   
   getBanner (params) {
     // const queryString = new URLSearchParams(params).toString();
-    console.log(params, "params------------")
+    // console.log(params, "params------------")
     return get(`${this.url}/banner/list?platform=3`);
   }
 }

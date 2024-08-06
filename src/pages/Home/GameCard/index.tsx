@@ -19,7 +19,6 @@ import { store } from "@/redux/store";
 import tracking from "@/common/tracking";
 import "./style.scss";
 import RegionNodeSelector from "@/containers/RegionNodeSelector";
-import useCefQuery from "@/hooks/useCefQuery";
 import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";
@@ -59,7 +58,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
 
-  const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
 
   const {
