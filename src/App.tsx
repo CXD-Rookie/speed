@@ -106,7 +106,6 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStopWidow = async () => {
-    // alert(1111)
     //登录过期和异地登录使用的
     setRemoteLoginOpen(true);
   };
@@ -364,7 +363,6 @@ const App: React.FC = (props: any) => {
   };
 
   const stopSpeed = () => {
-    // alert(111)
     //全局只给客户端调用，业务不处理,是到托盘之后邮件 弹出的关闭按钮的方法
     let close = localStorage.getItem("client_settings");
     let action = close ? JSON.parse(close)?.close_button_action : 2;
@@ -422,8 +420,6 @@ const App: React.FC = (props: any) => {
     dispatch(setAccountInfo(undefined, undefined, true))
     localStorage.setItem("isActiveNew", "1");
   }
-
-  
 
   useEffect(() => {
     native_version();
@@ -539,7 +535,6 @@ const App: React.FC = (props: any) => {
             "2": "thirdBind",
             "3": "thirdUpdateBind",
           };
-          console.log(bind_type);
           
           if (bind_type >= 0) {
             let isNewUser = JSON.parse(localStorage.getItem("isNewUser") || "0");
