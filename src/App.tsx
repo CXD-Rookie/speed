@@ -483,7 +483,7 @@ const App: React.FC = (props: any) => {
           const filteredData = allData.filter((item:any) => {
           return !newUser.some((newItem:any) => newItem.image_url === item.image_url);
         });
-        console.log(filteredData)
+        // console.log(filteredData)
         // 更新 localStorage 中的 all_data
         localStorage.setItem("all_data", JSON.stringify(filteredData));
 

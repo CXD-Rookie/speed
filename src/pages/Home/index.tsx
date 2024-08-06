@@ -202,6 +202,7 @@ const Home: React.FC = () => {
       if (!lastPopupTime) {
         // 如果从未展示过弹窗，则直接展示
         setTimeout(() => {
+          setModalType(2);
           setIsModalOpenNew(true); // 新用户弹出
           // 标记弹窗已展示
           localStorage.setItem('lastPopupTime', now.toISOString());
@@ -213,6 +214,7 @@ const Home: React.FC = () => {
         // 如果距离上次展示超过24小时，则再次展示
         if (hoursDiff >= 24) {
           setTimeout(() => {
+            setModalType(2);
             setIsModalOpenNew(true); // 新用户弹出
             // 更新弹窗展示时间
             localStorage.setItem('lastPopupTime', now.toISOString());
