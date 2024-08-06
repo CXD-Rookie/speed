@@ -515,8 +515,8 @@ const App: React.FC = (props: any) => {
         } else {
           localStorage.setItem("isRealName", "0");
         }
-
-        if (String(userInfo?.phone)?.length > 1) {
+        
+        if (!!userInfo?.phone) {
           // 3个参数 用户信息 是否登录 是否显示登录
           dispatch(setAccountInfo(userInfo, true, false));
           const data = identifyAccelerationData();
