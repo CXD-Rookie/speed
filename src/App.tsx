@@ -523,10 +523,6 @@ const App: React.FC = (props: any) => {
         eventBus.emit('dataUpdated', allData);
       }
 
-
-   
-
-
       // 判断是否为新用户且弹窗尚未展示过
       if (isNewUser && !isModalDisplayed) {
         setTimeout(() => {
