@@ -470,6 +470,10 @@ const App: React.FC = (props: any) => {
       const data = JSON.parse(event.data);
       const token = localStorage.getItem("token");
       const isClosed = localStorage.getItem("isClosed");
+      const allData = JSON.parse(localStorage.getItem("all_data") || "[]");
+      const firstPurchase = JSON.parse(localStorage.getItem("first_purchase") || "[]"); // 首次充值
+      const firstRenewal = JSON.parse(localStorage.getItem("first_renewal") || "[]"); // 首次续费
+      const newUser = JSON.parse(localStorage.getItem("new_user") || "[]");
           // 获取localStorage中是否展示过标志
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
@@ -477,9 +481,61 @@ const App: React.FC = (props: any) => {
       // console.log(data, "ws返回的信息---------------");
 
       const version = data?.data?.version;
-      const firstAuth = data?.data?.first_purchase_renewed;
+
       dispatch(setVersion(version));
-      dispatch(setFirstAuth(firstAuth));
+
+      if(token){
+        const firstAuth = data?.data?.first_purchase_renewed;
+        dispatch(setFirstAuth(firstAuth));
+        const { first_purchase, first_renewal } = firstAuth;
+        // 过滤掉 allData 中的 newUser 数据
+        if(!isNewUser){
+          const filteredData = allData.filter((item:any) => {
+          return !newUser.some((newItem:any) => newItem.image_url === item.image_url);
+        });
+        console.log(filteredData)
+        // 更新 localStorage 中的 all_data
+        localStorage.setItem("all_data", JSON.stringify(filteredData));
+
+        eventBus.emit('dataUpdated', filteredData);
+      } else if (first_purchase && !first_renewal) {
+          const filteredData = allData.filter((item:any) => {
+            return !newUser.some((newItem:any) => newItem.image_url === item.image_url);
+          });
+          const filteredData2 = filteredData.filter((item:any) => {
+            return !firstPurchase.some((firstPurchaseItem:any) => firstPurchaseItem.image_url === item.image_url);
+          });
+          console.log(filteredData2)
+          // 更新 localStorage 中的 all_data
+          localStorage.setItem("all_data", JSON.stringify(filteredData2));
+  
+          eventBus.emit('dataUpdated', filteredData);
+      } else if (!first_purchase && first_renewal) {
+          const filteredData = allData.filter((item:any) => {
+            return !newUser.some((newItem:any) => newItem.image_url === item.image_url);
+          });
+          const filteredData2 = filteredData.filter((item:any) => {
+            return !firstRenewal.some((firstRenewalItem:any) => firstRenewalItem.image_url === item.image_url);
+          });
+          console.log(filteredData2)
+          // 更新 localStorage 中的 all_data
+          localStorage.setItem("all_data", JSON.stringify(filteredData2));
+  
+          eventBus.emit('dataUpdated', filteredData);
+        } else {
+          // all_data = isNewUser
+          //   ? [...newUser, ...firstPurchase, ...firstRenewal]
+          //   : [...firstPurchase, ...firstRenewal];
+        }
+      }else{
+        const allData = JSON.parse(localStorage.getItem("all_data") || "[]");
+
+        eventBus.emit('dataUpdated', allData);
+      }
+
+
+   
+
 
       // 判断是否为新用户且弹窗尚未展示过
       if (isNewUser && !isModalDisplayed) {
@@ -489,11 +545,8 @@ const App: React.FC = (props: any) => {
           localStorage.setItem('isModalDisplayed', 'true');
         }, 2000);
       }
-      if (
-        token &&
-        (isClosed === null || isClosed === undefined || isClosed === "") &&
-        (version != null || version != undefined || version != "")
-      ) {
+
+      if (token && (isClosed === null || isClosed === undefined || isClosed === "") && (version != null || version != undefined || version != "")) {
         //升级弹窗要在登录之后才会弹出
         let isTrue = compareVersions(
           versionNowRef.current,

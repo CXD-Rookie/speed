@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-06 10:54:28
+ * @LastEditTime: 2024-08-06 15:43:14
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -13,6 +13,7 @@ import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
+import { setFirstAuth,setImages } from "@/redux/actions/firstAuth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
 
@@ -38,9 +39,9 @@ const Home: React.FC = () => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
-  const [images, setImages] = useState<{ image_url: string; params: any }[]>([]);
+  // const [images, setImages] = useState<{ image_url: string; params: any }[]>([]);
   const firstAuth = useSelector((state: any) => state.firstAuth);
-
+  const images = JSON.parse(localStorage.getItem("all_data") || "[]");
   //@ts-ignore
   const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -148,41 +149,34 @@ const Home: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await activePayApi.getBanner();
-
         const firstPurchase = response.data.first_purchase; // 首次充值
         const firstRenewal = response.data.first_renewal; // 首次续费
         const newUser = response.data.new_user;
 
-        let combinedData: { image_url: string; params: any }[] = [];
+        localStorage.setItem("first_purchase", JSON.stringify(firstPurchase));
+        localStorage.setItem("first_renewal", JSON.stringify(firstRenewal));
+        localStorage.setItem("new_user", JSON.stringify(newUser));
+        let all_data = [];
         if (userToken) {
           const { first_purchase, first_renewal } = firstAuth.firstAuth;
 
           if (!first_purchase && !first_renewal) {
-            // 如果 first_purchase 和 first_renewal 都是 false
-            //测试使用
-            // combinedData = isNewUser
-            //   ? [...newUser, ...firstPurchase, ...firstRenewal]
-            //   : [...firstPurchase, ...firstRenewal];
-            //上线使用
-            combinedData = isNewUser ? [...newUser, ...firstPurchase, ...firstRenewal] : [];
+            all_data = isNewUser ? [...firstPurchase, ...firstRenewal] : [];
           } else if (first_purchase && !first_renewal) {
-            // 如果 first_purchase 是 true 且 first_renewal 是 false
-            combinedData = [...firstPurchase];
+            all_data = [...firstPurchase];
           } else if (!first_purchase && first_renewal) {
-            // 如果 first_purchase 是 false 且 first_renewal 是 true
-            combinedData = [...firstRenewal];
+            all_data = [...firstRenewal];
           } else {
-            // 如果 first_purchase 和 first_renewal 都是 true
-            combinedData = isNewUser
+            all_data = isNewUser
               ? [...newUser, ...firstPurchase, ...firstRenewal]
               : [...firstPurchase, ...firstRenewal];
           }
-  
-          setImages(combinedData);
-        }else{
-          combinedData = [...newUser, ...firstPurchase, ...firstRenewal];
-          setImages(combinedData);
+        } else {
+          all_data = [...newUser, ...firstPurchase, ...firstRenewal];
         }
+
+        // 存储 all_data 到 localStorage
+        localStorage.setItem("all_data", JSON.stringify(all_data));
        
       } catch (error) {
         console.error("Failed to fetch feedback types:", error);
@@ -193,7 +187,7 @@ const Home: React.FC = () => {
     //   fetchData();
     // }
     fetchData();
-  }, [userToken, firstAuth.firstAuth]);
+  }, []);
 
   // useEffect(() => {
   //   const handleWheel = throttle((event: WheelEvent) => {
@@ -241,7 +235,7 @@ const Home: React.FC = () => {
       <div className="functional-areas">
         {images?.length > 0 && (
           <div className="swiper">
-            <Swiper images={images} onImageClick={handleShowModal} />
+            <Swiper onImageClick={handleShowModal} />
           </div>
         )}
         <div
