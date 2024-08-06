@@ -43,6 +43,19 @@
 
         .menu-active {
           color: #FFF;
+          position: relative;
+
+          &::after {
+            content: "";
+            display: inline-block;
+            width: 2vw;
+            height: 0.45vh;
+            border-radius: 2px;
+            background-color: #F86C34;
+            position: absolute;
+            bottom: 0;
+            left: calc(50% - 1vw)
+          }
         }
       };
 
