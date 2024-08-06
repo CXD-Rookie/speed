@@ -123,8 +123,11 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
       // 聚合所以的api 数据中的 游戏平台
       let result_excutable = data.reduce((acc: any = [], item: any) => {
         let data = item?.data;
-
-        if (Number(data?.pc_platform) === Number(data?.option?.pid)) {
+        
+        if (
+          Number(data?.pc_platform) === Number(data?.option?.pid) &&
+          data?.start_path
+        ) {
           return acc.concat([
             {
               pc_platform: data?.pc_platform,
