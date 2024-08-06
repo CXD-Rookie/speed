@@ -192,7 +192,7 @@ const Home: React.FC = () => {
     // if (userToken) {
     //   fetchData();
     // }
-    fetchData();
+    // fetchData();
   }, [userToken, firstAuth.firstAuth]);
 
   // useEffect(() => {
