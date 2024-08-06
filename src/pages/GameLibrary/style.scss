@@ -113,7 +113,8 @@
       height: auto;
       text-align: center;
 
-      .game-name {
+      & .game-name {
+        height: 2vw;
         font-size: 1.6vw;
         color: #999;
         margin-top: 8px;
@@ -122,10 +123,10 @@
         text-overflow: ellipsis;/* 使用省略号表示溢出 */
       }
 
-      .game-name-en {
+      & .game-name-en {
+        height: 2vw;
         color: #555555;
         font-size: 1.4vw;
-        margin-top: 6px;
         white-space: nowrap;    /* 禁止换行 */
         overflow: hidden;       /* 隐藏溢出内容 */
         text-overflow: ellipsis;/* 使用省略号表示溢出 */
