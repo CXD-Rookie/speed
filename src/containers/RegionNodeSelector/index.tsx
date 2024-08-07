@@ -7,7 +7,6 @@ import { smart_config } from "./config";
 import tracking from "@/common/tracking";
 import "./index.scss";
 import playSuitApi from "@/api/speed";
-import useCefQuery from "@/hooks/useCefQuery";
 import BreakConfirmModal from "../break-confirm";
 import IssueModal from "@/containers/IssueModal/index";
 
@@ -36,7 +35,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   const { getGameList, identifyAccelerationData, removeGameList } =
     useGamesInitialize();
 
-  const sendMessageToBackend = useCefQuery();
   const historyContext: any = useHistoryContext();
 
   const [presentGameInfo, setPresentGameInfo] = useState<any>({}); // 当前期望加速的游戏信息
@@ -58,7 +56,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
   const [tableLoading, setTableLoading] = useState(false);
-  const [allowTabSwitch, setAllowTabSwitch] = useState(false); // 是否允许切换节点
 
   const userToken = localStorage.getItem("token");
   const jsKey = localStorage.getItem("StartKey");
@@ -89,6 +86,19 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
   };
 
+  // 不超出10个从前到后添加逻辑
+  const createLimitedArray = (list: any = [], element = {}) => {
+    const arr: any = [...list];
+
+    if (arr?.length >= 10) {
+      arr.pop(); // 删除最后一个元素
+    }
+
+    arr.unshift(element); // 从前添加新元素
+    
+    return arr;
+  };
+
   // 更新游戏历史选择节点
   const updateGamesDom = (option: any = {}) => {
     let old_dom = presentGameInfo?.dom_info?.dom_history || []; // 现在已存在的数据
@@ -96,7 +106,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
     let dom_info = {
       select_dom: option,
-      dom_history: isTrue ? old_dom : [...old_dom, option],
+      dom_history: isTrue ? old_dom : createLimitedArray([...old_dom], option), // [...old_dom, option],
     };
 
     let game_list = getGameList();
@@ -227,7 +237,9 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       region = {
         select_region: current_server, // 点击选择的区服
         history_region:
-          find_sort !== -1 ? history : [...history, current_server], // 历史选择区服
+          find_sort !== -1
+            ? history
+            : [...history, current_server], // 历史选择区服
       };
     }
 
@@ -241,18 +253,21 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
   };
 
   // 初始化获取所有的加速服务器列表
-  const fetchAllSpeedList = async (params = {}) => {
+  const fetchAllSpeedList = async (key = -1) => {
     setTableLoading(true);
     setRegionDomList([]);
 
     try {
       let res = await playSuitApi.playSpeedList({
         platform: 3,
-        ...params,
       });
-      const nodes = res?.data || [];
+      const nodes = key === -1 ? 
+        (res?.data || []) :
+        (res?.data || []).filter((value: any) =>
+          (value?.playsuits || []).includes(Number(key))
+        );
       const updatedNodes: any[] = [];
-
+      
       for (const node of nodes) {
         try {
           const updatedNode = await new Promise<any>((resolve, reject) => {
@@ -302,6 +317,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
         }
       }
 
+      updatedNodes.sort((a, b) => a?.delay - b?.delay);
       setRegionDomList(updatedNodes);
 
       return updatedNodes;
@@ -310,12 +326,27 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
   };
 
+  // 游戏区服列表
+  const fetchPlaysuit = async (qu = "") => {
+    try {
+      const res = await playSuitApi.playSuitList();
+      const key = Object.entries(res?.data || {}).find(
+        ([key, value]) => value === qu
+      )?.[0];
+      
+      return key || -1
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   // 切换 tabs 进行区服 节点切换
-  const tabsChange = async (event: any) => {
+  const tabsChange = async (event: any, option = regionInfo?.select_region || {}) => {
     setActiveTab(event);
 
     if (event === "2") {
-      let all = await fetchAllSpeedList(); // 暂时只有固定的几个节点，所以直接获取节点就行，不需要传区服id
+      let suit = await fetchPlaysuit(option?.qu);
+      let all = await fetchAllSpeedList(Number(suit)); // 暂时只有固定的几个节点，所以直接获取节点就行，不需要传区服id
       let dom_info = presentGameInfo?.dom_info || {};
 
       if (all) {
@@ -330,7 +361,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
   // 点击 选择区服
   const clickRegion = (option: any) => {
-    tabsChange("2");
+    tabsChange("2", option);
     updateGamesRegion(presentGameInfo, option);
   };
 

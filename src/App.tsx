@@ -555,8 +555,9 @@ const App: React.FC = (props: any) => {
         const firstAuth = data?.data?.first_purchase_renewed;
         console.log(firstAuth,"是否首冲和是否首次续费")
         dispatch(setFirstAuth(firstAuth));  
-        const { first_purchase, first_renewed } = firstAuth;
-        
+        // const { first_purchase, first_renewed } = firstAuth;
+        const first_purchase = firstAuth?.first_purchase;
+        const first_renewed = firstAuth?.first_renewed;
         // 过滤掉 newUser 的数据
         filteredData = filteredData.filter((item: any) => {
           return !newUser.some((newItem: any) => newItem.image_url === item.image_url);
@@ -642,13 +643,13 @@ const App: React.FC = (props: any) => {
             });
           }
 
-          let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "0");
+          let bind_type = localStorage.getItem("thirdBind") || "0";
           let type_obj: any = {
             "2": "thirdBind",
             "3": "thirdUpdateBind",
           };
           
-          if (bind_type >= 0) {
+          if (bind_type) {
             let isNewUser = JSON.parse(localStorage.getItem("isNewUser") || "0");
 
             if (isNewUser === 1) {
