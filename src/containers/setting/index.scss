@@ -57,9 +57,20 @@
     color: #fff !important;
   }
 
-  .ant-tabs-tab {
+  .ant-tabs-tab,
+  :where(.css-dev-only-do-not-override-usln0u) .ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible),
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:focus:not(:focus-visible),
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:active, 
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:active {
     font-size: 1.6vw;
     color: #999;
+  }
+
+  .ant-tabs-tab:hover,
+  .ant-tabs-tab:active,
+  .ant-tabs-tab-btn:hover,
+  .ant-tabs-tab-btn:active {
+    color: #fff;
   }
 
   .tab-content {
@@ -112,13 +123,19 @@
           margin-inline-end: 3.8vw !important;
         }
 
+        .ant-radio-wrapper:hover .ant-radio-inner {
+          border-color: #fff;
+          // border-color: #f86c34;
+        }
+
         .ant-radio-inner {
           background: transparent;
         }
-
+        
         .ant-radio-checked .ant-radio-inner {
           font-size: 1.4vw;
           background-color: #f86c34;
+          border-color: #f86c34;
         }
       }
 
