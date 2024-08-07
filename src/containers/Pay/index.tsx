@@ -125,16 +125,16 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
 
-          const { first_purchase, first_renewal } = firstAuth.firstAuth;
-          if (!first_purchase && !first_renewal) {
+          const { first_purchase, first_renewed } = firstAuth.firstAuth;
+          if (!first_purchase && !first_renewed) {
             //测试数据
             // setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
             // setFirstPurchase(true);
             setIsOldUser(true);//正式
-          } else if (isNewUser && first_purchase && !first_renewal) {
+          } else if (first_purchase && !first_renewed) {
             setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
             setFirstPurchase(true);
-          } else if (isNewUser && !first_purchase && first_renewal) {
+          } else if (!first_purchase && first_renewed) {
             setFirstPayTypes(firstPurchaseResponse.data.first_renewal);
             setFirstRenewal(true);
           }
@@ -309,13 +309,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   onClick={() => updateActiveTabIndex(index)}
                 >
                   <div className={`${isOldUser ? '' : 'discount'}`}>
-                    {firstPayTypes &&
-                      firstPayTypes[item.type] &&
-                      firstPurchase &&
+                    {!firstAuth.firstAuth.first_purchase &&
                       `首充${Number(firstPayTypes[item.type]) / 10}折`}
-                    {firstPayTypes &&
-                      firstPayTypes[item.type] &&
-                      firstRenewal &&
+                    {!firstAuth.firstAuth.first_renewed &&
                       `续费${Number(firstPayTypes[item.type]) / 10}折`}
                   </div>
                   <div className="term">{payTypes[item.type]}</div>
