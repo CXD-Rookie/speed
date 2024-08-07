@@ -321,7 +321,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             const isCheck = JSON.parse(response);
             console.log(response, isCheck);
 
-            if (isCheck?.success === 0) { // 1
+            if (isCheck?.success === 1) {
               console.log("成功开启真实加速中:", isCheck);
               resolve({ state: true, platform: pc_platform });
             } else {
@@ -369,7 +369,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         // 暂时注释 实际生产打开
-        if (isCheck?.pre_check_status === 1) { // 0
+        if (isCheck?.pre_check_status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
 
           if (state?.state) {
