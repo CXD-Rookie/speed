@@ -300,7 +300,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             </div>
           </div>
           <div className="tabs-container">
-            <div className="arrow left"></div>
+            {commodities?.length > 4 && <div className="arrow left"></div>}
+
             <div className="tabs">
               {commodities.map((item, index) => (
                 <div
@@ -308,7 +309,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   className={`tab ${index === activeTabIndex ? "active" : ""}`}
                   onClick={() => updateActiveTabIndex(index)}
                 >
-                  <div className={`${isOldUser ? '' : 'discount'}`}>
+                  <div className={`${isOldUser ? "" : "discount"}`}>
                     {!firstAuth.firstAuth.first_purchase &&
                       `首充${Number(firstPayTypes[item.type]) / 10}折`}
                     {!firstAuth.firstAuth.first_renewed &&
@@ -326,7 +327,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                 </div>
               ))}
             </div>
-            <div className="arrow right"></div>
+            {commodities?.length > 4 && <div className="arrow right"></div>}
           </div>
           <div className="line"></div>
           {qrCodeUrl && (
