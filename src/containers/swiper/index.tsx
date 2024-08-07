@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-07-29 11:20:33
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-06 17:22:11
+ * @LastEditTime: 2024-08-07 14:53:16
  * @FilePath: \speed\src\containers\swiper\indeX.tsX
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -28,7 +28,7 @@ const Swiper: React.FC<SwiperProps> = ({ onImageClick }) => {
   
 
   useEffect(() => {
-    // 初始化时从 localStorage 读取数据
+    // 初始化时从 localStorage 读取banner数据
     const storedData = JSON.parse(localStorage.getItem("all_data") || "[]");
     setImages(storedData);
 

@@ -15,7 +15,7 @@ import PaymentModal from "../payment";
 interface PayModalProps {
   isModalOpen?: boolean;
   setIsModalOpen?: (e: any) => void;
-  type: any;
+  type?: any;
 }
 
 interface Commodity {
