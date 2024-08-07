@@ -168,10 +168,11 @@ const App: React.FC = (props: any) => {
   const loginOut = async (type: any = null) => {
     let res = await loginApi.loginOut();
 
-    if (res.error === 0) {
+    if (res.error === 0) { 
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
       localStorage.removeItem("is_new_user");
+      localStorage.removeItem("isModalDisplayed");
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
