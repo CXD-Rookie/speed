@@ -642,21 +642,23 @@ const App: React.FC = (props: any) => {
             });
           }
 
-          let bind_type = localStorage.getItem("thirdBind") || "0";
+          let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "0");
           let type_obj: any = {
             "2": "thirdBind",
             "3": "thirdUpdateBind",
           };
           
-          if (bind_type) {
-            let isNewUser = JSON.parse(localStorage.getItem("isNewUser") || "0");
-
+          if (bind_type >= 0) {
+            let isNewUser = JSON.parse(
+              localStorage.getItem("isNewUser") || "0"
+            );
+            
             if (isNewUser === 1) {
               setThirdBindType("bind"); // 定义成功类型
               tracking.trackLoginSuccess("0");
               setBindOpen(true); // 触发成功弹窗
-            } else if (["2", "3"].includes(bind_type)) {
-              setThirdBindType(type_obj?.[bind_type]); // 定义成功类型
+            } else if ([2, 3].includes(Number(bind_type))) {
+              setThirdBindType(type_obj?.[String(bind_type)]); // 定义成功类型
               tracking.trackLoginSuccess("0");
               setBindOpen(true); // 触发成功弹窗
             }
