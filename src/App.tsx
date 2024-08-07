@@ -964,15 +964,6 @@ const App: React.FC = (props: any) => {
           }}
         />
       ) : null}
-      <MinorModal
-        isMinorOpen={true}
-        // type={"remoteLogin"}
-        type="success"
-        setIsMinorOpen={() => {
-          setRemoteLoginOpen(false);
-          loginOutStop(1);
-        }}
-      />
       {/* 提示修改关闭窗口设置 */}
       {isAppCloseOpen ? (
         <AppCloseModal
