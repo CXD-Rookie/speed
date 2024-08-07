@@ -32,26 +32,26 @@
         height: 1.2vw;
       }
     }
-  }
 
-  input {
-    width: 20vw;
-    height: 4.8vh;
-    font-size: 1.6vw;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10vw;
-    text-align: center;
-    border: none;
-    color: #fff;
-    outline: none;
-    padding: 0 1vw 0 3.5vw;
-    padding-right: 1vw;
-  }
+    input {
+      width: 20vw;
+      height: 4.8vh;
+      font-size: 1.6vw;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10vw;
+      text-align: center;
+      border: none;
+      color: #fff;
+      outline: none;
+      padding: 0 3vw;
+      // padding-right: 1vw;
+    }
 
-  input::placeholder {
-    font-size: 1.6vw;
-    text-align: center;
-    margin-left: 2vw;
+    input::placeholder {
+      width: 14vw;
+      font-size: 1.6vw;
+      text-align: center;
+    }
   }
 
   .search-dropdown-box {
