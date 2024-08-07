@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-07 16:02:16
+ * @LastEditTime: 2024-08-07 18:00:05
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -142,50 +142,6 @@ const Home: React.FC = () => {
       setAccelTag(location?.state?.data);
     }
   }, [location]);
-
-
-  // useEffect(() => {
-  //   const lastPopupTime1:any = localStorage.getItem('lastPopupTime1');
-  //   const { first_purchase, first_renewed } = firstAuth.firstAuth;
-  //   // 当前时间
-  //   const now:any = new Date();
-  //   if(accountInfo.isLogin){
-  //   // 判断是否为新用户且弹窗需要展示
-  //   if (!lastPopupTime1) {
-  //     // 如果从未展示过弹窗，则直接展示
-  //     setTimeout(() => {
-        
-  //       if(!first_purchase){
-          
-  //         setModalType(2);
-  //       }else if(!first_renewed){
-  //         setModalType(3);
-  //       }
-  //       setIsModalOpenNew(true); // 新用户弹出
-  //       // 标记弹窗已展示
-  //       localStorage.setItem('lastPopupTime1', now.toISOString());
-  //     }, 2000);
-  //   } else {
-  //     const lastPopupDate:any = new Date(lastPopupTime1);
-  //     const hoursDiff = (now - lastPopupDate) / (1000 * 60 * 60);
-
-  //     // 如果距离上次展示超过24小时，则再次展示
-  //     if (hoursDiff >= 24) {
-  //       setTimeout(() => {
-  //         if(!first_purchase){
-  //           setModalType(2);
-  //         }else if(!first_renewed){
-  //           setModalType(3);
-  //         }
-  //         setIsModalOpenNew(true); // 新用户弹出
-  //         // 更新弹窗展示时间
-  //         localStorage.setItem('lastPopupTime1', now.toISOString());
-  //       }, 2000);
-  //     }
-  //   }
-  //   }
-    
-  // }, [])
 
   // useEffect(() => {
   //   const handleWheel = throttle((event: WheelEvent) => {

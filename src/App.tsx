@@ -497,10 +497,10 @@ const App: React.FC = (props: any) => {
         setTimeout(() => {
           // 标记弹窗已展示
           if(!first_renewed){
-            setModalType(Number(3));
+            setModalType(Number(2));
             setIsModalOpenNew(true)
           }else{
-            setModalType(Number(2));
+            setModalType(Number(3));
             setIsModalOpenNew(true)
           }
           
@@ -515,10 +515,10 @@ const App: React.FC = (props: any) => {
           setTimeout(() => {
             // 更新弹窗展示时间
             if(!first_renewed){
-              setModalType(Number(3));
+              setModalType(Number(2));
               setIsModalOpenNew(true)
             }else{
-              setModalType(Number(2));
+              setModalType(Number(3));
               setIsModalOpenNew(true)
             }
             localStorage.setItem('lastPopupTime1', now.toISOString());
@@ -564,14 +564,13 @@ const App: React.FC = (props: any) => {
         });
 
         if (first_purchase && !first_renewed) {
+          filteredData = filteredData.filter((item: any) => {
+            return !firstPurchase.some((firstPurchaseItem: any) => firstPurchaseItem.image_url === item.image_url);
+          });
+        } else if (!first_purchase && first_renewed) {
           // 过滤掉 firstRenewal 的数据
           filteredData = filteredData.filter((item: any) => {
             return !firstRenewal.some((firstRenewalItem: any) => firstRenewalItem.image_url === item.image_url);
-          });
-        } else if (!first_purchase && first_renewed) {
-          // 过滤掉 firstPurchase 的数据
-          filteredData = filteredData.filter((item: any) => {
-            return !firstPurchase.some((firstPurchaseItem: any) => firstPurchaseItem.image_url === item.image_url);
           });
         }
 
