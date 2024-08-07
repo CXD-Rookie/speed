@@ -24,6 +24,7 @@ interface Commodity {
   price: string;
   month_price: string;
   scribing_price: string;
+  scribing_month_price: string;
 }
 
 interface OrderInfo {
@@ -323,7 +324,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   </div>
                   <div className="amount">
                     总价：¥<span>{item.price}</span>
-                    <span className="text">原价: ¥239</span>
+                    <span className="text">原价: ¥{item.scribing_month_price}</span>
                   </div>
                 </div>
               ))}

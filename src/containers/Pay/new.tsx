@@ -25,6 +25,7 @@ interface Commodity {
   price: string;
   month_price: string;
   scribing_price: string;
+  scribing_month_price: string;
 }
 
 interface OrderInfo {
@@ -303,7 +304,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                       <div>
                         ¥<span className="priceBigNew">{item.price}</span>/月
                       </div>
-                      <div className="term">原价：￥25</div>
+                      <div className="term">原价：￥{item.scribing_month_price}</div>
                     </div>
                   </div>
                 ))}
