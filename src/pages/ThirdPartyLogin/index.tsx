@@ -33,7 +33,7 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
         platform: 3,
       });
       // 服务端返回的绑定类型
-      let state = searchParams.get("token") ? res?.data?.user_bind_status : 0;
+      let state = res?.data?.user_bind_status ?? 0;
       console.log(1111, searchParams.get("token"), location, state);
 
       if (String(state)) {
