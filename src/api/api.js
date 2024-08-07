@@ -58,6 +58,7 @@ instance.interceptors.response.use(
           localStorage.removeItem("token");
           localStorage.removeItem("isRealName");
           localStorage.removeItem("is_new_user");
+          localStorage.removeItem("isModalDisplayed");
           default_hooks.removeGameList("initialize");
           default_hooks.historyContext?.accelerateTime?.stopTimer();
 
