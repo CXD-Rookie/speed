@@ -44,7 +44,7 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
             state,
             res?.data?.is_new_user
           );
-        }, 5000);
+        }, 10000);
       }
     } catch (error) {
       console.log(error);
