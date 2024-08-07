@@ -132,11 +132,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             // setFirstPurchase(true);
             setIsOldUser(true);//正式
           } else if (first_purchase && !first_renewed) {
-            setFirstPayTypes(firstPurchaseResponse.data.first_renewal);
-            setFirstRenewal(true);
-          } else if (!first_purchase && first_renewed) {
             setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
             setFirstPurchase(true);
+;
+          } else if (!first_purchase && first_renewed) {
+            setFirstPayTypes(firstPurchaseResponse.data.first_renewed);
+            setFirstRenewal(true)
           }
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
