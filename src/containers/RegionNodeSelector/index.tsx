@@ -86,6 +86,19 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     }
   };
 
+  // 不超出10个从前到后添加逻辑
+  const createLimitedArray = (list: any = [], element = {}) => {
+    const arr: any = [...list];
+
+    if (arr?.length >= 10) {
+      arr.pop(); // 删除最后一个元素
+    }
+
+    arr.unshift(element); // 从前添加新元素
+    
+    return arr;
+  };
+
   // 更新游戏历史选择节点
   const updateGamesDom = (option: any = {}) => {
     let old_dom = presentGameInfo?.dom_info?.dom_history || []; // 现在已存在的数据
@@ -93,7 +106,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
     let dom_info = {
       select_dom: option,
-      dom_history: isTrue ? old_dom : [...old_dom, option],
+      dom_history: isTrue ? old_dom : createLimitedArray([...old_dom], option), // [...old_dom, option],
     };
 
     let game_list = getGameList();
@@ -224,7 +237,9 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
       region = {
         select_region: current_server, // 点击选择的区服
         history_region:
-          find_sort !== -1 ? history : [...history, current_server], // 历史选择区服
+          find_sort !== -1
+            ? history
+            : [...history, current_server], // 历史选择区服
       };
     }
 
