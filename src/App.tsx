@@ -477,7 +477,9 @@ const App: React.FC = (props: any) => {
       if(token){
         const firstAuth = data?.data?.first_purchase_renewed;
         dispatch(setFirstAuth(firstAuth));
-        const { first_purchase, first_renewal } = firstAuth;
+        // const { first_purchase, first_renewal } = firstAuth;
+        const first_purchase = firstAuth?.first_purchase;
+        const first_renewal = firstAuth?.first_renewal;
         // 过滤掉 allData 中的 newUser 数据
         if(!isNewUser){
           const filteredData = allData.filter((item:any) => {
@@ -578,13 +580,13 @@ const App: React.FC = (props: any) => {
             });
           }
 
-          let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "0");
+          let bind_type = localStorage.getItem("thirdBind") || "0";
           let type_obj: any = {
             "2": "thirdBind",
             "3": "thirdUpdateBind",
           };
           
-          if (bind_type >= 0) {
+          if (bind_type) {
             let isNewUser = JSON.parse(localStorage.getItem("isNewUser") || "0");
 
             if (isNewUser === 1) {
