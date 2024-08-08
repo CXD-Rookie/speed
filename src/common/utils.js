@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-05-22 15:06:42
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-07 15:08:47
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-08-08 16:04:08
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\common\utils.js
@@ -73,4 +73,9 @@ export const getRemainingDays = (timestamp) => {
 
   // 将剩余时间转换为天数，并向上取整
   return Math.ceil(remainingTime / (60 * 60 * 24));
+};
+
+export const convertSecondsToDays = (seconds) => {
+  // 将秒数转换为天数，并向上取整
+  return Math.ceil(seconds / (60 * 60 * 24));
 };

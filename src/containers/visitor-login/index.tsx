@@ -85,6 +85,7 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
       if (res?.error === 0) {
         localStorage.setItem("token", JSON.stringify(res.data.token));
         localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
+        localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
         if (
           res.data.user_info.user_ext === null ||
           res.data.user_info.user_ext.idcard === ""

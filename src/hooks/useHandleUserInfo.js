@@ -22,6 +22,7 @@ export const useHandleUserInfo = () => {
       dispatch(setAccountInfo(res?.data?.user_info, undefined, undefined));
       localStorage.setItem("token", JSON.stringify(res?.data?.token));
       localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
+      localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
 
       return res
     } catch (error) {
