@@ -1,18 +1,20 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Modal, Tabs, Select, Button, Table } from "antd";
+import type { TableProps } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { smart_config } from "./config";
-import tracking from "@/common/tracking";
+
 import "./index.scss";
+import tracking from "@/common/tracking";
 import playSuitApi from "@/api/speed";
 import BreakConfirmModal from "../break-confirm";
 import IssueModal from "@/containers/IssueModal/index";
+import refreshIcon from "@/assets/images/common/refresh.png";
 
 const { TabPane } = Tabs;
 const { Option } = Select;
-const { Column } = Table;
 
 interface RegionNodeSelectorProps {
   open: boolean;
@@ -21,6 +23,14 @@ interface RegionNodeSelectorProps {
   stopSpeed?: () => void;
   onCancel: () => void;
   notice?: (value: any) => void;
+}
+
+interface DataType {
+  key: string;
+  name: string;
+  age: number;
+  address: string;
+  tags: string[];
 }
 
 const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
@@ -63,6 +73,33 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
     (regionInfo?.select_region?.fu && regionInfo?.select_region?.fu + "-") +
     regionInfo?.select_region?.qu;
 
+  const columms: TableProps<DataType>["columns"] = [
+    {
+      title: "全部节点",
+      dataIndex: "name",
+      render: (name: any) => name,
+    },
+    {
+      title: "游戏延迟",
+      dataIndex: "delay",
+      render: (delay: any) => (
+        <span style={delay === "超时" ? { color: "#FF0000" } : {}}>
+          {delay}
+          {!(delay === "超时") && "ms"}
+        </span>
+      ),
+    },
+    {
+      title: "丢包",
+      dataIndex: "packetLoss",
+      render: (packetLoss: any) => packetLoss + "%",
+    },
+    {
+      title: "模式",
+      dataIndex: "mode",
+      align: "right",
+    },
+  ];
   // 刷新查询节点列表最短延迟节点
   const refreshNodesMinLatency = (all: any = regionDomList) => {
     const minDelayObject = all.reduce((min: any, current: any) => {
@@ -524,6 +561,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                   <span>节点记录:</span>
                   <Select
                     defaultValue={domHistory?.select_dom?.id}
+                    suffixIcon={<div className="triangle" />}
                     onChange={(id) => {
                       let isFind = identifyAccelerationData()?.[0] || {}; // 当前是否有加速数据
                       let dom = presentGameInfo?.dom_info?.dom_history;
@@ -551,14 +589,16 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                   className="refresh-button"
                   onClick={() => tabsChange("2")}
                 >
+                  <img src={refreshIcon} alt=""/>
                   刷新
                 </Button>
               </div>
 
               <Table
                 rowKey="id"
-                scroll={{ y: 200 }} // 设置表格的最大高度为240px，超过部分滚动
                 dataSource={regionDomList}
+                columns={columms}
+                scroll={{ y: 200 }} // 设置表格的最大高度为240px，超过部分滚动
                 pagination={false}
                 loading={tableLoading}
                 rowClassName={(record) =>
@@ -567,21 +607,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 onRow={(record) => ({
                   onClick: () => setSelectedNode(record),
                 })}
-              >
-                <Column title="节点" dataIndex="name" key="name" width={500} />
-                <Column
-                  title="游戏延迟"
-                  dataIndex="delay"
-                  key="delay"
-                  render={(text) => (
-                    <span style={text === "超时" ? { color: "#FF0000" } : {}}>
-                      {text}
-                    </span>
-                  )}
-                />
-                <Column title="丢包" dataIndex="packetLoss" key="packetLoss" />
-                <Column title="模式" dataIndex="mode" key="mode" />
-              </Table>
+              />
               <Button
                 type="primary"
                 className="start-button"
