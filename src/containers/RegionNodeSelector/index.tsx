@@ -319,6 +319,12 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
               params: { ip: node.ip },
             });
 
+            // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
+            const timeoutId = setTimeout(() => {
+              resolve(default_node);
+              setTableLoading(false);
+            }, 5000); // 5秒超时，可以根据需要调整
+
             (window as any).NativeApi_AsynchronousRequest(
               "NativeApi_GetIpDelayByICMP",
               jsonString,
@@ -326,6 +332,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 console.log("Success response from 获取延迟:", response);
                 const jsonResponse = JSON.parse(response);
 
+                clearTimeout(timeoutId); // 请求成功时清除超时定时器
                 resolve({
                   ...default_node,
                   delay:
@@ -334,12 +341,6 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                 });
               }
             );
-
-            // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
-            setTimeout(() => {
-              resolve(default_node);
-              setTableLoading(false);
-            }, 5000); // 5秒超时，可以根据需要调整
           });
 
           updatedNodes.push(updatedNode);
@@ -356,6 +357,9 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
 
       updatedNodes.sort((a, b) => a?.delay - b?.delay);
       setRegionDomList(updatedNodes);
+      setTimeout(() => {
+        setTableLoading(false);
+      }, 1000)
 
       return updatedNodes;
     } catch (error) {

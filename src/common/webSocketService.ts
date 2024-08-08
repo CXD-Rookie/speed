@@ -54,6 +54,7 @@ class WebSocketService {
       if (t.code === 110001) {
         if (!localStorage.getItem('isClosed') && localStorage.getItem('token')) {
           localStorage.setItem('isClosed', 'true'); // 标记为已关闭
+          // debugger
           (window as any).loginOutStopWidow();
         }
       }
@@ -162,6 +163,7 @@ class WebSocketService {
 
    // 更新 token 并重连 WebSocket
   updateTokenAndReconnect(newToken: string) {
+    // debugger
     localStorage.setItem('token', JSON.stringify(newToken)); 
     this.close(); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch); // 使用新的 token 重新连接

@@ -290,6 +290,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         nid: id,
       }); // 游戏加速信息
       const js_key = startInfo?.data?.js_key;
+      const proxy_speed_limit = startInfo?.data?.proxy_speed_limit;
 
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", ip);
@@ -310,6 +311,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             server: server,
           },
           js_key,
+          proxy_speed_limit,
         },
       });
 

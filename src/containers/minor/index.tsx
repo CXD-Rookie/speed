@@ -34,7 +34,10 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
 
   const handleClose = () => {
     setIsMinorOpen(false);
-    dispatch(closeRealNameModal());
+    
+    if (realType !== 9) {
+      dispatch(closeRealNameModal());
+    }
   };
 
   useEffect(() => {

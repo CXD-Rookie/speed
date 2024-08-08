@@ -115,6 +115,7 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStopWidow = async () => {
+    // debugger
     //登录过期和异地登录使用的
     setRemoteLoginOpen(true);
   };
@@ -616,7 +617,7 @@ const App: React.FC = (props: any) => {
           return;
         }
       }
-
+    
       if (data.code === 0 || data.code === "0") {
         localStorage.removeItem("isClosed");
         let userInfo = data?.data?.user_info || {};
@@ -628,7 +629,7 @@ const App: React.FC = (props: any) => {
         } else {
           localStorage.setItem("isRealName", "0");
         }
-        // delete userInfo.phone // 测试代码
+
         if (!!userInfo?.phone) {
           // 3个参数 用户信息 是否登录 是否显示登录
           dispatch(setAccountInfo(userInfo, true, false));
@@ -654,11 +655,7 @@ const App: React.FC = (props: any) => {
           };
           
           if (bind_type >= 0) {
-            let isNewUser = JSON.parse(
-              localStorage.getItem("isNewUser") || "0"
-            );
-            
-            if (isNewUser === 1) {
+            if (isNewUser) {
               setThirdBindType("bind"); // 定义成功类型
               tracking.trackLoginSuccess("0");
               setBindOpen(true); // 触发成功弹窗
@@ -671,9 +668,11 @@ const App: React.FC = (props: any) => {
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
           }
         } else {
-          // && !(localStorage.getItem("isFirstPhone") === "1")
           if (!isBindPhone) {
-            localStorage.setItem("isFirstPhone", "1");
+            localStorage.removeItem("token");
+            localStorage.removeItem("isRealName");
+            localStorage.removeItem("is_new_user");
+            localStorage.removeItem("isModalDisplayed");
             dispatch(updateBindPhoneState(true));
           }
         }
