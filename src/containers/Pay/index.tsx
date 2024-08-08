@@ -66,12 +66,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [firstRenewal, setFirstRenewal] = useState(false);
   const [isOldUser, setIsOldUser] = useState(false);
   const [connectionPayOpen, setConnectionPayOpen] = useState(false); // 当前是否有订单处理中弹窗
-  // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
-  // const dispatch = useDispatch();
 
-  // const handleClose = () => {
-  //   dispatch(closePayModal());
-  // };
+  const [arrow, setArrow] = useState(0) // 移动的位置
 
   const guid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -302,21 +298,43 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             </div>
           </div>
           <div className="tabs-container">
-            {commodities?.length > 4 && <div className="arrow left"></div>}
-
+            {commodities?.length > 4 && (
+              <Fragment>
+                <div
+                  className="arrow left"
+                  onClick={() => {
+                    if (!(arrow === 0)) {
+                      setArrow(arrow + 1);
+                    }
+                  }}
+                />
+                <div
+                  className="arrow right"
+                  onClick={() => {
+                    if (!(arrow === -(commodities?.length - 4))) {
+                      setArrow(arrow - 1);
+                    }
+                  }}
+                />
+              </Fragment>
+            )}
             <div className="tabs">
               {commodities.map((item, index) => (
                 <div
                   key={index}
                   className={`tab ${index === activeTabIndex ? "active" : ""}`}
+                  style={{ transform: `translateX(${arrow * 15.25}vw)` }}
                   onClick={() => updateActiveTabIndex(index)}
                 >
-                  {(firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed) && <div className={`${isOldUser ? "" : "discount"}`}>
-                    {!firstAuth.firstAuth.first_purchase &&
-                      `续费${Number(firstPayTypes[item.type]) / 10}折`}
-                    {!firstAuth.firstAuth.first_renewed &&
-                      `首充${Number(firstPayTypes[item.type]) / 10}折`}
-                  </div>}
+                  {(firstAuth.firstAuth.first_purchase ||
+                    firstAuth.firstAuth.first_renewed) && (
+                    <div className={`${isOldUser ? "" : "discount"}`}>
+                      {!firstAuth.firstAuth.first_purchase &&
+                        `续费${Number(firstPayTypes[item.type]) / 10}折`}
+                      {!firstAuth.firstAuth.first_renewed &&
+                        `首充${Number(firstPayTypes[item.type]) / 10}折`}
+                    </div>
+                  )}
                   <div className="term">{payTypes[item.type]}</div>
                   <div className="price">
                     ¥<span className="price-text">{item.month_price}</span>/月
@@ -329,7 +347,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                 </div>
               ))}
             </div>
-            {commodities?.length > 4 && <div className="arrow right"></div>}
           </div>
           <div className="line"></div>
           {qrCodeUrl && (

@@ -58,24 +58,25 @@
 
     /* Tabs container styles */
     .tabs-container {
+      width: 100%;
       position: relative;
-      width: 60vw;
-      overflow: hidden;
-      margin: 0 auto;
 
       /* Tabs styles */
       .tabs {
         display: flex;
+        column-gap: 1vw;
+        width: 60vw;
+        margin: 0 auto;
+        overflow: hidden;
 
         .tab {
-          width: 14.2vw;
+          min-width: 14.25vw;
           height: 11.7vh;
           background: rgba(153, 153, 153, 0.1);
           border-radius: 0.5vw;
           display: flex;
           flex-wrap: wrap;
           padding: 1.6vh 0 1.6vh 1vw;
-          margin-right: 0.8vw;
           cursor: pointer;
           position: relative;
           
@@ -144,23 +145,26 @@
 
       /* Left and right arrow styles */
       .arrow {
-        position: fixed;
+        position: absolute;
+        top: calc(50% - 0.9vw);
         width: 1.8vw;
         height: 1.8vw;
         font-size: 1.2vw;
         color: #999;
-        top: 38vh;
-        transform: translateY(-50%);
-        cursor: pointer;
         padding: 10px;
+        cursor: pointer;
       }
 
       .left {
-        left: 18vw;
+        left: 0;
       }
 
       .right {
-        right: 18vw;
+        right: 0;
+      }
+      
+      .left:active > .tabs .tab {
+        transform: translateX(-100px);
       }
 
       .arrow.right::after {
