@@ -475,7 +475,7 @@ const App: React.FC = (props: any) => {
       localStorage.setItem("first_renewal", JSON.stringify(firstRenewal));
       localStorage.setItem("new_user", JSON.stringify(newUser));
       let all_data = [];
-      all_data = [...newUser, ...firstPurchase, ...firstRenewal];
+      all_data = [...newUser, ...firstRenewal, ...firstPurchase];
 
       localStorage.setItem("all_data", JSON.stringify(all_data)); //swiper banner数据
      
@@ -572,6 +572,8 @@ const App: React.FC = (props: any) => {
           filteredData = filteredData.filter((item: any) => {
             return !firstRenewal.some((firstRenewalItem: any) => firstRenewalItem.image_url === item.image_url);
           });
+        }else if(!first_purchase && !first_renewed){
+          filteredData = []
         }
 
         // 更新 localStorage 中的 all_data
