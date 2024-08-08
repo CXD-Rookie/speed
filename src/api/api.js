@@ -68,7 +68,12 @@ instance.interceptors.response.use(
 
           // 3个参数 用户信息 是否登录 是否显示登录
           store.dispatch(setAccountInfo({}, false, true));
-          const url = new URL(window.location.origin + "/home");
+          // const url = new URL(window.location.origin + "/home");
+          const url = new URL(
+            process.env.NODE_ENV === "development" ? 
+              window.location.origin + "/home" : 
+              "https://cdn.accessorx.com/web/index.html"
+          )
           window.location.href = url.toString();
         })
       }
