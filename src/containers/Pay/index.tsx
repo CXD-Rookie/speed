@@ -311,12 +311,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   className={`tab ${index === activeTabIndex ? "active" : ""}`}
                   onClick={() => updateActiveTabIndex(index)}
                 >
-                  <div className={`${isOldUser ? "" : "discount"}`}>
+                  {(firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed) && <div className={`${isOldUser ? "" : "discount"}`}>
                     {!firstAuth.firstAuth.first_purchase &&
                       `续费${Number(firstPayTypes[item.type]) / 10}折`}
                     {!firstAuth.firstAuth.first_renewed &&
                       `首充${Number(firstPayTypes[item.type]) / 10}折`}
-                  </div>
+                  </div>}
                   <div className="term">{payTypes[item.type]}</div>
                   <div className="price">
                     ¥<span className="price-text">{item.month_price}</span>/月
