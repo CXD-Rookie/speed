@@ -115,6 +115,7 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStopWidow = async () => {
+    // debugger
     //登录过期和异地登录使用的
     setRemoteLoginOpen(true);
   };
@@ -668,6 +669,10 @@ const App: React.FC = (props: any) => {
           }
         } else {
           if (!isBindPhone) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("isRealName");
+            localStorage.removeItem("is_new_user");
+            localStorage.removeItem("isModalDisplayed");
             dispatch(updateBindPhoneState(true));
           }
         }

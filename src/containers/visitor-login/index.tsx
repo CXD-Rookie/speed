@@ -9,6 +9,7 @@ import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
 import MinorModal from "@/containers/minor";
 import loginApi from "@/api/login";
+import webSocketService from "@/common/webSocketService";
 
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
@@ -105,6 +106,8 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
         // 3个参数 用户信息 是否登录 是否显示登录
         dispatch(setAccountInfo(res.data.user_info, true, false));
         dispatch(updateBindPhoneState(false));
+
+        webSocketService.updateTokenAndReconnect(res.data.token);
       } else {
         setVeryCode(false);
         setVeryCodeErr(true);
