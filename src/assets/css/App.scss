@@ -54,7 +54,8 @@
             background-color: #F86C34;
             position: absolute;
             bottom: 0;
-            left: calc(50% - 1vw)
+            left: calc(50% - 1vw);
+            z-index: 999
           }
         }
       };
