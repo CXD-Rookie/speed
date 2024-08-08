@@ -37,6 +37,7 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
 
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 绑定手机号成功弹窗
+  const [minorType, setMinorType] = useState("");
 
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
@@ -92,8 +93,15 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
         } else {
           localStorage.setItem("isRealName", "0");
         }
-        // 3个参数 用户信息 是否登录 是否显示登录
+        const types:any = {
+          "1": "bind",
+          "2": "thirdBind",
+          "3": "thirdUpdateBind",
+        };
+
+        setMinorType(types?.[String(res?.data?.target_phone_status || 1)]);
         setIsMinorOpen(true);
+        // 3个参数 用户信息 是否登录 是否显示登录
         dispatch(setAccountInfo(res.data.user_info, true, false));
         dispatch(updateBindPhoneState(false));
       } else {
@@ -187,7 +195,7 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
       </Modal>
       {isMinorOpen ? (
         <MinorModal
-          type={"bind"}
+          type={minorType}
           isMinorOpen={isMinorOpen}
           setIsMinorOpen={setIsMinorOpen}
         />
