@@ -68,14 +68,14 @@
         display: flex;
 
         .tab {
-          width: 14vw;
+          width: 14.2vw;
           height: 11.7vh;
           background: rgba(153, 153, 153, 0.1);
           border-radius: 0.5vw;
           display: flex;
           flex-wrap: wrap;
-          padding: 1.6vh 1vw;
-          margin-right: 1vw;
+          padding: 1.6vh 0 1.6vh 1vw;
+          margin-right: 0.8vw;
           cursor: pointer;
           position: relative;
           
@@ -126,9 +126,10 @@
           }
 
           .amount {
+            width: 100%;
             font-size: 1vw;
             color: rgba(255,255,255,0.40);
-
+            
             & .text {
               text-decoration:  line-through;
               margin-left: 0.8vw;
@@ -137,7 +138,6 @@
         }
 
         .active {
-          // background-color: #f97d4c;
           background-color: #9D8461;
         }
       }
