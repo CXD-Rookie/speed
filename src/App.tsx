@@ -42,6 +42,7 @@ interface CustomMenuProps {
   key: string;
   label: string;
   router: string;
+  routerList?: Array<string>;
   is_active?: boolean;
 }
 
@@ -103,11 +104,13 @@ const App: React.FC = (props: any) => {
       key: "home",
       label: "首页",
       router: "/home",
+      routerList: ["/home", "/myGames", "/gameDetail"],
     },
     {
       key: "gameLibrary",
       label: "游戏库",
       router: "/gameLibrary",
+      routerList: ["/gameLibrary"],
     },
   ];
 
@@ -469,7 +472,7 @@ const App: React.FC = (props: any) => {
       const firstPurchase = response.data.first_purchase; // 首次充值
       const firstRenewal = response.data.first_renewal; // 首次续费
       const newUser = response.data.new_user;
-      console.log(111111111111)
+      // console.log(111111111111)
 
       localStorage.setItem("first_purchase", JSON.stringify(firstPurchase));
       localStorage.setItem("first_renewal", JSON.stringify(firstRenewal));
@@ -489,7 +492,7 @@ const App: React.FC = (props: any) => {
     const isPayActive = localStorage.getItem('isPayActive') === 'true';
     const lastPopupTime1:any = localStorage.getItem('lastPopupTime1');
     // 当前时间
-      console.log("8888888888888888888888888888")
+      // console.log("8888888888888888888888888888")
       const now:any = new Date();
       // 判断是否为新用户且弹窗需要展示
       if (!lastPopupTime1) {
@@ -553,7 +556,7 @@ const App: React.FC = (props: any) => {
       if(token){
         let filteredData = allData;
         const firstAuth = data?.data?.first_purchase_renewed;
-        console.log(firstAuth,"是否首冲和是否首次续费")
+        // console.log(firstAuth,"是否首冲和是否首次续费")
         dispatch(setFirstAuth(firstAuth));  
         // const { first_purchase, first_renewed } = firstAuth;
         const first_purchase = firstAuth?.first_purchase;
@@ -815,7 +818,8 @@ const App: React.FC = (props: any) => {
               <div
                 key={item?.key}
                 className={`menu ${
-                  state?.menu === item?.router && "menu-active"
+                  // state?.menu === item?.router && "menu-active"
+                  item?.routerList?.includes(state?.menu) && "menu-active"
                 }`}
                 onClick={() => handleChangeTabs(item)}
               >
@@ -849,7 +853,7 @@ const App: React.FC = (props: any) => {
               placement="bottomRight"
               trigger={["click"]}
             >
-              <img src={menuIcon} alt="" />
+              <img className="minType" src={menuIcon} alt="" />
             </Dropdown>
             <img
               onClick={handleMinimize}
