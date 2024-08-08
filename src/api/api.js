@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-17 10:57:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-17 10:37:24
+ * @LastEditTime: 2024-08-08 15:52:22
  * @FilePath: \speed\src\api\api.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -85,7 +85,7 @@ instance.interceptors.response.use(
       }
     } else if (error.request) {
       // 这里处理断网异常
-      eventBus.emit('showModal', { show: true, type: "netorkError" });
+      // eventBus.emit('showModal', { show: true, type: "netorkError" });
     } else {
       console.log('请求失败，请稍后再试');
     }
