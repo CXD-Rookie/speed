@@ -42,6 +42,7 @@ interface CustomMenuProps {
   key: string;
   label: string;
   router: string;
+  routerList?: Array<string>;
   is_active?: boolean;
 }
 
@@ -103,11 +104,13 @@ const App: React.FC = (props: any) => {
       key: "home",
       label: "首页",
       router: "/home",
+      routerList: ["/home", "/myGames", "/gameDetail"],
     },
     {
       key: "gameLibrary",
       label: "游戏库",
       router: "/gameLibrary",
+      routerList: ["/gameLibrary"],
     },
   ];
 
@@ -813,7 +816,8 @@ const App: React.FC = (props: any) => {
               <div
                 key={item?.key}
                 className={`menu ${
-                  state?.menu === item?.router && "menu-active"
+                  // state?.menu === item?.router && "menu-active"
+                  item?.routerList?.includes(state?.menu) && "menu-active"
                 }`}
                 onClick={() => handleChangeTabs(item)}
               >
