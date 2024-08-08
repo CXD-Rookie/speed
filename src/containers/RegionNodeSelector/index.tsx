@@ -418,12 +418,16 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
           <TabPane tab="区服" key="1">
             <div className="content">
               <div className="current-box">
-                <div className="current-game">{options?.name}</div>
+                <div className="current-game">
+                  <div className="current-text">当前游戏：</div>
+                  <div className="game-name">{options?.name}</div>
+                </div>
                 <div className="current-region">
-                  当前区服:
+                  <div>当前区服：</div>
                   <Select
                     className="region-select"
                     value={regionInfo?.select_region?.qu}
+                    suffixIcon={<div className="triangle" />}
                     onChange={(value) =>
                       togglePanel(
                         regionInfo?.history_region?.filter(

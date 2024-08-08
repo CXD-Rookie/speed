@@ -57,9 +57,28 @@
     color: #fff !important;
   }
 
-  .ant-tabs-tab {
+  .ant-tabs-tab,
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible),
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:focus:not(:focus-visible),
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:active, 
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:active {
     font-size: 2vw;
     color: #999;
+  }
+
+  .ant-tabs-tab:hover,
+  .ant-tabs-tab:active,
+  .ant-tabs-tab-btn:hover,
+  .ant-tabs-tab-btn:active {
+    color: #fff;
+  }
+
+  .triangle {
+    width: 0;
+    height: 0;
+    border-left: 0.5vw solid transparent;
+    border-right: 0.5vw solid transparent;
+    border-top: 0.6vw solid white;
   }
 
   .content {
@@ -69,17 +88,26 @@
 
     .current-box {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      column-gap: 6vw;
 
       .current-game {
         font-size: 1.4vw;
-        color: #fff;
+
+        .current-text {
+          color: #999;
+        }
+
+        .game-name {
+          color: #fff;
+          height: 4.8vh;
+          line-height: 4.8vh;
+          margin-left: 0.8vw;
+        }
       }
 
       .current-region {
         font-size: 1.4vw;
-        font-weight: Regular;
         text-align: left;
         color: #999999;
       }
@@ -87,8 +115,7 @@
       .region-select {
         width: 20vw;
         height: 4.8vh;
-        margin-left: 0.8vw;
-        
+        margin-top: 0.6vh;
         .ant-select-open {
           color: #fff;
         }
