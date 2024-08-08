@@ -9,7 +9,7 @@
 // index.tsx 
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getRemainingDays,formatDate } from "@/common/utils";
+import { convertSecondsToDays,formatDate } from "@/common/utils";
 import './index.scss';
 
 interface ActiveModalProps {
@@ -29,7 +29,7 @@ const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
       <div className="modal-content">
         <div className="close-button" onClick={onClose}>×</div>
         <h3>恭喜！领取成功！</h3>
-        <p>您已获得<span className="highlight">{getRemainingDays(vip_experience_time)}天免费会员体验</span></p>
+        <p>您已获得<span className="highlight">{convertSecondsToDays(vip_experience_time)}天免费会员体验</span></p>
         <h6>有效期至{formatDate(accountInfo?.userInfo.vip_expiration_time - 86400)}</h6>
         <button className="confirm-button" onClick={onClose}>好的</button>
       </div>
