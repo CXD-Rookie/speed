@@ -584,7 +584,7 @@ const App: React.FC = (props: any) => {
 
         // 通过 eventBus 通知更新
         eventBus.emit('dataUpdated', filteredData);
-        if (!isPayActive) {
+        if (!isPayActive && !isNewUser) {
           // payNewActive()//24小时活动
           payNewActive(first_renewed);
         }
