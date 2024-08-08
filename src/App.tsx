@@ -489,7 +489,7 @@ const App: React.FC = (props: any) => {
   };
   //控制24小时展示一次的活动充值页面
   // 控制活动充值页面在当天23:59:59后再次展示
-  const payNewActive = async (first_renewed: any) => {
+  const payNewActive = async (first_renewed: any, first_purchase: any) => {
     const lastPopupTime1:any = localStorage.getItem('lastPopupTime1');
     const isNewUser = localStorage.getItem('is_new_user') === 'true';
     const now = new Date();
@@ -502,10 +502,10 @@ const App: React.FC = (props: any) => {
       // 如果从未展示过弹窗，则直接展示
       setTimeout(() => {
         // 标记弹窗已展示
-        if (!first_renewed) {
+        if (!first_renewed && first_purchase) {
           setModalType(Number(2));
           setIsModalOpenNew(true);
-        } else {
+        } else if(!first_purchase && first_renewed) {
           setModalType(Number(3));
           setIsModalOpenNew(true);
         }
@@ -518,10 +518,10 @@ const App: React.FC = (props: any) => {
       if (now >= lastPopupDate) {
         setTimeout(() => {
           // 更新弹窗展示时间到今天的23:59:59
-          if (!first_renewed) {
+          if (!first_renewed && first_purchase) {
             setModalType(Number(2));
             setIsModalOpenNew(true);
-          } else {
+          } else if(!first_purchase && first_renewed) {
             setModalType(Number(3));
             setIsModalOpenNew(true);
           }
@@ -547,7 +547,7 @@ const App: React.FC = (props: any) => {
           // 获取localStorage中是否展示过标志
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
-      const isPayActive = localStorage.getItem('isPayActive') === 'true';//控制24小时充值弹窗的展示
+      // const isPayActive = localStorage.getItem('isPayActive') === 'true';//控制24小时充值弹窗的展示
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
 
@@ -585,10 +585,10 @@ const App: React.FC = (props: any) => {
 
         // 通过 eventBus 通知更新
         eventBus.emit('dataUpdated', filteredData);
-        if (!isPayActive) {
-          // payNewActive()//24小时活动
-          payNewActive(first_renewed);
-        }
+       
+        // payNewActive()//24小时活动
+        payNewActive(first_renewed,first_purchase);
+        
       }
       
 

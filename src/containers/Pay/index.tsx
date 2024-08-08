@@ -338,11 +338,15 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   <div className="term">{payTypes[item.type]}</div>
                   <div className="price">
                     ¥<span className="price-text">{item.month_price}</span>/月
-                    <span className="text">¥{item.scribing_month_price}</span>
+                    {!(firstAuth.firstAuth.first_purchase && firstAuth.firstAuth.first_renewed) && (
+                      <span className="text">¥{item.scribing_month_price}</span>
+                    )}
                   </div>
                   <div className="amount">
                     总价：¥<span>{item.price}</span>
-                    <span className="text">原价: ¥{item.scribing_price}</span>
+                    {!(firstAuth.firstAuth.first_purchase && firstAuth.firstAuth.first_renewed) && (
+                      <span className="text">原价: ¥{item.scribing_price}</span>
+                    )}
                   </div>
                 </div>
               ))}
