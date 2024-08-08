@@ -488,48 +488,48 @@ const App: React.FC = (props: any) => {
     }
   };
   //控制24小时展示一次的活动充值页面
-  const payNewActive = async (first_renewed:any) =>{
-    
-    const isPayActive = localStorage.getItem('isPayActive') === 'true';
+  // 控制活动充值页面在当天23:59:59后再次展示
+  const payNewActive = async (first_renewed: any) => {
     const lastPopupTime1:any = localStorage.getItem('lastPopupTime1');
-    // 当前时间
-      // console.log("8888888888888888888888888888")
-      const now:any = new Date();
-      // 判断是否为新用户且弹窗需要展示
-      if (!lastPopupTime1) {
-        // 如果从未展示过弹窗，则直接展示
-        setTimeout(() => {
-          // 标记弹窗已展示
-          if(!first_renewed){
-            setModalType(Number(2));
-            setIsModalOpenNew(true)
-          }else{
-            setModalType(Number(3));
-            setIsModalOpenNew(true)
-          }
-          
-          localStorage.setItem('lastPopupTime1', now.toISOString());
-        }, 2000);
-      } else {
-        const lastPopupDate:any = new Date(lastPopupTime1);
-        const hoursDiff = (now - lastPopupDate) / (1000 * 60 * 60);
-  
-        // 如果距离上次展示超过24小时，则再次展示
-        if (hoursDiff >= 24) {
-          setTimeout(() => {
-            // 更新弹窗展示时间
-            if(!first_renewed){
-              setModalType(Number(2));
-              setIsModalOpenNew(true)
-            }else{
-              setModalType(Number(3));
-              setIsModalOpenNew(true)
-            }
-            localStorage.setItem('lastPopupTime1', now.toISOString());
-          }, 2000);
+    const isNewUser = localStorage.getItem('is_new_user') === 'true';
+    const now = new Date();
+    
+    // 获取当前时间
+    const currentDayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    
+    // 判断是否为新用户且弹窗需要展示
+    if (!lastPopupTime1 && !isNewUser) {
+      // 如果从未展示过弹窗，则直接展示
+      setTimeout(() => {
+        // 标记弹窗已展示
+        if (!first_renewed) {
+          setModalType(Number(2));
+          setIsModalOpenNew(true);
+        } else {
+          setModalType(Number(3));
+          setIsModalOpenNew(true);
         }
+        localStorage.setItem('lastPopupTime1', currentDayEnd.toISOString());
+      }, 2000);
+    } else {
+      const lastPopupDate = new Date(lastPopupTime1);
+      
+      // 如果上次展示时间不是当天23:59:59，并且当前时间已经过了这个时间点，则展示弹窗
+      if (now >= lastPopupDate) {
+        setTimeout(() => {
+          // 更新弹窗展示时间到今天的23:59:59
+          if (!first_renewed) {
+            setModalType(Number(2));
+            setIsModalOpenNew(true);
+          } else {
+            setModalType(Number(3));
+            setIsModalOpenNew(true);
+          }
+          localStorage.setItem('lastPopupTime1', currentDayEnd.toISOString());
+        }, 2000);
       }
-  }
+    }
+  };
 
   useEffect(() => {
     fetchData()
@@ -585,7 +585,7 @@ const App: React.FC = (props: any) => {
 
         // 通过 eventBus 通知更新
         eventBus.emit('dataUpdated', filteredData);
-        if (!isPayActive && !isNewUser) {
+        if (!isPayActive) {
           // payNewActive()//24小时活动
           payNewActive(first_renewed);
         }
@@ -763,35 +763,36 @@ const App: React.FC = (props: any) => {
 
   useEffect(() => {
     const isNewUser = localStorage.getItem('is_new_user') === 'true';
-    const lastPopupTime:any = localStorage.getItem('lastPopupTime');
-
+    const lastPopupTime = localStorage.getItem('lastPopupTime');
+  
     // 当前时间
-    const now:any = new Date();
-
+    const now = new Date();
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999); // 当天的23:59:59
+  
     // 判断是否为新用户且弹窗需要展示
     if (isNewUser) {
       if (!lastPopupTime) {
         // 如果从未展示过弹窗，则直接展示
         setTimeout(() => {
           setIsModalVisibleNew(true); // 新用户弹出
-          // 标记弹窗已展示
+          // 标记弹窗已展示，记录当前时间
           localStorage.setItem('lastPopupTime', now.toISOString());
         }, 2000);
       } else {
-        const lastPopupDate:any = new Date(lastPopupTime);
-        const hoursDiff = (now - lastPopupDate) / (1000 * 60 * 60);
-
-        // 如果距离上次展示超过24小时，则再次展示
-        if (hoursDiff >= 24) {
+        const lastPopupDate = new Date(lastPopupTime);
+  
+        // 如果上次弹窗展示时间早于当天的23:59:59，则再次展示
+        if (lastPopupDate < endOfDay && now >= endOfDay) {
           setTimeout(() => {
             setIsModalVisibleNew(true); // 新用户弹出
-            // 更新弹窗展示时间
+            // 更新弹窗展示时间，记录新的时间
             localStorage.setItem('lastPopupTime', now.toISOString());
           }, 2000);
         }
       }
     }
-  }, [])
+  }, []);
 
   return (
     <Layout className="app-module">
