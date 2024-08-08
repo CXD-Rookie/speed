@@ -589,7 +589,7 @@ const RegionNodeSelector: React.FC<RegionNodeSelectorProps> = ({
                   className="refresh-button"
                   onClick={() => tabsChange("2")}
                 >
-                  <img src={refreshIcon} alt=""/>
+                  <img src={refreshIcon} alt="" />
                   刷新
                 </Button>
               </div>

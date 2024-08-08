@@ -294,7 +294,7 @@
       }
 
       .ant-table-tbody > tr.selected-node > td {
-        background: rgba(248,108,52,0.20);
+        background: rgba(248,108,52,0.20) !important;
         border-top: 1px solid #f86c34;
         border-bottom: 1px solid #f86c34;
         color: #fff;
