@@ -851,7 +851,7 @@ const App: React.FC = (props: any) => {
               placement="bottomRight"
               trigger={["click"]}
             >
-              <img src={menuIcon} alt="" />
+              <img className="minType" src={menuIcon} alt="" />
             </Dropdown>
             <img
               onClick={handleMinimize}

@@ -67,14 +67,27 @@
         column-gap: 2vw;
 
         .login-enroll-text {
+          color: #999;
           font-size: 1.4vw;
           cursor: pointer;
+
+          &:hover {
+            color: #fff;
+          }
         }
 
         .ant-avatar, img {
           width: 2vw;
           height: 2vw;
           cursor: pointer;
+        }
+
+        .minType, .closeType {
+          filter: brightness(100%);
+        }
+
+        .minType:hover, .closeType:hover {
+          filter: brightness(150%);
         }
       }
 
