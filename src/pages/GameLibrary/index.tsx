@@ -47,17 +47,17 @@ interface GamesTitleProps {
 
 const gamesTitle: GamesTitleProps[] = [
   {
-    key: "3",
+    key: "1",
     label: "限时免费",
     t: "限时免费",
   },
   {
-    key: "1",
+    key: "2",
     label: "热门游戏",
     t: "热门游戏",
   },
   {
-    key: "2",
+    key: "3",
     label: "最新推荐",
     t: "最新推荐",
   },
@@ -79,7 +79,7 @@ const GameLibrary: React.FC = () => {
   const { appendGameToList } = useGamesInitialize();
 
   const [games, setGames] = useState<Game[]>([]);
-  const [gameActiveType, setGameActiveType] = useState<string>("3");
+  const [gameActiveType, setGameActiveType] = useState<string>("1");
   const [page, setPage] = useState<number>(1);
   const [t, setT] = useState<string | null>("限时免费"); // 默认选中热门游戏
 
@@ -174,7 +174,7 @@ const GameLibrary: React.FC = () => {
 
   useEffect(() => {
     // 在组件加载时，默认选中热门游戏并请求数据
-    setT("热门游戏");
+    setT("限时免费");
   }, []);
 
   return (
