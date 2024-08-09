@@ -608,13 +608,16 @@ const App: React.FC = (props: any) => {
       
 
       // 判断是否为新用户且弹窗尚未展示过
-      if (isNewUser && !isModalDisplayed) {
-        setTimeout(() => {
-          setModalVisible(true); // 新用户弹出
-          // 标记弹窗已展示
-          localStorage.setItem('isModalDisplayed', 'true');
-        }, 500);
+      if(images?.length > 0){
+        if (isNewUser && !isModalDisplayed) {
+          setTimeout(() => {
+            setModalVisible(true); // 新用户弹出
+            // 标记弹窗已展示
+            localStorage.setItem('isModalDisplayed', 'true');
+          }, 500);
+        }
       }
+
 
       if (token && (isClosed === null || isClosed === undefined || isClosed === "") && (version != null || version != undefined || version != "")) {
         //升级弹窗要在登录之后才会弹出
