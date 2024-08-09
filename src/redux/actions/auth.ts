@@ -18,6 +18,13 @@ export const UPDATE_DELAY = 'UPDATE_DELAY';
 export const STOP_ACCELERATE = 'STOP_ACCELERATE';
 export const ACCELERATE_TIME = 'ACCELERATE_TIME';
 export const BIND_PHONE = 'BIND_PHONE';
+export const SIGN_EXPIRES = 'SIGN_EXPIRES';
+
+// 标记提示加速服务并且没有实名认证的记号
+export const signExpiresState = (sign_expires: any) => ({
+  type: SIGN_EXPIRES,
+  payload: sign_expires,
+});
 
 export const updateBindPhoneState = (isBindPhone: any) => ({
   type: BIND_PHONE,

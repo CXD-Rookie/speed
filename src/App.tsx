@@ -7,7 +7,7 @@ import { menuActive } from "./redux/actions/menu";
 import { setAccountInfo } from "./redux/actions/account-info";
 import { setVersion } from "@/redux/actions/version";
 import { setFirstAuth } from "@/redux/actions/firstAuth";
-import { updateBindPhoneState } from "@/redux/actions/auth";
+import { updateBindPhoneState, openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
@@ -978,6 +978,13 @@ const App: React.FC = (props: any) => {
           setAccelOpen={setRenewalOpen}
           onConfirm={() => {
             setRenewalOpen(false);
+            const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
+
+            if (isRealNamel === "1") {
+              dispatch(openRealNameModal());
+              return;
+            }
+            
             setIsModalOpenVip(true);
           }}
         />

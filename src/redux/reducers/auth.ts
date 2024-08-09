@@ -21,6 +21,7 @@ import {
   STOP_ACCELERATE,
   ACCELERATE_TIME,
   BIND_PHONE,
+  SIGN_EXPIRES,
 } from '../actions/auth';
 
 const initialState = {
@@ -33,11 +34,17 @@ const initialState = {
   isStop: true,
   accelerateTime: 0,
   isBindPhone: false,
+  sign_expires: false,
 };
 
 const authReducer = (state = initialState, action:any) => {
   switch (action.type) {
-     case BIND_PHONE:
+    case SIGN_EXPIRES:
+      return {
+        ...state,
+        sign_expires: action.payload,
+      };
+    case BIND_PHONE:
       return {
         ...state,
         isBindPhone: action.payload,

@@ -7,12 +7,13 @@
  * @Description: 备注内容
  * @FilePath: \speed\src\containers\minor\index.tsx
  */
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal } from "antd";
 import { closeRealNameModal } from "@/redux/actions/auth";
 import { useNavigate } from "react-router-dom";
 import { setAccountInfo } from "../../redux/actions/account-info";
+import PayModal from "../Pay";
 import "./index.scss";
 
 import realErrorIcon from "@/assets/images/common/real_error.svg";
@@ -32,7 +33,10 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
   const navigate = useNavigate();
   // 认证类型 2 - 加速时未成年 3 - 充值时未成年 1 - 认证成功
   const [realType, setRealType] = useState<any>();
-  const dispatch:any = useDispatch();
+  const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
+
+  const dispatch: any = useDispatch();
+  const sign_expires = useSelector((state: any) => state.auth.sign_expires);
 
   const handleClose = () => {
     setIsMinorOpen(false);
@@ -42,6 +46,11 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       navigate("/home");
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo(undefined, false, true));
+    }
+
+    // 标记实名认证操作，当提醒加速服务即将到期，并且实名后使用此标记做判断
+    if (sign_expires) {
+      setIsModalOpenVip(true);
     }
   };
 
@@ -59,72 +68,78 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
       remoteUpdateBind: 10, // 换绑第三方并且可能返回11001
       remotethirdBind: 11, // 绑定第三方并且可能返回11001
     };
-    console.log(type);
-    
+
     if (typeObj?.[type]) {
-      console.log(typeObj?.[type], typeof typeObj?.[type]);
-      
       setRealType(typeObj?.[type]);
     }
   }, [type]);
 
   return isMinorOpen ? (
-    <Modal
-      className="real-name-minor-modal"
-      open={isMinorOpen}
-      destroyOnClose
-      title="提示"
-      width={"32vw"}
-      centered
-      maskClosable={false}
-      footer={null}
-      onCancel={() => handleClose()}
-    >
-      {errorStateMap.includes(realType) && (
-        <div className="real-sueccess-modal-content real-error-modal-content">
-          <img
-            src={realType === 9 ? exclErrorIcon : realErrorIcon}
-            width={69}
-            height={69}
-            alt=""
-          />
-          {[2, 3].includes(realType) && (
+    <Fragment>
+      <Modal
+        className="real-name-minor-modal"
+        open={isMinorOpen}
+        destroyOnClose
+        title="提示"
+        width={"32vw"}
+        centered
+        maskClosable={false}
+        footer={null}
+        onCancel={() => handleClose()}
+      >
+        {errorStateMap.includes(realType) && (
+          <div className="real-sueccess-modal-content real-error-modal-content">
+            <img
+              src={realType === 9 ? exclErrorIcon : realErrorIcon}
+              width={69}
+              height={69}
+              alt=""
+            />
+            {[2, 3].includes(realType) && (
+              <p>
+                抱歉，根据国家相关法律法规要求，暂不支持未成年人使用
+                {realType === 2 && "加速"}
+                {realType === 3 && "充值"}
+                服务，感谢您的理解！
+              </p>
+            )}
+            {realType === 9 && <p>您的登录已失效，请重新登录。</p>}
+            {realType === 10 && (
+              <p>您已成功换绑游侠账户，请在点击确认后重新登录。</p>
+            )}
+            {realType === 11 && (
+              <p>您的手机号已成功绑定至账户，请在点击确认后重新登录。</p>
+            )}
+            <Button className="real-sueccess-btn" onClick={() => handleClose()}>
+              好的
+            </Button>
+          </div>
+        )}
+        {sucessStateMap.includes(realType) && (
+          <div className="real-sueccess-modal-content">
+            <img src={realSucessIcon} width={69} height={69} alt="" />
             <p>
-              抱歉，根据国家相关法律法规要求，暂不支持未成年人使用
-              {realType === 2 && "加速"}
-              {realType === 3 && "充值"}
-              服务，感谢您的理解！
+              {realType === 1 && "恭喜，实名认证成功"}
+              {realType === 4 && "您的手机号已成功绑定并注册至账户"}
+              {realType === 5 && "恭喜，手机更换成功"}
+              {realType === 6 && "您的游侠账号已解除绑定"}
+              {realType === 7 && "您的游侠账号已成功绑定至账户"}
+              {realType === 8 && "您已成功换绑游侠账户"}
             </p>
-          )}
-          {realType === 9 && <p>您的登录已失效，请重新登录。</p>}
-          {realType === 10 && (
-            <p>您已成功换绑游侠账户，请在点击确认后重新登录。</p>
-          )}
-          {realType === 11 && (
-            <p>您的手机号已成功绑定至账户，请在点击确认后重新登录。</p>
-          )}
-          <Button className="real-sueccess-btn" onClick={() => handleClose()}>
-            好的
-          </Button>
-        </div>
+            <Button className="real-sueccess-btn" onClick={handleClose}>
+              好的
+            </Button>
+          </div>
+        )}
+      </Modal>
+      {/* vip 充值弹窗 */}
+      {!!isModalOpenVip && (
+        <PayModal
+          isModalOpen={isModalOpenVip}
+          setIsModalOpen={(e) => setIsModalOpenVip(e)}
+        />
       )}
-      {sucessStateMap.includes(realType) && (
-        <div className="real-sueccess-modal-content">
-          <img src={realSucessIcon} width={69} height={69} alt="" />
-          <p>
-            {realType === 1 && "恭喜，实名认证成功"}
-            {realType === 4 && "您的手机号已成功绑定并注册至账户"}
-            {realType === 5 && "恭喜，手机更换成功"}
-            {realType === 6 && "您的游侠账号已解除绑定"}
-            {realType === 7 && "您的游侠账号已成功绑定至账户"}
-            {realType === 8 && "您已成功换绑游侠账户"}
-          </p>
-          <Button className="real-sueccess-btn" onClick={handleClose}>
-            好的
-          </Button>
-        </div>
-      )}
-    </Modal>
+    </Fragment>
   ) : null;
 };
 
