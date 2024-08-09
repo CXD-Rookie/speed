@@ -700,7 +700,7 @@ const App: React.FC = (props: any) => {
     return () => {
       webSocketService.close();
     };
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
