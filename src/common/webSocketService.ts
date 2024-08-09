@@ -152,6 +152,7 @@ class WebSocketService {
   checkNetworkStatus() {
     window.addEventListener('offline', () => {
       tracking.trackNetworkError("网络断开offline")
+      eventBus.emit('clearTimer');
       eventBus.emit('showModal', { show: true, type: "netorkError" });
     });
 

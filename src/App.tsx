@@ -98,7 +98,7 @@ const App: React.FC = (props: any) => {
   const versionNowRef = useRef(versionNow);
   const [modalType, setModalType] = useState<number | null>(null);// 新用户的支付弹窗类型2是充值，3是续费
   const [isModalOpenNew, setIsModalOpenNew] = useState(false); // 新用户的支付弹窗
-
+  const images = JSON.parse(localStorage.getItem("all_data") || "[]");
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -177,6 +177,7 @@ const App: React.FC = (props: any) => {
       localStorage.removeItem("isRealName");
       localStorage.removeItem("is_new_user");
       localStorage.removeItem("isModalDisplayed");
+      eventBus.emit('clearTimer');
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
@@ -532,8 +533,21 @@ const App: React.FC = (props: any) => {
   };
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  
+    const intervalId = setInterval(fetchData, 3 * 60 * 60 * 1000);
+  
+    const clearTimer = () => {
+      clearInterval(intervalId);
+    };
+  
+    eventBus.on('clearTimer', clearTimer);
+  
+    return () => {
+      clearInterval(intervalId);
+      eventBus.off('clearTimer', clearTimer);
+    };
+  }, []);
 
   useEffect(() => {
     const handleWebSocketMessage = (event: MessageEvent) => {
@@ -586,9 +600,10 @@ const App: React.FC = (props: any) => {
         // 通过 eventBus 通知更新
         eventBus.emit('dataUpdated', filteredData);
        
-        // payNewActive()//24小时活动
-        payNewActive(first_renewed,first_purchase);
-        
+        // payNewActive()//24小时充值活动
+        if(images?.length > 0){
+          payNewActive(first_renewed,first_purchase); 
+        }
       }
       
 
@@ -674,6 +689,7 @@ const App: React.FC = (props: any) => {
             localStorage.removeItem("is_new_user");
             localStorage.removeItem("isModalDisplayed");
             dispatch(updateBindPhoneState(true));
+            eventBus.emit('clearTimer');
           }
         }
       }
@@ -762,7 +778,7 @@ const App: React.FC = (props: any) => {
   }, []);
 
   useEffect(() => {
-    const isNewUser = localStorage.getItem('is_new_user') === 'true';
+    // const isNewUser = localStorage.getItem('is_new_user') === 'true';
     const lastPopupTime = localStorage.getItem('lastPopupTime');
   
     // 当前时间
@@ -770,28 +786,26 @@ const App: React.FC = (props: any) => {
     const endOfDay = new Date(now);
     endOfDay.setHours(23, 59, 59, 999); // 当天的23:59:59
   
-    // 判断是否为新用户且弹窗需要展示
-    if (isNewUser) {
-      if (!lastPopupTime) {
-        // 如果从未展示过弹窗，则直接展示
+    if (!lastPopupTime) {
+      // 如果从未展示过弹窗，则直接展示
+      setTimeout(() => {
+        setIsModalVisibleNew(true); // 新用户弹出
+        // 标记弹窗已展示，记录当前时间
+        localStorage.setItem('lastPopupTime', now.toISOString());
+      }, 2000);
+    } else {
+      const lastPopupDate = new Date(lastPopupTime);
+
+      // 如果上次弹窗展示时间早于当天的23:59:59，则再次展示
+      if (lastPopupDate < endOfDay && now >= endOfDay) {
         setTimeout(() => {
           setIsModalVisibleNew(true); // 新用户弹出
-          // 标记弹窗已展示，记录当前时间
+          // 更新弹窗展示时间，记录新的时间
           localStorage.setItem('lastPopupTime', now.toISOString());
         }, 2000);
-      } else {
-        const lastPopupDate = new Date(lastPopupTime);
-  
-        // 如果上次弹窗展示时间早于当天的23:59:59，则再次展示
-        if (lastPopupDate < endOfDay && now >= endOfDay) {
-          setTimeout(() => {
-            setIsModalVisibleNew(true); // 新用户弹出
-            // 更新弹窗展示时间，记录新的时间
-            localStorage.setItem('lastPopupTime', now.toISOString());
-          }, 2000);
-        }
       }
     }
+
   }, []);
 
   return (
@@ -1000,7 +1014,7 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
-      {!(String(localStorage.getItem("isActiveNew")) === "1") && (
+      {images?.length > 0  && (
         <ActiveNew
           isVisible={isModalVisibleNew}
           onClose={handleCloseModalNew}
