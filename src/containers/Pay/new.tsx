@@ -52,6 +52,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
   const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
+  const [firstPayRenewedTypes, setFirstPayRenewedTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -121,6 +122,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           setPayTypes(payTypeResponse.data);
           setCommodities(commodityResponse.data.list);
           setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+          setFirstPayRenewedTypes(firstPurchaseResponse.data.first_renewed);
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
             const newKey = guid();
@@ -297,8 +299,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                     }}
                   >
                     <p className="highlight">
-                      月卡
-                      <span>{Number(firstPayTypes[item.type]) / 10}</span>折
+                      {item.name}
+                    {!firstAuth.firstAuth.first_purchase &&
+                      <span>{Number(firstPayRenewedTypes[item.type]) / 10}折</span>}
+                    {!firstAuth.firstAuth.first_renewed &&
+                      <span>{Number(firstPayTypes[item.type]) / 10}折</span>}   
                     </p>
                     <div className="priceAllNew" data-price={item.price}>
                       <div>
