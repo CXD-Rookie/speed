@@ -593,7 +593,7 @@ const App: React.FC = (props: any) => {
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
       const images = JSON.parse(localStorage.getItem("all_data") || "[]");
-      // const isPayActive = localStorage.getItem('isPayActive') === 'true';//控制24小时充值弹窗的展示
+      const isPayActive = localStorage.getItem('isPayActive') === 'true';//控制24小时充值弹窗的展示
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
 
@@ -646,8 +646,9 @@ const App: React.FC = (props: any) => {
 
 
       }else {
-        if(images?.length > 0){
+        if(images?.length > 0 && !isPayActive){
           avtiveDay()
+          localStorage.setItem("isPayActive",'true')
         }
       }
 
