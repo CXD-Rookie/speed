@@ -50,9 +50,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
-    {}
-  );
+  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
+  const [firstPayRenewedTypes, setFirstPayRenewedTypes] = useState<{ [key: string]: string }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -133,7 +132,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             setFirstPurchase(true);
 ;
           } else if (!first_purchase && first_renewed) {
-            setFirstPayTypes(firstPurchaseResponse.data.first_renewed);
+            setFirstPayRenewedTypes(firstPurchaseResponse.data.first_renewed);
             setFirstRenewal(true)
           }
           // Fetch the initial QR code URL based on the first commodity
@@ -330,7 +329,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                     firstAuth.firstAuth.first_renewed) && (
                     <div className={`${isOldUser ? "" : "discount"}`}>
                       {!firstAuth.firstAuth.first_purchase &&
-                        `续费${Number(firstPayTypes[item.type]) / 10}折`}
+                        `续费${Number(firstPayRenewedTypes[item.type]) / 10}折`}
                       {!firstAuth.firstAuth.first_renewed &&
                         `首充${Number(firstPayTypes[item.type]) / 10}折`}
                     </div>
