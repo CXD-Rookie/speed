@@ -334,7 +334,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                         `首充${Number(firstPayTypes[item.type]) / 10}折`}
                     </div>
                   )}
-                  <div className="term">{payTypes[item.type]}</div>
+                  <div className="term">{item.name}</div>
                   <div className="price">
                     ¥<span className="price-text">{item.month_price}</span>/月
                     {(firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed) && (

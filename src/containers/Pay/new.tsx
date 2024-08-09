@@ -299,7 +299,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                     }}
                   >
                     <p className="highlight">
-                      月卡
+                      {item.name}
                     {!firstAuth.firstAuth.first_purchase &&
                       <span>{Number(firstPayRenewedTypes[item.type]) / 10}折</span>}
                     {!firstAuth.firstAuth.first_renewed &&
