@@ -100,7 +100,6 @@ const App: React.FC = (props: any) => {
   const versionNowRef = useRef(versionNow);
   const [modalType, setModalType] = useState<number | null>(null);// 新用户的支付弹窗类型2是充值，3是续费
   const [isModalOpenNew, setIsModalOpenNew] = useState(false); // 新用户的支付弹窗
-  const images = JSON.parse(localStorage.getItem("all_data") || "[]");
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -177,7 +176,6 @@ const App: React.FC = (props: any) => {
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
       localStorage.removeItem("is_new_user");
-      localStorage.removeItem("isModalDisplayed");
       eventBus.emit('clearTimer');
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
@@ -424,6 +422,8 @@ const App: React.FC = (props: any) => {
 
       // 是否关闭新用户三天会员
   const handleCloseModal = () => {
+    // 标记弹窗已展示
+    localStorage.setItem('isModalDisplayed', 'true');
     setModalVisible(false);
   };
 
@@ -468,6 +468,36 @@ const App: React.FC = (props: any) => {
       console.error("Error parsing client_settings:", error);
     }
   }, []);
+
+  const avtiveDay = async () => {
+    const images = JSON.parse(localStorage.getItem("all_data") || "[]");
+    const lastPopupTime:any = localStorage.getItem('lastPopupTime');
+  
+    // 当前时间
+    const now = new Date();
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999); // 当天的23:59:59
+  
+    if (!lastPopupTime && images?.length > 0) {
+      // 如果从未展示过弹窗，则直接展示
+      setTimeout(() => {
+        setIsModalVisibleNew(true); // 新用户弹出
+        // 标记弹窗已展示，记录当前时间
+        localStorage.setItem('lastPopupTime', now.toISOString());
+      }, 2000);
+    } else {
+      const lastPopupDate = new Date(lastPopupTime);
+
+      // 如果上次弹窗展示时间早于当天的23:59:59，则再次展示
+      if (lastPopupDate < endOfDay && now >= endOfDay) {
+        setTimeout(() => {
+          setIsModalVisibleNew(true); // 新用户弹出
+          // 更新弹窗展示时间，记录新的时间
+          localStorage.setItem('lastPopupTime', now.toISOString());
+        }, 2000);
+      }
+    }
+  }
 
   const fetchData = async () => {
     try {
@@ -562,6 +592,7 @@ const App: React.FC = (props: any) => {
           // 获取localStorage中是否展示过标志
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
+      const images = JSON.parse(localStorage.getItem("all_data") || "[]");
       // const isPayActive = localStorage.getItem('isPayActive') === 'true';//控制24小时充值弹窗的展示
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
@@ -603,19 +634,20 @@ const App: React.FC = (props: any) => {
        
         // payNewActive()//24小时充值活动
         if(images?.length > 0){
-          payNewActive(first_renewed,first_purchase); 
+          if (isNewUser && !isModalDisplayed) { // 判断是否为新用户且弹窗尚未展示过
+            setTimeout(() => {
+              setModalVisible(true); // 新用户弹出
+            }, 500);
+          }
+          if(isModalDisplayed){
+            payNewActive(first_renewed,first_purchase); 
+          }
         }
-      }
-      
 
-      // 判断是否为新用户且弹窗尚未展示过
-      if(images?.length > 0){
-        if (isNewUser && !isModalDisplayed) {
-          setTimeout(() => {
-            setModalVisible(true); // 新用户弹出
-            // 标记弹窗已展示
-            localStorage.setItem('isModalDisplayed', 'true');
-          }, 500);
+
+      }else {
+        if(images?.length > 0){
+          avtiveDay()
         }
       }
 
@@ -782,36 +814,6 @@ const App: React.FC = (props: any) => {
     stopProxy()
   }, []);
 
-  useEffect(() => {
-    // const isNewUser = localStorage.getItem('is_new_user') === 'true';
-    const lastPopupTime:any = localStorage.getItem('lastPopupTime');
-  
-    // 当前时间
-    const now = new Date();
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999); // 当天的23:59:59
-  
-    if (!lastPopupTime && images?.length > 0) {
-      // 如果从未展示过弹窗，则直接展示
-      setTimeout(() => {
-        setIsModalVisibleNew(true); // 新用户弹出
-        // 标记弹窗已展示，记录当前时间
-        localStorage.setItem('lastPopupTime', now.toISOString());
-      }, 2000);
-    } else {
-      const lastPopupDate = new Date(lastPopupTime);
-
-      // 如果上次弹窗展示时间早于当天的23:59:59，则再次展示
-      if (lastPopupDate < endOfDay && now >= endOfDay) {
-        setTimeout(() => {
-          setIsModalVisibleNew(true); // 新用户弹出
-          // 更新弹窗展示时间，记录新的时间
-          localStorage.setItem('lastPopupTime', now.toISOString());
-        }, 2000);
-      }
-    }
-
-  }, []);
 
   return (
     <Layout className="app-module">
