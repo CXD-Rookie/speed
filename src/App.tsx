@@ -80,7 +80,7 @@ const App: React.FC = (props: any) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const firstAuth = useSelector((state: any) => state.firstAuth);
   const [isModalVisible, setModalVisible] = useState(false);//是否展示新用户获取vip成功通知
-  const [isModalVisibleNew, setIsModalVisibleNew] = useState(true);//是否展示新用户获取vip成功通知
+  const [isModalVisibleNew, setIsModalVisibleNew] = useState(false);//是否展示新用户获取vip成功通知
   const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
   const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [remoteLoginOpen, setRemoteLoginOpen] = useState(false); // 异地登录
@@ -671,20 +671,20 @@ const App: React.FC = (props: any) => {
             "2": "thirdBind",
             "3": "thirdUpdateBind",
           };
-          
-          if (bind_type >= 0) {
-            if (isNewUser) {
-              setThirdBindType("bind"); // 定义成功类型
-              tracking.trackLoginSuccess("0");
-              setBindOpen(true); // 触发成功弹窗
-            } else if ([2, 3].includes(Number(bind_type))) {
-              setThirdBindType(type_obj?.[String(bind_type)]); // 定义成功类型
-              tracking.trackLoginSuccess("0");
-              setBindOpen(true); // 触发成功弹窗
-            }
 
-            localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
-          }
+          // if (bind_type >= 0) {
+          //   if (isNewUser) {
+          //     setThirdBindType("bind"); // 定义成功类型
+          //     tracking.trackLoginSuccess("0");
+          //     setBindOpen(true); // 触发成功弹窗
+          //   } else if ([2, 3].includes(Number(bind_type))) {
+          //     setThirdBindType(type_obj?.[String(bind_type)]); // 定义成功类型
+          //     tracking.trackLoginSuccess("0");
+          //     setBindOpen(true); // 触发成功弹窗
+          //   }
+
+          //   localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
+          // }
         } else {
           if (!isBindPhone) {
             localStorage.removeItem("token");
@@ -782,14 +782,14 @@ const App: React.FC = (props: any) => {
 
   useEffect(() => {
     // const isNewUser = localStorage.getItem('is_new_user') === 'true';
-    const lastPopupTime = localStorage.getItem('lastPopupTime');
+    const lastPopupTime:any = localStorage.getItem('lastPopupTime');
   
     // 当前时间
     const now = new Date();
     const endOfDay = new Date(now);
     endOfDay.setHours(23, 59, 59, 999); // 当天的23:59:59
   
-    if (!lastPopupTime) {
+    if (!lastPopupTime && images?.length > 0) {
       // 如果从未展示过弹窗，则直接展示
       setTimeout(() => {
         setIsModalVisibleNew(true); // 新用户弹出
@@ -1017,12 +1017,10 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
-      {images?.length > 0  && (
-        <ActiveNew
-          isVisible={isModalVisibleNew}
-          onClose={handleCloseModalNew}
-        />
-      )}
+      <ActiveNew
+        isVisible={isModalVisibleNew}
+        onClose={handleCloseModalNew}
+      />
       {!!isModalOpenNew && (
         <PayModalNew
           isModalOpen={isModalOpenNew}
