@@ -672,25 +672,21 @@ const App: React.FC = (props: any) => {
             "3": "thirdUpdateBind",
           };
 
-          // if (bind_type >= 0) {
-          //   if (isNewUser) {
-          //     setThirdBindType("bind"); // 定义成功类型
-          //     tracking.trackLoginSuccess("0");
-          //     setBindOpen(true); // 触发成功弹窗
-          //   } else if ([2, 3].includes(Number(bind_type))) {
-          //     setThirdBindType(type_obj?.[String(bind_type)]); // 定义成功类型
-          //     tracking.trackLoginSuccess("0");
-          //     setBindOpen(true); // 触发成功弹窗
-          //   }
+          if (bind_type >= 0) {
+            if (isNewUser) {
+              setThirdBindType("bind"); // 定义成功类型
+              tracking.trackLoginSuccess("0");
+              setBindOpen(true); // 触发成功弹窗
+            } else if ([2, 3].includes(Number(bind_type))) {
+              setThirdBindType(type_obj?.[String(bind_type)]); // 定义成功类型
+              tracking.trackLoginSuccess("0");
+              setBindOpen(true); // 触发成功弹窗
+            }
 
-          //   localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
-          // }
+            localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
+          }
         } else {
           if (!isBindPhone) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("isRealName");
-            localStorage.removeItem("is_new_user");
-            localStorage.removeItem("isModalDisplayed");
             dispatch(updateBindPhoneState(true));
             eventBus.emit('clearTimer');
           }
