@@ -468,6 +468,36 @@ const App: React.FC = (props: any) => {
     }
   }, []);
 
+  const avtiveDay = async () => {
+
+    const lastPopupTime:any = localStorage.getItem('lastPopupTime');
+  
+    // 当前时间
+    const now = new Date();
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999); // 当天的23:59:59
+  
+    if (!lastPopupTime && images?.length > 0) {
+      // 如果从未展示过弹窗，则直接展示
+      setTimeout(() => {
+        setIsModalVisibleNew(true); // 新用户弹出
+        // 标记弹窗已展示，记录当前时间
+        localStorage.setItem('lastPopupTime', now.toISOString());
+      }, 2000);
+    } else {
+      const lastPopupDate = new Date(lastPopupTime);
+
+      // 如果上次弹窗展示时间早于当天的23:59:59，则再次展示
+      if (lastPopupDate < endOfDay && now >= endOfDay) {
+        setTimeout(() => {
+          setIsModalVisibleNew(true); // 新用户弹出
+          // 更新弹窗展示时间，记录新的时间
+          localStorage.setItem('lastPopupTime', now.toISOString());
+        }, 2000);
+      }
+    }
+  }
+
   const fetchData = async () => {
     try {
       const response = await activePayApi.getBanner();
@@ -602,19 +632,22 @@ const App: React.FC = (props: any) => {
        
         // payNewActive()//24小时充值活动
         if(images?.length > 0){
-          payNewActive(first_renewed,first_purchase); 
+          if (isNewUser && !isModalDisplayed) { // 判断是否为新用户且弹窗尚未展示过
+            setTimeout(() => {
+              setModalVisible(true); // 新用户弹出
+              // 标记弹窗已展示
+              localStorage.setItem('isModalDisplayed', 'true');
+            }, 500);
+          }
+          if(!isNewUser && isModalDisplayed){
+            payNewActive(first_renewed,first_purchase); 
+          }
         }
-      }
-      
 
-      // 判断是否为新用户且弹窗尚未展示过
-      if(images?.length > 0){
-        if (isNewUser && !isModalDisplayed) {
-          setTimeout(() => {
-            setModalVisible(true); // 新用户弹出
-            // 标记弹窗已展示
-            localStorage.setItem('isModalDisplayed', 'true');
-          }, 500);
+
+      }else {
+        if(images?.length > 0){
+          avtiveDay()
         }
       }
 
@@ -776,36 +809,6 @@ const App: React.FC = (props: any) => {
     stopProxy()
   }, []);
 
-  useEffect(() => {
-    // const isNewUser = localStorage.getItem('is_new_user') === 'true';
-    const lastPopupTime:any = localStorage.getItem('lastPopupTime');
-  
-    // 当前时间
-    const now = new Date();
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999); // 当天的23:59:59
-  
-    if (!lastPopupTime && images?.length > 0) {
-      // 如果从未展示过弹窗，则直接展示
-      setTimeout(() => {
-        setIsModalVisibleNew(true); // 新用户弹出
-        // 标记弹窗已展示，记录当前时间
-        localStorage.setItem('lastPopupTime', now.toISOString());
-      }, 2000);
-    } else {
-      const lastPopupDate = new Date(lastPopupTime);
-
-      // 如果上次弹窗展示时间早于当天的23:59:59，则再次展示
-      if (lastPopupDate < endOfDay && now >= endOfDay) {
-        setTimeout(() => {
-          setIsModalVisibleNew(true); // 新用户弹出
-          // 更新弹窗展示时间，记录新的时间
-          localStorage.setItem('lastPopupTime', now.toISOString());
-        }, 2000);
-      }
-    }
-
-  }, []);
 
   return (
     <Layout className="app-module">
