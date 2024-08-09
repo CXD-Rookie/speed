@@ -666,12 +666,12 @@ const App: React.FC = (props: any) => {
             });
           }
 
-          let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "0");
+          let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
           let type_obj: any = {
             "2": "thirdBind",
             "3": "thirdUpdateBind",
           };
-
+          
           if (bind_type >= 0) {
             if (isNewUser) {
               setThirdBindType("bind"); // 定义成功类型
