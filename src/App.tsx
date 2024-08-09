@@ -11,6 +11,8 @@ import { updateBindPhoneState } from "@/redux/actions/auth";
 import { useGamesInitialize } from "./hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setupInterceptors } from "./api/api";
+import { store } from "@/redux/store";
+
 import activePayApi from "@/api/activePay";
 import tracking from "@/common/tracking";
 import "@/assets/css/App.scss";
@@ -115,7 +117,6 @@ const App: React.FC = (props: any) => {
   ];
 
   const loginOutStopWidow = async () => {
-    // debugger
     //登录过期和异地登录使用的
     setRemoteLoginOpen(true);
   };
@@ -686,9 +687,14 @@ const App: React.FC = (props: any) => {
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
           }
         } else {
-          if (!isBindPhone) {
+          let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
+          
+          console.log(store.getState().auth?.isBindPhone);
+          if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
+            console.log(111);
+            localStorage.removeItem("thirdBind");
             dispatch(updateBindPhoneState(true));
-            eventBus.emit('clearTimer');
+            eventBus.emit("clearTimer");
           }
         }
       }

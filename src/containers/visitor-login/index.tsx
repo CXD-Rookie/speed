@@ -95,18 +95,23 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
         } else {
           localStorage.setItem("isRealName", "0");
         }
-        const types:any = {
+        const types: any = {
           "1": "bind",
-          "2": "thirdBind",
-          "3": "thirdUpdateBind",
+          "2": "remotethirdBind",
+          "3": "remoteUpdateBind",
         };
-
+        console.log(
+          res?.data?.target_phone_status,
+          String(res?.data?.target_phone_status || 1),
+          types?.[String(res?.data?.target_phone_status || 1)]
+        );
+        
         setMinorType(types?.[String(res?.data?.target_phone_status || 1)]);
         setIsMinorOpen(true);
         // 3个参数 用户信息 是否登录 是否显示登录
         dispatch(setAccountInfo(res.data.user_info, true, false));
         dispatch(updateBindPhoneState(false));
-
+        localStorage.setItem("isRemote", "1"); // 标记11001是绑定手机时出现的
         webSocketService.updateTokenAndReconnect(res.data.token);
       } else {
         setVeryCode(false);
@@ -118,10 +123,12 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
   };
 
   const close = async () => {
+    console.log(3333);
+    
     dispatch(updateBindPhoneState(false));
     loginOutStop()
   };
-
+  
   return (
     <Fragment>
       <Modal
