@@ -102,7 +102,7 @@ class WebSocketService {
     } else {
       console.error('WebSocket is not open. Unable to send message:', message);
       this.messageQueue.push(message); // 缓存未发送的信息
-      this.tryReconnect(); // 尝试重连
+      // this.tryReconnect(); // 尝试重连
     }
   }
 
