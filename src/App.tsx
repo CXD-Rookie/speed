@@ -98,7 +98,6 @@ const App: React.FC = (props: any) => {
   const versionNowRef = useRef(versionNow);
   const [modalType, setModalType] = useState<number | null>(null);// 新用户的支付弹窗类型2是充值，3是续费
   const [isModalOpenNew, setIsModalOpenNew] = useState(false); // 新用户的支付弹窗
-  const images = JSON.parse(localStorage.getItem("all_data") || "[]");
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -469,7 +468,7 @@ const App: React.FC = (props: any) => {
   }, []);
 
   const avtiveDay = async () => {
-
+    const images = JSON.parse(localStorage.getItem("all_data") || "[]");
     const lastPopupTime:any = localStorage.getItem('lastPopupTime');
   
     // 当前时间
@@ -591,6 +590,7 @@ const App: React.FC = (props: any) => {
           // 获取localStorage中是否展示过标志
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
+      const images = JSON.parse(localStorage.getItem("all_data") || "[]");
       // const isPayActive = localStorage.getItem('isPayActive') === 'true';//控制24小时充值弹窗的展示
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
