@@ -175,7 +175,6 @@ const App: React.FC = (props: any) => {
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
       localStorage.removeItem("is_new_user");
-      localStorage.removeItem("isModalDisplayed");
       eventBus.emit('clearTimer');
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
@@ -422,6 +421,8 @@ const App: React.FC = (props: any) => {
 
       // 是否关闭新用户三天会员
   const handleCloseModal = () => {
+    // 标记弹窗已展示
+    localStorage.setItem('isModalDisplayed', 'true');
     setModalVisible(false);
   };
 
@@ -635,11 +636,9 @@ const App: React.FC = (props: any) => {
           if (isNewUser && !isModalDisplayed) { // 判断是否为新用户且弹窗尚未展示过
             setTimeout(() => {
               setModalVisible(true); // 新用户弹出
-              // 标记弹窗已展示
-              localStorage.setItem('isModalDisplayed', 'true');
             }, 500);
           }
-          if(!isNewUser && isModalDisplayed){
+          if(isModalDisplayed){
             payNewActive(first_renewed,first_purchase); 
           }
         }
