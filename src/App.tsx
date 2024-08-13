@@ -501,24 +501,47 @@ const App: React.FC = (props: any) => {
 
   const fetchData = async () => {
     try {
-      const response = await activePayApi.getBanner();
-      const firstPurchase = response.data.first_purchase; // 首次充值
-      const firstRenewal = response.data.first_renewal; // 首次续费
-      const newUser = response.data.new_user;
-      // console.log(111111111111)
+        const response = await activePayApi.getBanner();
+        const data = response.data || {};
+        const firstPurchase = data.first_purchase; // 首次充值
+        const firstRenewal = data.first_renewal; // 首次续费
+        const newUser = data.new_user; // 新用户
 
-      localStorage.setItem("first_purchase", JSON.stringify(firstPurchase));
-      localStorage.setItem("first_renewal", JSON.stringify(firstRenewal));
-      localStorage.setItem("new_user", JSON.stringify(newUser));
-      let all_data = [];
-      all_data = [...newUser, ...firstRenewal, ...firstPurchase];
+        // 创建一个空数组来存储所有的 banner 数据
+        let all_data: any[] = [];
 
-      localStorage.setItem("all_data", JSON.stringify(all_data)); //swiper banner数据
-     
+        // 如果 first_purchase 有数据，则更新 localStorage 并插入到 all_data
+        if (firstPurchase && firstPurchase.length > 0) {
+            localStorage.setItem("first_purchase", JSON.stringify(firstPurchase));
+            all_data = [...all_data, ...firstPurchase];
+        } else {
+            localStorage.removeItem("first_purchase");
+        }
+
+        // 如果 first_renewal 有数据，则更新 localStorage 并插入到 all_data
+        if (firstRenewal && firstRenewal.length > 0) {
+            localStorage.setItem("first_renewal", JSON.stringify(firstRenewal));
+            all_data = [...all_data, ...firstRenewal];
+        } else {
+            localStorage.removeItem("first_renewal");
+        }
+
+        // 如果 new_user 有数据，则更新 localStorage 并插入到 all_data
+        if (newUser && newUser.length > 0) {
+            localStorage.setItem("new_user", JSON.stringify(newUser));
+            all_data = [...all_data, ...newUser];
+        } else {
+            localStorage.removeItem("new_user");
+        }
+
+        // 将最终的 all_data 存入 localStorage，允许为空数组
+        localStorage.setItem("all_data", JSON.stringify(all_data)); // swiper banner数据
     } catch (error) {
-      console.error("Failed to fetch feedback types:", error);
+        console.error("Failed to fetch banner data:", error);
     }
   };
+
+  
   //控制24小时展示一次的活动充值页面
   // 控制活动充值页面在当天23:59:59后再次展示
   const payNewActive = async (first_renewed: any, first_purchase: any) => {
@@ -588,7 +611,7 @@ const App: React.FC = (props: any) => {
       const allData = JSON.parse(localStorage.getItem("all_data") || "[]");
       const firstPurchase = JSON.parse(localStorage.getItem("first_purchase") || "[]"); // 首次充值
       const firstRenewal = JSON.parse(localStorage.getItem("first_renewal") || "[]"); // 首次续费
-      const newUser = JSON.parse(localStorage.getItem("new_user") || "[]");
+      const newUser = JSON.parse(localStorage.getItem("new_user") || "[]"); //首次登录的活动
           // 获取localStorage中是否展示过标志
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
@@ -600,6 +623,18 @@ const App: React.FC = (props: any) => {
       const version = data?.data?.version;
       dispatch(setVersion(version));
 
+      if (!Array.isArray(firstPurchase)) {
+        console.error("Invalid data for firstPurchase:", firstPurchase);
+      }
+
+      if (!Array.isArray(firstRenewal)) {
+        console.error("Invalid data for firstRenewal:", firstRenewal);
+      }
+
+      if (!Array.isArray(newUser)) {
+        console.error("Invalid data for newUser:", newUser);
+      }
+
       if(token){
         let filteredData = allData;
         const firstAuth = data?.data?.first_purchase_renewed;
@@ -609,21 +644,20 @@ const App: React.FC = (props: any) => {
         const first_purchase = firstAuth?.first_purchase;
         const first_renewed = firstAuth?.first_renewed;
         // 过滤掉 newUser 的数据
-        filteredData = filteredData.filter((item: any) => {
+        filteredData = allData.filter((item: any) => {
           return !newUser.some((newItem: any) => newItem.image_url === item.image_url);
         });
 
+        // 根据 first_purchase 和 first_renewal 的状态进行筛选
         if (first_purchase && !first_renewed) {
-          filteredData = filteredData.filter((item: any) => {
-            return !firstPurchase.some((firstPurchaseItem: any) => firstPurchaseItem.image_url === item.image_url);
-          });
+          // 保持 all_data 中只有 first_purchase 的数据
+          filteredData = firstPurchase;
         } else if (!first_purchase && first_renewed) {
-          // 过滤掉 firstRenewal 的数据
-          filteredData = filteredData.filter((item: any) => {
-            return !firstRenewal.some((firstRenewalItem: any) => firstRenewalItem.image_url === item.image_url);
-          });
-        }else if(!first_purchase && !first_renewed){
-          filteredData = []
+          // 保持 all_data 中只有 first_renewal 的数据
+          filteredData = firstRenewal;
+        } else if (!first_purchase && !first_renewed) {
+          // 如果两者都是 false，清空 filteredData
+          filteredData = [];
         }
 
         // 更新 localStorage 中的 all_data
@@ -632,7 +666,7 @@ const App: React.FC = (props: any) => {
         // 通过 eventBus 通知更新
         eventBus.emit('dataUpdated', filteredData);
        
-        // payNewActive()//24小时充值活动
+        //24小时充值活动
         if(images?.length > 0){
           if (isNewUser && !isModalDisplayed) { // 判断是否为新用户且弹窗尚未展示过
             setTimeout(() => {

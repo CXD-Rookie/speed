@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
 import tracking from "@/common/tracking";
+import eventBus from '../../api/eventBus'; 
 import "./index.scss";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
@@ -41,6 +42,11 @@ interface OrderInfo {
   update_time: number;
 }
 
+interface ImageItem {
+  image_url: string;
+  params: any;
+}
+
 const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {} } = props;
 
@@ -67,7 +73,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [connectionPayOpen, setConnectionPayOpen] = useState(false); // 当前是否有订单处理中弹窗
 
   const [arrow, setArrow] = useState(0) // 移动的位置
-
+  const [images, setImages] = useState<ImageItem[]>([]);
   const guid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
@@ -155,6 +161,24 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       fetchData();
     }
   }, [userToken]);
+
+  useEffect(() => {
+    // 初始化时从 localStorage 读取banner数据
+    const storedData = JSON.parse(localStorage.getItem("all_data") || "[]");
+    setImages(storedData);
+
+    // 监听 eventBus 的 'dataUpdated' 事件
+    const handleDataUpdated = (newData: ImageItem[]) => {
+      setImages(newData);
+    };
+
+    eventBus.on('dataUpdated', handleDataUpdated);
+
+    // 清理工作
+    return () => {
+      eventBus.off('dataUpdated', handleDataUpdated);
+    };
+  }, []);
 
   useEffect(() => {
     const handleLeftArrowClick = () => {
@@ -325,8 +349,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   style={{ transform: `translateX(${arrow * 15.25}vw)` }}
                   onClick={() => updateActiveTabIndex(index)}
                 >
-                  {(firstAuth.firstAuth.first_purchase ||
-                    firstAuth.firstAuth.first_renewed) && (
+
+                  {(images?.length > 0 && (firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed)) && (
                     <div className={`${isOldUser ? "" : "discount"}`}>
                       {!firstAuth.firstAuth.first_purchase &&
                         `续费${Number(firstPayRenewedTypes[item.type]) / 10}折`}
@@ -334,16 +358,17 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                         `首充${Number(firstPayTypes[item.type]) / 10}折`}
                     </div>
                   )}
+
                   <div className="term">{item.name}</div>
                   <div className="price">
                     ¥<span className="price-text">{item.month_price}</span>/月
-                    {(firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed) && (
+                    {(images?.length > 0 && (firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed)) && (
                         <span className="text">¥{item.scribing_month_price}</span>
                       )}
                   </div>
                   <div className="amount">
                   总价：¥<span>{item.price}</span>
-                  {(firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed) && (
+                  {(images?.length > 0 && (firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed)) && (
                     <span className="text">原价: ¥{item.scribing_price}</span>
                   )}
                   </div>
