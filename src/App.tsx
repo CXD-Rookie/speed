@@ -508,7 +508,14 @@ const App: React.FC = (props: any) => {
         const newUser = data.new_user; // 新用户
 
         // 创建一个空数组来存储所有的 banner 数据
-        let all_data: any[] = [];
+        let all_data: any[] = [];        
+        // 如果 new_user 有数据，则更新 localStorage 并插入到 all_data
+        if (newUser && newUser.length > 0) {
+            localStorage.setItem("new_user", JSON.stringify(newUser));
+            all_data = [...all_data, ...newUser];
+        } else {
+            localStorage.removeItem("new_user");
+        }
 
         // 如果 first_purchase 有数据，则更新 localStorage 并插入到 all_data
         if (firstPurchase && firstPurchase.length > 0) {
@@ -524,14 +531,6 @@ const App: React.FC = (props: any) => {
             all_data = [...all_data, ...firstRenewal];
         } else {
             localStorage.removeItem("first_renewal");
-        }
-
-        // 如果 new_user 有数据，则更新 localStorage 并插入到 all_data
-        if (newUser && newUser.length > 0) {
-            localStorage.setItem("new_user", JSON.stringify(newUser));
-            all_data = [...all_data, ...newUser];
-        } else {
-            localStorage.removeItem("new_user");
         }
 
         // 将最终的 all_data 存入 localStorage，允许为空数组
