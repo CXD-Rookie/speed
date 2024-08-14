@@ -766,7 +766,7 @@ const App: React.FC = (props: any) => {
       }
     };
 
-    const url = "wss://test-api.accessorx.com/ws/v1/user/info";
+    const url = `${process.env.REACT_APP_WSAPI_URL}`;
     webSocketService.connect(url, handleWebSocketMessage, dispatch);
     return () => {
       webSocketService.close();

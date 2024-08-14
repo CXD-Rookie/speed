@@ -2,7 +2,7 @@
 import { get } from "./api";
 
 class Search {
-  url = `https://test-api.accessorx.com/api/v1`;
+  url = process.env.REACT_APP_API_URL;
 
   search (params) {
     const queryString = new URLSearchParams(params).toString();

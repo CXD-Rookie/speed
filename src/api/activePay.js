@@ -12,7 +12,7 @@ import { get, post } from "./api";
 
 class PayApi {
 
-  url = `https://test-api.accessorx.com/api/v1`;
+  url = process.env.REACT_APP_API_URL;
 
   getPayTypeList (params) {
     const queryString = new URLSearchParams(params).toString();

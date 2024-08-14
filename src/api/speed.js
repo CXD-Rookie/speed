@@ -10,7 +10,7 @@ import { get } from "./api";
 
 class PlaySuit {
 
-  url = `https://test-api.accessorx.com/api/v1`;
+  url = process.env.REACT_APP_API_URL;
 
   speedInfo (params) {
     const queryString = new URLSearchParams(params).toString();

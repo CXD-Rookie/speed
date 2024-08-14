@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-09 19:27:39
+ * @LastEditTime: 2024-08-14 10:25:34
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -102,6 +102,7 @@ class WebSocketService {
     } else {
       console.error('WebSocket is not open. Unable to send message:', message);
       this.messageQueue.push(message); // 缓存未发送的信息
+      this.close(); // 关闭当前 WebSocket 连接
       // this.tryReconnect(); // 尝试重连
     }
   }

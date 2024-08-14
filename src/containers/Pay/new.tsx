@@ -128,7 +128,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             const newKey = guid();
             setPollingKey(newKey);
             setQrCodeUrl(
-              `https://test-api.accessorx.com/api/v1/pay/qrcode?cid=${commodityResponse.data.list[0].id}&user_id=${userToken}&key=${newKey}&platform=${3}`
+              `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${commodityResponse.data.list[0].id}&user_id=${userToken}&key=${newKey}&platform=${3}`
             );
           }
         } else {
@@ -198,7 +198,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         const newKey = guid();
         setPollingKey(newKey);
         setQrCodeUrl(
-          `https://test-api.accessorx.com/api/v1/pay/qrcode?cid=${commodities[activeTabIndex].id}&user_id=${userToken}&key=${newKey}&platform=${3}`
+          `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${commodities[activeTabIndex].id}&user_id=${userToken}&key=${newKey}&platform=${3}`
         );
       } catch (error) {
         console.error("Error updating QR code", error);

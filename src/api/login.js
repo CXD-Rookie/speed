@@ -9,8 +9,7 @@
 import { get, post, put } from "./api";
 
 class LoginApi {
-  url = `https://test-api.accessorx.com/api/v1`
-  url1 = process.env.REACT_APP_API_URL
+  url = process.env.REACT_APP_API_URL
 
   // getPhoneCode (parmas) {
   //   return post(
