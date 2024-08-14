@@ -797,6 +797,7 @@ const App: React.FC = (props: any) => {
         (event.error && event.error.message === "Network Error")
       ) {
         tracking.trackNetworkError(event.error.message);
+        console.log("进入全局异常捕获了")
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -809,6 +810,7 @@ const App: React.FC = (props: any) => {
         (event.reason && event.reason.message === "Network Error")
       ) {
         tracking.trackNetworkError(event.error.message);
+        console.log("进入全局异常捕获了2")
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }

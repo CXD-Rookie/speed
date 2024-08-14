@@ -2,24 +2,28 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-14 10:25:34
+ * @LastEditTime: 2024-08-14 16:44:43
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 // webSocketService.ts
 import { Dispatch } from 'redux';
 import eventBus from '../api/eventBus'; 
+import { message } from 'antd';
 import tracking from "@/common/tracking";
+
 class WebSocketService {
   private ws: WebSocket | null = null;
   private heartbeatInterval: NodeJS.Timeout | null = null;
   private reconnectAttempts: number = 0;
-  private readonly maxReconnectAttempts: number = 10;
-  private readonly reconnectInterval: number = 3000; // 初始重连间隔为3秒
-  private messageQueue: any[] = []; // 缓存未发送的信息
+  private readonly maxReconnectAttempts: number = 5;
+  private readonly reconnectInterval: number = 5000;
+  private messageQueue: any[] = [];
   private url: string = '';
   private onMessage: (event: MessageEvent) => void = () => {};
-  private dispatch!: Dispatch; // 使用断言来表示该属性在实际使用前会被赋值
+  private dispatch!: Dispatch;
+  private hasToken: boolean = false;
+  private reconnectTimeout: NodeJS.Timeout | null = null; // 用于存储重连的定时器
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     this.url = url;
@@ -27,6 +31,7 @@ class WebSocketService {
     this.dispatch = dispatch;
     
     const token = localStorage.getItem('token');
+    this.hasToken = !!token;
     let userToken = '';
 
     try {
@@ -38,15 +43,19 @@ class WebSocketService {
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => {
-      this.sendMessage({
-        platform: 3,
-        client_token: localStorage.getItem('client_token') || '{}',
-        client_id: localStorage.getItem('client_id') || '{}',
-        user_token: userToken,
-      });
-      this.startHeartbeat();
-      this.reconnectAttempts = 0; // 重置重连尝试次数
-      this.flushMessageQueue(); // 连接恢复后发送缓存的信息
+      console.log('WebSocket connection opened');
+      this.reconnectAttempts = 0;
+      this.flushMessageQueue();
+      
+      if (this.hasToken) {
+        this.sendMessage({
+          platform: 3,
+          client_token: localStorage.getItem('client_token') || '{}',
+          client_id: localStorage.getItem('client_id') || '{}',
+          user_token: userToken,
+        });
+        this.startHeartbeat(); // 确保有 token 时启动心跳
+      }
     };
 
     this.ws.onmessage = (event: any) => {
@@ -74,60 +83,80 @@ class WebSocketService {
     this.ws.onclose = () => {
       console.log('WebSocket connection closed');
       this.stopHeartbeat();
-
-      if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-        eventBus.emit('showModal', { show: true, type: "serverDisconnected" });
-      } else {
-        this.reconnect(url, onMessage, dispatch);
-      }
+      this.handleReconnection();
     };
 
     this.ws.onerror = (error) => {
       console.error('WebSocket error:', error);
       this.stopHeartbeat();
-
-      if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-        eventBus.emit('showModal', { show: true, type: "serverDisconnected" });
-      } else {
-        this.reconnect(url, onMessage, dispatch);
-      }
+      this.handleReconnection();
     };
 
     this.checkNetworkStatus();
   }
 
+  handleReconnection() {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      const retryTimeout = this.reconnectInterval * Math.pow(2, this.reconnectAttempts);
+      this.reconnectAttempts++;
+      console.log(`尝试第 ${this.reconnectAttempts} 次重连，等待 ${retryTimeout / 1000} 秒...`);
+
+      if (this.reconnectTimeout) {
+        clearTimeout(this.reconnectTimeout); // 清除旧的定时器
+      }
+
+      this.reconnectTimeout = setTimeout(() => {
+        this.connect(this.url, this.onMessage, this.dispatch);
+      }, retryTimeout);
+    } else {
+      console.error('超过最大重连次数，放弃重连');
+      eventBus.emit('clearTimer');
+      eventBus.emit('showModal', { show: true, type: "netorkError" });
+      this.close();
+    }
+  }
+
   sendMessage(message: any) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      console.log('Sending message:发送消息',);
       this.ws.send(JSON.stringify(message));
     } else {
       console.error('WebSocket is not open. Unable to send message:', message);
-      this.messageQueue.push(message); // 缓存未发送的信息
-      this.close(); // 关闭当前 WebSocket 连接
-      // this.tryReconnect(); // 尝试重连
+      this.messageQueue.push(message);
+      this.close();
+      this.handleReconnection();
     }
   }
 
   flushMessageQueue() {
     while (this.ws && this.ws.readyState === WebSocket.OPEN && this.messageQueue.length > 0) {
       const message = this.messageQueue.shift();
+      console.log('Flushing message:', message);
       this.ws.send(JSON.stringify(message));
     }
   }
 
   startHeartbeat() {
-    const token = localStorage.getItem('token');
+    if (!this.hasToken) {
+      console.log('No token available, heartbeat not started');
+      return;
+    }
+    console.log('Starting heartbeat');
     this.heartbeatInterval = setInterval(() => {
-      this.sendMessage({
-        platform: 3,
-        client_token: localStorage.getItem('client_token') || '{}',
-        client_id: localStorage.getItem('client_id') || '{}',
-        user_token: JSON.parse(token ? token : '{}'),
-      });
-    }, 3000); // 每3秒发送一次心跳
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.sendMessage({
+          platform: 3,
+          client_token: localStorage.getItem('client_token') || '{}',
+          client_id: localStorage.getItem('client_id') || '{}',
+          user_token: JSON.parse(localStorage.getItem('token') || '{}'),
+        });
+      }
+    }, 5000); // 每5秒发送一次心跳
   }
 
   stopHeartbeat() {
     if (this.heartbeatInterval) {
+      console.log('Stopping heartbeat');
       clearInterval(this.heartbeatInterval);
       this.heartbeatInterval = null;
     }
@@ -135,57 +164,38 @@ class WebSocketService {
 
   close() {
     if (this.ws) {
+      console.log('Closing WebSocket connection');
       this.ws.close();
-    }
-  }
-
-  reconnect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      const retryTimeout = this.reconnectInterval * Math.pow(2, this.reconnectAttempts);
-      console.log(`断开重连 ${retryTimeout / 1000} seconds...`);
-      //@ts-ignore
-      setTimeout(() => {
-        this.reconnectAttempts++;
-        this.connect(url, onMessage, dispatch);
-      }, retryTimeout);
-    } else {
-      console.error('超过最大重连次数，放弃重连');
-    }
-  }
-
-  tryReconnect() {
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      this.reconnect(this.url, this.onMessage, this.dispatch);
-    } else {
-      console.error('已超过最大重连次数，无法继续重连');
     }
   }
 
   checkNetworkStatus() {
     window.addEventListener('offline', () => {
-      tracking.trackNetworkError("网络断开offline")
-      eventBus.emit('clearTimer');
-      eventBus.emit('showModal', { show: true, type: "netorkError" });
-    });
-
+      console.log('Network disconnected, attempting reconnection...');
+      tracking.trackNetworkError("网络断开offline");
+      this.handleReconnection();
+    }); 
     window.addEventListener('online', () => {
       console.log('Network reconnected, attempting to reconnect WebSocket');
-      this.reconnect(this.url, this.onMessage, this.dispatch);
+      if (this.hasToken) {
+        this.connect(this.url, this.onMessage, this.dispatch); // 网络恢复后重连
+      } else {
+        this.handleReconnection(); // 没有 token 时也尝试重连
+      }
     });
   }
 
-   // 更新 token 并重连 WebSocket
   updateTokenAndReconnect(newToken: string) {
-    // debugger
     localStorage.removeItem("token");
     localStorage.removeItem("isRealName");
     localStorage.removeItem("is_new_user");
     //@ts-ignore
     setTimeout(() => {
       localStorage.setItem('token', JSON.stringify(newToken)); 
+      this.hasToken = true; // 更新 token 后标记 token 存在     
     }, 500);
     this.close(); // 关闭当前 WebSocket 连接
-    this.connect(this.url, this.onMessage, this.dispatch); // 使用新的 token 重新连接
+    this.connect(this.url, this.onMessage, this.dispatch);
   }
 }
 
