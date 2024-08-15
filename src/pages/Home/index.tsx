@@ -13,7 +13,7 @@ import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import { setFirstAuth,setImages } from "@/redux/actions/firstAuth";
+// import { setFirstAuth,setImages } from "@/redux/actions/firstAuth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
 
