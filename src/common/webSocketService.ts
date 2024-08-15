@@ -2,14 +2,14 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-15 11:14:22
+ * @LastEditTime: 2024-08-15 15:42:15
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 // webSocketService.ts
 import { Dispatch } from 'redux';
 import eventBus from '../api/eventBus'; 
-import { showMessage } from '@/containers/message';
+import { message } from 'antd';
 import tracking from "@/common/tracking";
 
 class WebSocketService {
@@ -99,14 +99,8 @@ class WebSocketService {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       const retryTimeout = this.reconnectInterval * Math.pow(2, this.reconnectAttempts);
       this.reconnectAttempts++;
-      showMessage({
-        content: '网络连接不稳定，正在尝试重连...',
-        type: 'warning',
-        duration: 10000,
-        className: 'custom-class', // 可选的自定义样式
-      });
       console.log(`尝试第 ${this.reconnectAttempts} 次重连，等待 ${retryTimeout / 1000} 秒...`);
-
+      message.warning('网络连接不稳定，正在尝试重连...',5);
       if (this.reconnectTimeout) {
         clearTimeout(this.reconnectTimeout); // 清除旧的定时器
       }
@@ -186,7 +180,7 @@ class WebSocketService {
       if (this.hasToken) {
         this.connect(this.url, this.onMessage, this.dispatch); // 网络恢复后重连
       } else {
-        this.handleReconnection(); // 没有 token 时也尝试重连
+        // this.handleReconnection(); // 没有 token 时也尝试重连
       }
     });
   }
