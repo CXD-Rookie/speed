@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2023-09-15 13:48:17
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-04-23 10:59:32
+ * @LastEditTime: 2024-08-15 14:41:08
  * @FilePath: \react-ts-antd\config-overrides.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -34,6 +34,17 @@ module.exports = override(
       });
     }
 
+    // Log NODE_ENV to verify it's being set correctly
+    console.log('Current REACT_APP_ENV-------:', process.env.REACT_APP_ENV);
+
+    // 设置 publicPath
+    if (process.env.REACT_APP_ENV === 'production') {
+      config.output.publicPath = '/web/';
+    } else {
+      config.output.publicPath = '/web_test/';
+    }
+
     return config;
   }
 );
+
