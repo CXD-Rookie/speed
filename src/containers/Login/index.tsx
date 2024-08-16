@@ -133,7 +133,7 @@ const Login: React.FC = () => {
     dispatch(setAccountInfo(undefined, undefined, false));
     console.log("关闭跳转");
   };
-
+  
   return (
     <div className="login-modal">
       <div className="login-close" onClick={close}>
@@ -204,7 +204,7 @@ const Login: React.FC = () => {
         <div
           className="visitor-login-text"
           onClick={handlevisitorLogin}
-          data-title="https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html&response_type=code&scope=webapi_login&state=state"
+          data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${process.env.REACT_APP_YOUXIA_URL}&response_type=code&scope=webapi_login&state=state`}
         >
           <img src={visitorLoginIcon} alt="" />
           游侠登录
