@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>关闭1</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="充值，订单完成" transform="translate(-346, -742)">
+            <g id="编组-2备份-4" transform="translate(66, 646)">
+                <g id="关闭" transform="translate(280, 96)">
+                    <rect id="_mockplus_fix_" x="0" y="0" width="80" height="80"></rect>
+                    <g id="关闭1" transform="translate(6.6667, 6.6667)" stroke="#999999" stroke-width="3.22222222">
+                        <circle id="椭圆形" cx="33.3333333" cy="33.3333333" r="33.3333333"></circle>
+                        <line x1="21.1111111" y1="20" x2="47.7777778" y2="46.6666667" id="路径-5"></line>
+                        <line x1="47.7777778" y1="20" x2="21.1111111" y2="46.6666667" id="路径-5"></line>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

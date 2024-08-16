@@ -61,7 +61,6 @@ const Login: React.FC = () => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
     (window as any).NativeApi_YouXiaAuth(dataTitle);
-    // (window as any).NativeApi_OpenBrowser(dataTitle);
   };
 
   const handleVerificationCodeChange = (
