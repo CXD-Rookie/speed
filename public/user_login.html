@@ -22,7 +22,7 @@
       const redirectUrl = env === 'development'
           ? 'https://cdn.accessorx.com/web_test/index.html#/thirdPartyLogin'
           : 'https://cdn.accessorx.com/web/index.html#/thirdPartyLogin';
-
+      console.log(window.location.hostname, redirectUrl,`${redirectUrl}${window.location.search}`);
       // 添加查询参数
       window.location.href = `${redirectUrl}${window.location.search}`;
     </script>
