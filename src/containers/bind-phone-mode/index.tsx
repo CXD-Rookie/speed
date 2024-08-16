@@ -310,7 +310,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
               className="last-login-text"
               onClick={(e) => handlevisitorLogin(e)}
               disabled={!code || !phone}
-              data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=https://cdn.accessorx.com/web/user_login.html?token=${JSON.parse(
+              data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${process.env.REACT_APP_YOUXIA_URL}?token=${JSON.parse(
                 token
               )}&response_type=code&scope=webapi_login&state=state`}
             >
