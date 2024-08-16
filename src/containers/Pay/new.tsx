@@ -2,15 +2,17 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import tracking from "@/common/tracking";
+
 import "./index.scss";
 import "./new.scss";
-import eventBus from "@/api/eventBus";
+
 import PayErrorModal from "../pay-error";
-import TooltipCom from "./tooltip";
-import payApi from "@/api/pay";
-import loginApi from "@/api/login";
 import PaymentModal from "../payment";
+import payApi from "@/api/pay";
+import eventBus from "@/api/eventBus";
+import loginApi from "@/api/login";
+import tracking from "@/common/tracking";
+import closeIcon from "@/assets/images/common/cloture.svg";
 
 interface PayModalProps {
   isModalOpen?: boolean;
@@ -43,32 +45,26 @@ interface OrderInfo {
 }
 
 const PayModal: React.FC<PayModalProps> = (props) => {
-  const { isModalOpen, setIsModalOpen = () => {} } = props;
-  const { type } = props;
+  const { isModalOpen, type, setIsModalOpen = () => {} } = props;
+
   const dispatch: any = useDispatch();
+  const divRef = useRef<HTMLDivElement>(null);
   //@ts-ignore
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
-  const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
+  const [, setPayTypes] = useState<{ [key: string]: string }>({});
   const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
   const [firstPayRenewedTypes, setFirstPayRenewedTypes] = useState<{ [key: string]: string }>({});
-  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [activeTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
-  const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
+  const [userToken] = useState(accountInfo.userInfo.id);
   const [paymentStatus, setPaymentStatus] = useState<number | null>(null);
   const [showPopup, setShowPopup] = useState<string | null>(null);
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
 
   const [payErrorModalOpen, setPayErrorModalOpen] = useState(false);
-
-  // const isPayOpen = useSelector((state: any) => state.auth.isPayOpen);
-  // const dispatch = useDispatch();
-
-  // const handleClose = () => {
-  //   dispatch(closePayModal());
-  // };
 
   const guid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -82,13 +78,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   const [pollingKey, setPollingKey] = useState<string>(guid());
-
-  const updateActiveTabIndex = (index: number) => {
-    setActiveTabIndex(index);
-    console.log(index, "---------------");
-  };
-
-  const divRef = useRef<HTMLDivElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
@@ -277,43 +266,50 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         onCancel={() => setIsModalOpen(false)}
         title=""
         destroyOnClose
-        width={"67.6vw"}
+        width={"92vw"}
         centered
+        closeIcon={null}
         maskClosable={false}
         footer={null}
       >
         <div className="pay-modal">
+          <div className="close-icon" onClick={() => setIsModalOpen(false)}>
+            <img src={closeIcon} alt="" />
+          </div>
           <div
             className={
               type === 2 ? "new-design" : type === 3 ? "new-design2" : ""
             }
           >
             <div className="newMain">
-              <div className="carousel">
-                {commodities.map((item, index) => (
-                  <div
-                    key={index}
-                    className="carousel-item dl"
-                    style={{
-                      display: index === activeTabIndex ? "block" : "none",
-                    }}
-                  >
-                    <p className="highlight">
-                      月卡
-                    {!firstAuth.firstAuth.first_purchase &&
-                      <span>{Number(firstPayRenewedTypes[item.type]) / 10}折</span>}
-                    {!firstAuth.firstAuth.first_renewed &&
-                      <span>{Number(firstPayTypes[item.type]) / 10}折</span>}   
-                    </p>
-                    <div className="priceAllNew" data-price={item.price}>
-                      <div>
-                        ¥<span className="priceBigNew">{item.price}</span>/月
-                      </div>
-                      <div className="term">原价：￥{item.scribing_month_price}</div>
-                    </div>
+              {commodities.map((item, index) => (
+                <div
+                  key={index}
+                  className="carousel-item dl"
+                  style={{
+                    display: index === activeTabIndex ? "block" : "none",
+                  }}
+                >
+                  <p className="highlight">
+                    月卡
+                    {!firstAuth.firstAuth.first_purchase && (
+                      <span>
+                        {Number(firstPayRenewedTypes[item.type]) / 10}
+                      </span>
+                    )}
+                    {!firstAuth.firstAuth.first_renewed && (
+                      <span>{Number(firstPayTypes[item.type]) / 10}</span>
+                    )}
+                    折
+                  </p>
+                  <div className="price" data-price={item.price}>
+                    ¥<span className="priceBigNew">{item.price}</span>/月
                   </div>
-                ))}
-              </div>
+                  <div className="term">
+                    原价：￥{item.scribing_month_price}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
           <div className="main">

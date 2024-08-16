@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\pages\ThirdPartyLogin\index.tsx
  */
 import React, { useEffect } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import "./index.scss";
 import loginApi from "@/api/login";
@@ -16,7 +16,6 @@ import loginApi from "@/api/login";
 interface ThirdPartyLoginProps {}
 
 const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
-  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   const login = async (params: any) => {
@@ -34,15 +33,23 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
       });
       // 服务端返回的绑定类型
       let state = res?.data?.user_bind_status ?? 0;
-      console.log(1111, searchParams.get("token"), location, state);
+      console.log(
+        searchParams.get("token"),
+        state,
+        window.location,
+        process.env.REACT_APP_YOUXIA_URL,
+        process.env.REACT_APP_API_URL
+      );
 
       if (String(state)) {
         // 关闭第三方登录 并且将token 是否第三方登录 是否新用户 3个参数存储在 加速器项目中
-        (window as any).NativeApi_YouXiaAuthComplete(
-          res?.data?.token,
-          state,
-          res?.data?.is_new_user
-        );
+        setTimeout(() => {
+          (window as any).NativeApi_YouXiaAuthComplete(
+            res?.data?.token,
+            state,
+            res?.data?.is_new_user
+          );
+        }, 10000)
       }
     } catch (error) {
       console.log(error);
