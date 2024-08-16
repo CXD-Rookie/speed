@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-16 11:54:13
+ * @LastEditTime: 2024-08-16 17:52:59
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -45,14 +45,14 @@ class WebSocketService {
     this.ws.onopen = () => {
       console.log('WebSocket connection opened');
       this.reconnectAttempts = 0;
-      this.flushMessageQueue();     
+      this.flushMessageQueue(); 
+      if (this.hasToken) {    
       this.sendMessage({
         platform: 3,
         client_token: localStorage.getItem('client_token') || '{}',
         client_id: localStorage.getItem('client_id') || '{}',
         user_token: userToken,
       });
-      if (this.hasToken) {
         this.startHeartbeat(); // 确保有 token 时启动心跳
       }
     };
@@ -193,6 +193,11 @@ class WebSocketService {
       localStorage.setItem('token', JSON.stringify(newToken)); 
       this.hasToken = true; // 更新 token 后标记 token 存在     
     }, 500);
+    this.close(); // 关闭当前 WebSocket 连接
+    this.connect(this.url, this.onMessage, this.dispatch);
+  }
+
+  loginReconnect() {
     this.close(); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
   }

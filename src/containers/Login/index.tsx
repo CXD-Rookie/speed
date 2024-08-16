@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-04-16 19:26:21
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-08 15:47:36
+ * @LastEditTime: 2024-08-16 17:56:18
  * @FilePath: \speed\src\containers\Login\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,6 +10,7 @@ import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { setAccountInfo } from "../../redux/actions/account-info";
 import { debounce } from "@/common/utils";
+import webSocketService from "@/common/webSocketService";
 import tracking from "@/common/tracking";
 import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
@@ -61,7 +62,6 @@ const Login: React.FC = () => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
     (window as any).NativeApi_YouXiaAuth(dataTitle);
-    // (window as any).NativeApi_OpenBrowser(dataTitle);
   };
 
   const handleVerificationCodeChange = (
@@ -118,6 +118,7 @@ const Login: React.FC = () => {
 
         // 3个参数 用户信息 是否登录 是否显示登录
         dispatch(setAccountInfo(res.data.user_info, true, false));
+        webSocketService.loginReconnect();
       } else {
         setVeryCode(false);
         setVeryCodeErr(true);

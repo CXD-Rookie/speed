@@ -707,7 +707,6 @@ const App: React.FC = (props: any) => {
         localStorage.removeItem("isClosed");
         let userInfo = data?.data?.user_info || {};
         if (
-          !userInfo?.user_ext?.is_adult ||
           (userInfo?.user_ext?.name === "" && userInfo?.user_ext?.idcard === "")
         ) {
           localStorage.setItem("isRealName", "1");

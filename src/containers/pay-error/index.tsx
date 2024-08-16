@@ -11,7 +11,8 @@ import React, { Fragment } from "react";
 import { Modal } from "antd";
 
 import "./index.scss";
-import realErrorIcon from "@/assets/images/common/real_error.svg";
+// import realErrorIcon from "@/assets/images/common/real_error.svg";
+import realErrorQuan from "@/assets/images/common/real_error_quan.svg";
 
 interface SettingsModalProps {
   accelOpen?: boolean;
@@ -33,11 +34,11 @@ const PayErrorModal: React.FC<SettingsModalProps> = (props) => {
         maskClosable={false}
         footer={
           <div className="footer-cancel" onClick={() => onConfirm(false)}>
-            好的
+            确认
           </div>
         }
       >
-        <img className="real-error-icon" src={realErrorIcon} alt="" />
+        <img className="real-error-icon" src={realErrorQuan} alt="" />
         <div className="box" />
         <div className="accelerate-modal">很抱歉，您的支付未成功</div>
         <div className="accelerate-modal">

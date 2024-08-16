@@ -69,9 +69,10 @@ instance.interceptors.response.use(
           // 3个参数 用户信息 是否登录 是否显示登录
           store.dispatch(setAccountInfo({}, false, true));
           // const url = new URL(window.location.origin + "/home");
+          const isHttp = window.location.href.indexOf("http") !== -1
           const url = new URL(
             process.env.REACT_APP_ENV === "development" ? 
-              window.location.origin + "/home" : 
+              (isHttp ? window.location.origin + "/home" : "https://cdn.accessorx.com/web_test/index.html") :
               "https://cdn.accessorx.com/web/index.html"
           )
           window.location.href = url.toString();
