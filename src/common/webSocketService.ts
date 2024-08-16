@@ -9,7 +9,7 @@
 // webSocketService.ts
 import { Dispatch } from 'redux';
 import eventBus from '../api/eventBus'; 
-import { message } from 'antd';
+// import { message } from 'antd';
 import tracking from "@/common/tracking";
 
 class WebSocketService {
@@ -100,7 +100,7 @@ class WebSocketService {
       const retryTimeout = this.reconnectInterval * Math.pow(2, this.reconnectAttempts);
       this.reconnectAttempts++;
       console.log(`尝试第 ${this.reconnectAttempts} 次重连，等待 ${retryTimeout / 1000} 秒...`);
-      message.warning('网络连接不稳定，正在尝试重连...',5);
+      // message.warning('网络连接不稳定，正在尝试重连...',5);
       if (this.reconnectTimeout) {
         clearTimeout(this.reconnectTimeout); // 清除旧的定时器
       }
@@ -180,7 +180,7 @@ class WebSocketService {
       if (this.hasToken) {
         this.connect(this.url, this.onMessage, this.dispatch); // 网络恢复后重连
       } else {
-        // this.handleReconnection(); // 没有 token 时也尝试重连
+        this.handleReconnection(); // 没有 token 时也尝试重连
       }
     });
   }
