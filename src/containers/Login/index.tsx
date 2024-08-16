@@ -133,7 +133,6 @@ const Login: React.FC = () => {
     dispatch(setAccountInfo(undefined, undefined, false));
     console.log("关闭跳转");
   };
-  console.log(process.env.REACT_APP_YOUXIA_URL);
   
   return (
     <div className="login-modal">
