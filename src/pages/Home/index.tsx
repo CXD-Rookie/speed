@@ -2,12 +2,12 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-07 18:00:05
+ * @LastEditTime: 2024-08-16 18:11:15
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +30,10 @@ import rechargeIcon from "@/assets/images/home/recharge.svg";
 import emptyIcon from "@/assets/images/home/empty.svg";
 
 import "./style.scss";
-
+interface ImageItem {
+  image_url: string;
+  params: any;
+}
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,7 +44,8 @@ const Home: React.FC = () => {
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   // const [images, setImages] = useState<{ image_url: string; params: any }[]>([]);
   const firstAuth = useSelector((state: any) => state.firstAuth);
-  const images = JSON.parse(localStorage.getItem("all_data") || "[]");
+  const [images, setImages] = useState<ImageItem[]>([]);
+  const imagesRef = useRef<ImageItem[]>([]); // 使用 useRef 存储数据
   //@ts-ignore
   const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -142,6 +146,19 @@ const Home: React.FC = () => {
       setAccelTag(location?.state?.data);
     }
   }, [location]);
+
+  useEffect(() => {
+    // Delayed read
+    const fetchImages = () => {
+      const storedImages = JSON.parse(localStorage.getItem("all_data") || "[]");
+      console.log(storedImages, "1111111111");
+      setImages(storedImages);
+    };
+  
+    const timer = setTimeout(fetchImages, 500); // 延迟500ms
+  
+    return () => clearTimeout(timer); // 清理定时器
+  }, []);
 
   // useEffect(() => {
   //   const handleWheel = throttle((event: WheelEvent) => {
