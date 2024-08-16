@@ -16,13 +16,13 @@
     <title>第三方登录页面</title>
     <script>
       // 获取当前环境变量
-      const env = window.location.hostname.includes('web_test') ? 'development' : 'production';
+      const env = window.location.pathname.split("/").includes('web_test') ? 'development' : 'production';
 
       // 根据环境设置不同的 URL
       const redirectUrl = env === 'development'
           ? 'https://cdn.accessorx.com/web_test/index.html#/thirdPartyLogin'
           : 'https://cdn.accessorx.com/web/index.html#/thirdPartyLogin';
-      console.log(window.location.hostname, redirectUrl,`${redirectUrl}${window.location.search}`);
+
       // 添加查询参数
       window.location.href = `${redirectUrl}${window.location.search}`;
     </script>
