@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from "react";
 import { Input, Modal } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
-
+import webSocketService from "@/common/webSocketService";
 import "./index.scss";
 import MinorModal from "@/containers/minor";
 import loginApi from "@/api/login";
@@ -238,6 +238,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           }
           // 3个参数 用户信息 是否登录 是否显示登录
           dispatch(setAccountInfo(res.data.user_info, true, false));
+          webSocketService.loginReconnect();
         } else {
           setVeryCodeErr(true);
         }

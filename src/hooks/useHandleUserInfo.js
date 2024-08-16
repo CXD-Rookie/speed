@@ -9,7 +9,7 @@
  */
 import { useDispatch } from 'react-redux';
 import { setAccountInfo } from '@/redux/actions/account-info';
-
+import webSocketService from "@/common/webSocketService";
 import loginApi from "@/api/login";
 
 export const useHandleUserInfo = () => {
@@ -23,7 +23,7 @@ export const useHandleUserInfo = () => {
       localStorage.setItem("token", JSON.stringify(res?.data?.token));
       localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
       localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
-
+      webSocketService.loginReconnect();
       return res
     } catch (error) {
       console.log("useHandleUserInfo", error)
