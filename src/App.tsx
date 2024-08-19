@@ -508,8 +508,8 @@ const App: React.FC = (props: any) => {
         const newUser = data.new_user; // 新用户
 
         // 创建一个空数组来存储所有的 banner 数据
-        // let all_data: any[] = [];  
-        let all_data: any[] = JSON.parse(localStorage.getItem("all_data") || "[]");      
+        let all_data: any[] = [];  
+        // let all_data: any[] = JSON.parse(localStorage.getItem("all_data") || "[]");      
         // 如果 new_user 有数据，则更新 localStorage 并插入到 all_data
         if (newUser && newUser.length > 0) {
             localStorage.setItem("new_user", JSON.stringify(newUser));
