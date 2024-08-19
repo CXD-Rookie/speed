@@ -16,7 +16,7 @@ import { setAccountInfo } from "../../redux/actions/account-info";
 import PayModal from "../Pay";
 import "./index.scss";
 
-import realErrorIcon from "@/assets/images/common/real_error.svg";
+import realErrorIcon from "@/assets/images/common/real_error_quan.svg";
 import realSucessIcon from "@/assets/images/common/real-sucess.svg";
 import exclErrorIcon from "@/assets/images/common/excl.svg";
 

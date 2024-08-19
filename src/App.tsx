@@ -750,6 +750,7 @@ const App: React.FC = (props: any) => {
             }
 
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
+            webSocketService.loginReconnect();
           }
         } else {
           let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
