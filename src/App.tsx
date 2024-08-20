@@ -535,7 +535,12 @@ const App: React.FC = (props: any) => {
         }
 
         // 将最终的 all_data 存入 localStorage，允许为空数组
-        localStorage.setItem("all_data", JSON.stringify(all_data)); // swiper banner数据
+        // localStorage.setItem("all_data", JSON.stringify(all_data)); // swiper banner数据
+        if (all_data.length > 0) {
+          localStorage.setItem("all_data", JSON.stringify(all_data));
+        } else {
+            console.log("No new data to update. Keeping existing all_data.");
+        }
     } catch (error) {
         console.error("Failed to fetch banner data:", error);
     }
