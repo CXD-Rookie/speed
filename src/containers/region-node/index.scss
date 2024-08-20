@@ -160,12 +160,18 @@
     }
 
     .sub-btns{
+      max-height: 22vh;
       display: flex;
       flex-wrap: wrap;
       gap: 1vw;
       background: rgba(107, 107, 125, 0.3);
       border-radius: 0.5vh;
       margin-top: 1vh;
+      overflow-y: scroll;
+
+      &::-webkit-scrollbar {
+        width: 0;
+      }
 
       .region-button {
         width: 11.3vw;
@@ -219,13 +225,15 @@
       font-weight: Regular;
       text-align: left;
       color: #ffffff;
-      line-height: 3vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .node-select {
       display: flex;
       justify-content: space-between;
-      margin-top: 3.6vh;
+      column-gap: 2.4vw;
 
       & div span {
         font-size: 1.4vw;
@@ -237,12 +245,13 @@
       }
 
       .ant-select-selector {
-        width: 20vw;
+        width: 12vw;
         height: 4.8vh;
         color: #fff;
-        background: rgba(255,255,255,0.10);
+        background: transparent;
         border-radius: 0.5vw;
         border: none;
+        outline: none;
       }
 
       .ant-select-single {
@@ -292,6 +301,16 @@
         background-color: #3e3e4a;
         border-bottom: none;
         cursor: pointer;
+      }
+
+      .ant-table-body {
+        padding-bottom: 16px !important; /* 确保滚动条不覆盖内容 */
+      }
+
+      .ant-table-body::after {
+        content: none !important;
+        display: none !important;
+        visibility: hidden !important;
       }
 
       .ant-table-cell::before {

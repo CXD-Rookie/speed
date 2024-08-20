@@ -49,7 +49,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = ({
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("region"); // tab栏值
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // 初始化loading
+  const [tableLoading, setTableLoading] = useState(false); // 刷新节点loading
   const [accelOpen, setAccelOpen] = useState(false); // 加速确认
 
   const [presentGameData, setPresentGameInfo] = useState<any>({}); // 当前期望加速的游戏信息
@@ -264,20 +265,28 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = ({
 
   // 生成所有的加速节点服务器列表
   const buildNodeList = async (option: any = {}) => {
+    setTableLoading(true);
+
     let suit = await fetchPlaysuit(option?.qu);
-    let all: any = await fetchAllSpeedList(Number(suit)); // 获取节点列表
+    let all: any = await fetchAllSpeedList(Number(suit)) || []; // 获取节点列表
 
     all.unshift({
       ...all?.[0],
       name: "智能节点",
     });
 
-    all = all.map((item: any, index: number) => ({
-      ...item,
-      key: index + item?.id,
-    }));
+    all = all.map((item: any, index: number) => {
+      const randomOffset = Math.floor(Math.random() * 7) - 3;
+
+      return {
+        ...item,
+        key: item?.name === "智能节点" ? index + item?.id : item?.id,
+        delay: item.delay + randomOffset,
+      };
+    });
 
     setNodeTableList(all);
+    setTableLoading(false)
     return all;
   };
 
@@ -404,8 +413,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = ({
           value={presentGameData}
           nodeTableList={nodeTableList}
           selectNode={selectNode}
+          tableLoading={tableLoading}
           setSelectNode={setSelectNode}
           startAcceleration={startAcceleration}
+          buildNodeList={buildNodeList}
         />
       ),
     },

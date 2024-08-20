@@ -12,8 +12,10 @@ interface NodeProps {
   nodeTableList?: any;
   selectNode?: any;
   type?: string;
+  tableLoading?: boolean;
   startAcceleration?: (node: any) => void;
-  setSelectNode?: any;
+  setSelectNode?: (node: any) => void;
+  buildNodeList?: (node: any) => void;
 }
 
 interface DataType {
@@ -29,13 +31,13 @@ const CustomNode: React.FC<NodeProps> = ({
   nodeTableList = [],
   selectNode = {},
   type,
+  tableLoading,
   setSelectNode = () => {},
   startAcceleration = () => {},
+  buildNodeList = () => {},
 }) => {
-  const [tableLoading, setTableLoading] = useState(false);
-
   const [selectRegion, setSelectRegion] = useState<any>(""); // 选中区服信息
-  const [nodeHistory, setNodeHistory] = useState([]); // 节点历史列表
+  const [nodeHistory, setNodeHistory] = useState<any>([]); // 节点历史列表
 
   const columms: TableProps<DataType>["columns"] = [
     {
@@ -46,6 +48,7 @@ const CustomNode: React.FC<NodeProps> = ({
     {
       title: "游戏延迟",
       dataIndex: "delay",
+      align: 'right',
       render: (delay: any) => (
         <span style={delay === "超时" ? { color: "#FF0000" } : {}}>
           {delay}
@@ -57,25 +60,31 @@ const CustomNode: React.FC<NodeProps> = ({
 
   useEffect(() => {
     let serverNode = value?.serverNode || {};
-    let select = (serverNode?.region || []).filter((item: any) => item?.is_select)?.[0];
+    let select = (serverNode?.region || []).filter(
+      (item: any) => item?.is_select
+    )?.[0];
 
     setNodeHistory(serverNode?.nodeHistory);
     setSelectRegion(select);
   }, [value]);
-
+  
   return (
     <div className="content">
       <div className="current-settings">
         {value?.name} | {selectRegion?.qu} | {selectNode?.name || "所有服务器"}
-      </div>
-      <div className="node-select">
-        <div>
-          <span>节点记录:</span>
+        <div className="node-select">
           <Select
-            defaultValue={selectNode?.key}
+            defaultValue={
+              nodeHistory?.filter((item: any) => item?.is_select)?.[0]?.key
+            }
+            // placeholder="节点记录"
             suffixIcon={<div className="triangle" />}
-            onChange={(id) => {
-              // startAcceleration(selectNode);
+            onChange={(key) => {
+              const select = nodeHistory?.filter(
+                (item: any) => item?.key === key
+              )?.[0];
+
+              startAcceleration(select);
             }}
           >
             {nodeHistory?.length > 0 &&
@@ -87,13 +96,15 @@ const CustomNode: React.FC<NodeProps> = ({
                 );
               })}
           </Select>
+          <Button
+            className="refresh-button"
+            onClick={() => buildNodeList(selectRegion)}
+          >
+            <img src={refreshIcon} alt="" />
+            刷新
+          </Button>
         </div>
-        <Button className="refresh-button">
-          <img src={refreshIcon} alt="" />
-          刷新
-        </Button>
       </div>
-
       <Table
         rowKey="key"
         dataSource={nodeTableList}
