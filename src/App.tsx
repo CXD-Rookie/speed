@@ -506,7 +506,7 @@ const App: React.FC = (props: any) => {
         const firstPurchase = data.first_purchase; // 首次充值
         const firstRenewal = data.first_renewal; // 首次续费
         const newUser = data.new_user; // 新用户
-
+        const isPayActive = localStorage.getItem('isPayActive') === 'true';//控制24小时充值弹窗的展示
         // 创建一个空数组来存储所有的 banner 数据
         let all_data: any[] = [];  
         // let all_data: any[] = JSON.parse(localStorage.getItem("all_data") || "[]");      
@@ -538,6 +538,10 @@ const App: React.FC = (props: any) => {
         // localStorage.setItem("all_data", JSON.stringify(all_data)); // swiper banner数据
         if (all_data.length > 0) {
           localStorage.setItem("all_data", JSON.stringify(all_data));
+          if(all_data?.length > 0 && !isPayActive){
+            avtiveDay()
+            localStorage.setItem("isPayActive",'true')
+          }
         } else {
             console.log("No new data to update. Keeping existing all_data.");
         }
@@ -621,7 +625,6 @@ const App: React.FC = (props: any) => {
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
       const images = JSON.parse(localStorage.getItem("all_data") || "[]");
-      const isPayActive = localStorage.getItem('isPayActive') === 'true';//控制24小时充值弹窗的展示
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
 
@@ -684,11 +687,6 @@ const App: React.FC = (props: any) => {
         }
 
 
-      }else {
-        if(images?.length > 0 && !isPayActive){
-          avtiveDay()
-          localStorage.setItem("isPayActive",'true')
-        }
       }
 
 
