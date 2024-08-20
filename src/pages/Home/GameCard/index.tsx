@@ -18,7 +18,7 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
 import tracking from "@/common/tracking";
 import "./style.scss";
-import RegionNodeSelector from "@/containers/RegionNodeSelector";
+import RegionNodeSelector from "@/containers/region-node";
 import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";

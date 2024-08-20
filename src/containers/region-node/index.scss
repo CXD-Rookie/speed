@@ -1,0 +1,387 @@
+.region-node-selector {
+  .ant-modal-content {
+    width: 67.6vw;
+    height: 75vh;
+    background-color: #3e3e4a;
+    padding: 1.2vw 2.4vh;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
+  }
+
+  .ant-modal-title,
+  .ant-modal-close-x {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  .ant-tabs {
+    width: 100%;
+    height: 65.7vh;
+  }
+
+  .ant-tabs-ink-bar {
+    width: 2vw !important;
+    height: 0.3vh !important;
+    background: #f86c34;
+    border-radius: 0.2vw !important;
+  }
+
+  .ant-tabs-nav::before {
+    border: none !important;
+  }
+
+  .ant-tabs-nav-wrap {
+    height: 6vh;
+  }
+
+  .ant-tabs-nav-list {
+    margin: 0 auto;
+    column-gap: 20vw;
+  }
+
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs
+    .ant-tabs-tab.ant-tabs-tab-active
+    .ant-tabs-tab-btn {
+    color: #fff !important;
+  }
+
+  .ant-tabs-tab,
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible),
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:focus:not(:focus-visible),
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:active, 
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:active {
+    font-size: 2vw;
+    color: #999;
+  }
+
+  .ant-tabs-tab:hover,
+  .ant-tabs-tab:active,
+  .ant-tabs-tab-btn:hover,
+  .ant-tabs-tab-btn:active {
+    color: #fff;
+  }
+
+  .triangle {
+    width: 0;
+    height: 0;
+    border-left: 0.5vw solid transparent;
+    border-right: 0.5vw solid transparent;
+    border-top: 0.6vw solid white;
+  }
+
+  .content {
+    margin-top: 1.35vh;
+    padding: 0 1.6vw 1.2vh 1.6vw;
+    position: relative;
+
+    .current-box {
+      display: flex;
+      align-items: center;
+      column-gap: 6vw;
+
+      .current-game {
+        font-size: 1.4vw;
+
+        .current-text {
+          color: #999;
+        }
+
+        .game-name {
+          color: #fff;
+          height: 4.8vh;
+          line-height: 4.8vh;
+          margin-left: 0.8vw;
+        }
+      }
+
+      .current-region {
+        font-size: 1.4vw;
+        text-align: left;
+        color: #999999;
+      }
+
+      .region-select {
+        width: 20vw;
+        height: 4.8vh;
+        margin-top: 0.6vh;
+        .ant-select-open {
+          color: #fff;
+        }
+
+        .ant-select-selector {
+          font-size: 1.4vw;
+          color: #fff;
+          background: rgba(255, 255, 255, 0.1);
+          border: none;
+        }
+
+        .ant-select-focused .ant-select-selector {
+          border: none;
+        }
+      }
+    }
+
+    .region-buttons {
+      margin-top: 6vh;
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      column-gap: 1vw;
+      row-gap: 0.9vh;
+
+      .public-button {
+        width: 11.3vw;
+        height: 6vh;
+        font-size: 1.4vw;
+        color: #fff;
+        background: #6b6b7d;
+        border-radius: 0.5vw;
+      }
+
+      .select-button {
+        background-color: #F86C34;
+      }
+
+      .region-button {
+        border: none;
+      }
+    }
+
+    .sub-btns{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1vw;
+      background: rgba(107, 107, 125, 0.3);
+      border-radius: 0.5vh;
+      margin-top: 1vh;
+
+      .region-button {
+        width: 11.3vw;
+        height: 6vh;
+        font-size: 1.4vw;
+        color: #fff;
+        border: none;
+        background: transparent;
+        border-radius: 0.5vw;
+      }
+
+      .select-button {
+        color: #F86C34;
+      }
+    }
+
+    .not-have-region {
+      position: absolute;
+      opacity: 0.5;
+      font-size: 1.2vw;
+      font-weight: Regular;
+      text-align: left;
+      color: #ffffff;
+      line-height: 2.4vh;
+      top: 54.6vh;
+      left: 29.6vw;
+      cursor: pointer;
+    }
+
+    .current-settings {
+      height: 3vh;
+      font-size: 1.4vw;
+      font-weight: Regular;
+      text-align: left;
+      color: #ffffff;
+      line-height: 3vh;
+    }
+
+    .node-select {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3.6vh;
+
+      & div span {
+        font-size: 1.4vw;
+        font-weight: Regular;
+        text-align: left;
+        color: #999999;
+        line-height: 3vh;
+        margin-right: 0.8vw;
+      }
+
+      .ant-select-selector {
+        width: 20vw;
+        height: 4.8vh;
+        color: #fff;
+        background: rgba(255,255,255,0.10);
+        border-radius: 0.5vw;
+        border: none;
+      }
+
+      .ant-select-single {
+        height: 4.8vh;
+      }
+      
+      .refresh-button {
+        width: 7vw;
+        height: 4.8vh;
+        color: #fff;
+        background: rgba(255,255,255,0.10);
+        border-radius: 0.5vw;
+        border: none;
+        font-size: 1.4vw;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        column-gap: 0.4vw;
+
+        img {
+          width: 1.8vw;
+          height: 1.8vw;
+          margin-bottom: 0.2vw;
+        }
+      }
+    }
+
+    .ant-table {
+      background-color: #3e3e4a;
+      margin-top: 3.6vh;
+
+      .ant-table-thead > tr > th {
+        height: 6vh;
+        line-height: 6vh;
+        font-size: 1.2vw;
+        font-weight: Regular;
+        color: #999999;
+        background-color: #3e3e4a;
+        border-bottom: none;
+        padding: 0 1.2vw;
+      }
+
+      .ant-table-tbody > tr > td {
+        font-size: 1.1vw;
+        color: #fff;
+        padding: 1.42vh 1.2vw;
+        background-color: #3e3e4a;
+        border-bottom: none;
+        cursor: pointer;
+      }
+
+      .ant-table-cell::before {
+        content: normal;
+        width: 0 !important;
+      }
+
+      .ant-table-tbody > tr.ant-table-row:hover > td {
+        background-color: rgba(255,255,255,0.10);
+      }
+
+      .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(1) {
+        border-radius: 5px 0 0 5px;
+      }
+
+      .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(4) {
+        border-radius: 0 5px 5px 0;
+      }
+
+      .ant-table-tbody > tr.selected-node > td {
+        background: rgba(248,108,52,0.20) !important;
+        border-top: 1px solid #f86c34;
+        border-bottom: 1px solid #f86c34;
+        color: #fff;
+      }
+
+      // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(1),
+      .ant-table-tbody > tr.selected-node > td:nth-child(1) {
+        border-left: 1px solid #f86c34;
+        border-radius: 5px 0 0 5px;
+      }
+
+      // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(4),
+      .ant-table-tbody > tr.selected-node > td:nth-child(4) {
+        border-right: 1px solid #f86c34;
+        border-radius: 0 5px 5px 0;
+      }
+    }
+
+    .start-button {
+      position: absolute;
+      width: 18.5vw;
+      height: 6.6vh;
+      font-size: 1.4vw;
+      color: #fff;
+      background-color: #F86C34;
+      border: none;
+      border-radius: 3.3vh;
+      top: 48vh;
+      left: 21.35vw;
+
+      &:hover, &:active {
+        background-color: #F86C34;
+      }
+    }
+  }
+}
+
+.ant-select-dropdown {
+  color: #fff !important;
+  background: #6b6b7d !important; 
+  
+  & div {
+    font-size: 1.4vw !important;
+  }
+}
+
+.ant-select-arrow {
+  font-size: 1.4vw !important;
+}
+
+.ant-select-item-option {
+  color: #fff !important;
+}
+
+/* 修改选项在鼠标经过时的样式 */
+.ant-select-item-option-active {
+  background-color: #3E3E4A !important; /* 修改背景颜色 */
+  color: #fff !important;            /* 修改文字颜色 */
+}
+
+/* 修改选中项的样式 */
+.ant-select-item-option-selected {
+  background-color: #3E3E4A !important; /* 修改背景颜色 */
+  color: #fff !important;            /* 修改文字颜色 */
+}
+
+
+.up-triangle {
+  border-bottom: 0.5vw solid #fff;
+}
+
+.down-triangle {
+  border-top: 0.5vw solid #fff;
+}
+.up-triangle, .down-triangle {
+  display: inline-block;
+  width: 1vw;
+  margin-left: 0.8vw;
+  margin-bottom: 0.1vw;
+  border-left: 0.5vw solid transparent;
+  border-right: 0.5vw solid transparent;
+}
+
+/* 覆盖默认表头样式，去掉多余的边框 */
+.ant-table th {
+  border-bottom: none; /* 移除底部边框 */
+}
+.ant-table-cell-scrollbar {
+  display: none; /* 隐藏表头的滚动条补丁 */
+}
