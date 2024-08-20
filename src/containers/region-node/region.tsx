@@ -1,24 +1,19 @@
 import { useEffect, useState } from "react";
 import { Select, Button } from "antd";
 
-import playSuitApi from "@/api/speed";
 import IssueModal from "@/containers/IssueModal/index";
 
 const { Option } = Select;
 
 interface RegionProps {
-  open: boolean;
   value: any;
   currentGameServer?: any;
-  stopSpeed?: () => void;
-  // onCancel: () => void;
   updateGamesRegion?: (a?: any, b?: any) => void;
   notice?: (value: any) => void;
 }
 
 const CustomRegion: React.FC<RegionProps> = (props) => {
   const {
-    open = false,
     value = {},
     currentGameServer,
     updateGamesRegion = () => {},
@@ -34,19 +29,19 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
   // 选择的服
   const togglePanel = (option: any, type = "default") => {
     // 如果当前游戏服具有不同的区，进行更新节点操作
-    let default_option = { ...option };
+    let result: any = { ...option };
 
     if (option?.fu) {
-      default_option = currentGameServer.filter(
+      result = currentGameServer.filter(
         (item: any) => item?.qu === option?.fu
       )?.[0];
     }
 
-    if (default_option?.children) {
-      let is_update =
+    if (result?.children) {
+      let isTrue =
         Object.keys(expandedPanels)?.length > 0 &&
-        expandedPanels?.qu === default_option?.qu;
-      setExpandedPanels(is_update ? {} : default_option);
+        expandedPanels?.qu === option?.qu;
+      setExpandedPanels(isTrue ? {} : result);
     }
 
     if (type === "default") {
@@ -142,6 +137,22 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
             );
           })}
       </div>
+      <Button
+        type="primary"
+        className="start-button"
+        // disabled={tableLoading}
+        onClick={() => {
+          // let isFind = identifyAccelerationData()?.[0] || {}; // 当前是否有加速数据
+          // if (isFind && type === "details") {
+          //   setAccelOpen(true);
+          // } else {
+          //   clickStartOn();
+          // }
+        }}
+      >
+        {/* {type === "details" ? "重新加速" : "开始加速"} */}
+        开始加速
+      </Button>
       <div
         className="not-have-region"
         onClick={() => {

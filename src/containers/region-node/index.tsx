@@ -145,7 +145,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = ({
       label: "区服",
       children: (
         <CustomRegion
-          open={open}
           value={presentGameData}
           currentGameServer={currentGameServer}
           updateGamesRegion={updateGamesRegion}
