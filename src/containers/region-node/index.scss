@@ -182,6 +182,24 @@
       }
     }
 
+    .start-button,
+    .region-start-button {
+      position: absolute;
+      width: 18.5vw;
+      height: 6.6vh;
+      font-size: 1.4vw;
+      color: #fff;
+      background-color: #F86C34;
+      border: none;
+      border-radius: 3.3vh;
+      top: 52vh;
+      left: calc(50% - 9.25vw);
+
+      &:hover, &:active {
+        background-color: #F86C34;
+      }
+    }
+
     .not-have-region {
       position: absolute;
       opacity: 0.5;
@@ -190,8 +208,8 @@
       text-align: left;
       color: #ffffff;
       line-height: 2.4vh;
-      top: 54.6vh;
-      left: 29.6vw;
+      top: 48vh;
+      left: calc(50% - 3.5vw);
       cursor: pointer;
     }
 
@@ -310,23 +328,6 @@
       .ant-table-tbody > tr.selected-node > td:nth-child(4) {
         border-right: 1px solid #f86c34;
         border-radius: 0 5px 5px 0;
-      }
-    }
-
-    .start-button {
-      position: absolute;
-      width: 18.5vw;
-      height: 6.6vh;
-      font-size: 1.4vw;
-      color: #fff;
-      background-color: #F86C34;
-      border: none;
-      border-radius: 3.3vh;
-      top: 48vh;
-      left: 21.35vw;
-
-      &:hover, &:active {
-        background-color: #F86C34;
       }
     }
   }

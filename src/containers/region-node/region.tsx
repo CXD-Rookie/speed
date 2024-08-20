@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Select, Button } from "antd";
 
+import "./index.scss";
 import IssueModal from "@/containers/IssueModal/index";
 
 const { Option } = Select;
@@ -8,7 +9,10 @@ const { Option } = Select;
 interface RegionProps {
   value: any;
   currentGameServer?: any;
+  type?: string;
+  loading?: boolean;
   updateGamesRegion?: (a?: any, b?: any) => void;
+  startAcceleration?: (node?: any) => void;
   notice?: (value: any) => void;
 }
 
@@ -16,7 +20,10 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
   const {
     value = {},
     currentGameServer,
+    loading = false,
+    type,
     updateGamesRegion = () => {},
+    startAcceleration = () => {},
   } = props;
 
   const [selectRegion, setSelectRegion] = useState<any>({}); // 当前选中的区服
@@ -137,22 +144,6 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
             );
           })}
       </div>
-      <Button
-        type="primary"
-        className="start-button"
-        // disabled={tableLoading}
-        onClick={() => {
-          // let isFind = identifyAccelerationData()?.[0] || {}; // 当前是否有加速数据
-          // if (isFind && type === "details") {
-          //   setAccelOpen(true);
-          // } else {
-          //   clickStartOn();
-          // }
-        }}
-      >
-        {/* {type === "details" ? "重新加速" : "开始加速"} */}
-        开始加速
-      </Button>
       <div
         className="not-have-region"
         onClick={() => {
@@ -162,6 +153,14 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
       >
         没有找到区服？
       </div>
+      <Button
+        type="primary"
+        className="region-start-button"
+        disabled={loading}
+        onClick={() => startAcceleration()}
+      >
+        {type === "details" ? "重新加速" : "开始加速"}
+      </Button>
       {showIssueModal ? (
         <IssueModal
           showIssueModal={showIssueModal}

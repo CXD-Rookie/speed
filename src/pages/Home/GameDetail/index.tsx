@@ -17,7 +17,7 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import tracking from "@/common/tracking";
 import "./style.scss";
 import BarChart from "@/containers/BarChart/index";
-import RegionNodeSelector from "@/containers/RegionNodeSelector";
+import RegionNodeSelector from "@/containers/region-node";
 import ActivationModal from "@/containers/activation-mode";
 import BreakConfirmModal from "@/containers/break-confirm";
 

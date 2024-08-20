@@ -341,7 +341,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 加速实际操作
   const accelerateProcessing = (option = selectAccelerateOption) => {
-    if (!option?.dom_info?.select_dom?.id) {
+    const nodeHistory = (option?.dom_info || [])?.filter((item: any) => item?.is_select)?.[0];
+    
+    if (!nodeHistory?.id) {
       setIsOpenRegion(true);
       return;
     }
