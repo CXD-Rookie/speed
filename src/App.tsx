@@ -743,6 +743,7 @@ const App: React.FC = (props: any) => {
           };
           
           if (bind_type >= 0) {
+            dispatch(setAccountInfo(userInfo, true, false));
             if (isNewUser) {
               setThirdBindType("bind"); // 定义成功类型
               tracking.trackLoginSuccess("0");
@@ -752,7 +753,7 @@ const App: React.FC = (props: any) => {
               tracking.trackLoginSuccess("0");
               setBindOpen(true); // 触发成功弹窗
             }
-            dispatch(setAccountInfo(userInfo, true, false));
+
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
             webSocketService.loginReconnect();
           }
