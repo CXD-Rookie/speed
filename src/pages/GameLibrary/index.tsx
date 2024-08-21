@@ -8,7 +8,7 @@ import gameApi from "@/api/gamelist";
 
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
-
+import {useActivate, useUnactivate} from "react-activation";
 interface Game {
   id: string;
   name: string;
@@ -75,106 +75,73 @@ const gamesTitle: GamesTitleProps[] = [
 
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
-
   const { appendGameToList } = useGamesInitialize();
 
   const [games, setGames] = useState<Game[]>([]);
   const [gameActiveType, setGameActiveType] = useState<string>("1");
-  const [page, setPage] = useState<number>(1);
-  const [t, setT] = useState<string | null>("限时免费"); // 默认选中热门游戏
+  const [t, setT] = useState<string | null>("限时免费"); // 默认选中限时免费
 
-  const isFetching = useRef<boolean>(false);
-  const hasMore = useRef<boolean>(true);
   const gameListRef = useRef<HTMLDivElement>(null);
+
+  // 初始化时请求数据并缓存到 localStorage
+  const fetchAndCacheGames = async () => {
+    try {
+      const res = await gameApi.gameList({ page: 1, pagesize: 6000 }); // 获取全部游戏数据
+      const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
+        ...game,
+        cover_img: game.cover_img ? `https://cdn.accessorx.com/${game.background_img}` : `https://cdn.accessorx.com/${game.background_img}`,
+      }));
+      
+      // 缓存到 localStorage
+      localStorage.setItem("cachedGames", JSON.stringify(gamesWithFullImgUrl));
+      
+      // 初次渲染显示 "限时免费" 分类
+      filterGamesByCategory("限时免费", gamesWithFullImgUrl);
+      
+    } catch (error) {
+      console.error("Error fetching games:", error);
+    }
+  };
+
+  // 根据分类进行本地数据过滤
+  const filterGamesByCategory = (category: string, gamesList: Game[] | null = null) => {
+    const allGames = gamesList || JSON.parse(localStorage.getItem("cachedGames") || "[]");
+    
+    // 根据tags过滤
+    const filteredGames = allGames.filter((game: Game) => game.tags.includes(category));
+    
+    setGames(filteredGames);
+  };
 
   const clickAddGame = (option: any) => {
     appendGameToList(option);
     navigate("/home");
   };
 
-  const fetchGames = async (pageNum: number, tParam: string | null) => {
-    if (isFetching.current || !hasMore.current) return;
-    isFetching.current = true;
-
-    try {
-      const param: any = {
-        page: pageNum,
-        pagesize: 600,
-      };
-      if (tParam) {
-        param.t = tParam;
-      }
-      const res = await gameApi.gameList(param);
-      let gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
-        ...game,
-        cover_img: `https://cdn.accessorx.com/${
-          game.cover_img ? game.cover_img : game.background_img
-        }`,
-      }));
-
-      if (gamesWithFullImgUrl?.length > 0 && param.t === "限时免费") {
-        gamesWithFullImgUrl = gamesWithFullImgUrl.filter(
-          (item: any) => item?.free_time
-        );
-      }
-
-      if (res.data.list.length < 600) {
-        hasMore.current = false;
-      }
-      setGames((prevGames) => [...prevGames, ...gamesWithFullImgUrl]);
-    } catch (error) {
-      console.error("Error fetching games:", error);
-    } finally {
-      isFetching.current = false;
-    }
-  };
-  // 分页逻辑注释掉
-  // useEffect(() => {
-  //   fetchGames(page, t);
-  //   const handleScroll = () => {
-  //     if (gameListRef.current) {
-  //       const { scrollTop, scrollHeight, clientHeight } = gameListRef.current;
-  //       if (
-  //         clientHeight + scrollTop >= scrollHeight - 200 &&
-  //         !isFetching.current
-  //       ) {
-  //         setPage((prevPage) => prevPage + 1);
-  //       }
-  //     }
-  //   };
-
-  //   const gameListElement = gameListRef.current;
-  //   if (gameListElement) {
-  //     gameListElement.addEventListener("scroll", handleScroll);
-  //     return () => {
-  //       gameListElement.removeEventListener("scroll", handleScroll);
-  //     };
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (page > 1) {
-  //     fetchGames(page, t);
-  //   }
-  // }, [page]);
-
-  useEffect(() => {
-    if (t !== null) {
-      setPage(1);
-      setGames([]);
-      hasMore.current = true;
-      fetchGames(1, t);
-    }
-  }, [t]);
-
+  // 点击分类时不再请求数据，而是本地过滤
   const handleTitleClick = (item: GamesTitleProps) => {
     setGameActiveType(item.key);
     setT(item.t);
+    filterGamesByCategory(item.t);
   };
 
+  useActivate(() => {
+    console.log("组件已激活");
+    // 每次激活组件时重新请求数据并更新缓存
+  fetchAndCacheGames();
+  });
+
+  useUnactivate(() => {
+    console.log("组件已缓存");
+  });
+
   useEffect(() => {
-    // 在组件加载时，默认选中热门游戏并请求数据
-    setT("限时免费");
+    // 首次加载时请求数据并缓存
+    if (!localStorage.getItem("cachedGames")) {
+      fetchAndCacheGames();
+    } else {
+      filterGamesByCategory(t || "限时免费");
+    }
   }, []);
 
   return (
