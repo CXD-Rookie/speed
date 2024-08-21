@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-06-21 14:52:37
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-16 17:52:59
+ * @LastEditTime: 2024-08-20 19:33:18
  * @FilePath: \speed\src\common\webSocketService.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -24,6 +24,8 @@ class WebSocketService {
   private dispatch!: Dispatch;
   private hasToken: boolean = false;
   private reconnectTimeout: NodeJS.Timeout | null = null; // 用于存储重连的定时器
+  private messageAttempts: number = 0; // 用于记录无token时的消息发送次数
+  private readonly maxMessageAttempts: number = 10; // 最大发送次数
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     this.url = url;
@@ -46,15 +48,13 @@ class WebSocketService {
       console.log('WebSocket connection opened');
       this.reconnectAttempts = 0;
       this.flushMessageQueue(); 
-      if (this.hasToken) {    
       this.sendMessage({
         platform: 3,
         client_token: localStorage.getItem('client_token') || '{}',
         client_id: localStorage.getItem('client_id') || '{}',
         user_token: userToken,
       });
-        this.startHeartbeat(); // 确保有 token 时启动心跳
-      }
+      this.startHeartbeat(); // 确保有 token 时启动心跳
     };
 
     this.ws.onmessage = (event: any) => {
@@ -71,6 +71,7 @@ class WebSocketService {
             localStorage.removeItem("isRealName");
             localStorage.removeItem("is_new_user");
             localStorage.removeItem("isModalDisplayed");
+            eventBus.emit('clearTimer');
           }
 
           localStorage.removeItem("isRemote")
@@ -135,22 +136,65 @@ class WebSocketService {
     }
   }
 
+  // startHeartbeat() {
+  //   if (!this.hasToken) {
+  //     console.log('No token available, heartbeat not started');
+  //     return;
+  //   }
+  //   console.log('Starting heartbeat');
+  //   this.heartbeatInterval = setInterval(() => {
+  //     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+  //       this.sendMessage({
+  //         platform: 3,
+  //         client_token: localStorage.getItem('client_token') || '{}',
+  //         client_id: localStorage.getItem('client_id') || '{}',
+  //         user_token: JSON.parse(localStorage.getItem('token') || '{}'),
+  //       });
+  //     }
+  //   }, 5000); // 每5秒发送一次心跳
+  // }
   startHeartbeat() {
-    if (!this.hasToken) {
-      console.log('No token available, heartbeat not started');
-      return;
+    // 如果没有 token，也允许发送消息
+    if (!this.hasToken && this.messageAttempts < this.maxMessageAttempts) {
+      console.log('No token available, starting message attempts');
+      this.heartbeatInterval = setInterval(() => {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.sendMessage({
+            platform: 3,
+            client_token: localStorage.getItem('client_token') || '{}',
+            client_id: localStorage.getItem('client_id') || '{}',
+            user_token: JSON.parse(localStorage.getItem('token') || '{}'),
+          });
+  
+          this.messageAttempts++;
+  
+          // 当达到最大次数，停止发送消息
+          if (this.messageAttempts >= this.maxMessageAttempts) {
+            console.log('Reached maximum message attempts without token, stopping...');
+            //@ts-ignore
+            clearInterval(this.heartbeatInterval);
+            this.heartbeatInterval = null;
+          }
+        }
+      }, 5000); // 每5秒发送一次消息
+  
+      return; // 无 token 时返回，避免进入有 token 的逻辑
     }
-    console.log('Starting heartbeat');
-    this.heartbeatInterval = setInterval(() => {
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        this.sendMessage({
-          platform: 3,
-          client_token: localStorage.getItem('client_token') || '{}',
-          client_id: localStorage.getItem('client_id') || '{}',
-          user_token: JSON.parse(localStorage.getItem('token') || '{}'),
-        });
-      }
-    }, 5000); // 每5秒发送一次心跳
+  
+    // 有 token 时的正常心跳逻辑
+    if (this.hasToken) {
+      console.log('Starting heartbeat');
+      this.heartbeatInterval = setInterval(() => {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.sendMessage({
+            platform: 3,
+            client_token: localStorage.getItem('client_token') || '{}',
+            client_id: localStorage.getItem('client_id') || '{}',
+            user_token: JSON.parse(localStorage.getItem('token') || '{}'),
+          });
+        }
+      }, 5000); // 每5秒发送一次心跳
+    }
   }
 
   stopHeartbeat() {
