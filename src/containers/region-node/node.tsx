@@ -39,6 +39,8 @@ const CustomNode: React.FC<NodeProps> = ({
   const [selectRegion, setSelectRegion] = useState<any>(""); // 选中区服信息
   const [nodeHistory, setNodeHistory] = useState<any>([]); // 节点历史列表
 
+  const [nodeValue, setNodeValue] = useState(""); // 节点历史value
+
   const columms: TableProps<DataType>["columns"] = [
     {
       title: "全部节点",
@@ -63,7 +65,12 @@ const CustomNode: React.FC<NodeProps> = ({
     let select = (serverNode?.region || []).filter(
       (item: any) => item?.is_select
     )?.[0];
-
+    const node = serverNode?.nodeHistory?.filter(
+      (item: any) => item?.is_select
+    )?.[0];
+    console.log(node);
+    
+    setNodeValue(node?.name !== "智能节点" ? node?.key : []);
     setNodeHistory(serverNode?.nodeHistory);
     setSelectRegion(select);
   }, [value]);
@@ -74,26 +81,27 @@ const CustomNode: React.FC<NodeProps> = ({
         {value?.name} | {selectRegion?.qu} | {selectNode?.name || "所有服务器"}
         <div className="node-select">
           <Select
-            defaultValue={
-              nodeHistory?.filter((item: any) => item?.is_select)?.[0]?.key
-            }
-            // placeholder="节点记录"
+            value={nodeValue}
+            placeholder="节点记录"
             suffixIcon={<div className="triangle" />}
             onChange={(key) => {
               const select = nodeHistory?.filter(
                 (item: any) => item?.key === key
               )?.[0];
 
+              setNodeHistory(key)
               startAcceleration(select);
             }}
           >
             {nodeHistory?.length > 0 &&
               nodeHistory?.map((item: any) => {
-                return (
-                  <Option key={item?.key} value={item?.key}>
-                    {item?.name}
-                  </Option>
-                );
+                if (item?.name !== "智能节点") {
+                  return (
+                    <Option key={item?.key} value={item?.key}>
+                      {item?.name}
+                    </Option>
+                  );
+                }
               })}
           </Select>
           <Button

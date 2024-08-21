@@ -60,7 +60,11 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
     if (Object.keys(value)?.length > 0) {
       const list = value?.serverNode?.region; // 区服列表
       const select = list.filter((item: any) => item?.is_select)?.[0]; // 默认选中的区服
+      const expand = (currentGameServer || []).filter(
+        (item: any) => select?.fu && select?.fu === item?.qu
+      )?.[0] || {} // 初始化判断是否有选中的多级区服
       
+      setExpandedPanels(expand)
       setSelectRegion(select);
     }
   }, [value]);

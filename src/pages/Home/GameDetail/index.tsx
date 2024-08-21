@@ -67,10 +67,22 @@ const GameDetail: React.FC = () => {
   const memoizedData = useMemo(() => chartData, [chartData]);
 
   const domName = (data = regionInfo) => {
-    let fu = data?.select_region?.fu ? data?.select_region?.fu + "-" : "";
-    let dom = detailData?.dom_info?.select_dom?.name || "";
+    let fu = data?.region?.fu ? data?.region?.fu + "-" : "";
+    let dom = data?.node?.name || "";
 
-    return fu + data?.select_region?.qu + "-" + dom;
+    return fu + data?.region?.qu + "-" + dom;
+  };
+
+  // 当前选择的区服，节点
+  const selectServerNode = (serverNode: any) => {
+    const region = serverNode.region.filter((item: any) => item?.is_select)?.[0] || {};
+    const node =
+      serverNode.nodeHistory.filter((item: any) => item?.is_select)?.[0] || {};
+
+    return {
+      region,
+      node,
+    };
   };
 
   const showModalActive = () => {
@@ -188,15 +200,13 @@ const GameDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-    let select_region = find_accel?.region; // 当前选择区服
-    let ip = find_accel?.dom_info?.select_dom?.ip; // 存储的ip
-    console.log("ip", ip);
+    const find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
+    const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
 
     historyContext?.accelerateTime?.startTimer();
 
     const jsonString = JSON.stringify({
-      params: { ip },
+      params: { ip: node?.ip },
     });
 
     (window as any).NativeApi_AsynchronousRequest(
@@ -222,7 +232,7 @@ const GameDetail: React.FC = () => {
         setLostBag(lost_bag); // 更新延迟数
         setPacketLoss(delay === 9999 ? 100 : 0); // 更新丢包率
         setDetailData(find_accel);
-        setRegionInfo(select_region);
+        setRegionInfo({ region, node });
 
         dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
       }
@@ -233,11 +243,10 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-      let ip = find_accel?.dom_info?.select_dom?.ip; // 存储的ip
-      console.log("ip", ip);
+      const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
 
       const jsonString = JSON.stringify({
-        params: { ip },
+        params: { ip: node?.ip },
       });
 
       (window as any).NativeApi_AsynchronousRequest(
