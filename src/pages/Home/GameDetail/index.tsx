@@ -308,9 +308,7 @@ const GameDetail: React.FC = () => {
       />
       <img className="mask-back-icon" src={accelerateIcon} alt="" />
       <div className="cantainer">
-        <div className="back" onClick={() => navigate("/home")}>
-          <LeftOutlined /> 返回
-        </div>
+        <LeftOutlined className="back" onClick={() => navigate("/home")} />
         <div className="game-detail">
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>
