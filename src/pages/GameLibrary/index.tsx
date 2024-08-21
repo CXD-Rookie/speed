@@ -8,7 +8,7 @@ import gameApi from "@/api/gamelist";
 
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
-
+import {useActivate, useUnactivate} from "react-activation";
 interface Game {
   id: string;
   name: string;
@@ -157,7 +157,12 @@ const GameLibrary: React.FC = () => {
   //     fetchGames(page, t);
   //   }
   // }, [page]);
-
+  useActivate(() => {
+      console.log('组件已激活')
+  })
+  useUnactivate(() => {
+      console.log('组件已缓存')
+  })
   useEffect(() => {
     if (t !== null) {
       setPage(1);

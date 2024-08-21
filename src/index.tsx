@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-16 14:11:44
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-06-03 11:00:19
+ * @LastEditTime: 2024-08-21 15:25:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\index.tsx
@@ -25,7 +25,7 @@ import { store } from "./redux/store";
 
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
-
+import {AliveScope} from "react-activation";
 dayjs.locale("zh-cn");
 
 const root = ReactDOM.createRoot(
@@ -37,7 +37,9 @@ root.render(
     <HistoryProvider>
       <ConfigProvider locale={zhCN}>
         <Provider store={store}>
-          <App />
+          <AliveScope>
+            <App />
+          </AliveScope>
         </Provider>
       </ConfigProvider>
     </HistoryProvider>

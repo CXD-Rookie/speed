@@ -1,14 +1,14 @@
 /*
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-21 20:47:13
- * @LastEditors: zhangda
- * @LastEditTime: 2024-06-24 16:14:25
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-08-21 15:17:53
  * @FilePath: \speed\src\routes\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React from "react";
 import { Navigate } from "react-router-dom";
-
+import KeepAlive from "react-activation";
 import GameLibrary from "@/pages/GameLibrary";
 import GameList from "@/pages/GameList";
 import Home from "@/pages/Home";
@@ -27,7 +27,9 @@ export default [
     path: "/gameLibrary",
     element: (
       <PrivateRoute>
-        <GameLibrary />
+        <KeepAlive>
+              <GameLibrary />
+        </KeepAlive>
       </PrivateRoute>
     ),
   },
