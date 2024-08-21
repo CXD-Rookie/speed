@@ -2,11 +2,11 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-07-29 11:20:33
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-16 11:49:08
+ * @LastEditTime: 2024-08-21 11:43:56
  * @FilePath: \speed\src\containers\swiper\indeX.tsX
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState, useCallback } from "react";
 import { Carousel } from "antd";
 import eventBus from '../../api/eventBus'; 
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +45,11 @@ const Swiper: React.FC<SwiperProps> = ({ onImageClick }) => {
     };
   }, []);
 
+  // 使用 useCallback 包装 onImageClick 以避免不必要的重新创建
+  const handleClick = useCallback((params: any) => {
+    onImageClick(params);
+  }, [onImageClick]);
+
   return (
     <div className="swiper-box">
       <Carousel
@@ -56,7 +61,7 @@ const Swiper: React.FC<SwiperProps> = ({ onImageClick }) => {
         ref={carouselRef}
       >
         {images.map(({ image_url, params }, index: any) => (
-          <div key={index} onClick={() => onImageClick(params)}>
+          <div key={index} onClick={() => handleClick(params)}>
             <img
               className="imgalt"
               src={"https://cdn.accessorx.com/" + image_url}
