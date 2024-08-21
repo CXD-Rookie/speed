@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-16 18:11:15
+ * @LastEditTime: 2024-08-21 14:37:54
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -46,6 +46,7 @@ const Home: React.FC = () => {
   const firstAuth = useSelector((state: any) => state.firstAuth);
   const [images, setImages] = useState<ImageItem[]>([]);
   const imagesRef = useRef<ImageItem[]>([]); // 使用 useRef 存储数据
+  const [isImagesLoaded, setIsImagesLoaded] = useState(false);
   //@ts-ignore
   const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -148,16 +149,14 @@ const Home: React.FC = () => {
   }, [location]);
 
   useEffect(() => {
-    // Delayed read
     const fetchImages = () => {
       const storedImages = JSON.parse(localStorage.getItem("all_data") || "[]");
-      console.log(storedImages, "1111111111");
       setImages(storedImages);
+      setIsImagesLoaded(true); // 数据加载完成
     };
-  
-    const timer = setTimeout(fetchImages, 500); // 延迟500ms
-  
-    return () => clearTimeout(timer); // 清理定时器
+
+    const timer = setTimeout(fetchImages, 10);
+    return () => clearTimeout(timer);
   }, []);
 
   // useEffect(() => {
@@ -203,6 +202,7 @@ const Home: React.FC = () => {
         </div>
       )}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
+      {isImagesLoaded && (
       <div className="functional-areas">
         {images?.length > 0 && (
           <div className="swiper">
@@ -228,6 +228,7 @@ const Home: React.FC = () => {
           我的游戏 ({getGameList()?.length})
         </div>
       </div>
+      )}
       {!!isModalOpen && (
         <PayModal
           isModalOpen={isModalOpen}
