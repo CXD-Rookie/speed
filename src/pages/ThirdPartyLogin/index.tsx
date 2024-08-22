@@ -1,8 +1,8 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-24 15:45:14
- * @LastEditors: zhangda
- * @LastEditTime: 2024-07-10 11:38:44
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-08-22 14:11:25
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\ThirdPartyLogin\index.tsx
@@ -46,7 +46,8 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
         (window as any).NativeApi_YouXiaAuthComplete(
           res?.data?.token,
           state,
-          res?.data?.is_new_user
+          res?.data?.is_new_user,
+          res?.data?.vip_experience_time
         );
       }
     } catch (error) {

@@ -89,7 +89,7 @@ const GameLibrary: React.FC = () => {
       const res = await gameApi.gameList({ page: 1, pagesize: 6000 }); // 获取全部游戏数据
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
-        cover_img: game.cover_img ? `https://cdn.accessorx.com/${game.background_img}` : `https://cdn.accessorx.com/${game.background_img}`,
+        cover_img: game.cover_img ? `https://cdn.accessorx.com/${game.cover_img}` : `https://cdn.accessorx.com/${game.background_img}`,
       }));
       
       // 缓存到 localStorage
@@ -125,15 +125,23 @@ const GameLibrary: React.FC = () => {
     filterGamesByCategory(item.t);
   };
 
-  useActivate(() => {
-    console.log("组件已激活");
-    // 每次激活组件时重新请求数据并更新缓存
-  fetchAndCacheGames();
-  });
+  // useActivate(() => {
+  //   console.log("组件已激活");
+  //   // 每次激活组件时重新请求数据并更新缓存
+  //   fetchAndCacheGames(); 
+  //   // 强制切换回 "限时免费" 标签并设置选中状态
+  //   const freeTitle = gamesTitle.find(title => title.t === "限时免费");
+  //   if (freeTitle) {
+  //     setGameActiveType(freeTitle.key);
+  //     setT(freeTitle.t);
+  //   }
+    
+  //   filterGamesByCategory("限时免费");
+  // });
 
-  useUnactivate(() => {
-    console.log("组件已缓存");
-  });
+  // useUnactivate(() => {
+  //   console.log("组件已缓存");
+  // });
 
   useEffect(() => {
     // 首次加载时请求数据并缓存
@@ -143,6 +151,20 @@ const GameLibrary: React.FC = () => {
       filterGamesByCategory(t || "限时免费");
     }
   }, []);
+
+  useEffect(() => {
+    console.log("组件已激活");
+    // 每次激活组件时重新请求数据并更新缓存
+    fetchAndCacheGames(); 
+    // 强制切换回 "限时免费" 标签并设置选中状态
+    const freeTitle = gamesTitle.find(title => title.t === "限时免费");
+    if (freeTitle) {
+      setGameActiveType(freeTitle.key);
+      setT(freeTitle.t);
+    }
+    
+    filterGamesByCategory("限时免费");
+  }, [])
 
   return (
     <div className="game-library-module-container">

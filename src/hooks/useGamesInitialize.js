@@ -191,7 +191,10 @@ export const useGamesInitialize = () => {
 
       game_list = game_list.map(item => {
         if (item?.id === option?.id) {
-          return return_result
+          const data = { ...return_result }
+          // 存储游戏去除游戏用来判断是否手动的字段，只做单次判断
+          delete data.is_manual;
+          return data
         }
 
         return item
