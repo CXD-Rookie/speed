@@ -284,7 +284,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       console.log("去重后的数据", uniqueExecutable);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { ip, server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
+      const { addr, server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -294,7 +294,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const proxy_speed_limit = startInfo?.data?.proxy_speed_limit;
 
       localStorage.setItem("StartKey", id);
-      localStorage.setItem("speedIp", ip);
+      localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
 
       // 真实拼接
@@ -308,7 +308,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           user_id: accountInfo?.userInfo?.id,
           game_id: option?.id,
           tunnel: {
-            address: ip,
+            address: addr,
             server: server,
           },
           js_key,

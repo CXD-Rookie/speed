@@ -206,7 +206,7 @@ const GameDetail: React.FC = () => {
     historyContext?.accelerateTime?.startTimer();
 
     const jsonString = JSON.stringify({
-      params: { ip: node?.ip },
+      params: { ip: node?.addr },
     });
 
     (window as any).NativeApi_AsynchronousRequest(
@@ -246,7 +246,7 @@ const GameDetail: React.FC = () => {
       const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
 
       const jsonString = JSON.stringify({
-        params: { ip: node?.ip },
+        params: { ip: node?.addr },
       });
 
       (window as any).NativeApi_AsynchronousRequest(

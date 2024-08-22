@@ -201,7 +201,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           try {
             const updatedNode = await new Promise<any>((resolve, reject) => {
               const jsonString = JSON.stringify({
-                params: { ip: node.ip },
+                params: { ip: node?.addr },
               });
 
               // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
