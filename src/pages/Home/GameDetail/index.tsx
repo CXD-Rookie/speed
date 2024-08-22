@@ -8,7 +8,6 @@
  */
 import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
-import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDelay } from "@/redux/actions/auth";
@@ -21,6 +20,7 @@ import RegionNodeSelector from "@/containers/region-node";
 import ActivationModal from "@/containers/activation-mode";
 import BreakConfirmModal from "@/containers/break-confirm";
 
+import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
 import activateIcon from "@/assets/images/common/activate.svg";
 import cessationIcon from "@/assets/images/common/cessation.svg";
@@ -57,8 +57,8 @@ const GameDetail: React.FC = () => {
   const [stopModalOpen, setStopModalOpen] = useState(false);
   const [delayOpen, setDelayOpen] = useState(false); // 延迟弹窗
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
-  const [lostBag, setLostBag] = useState<any>(); // 实时延迟
-  const [packetLoss, setPacketLoss] = useState<any>(); // 丢包率
+  const [lostBag, setLostBag] = useState<any>(1); // 实时延迟
+  const [packetLoss, setPacketLoss] = useState<any>(0); // 丢包率
 
   const [regionInfo, setRegionInfo] = useState<any>(); // 当前加速区服
   const [chartData, setChartData] = useState<any>([]); // 柱形图数据示例
@@ -206,7 +206,7 @@ const GameDetail: React.FC = () => {
     historyContext?.accelerateTime?.startTimer();
 
     const jsonString = JSON.stringify({
-      params: { ip: node?.ip },
+      params: { ip: node?.addr },
     });
 
     (window as any).NativeApi_AsynchronousRequest(
@@ -246,7 +246,7 @@ const GameDetail: React.FC = () => {
       const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
 
       const jsonString = JSON.stringify({
-        params: { ip: node?.ip },
+        params: { ip: node?.addr },
       });
 
       (window as any).NativeApi_AsynchronousRequest(
@@ -308,7 +308,12 @@ const GameDetail: React.FC = () => {
       />
       <img className="mask-back-icon" src={accelerateIcon} alt="" />
       <div className="cantainer">
-        <LeftOutlined className="back" onClick={() => navigate("/home")} />
+        <img
+          src={fanhuiIcon}
+          alt=""
+          className="back"
+          onClick={() => navigate("/home")}
+        />
         <div className="game-detail">
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>
@@ -374,7 +379,7 @@ const GameDetail: React.FC = () => {
           </div>
           <div className="game-right">
             <div className="info-switch info-common-style" onClick={showModal}>
-              <span>{domName(regionInfo)}</span>
+              <span>{domName(regionInfo) || ""}</span>
               <span>切换</span>
             </div>
             <div className="info-speed info-common-style">

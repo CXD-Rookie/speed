@@ -150,6 +150,16 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
                 name: "-",
               },
             ];
+      const isHasCustom = result_excutable.filter((item: any) => item?.pid === "0")?.[0];
+
+      if (!isHasCustom) {
+        result_excutable.unshift({
+          pc_platform: 0,
+          path: "",
+          pid: "0",
+          name: "自定义",
+        });
+      }
 
       setPlatforms(result_excutable);
       return result_excutable;

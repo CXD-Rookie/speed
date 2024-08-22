@@ -43,18 +43,35 @@ const CustomNode: React.FC<NodeProps> = ({
 
   const columms: TableProps<DataType>["columns"] = [
     {
-      title: "全部节点",
+      title: "智能节点",
       dataIndex: "name",
-      render: (name: any) => name,
+      render: (name: any, record) => (
+        <span
+          style={record?.name === "智能节点"
+              ? { color: "#F86C34" }
+              : {}
+          }
+        >
+          {name}
+        </span>
+      ),
     },
     {
-      title: "游戏延迟",
+      title: "当前最优",
       dataIndex: "delay",
-      align: 'right',
-      render: (delay: any) => (
-        <span style={delay === "超时" ? { color: "#FF0000" } : {}}>
+      align: "right",
+      render: (delay: any, record) => (
+        <span
+          style={
+            delay === "超时"
+              ? { color: "#FF0000" }
+              : record?.name === "智能节点"
+              ? { color: "#F86C34" }
+              : {}
+          }
+        >
           {delay}
-          {!(delay === "超时") && "ms"}
+          {!(delay === "超时") && record?.name !== "智能节点" && "ms"}
         </span>
       ),
     },

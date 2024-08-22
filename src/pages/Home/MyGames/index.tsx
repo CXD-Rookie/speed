@@ -6,12 +6,13 @@
  * @FilePath: \speed\src\pages\Home\MyGames\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useEffect, useState, useRef } from "react";
-import { LeftOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import "./style.scss";
 import GameCard from "../GameCard";
+
+import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 
 const MyGames: React.FC = () => {
   const navigate = useNavigate();
@@ -80,7 +81,12 @@ const MyGames: React.FC = () => {
   return (
     <div className="my-games-module">
       <div className="back-box">
-        <LeftOutlined className="back" onClick={() => navigate("/home")} />
+        <img
+          src={fanhuiIcon}
+          alt=""
+          className="back"
+          onClick={() => navigate("/home")}
+        />
         <div className="games">我的游戏 ({gamesList?.length})</div>
       </div>
       <div id="myScrollableDiv" className="game-list">
