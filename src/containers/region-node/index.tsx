@@ -281,11 +281,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
       all = all.map((item: any, index: number) => {
         const randomOffset = Math.floor(Math.random() * 7) - 3;
-
+        const delay = item.delay + randomOffset;
+        
         return {
           ...item,
           key: item?.name === "智能节点" ? index + item?.id : item?.id,
-          delay: item.delay + randomOffset,
+          delay: delay < 1 ? 1 : delay,
         };
       });
       

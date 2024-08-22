@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
-import { LeftOutlined } from "@ant-design/icons";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setAccountInfo } from "@/redux/actions/account-info";
 
@@ -14,6 +13,7 @@ import IssueModal from "@/containers/IssueModal/index";
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 import emptyIcon from "@/assets/images/home/empty.svg";
+import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 
 interface Game {
   id: string;
@@ -123,8 +123,15 @@ const GameLibrary: React.FC = () => {
 
   return (
     <div className="game-list-module-container">
-      <LeftOutlined className="back-button" onClick={handleGoBack} />
-      <span className="num-search">共{games?.length}个搜索结果</span>
+      <div className="back-button-box">
+        <img
+          src={fanhuiIcon}
+          alt=""
+          className="back-button"
+          onClick={handleGoBack}
+        />
+        <span className="num-search">共{games?.length}个搜索结果</span>
+      </div>
       {games.length > 0 ? (
         <div className="game-list">
           {games.map((game: any) => (

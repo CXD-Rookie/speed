@@ -8,7 +8,6 @@
  */
 import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
-import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDelay } from "@/redux/actions/auth";
@@ -21,6 +20,7 @@ import RegionNodeSelector from "@/containers/region-node";
 import ActivationModal from "@/containers/activation-mode";
 import BreakConfirmModal from "@/containers/break-confirm";
 
+import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
 import activateIcon from "@/assets/images/common/activate.svg";
 import cessationIcon from "@/assets/images/common/cessation.svg";
@@ -308,7 +308,12 @@ const GameDetail: React.FC = () => {
       />
       <img className="mask-back-icon" src={accelerateIcon} alt="" />
       <div className="cantainer">
-        <LeftOutlined className="back" onClick={() => navigate("/home")} />
+        <img
+          src={fanhuiIcon}
+          alt=""
+          className="back"
+          onClick={() => navigate("/home")}
+        />
         <div className="game-detail">
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>

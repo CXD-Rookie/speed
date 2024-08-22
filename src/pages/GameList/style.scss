@@ -4,27 +4,24 @@
   height: 85vh;
   padding: 3.6vh 4vw;
 
-  .back-button {
-    font-size: 1.2vw;
-    font-weight: Regular;
-    color: #ffffff;
-    text-align: center;
-    line-height: 3.6vh;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    margin-left: 0.8vw;
-
-    .span {
+  .back-button-box {
+    display: flex;
+    align-items: center;
+    
+    .back-button {
+      width: 2vw;
+      height: 2vw;
+      cursor: pointer;
       margin-left: 0.8vw;
     }
-  }
 
-  .num-search {
-    margin-left: 0.8vw;
-    color: #fff;
-    font-size: 1.2vw;
+    .num-search {
+      margin-left: 0.8vw;
+      color: #fff;
+      font-size: 2vw;
+    }
   }
+  
   
   .game-title-box {
     display: flex;

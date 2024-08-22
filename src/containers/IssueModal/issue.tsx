@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Upload, Button, Input, message, Modal } from "antd";
+import { Upload, Button, Input, message } from "antd";
 import { UploadOutlined, CloseOutlined } from "@ant-design/icons";
 
 import axios from "axios";
