@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-04-16 14:11:44
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-21 15:25:44
+ * @LastEditTime: 2024-08-22 11:19:39
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\index.tsx
@@ -37,9 +37,7 @@ root.render(
     <HistoryProvider>
       <ConfigProvider locale={zhCN}>
         <Provider store={store}>
-          <AliveScope>
             <App />
-          </AliveScope>
         </Provider>
       </ConfigProvider>
     </HistoryProvider>

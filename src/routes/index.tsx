@@ -26,11 +26,9 @@ export default [
   {
     path: "/gameLibrary",
     element: (
-      <KeepAlive>
         <PrivateRoute>
           <GameLibrary />
         </PrivateRoute>
-      </KeepAlive>
     ),
   },
   {
