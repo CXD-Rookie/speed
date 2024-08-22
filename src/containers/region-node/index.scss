@@ -337,14 +337,12 @@
         color: #fff;
       }
 
-      // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(1),
       .ant-table-tbody > tr.selected-node > td:nth-child(1) {
         border-left: 1px solid #f86c34;
         border-radius: 5px 0 0 5px;
       }
 
-      // .ant-table-tbody > tr.ant-table-row:hover > td:nth-child(4),
-      .ant-table-tbody > tr.selected-node > td:nth-child(4) {
+      .ant-table-tbody > tr.selected-node > td:nth-child(2) {
         border-right: 1px solid #f86c34;
         border-radius: 0 5px 5px 0;
       }

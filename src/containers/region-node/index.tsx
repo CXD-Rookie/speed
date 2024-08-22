@@ -288,7 +288,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           delay: item.delay + randomOffset,
         };
       });
-
+      
       setNodeTableList(all);
       setTableLoading(false);
       return all;
@@ -296,15 +296,20 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     // 更新当前选中节点服务器
     const updateSelectNode = (data: any, allNodes = nodeTableList) => {
-      let result = {};
+      let result: any = {};
 
       const nodes = data?.serverNode?.nodeHistory;
       if (nodes) {
         result = nodes.filter((item: any) => item?.is_select)?.[0];
+        const hitNode = allNodes.filter((item: any) => item?.key === result?.key)?.[0]
+        
+        if (!hitNode) {
+          result = hitNode || allNodes?.[0]
+        }
       } else {
         result = allNodes?.[0];
       }
-
+      
       setSelectNode(result);
       return result;
     };
@@ -364,7 +369,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       // 当前选中的区服
       const select = result.serverNode.region?.filter(
         (item: any) => item?.is_select
-      );
+      )?.[0];
+      
       const allNodes = await buildNodeList(select);
 
       updateSelectNode(result, allNodes);
@@ -458,7 +464,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           handleSubRegions(),
           updateGamesRegion(options), // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
         ]);
-
+        setActiveTab("region");
         setLoading(false);
       };
 

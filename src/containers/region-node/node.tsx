@@ -68,9 +68,9 @@ const CustomNode: React.FC<NodeProps> = ({
     const node = serverNode?.nodeHistory?.filter(
       (item: any) => item?.is_select
     )?.[0];
-    console.log(node);
+    const node_value:any = node?.name !== "智能节点" ? node?.key : "";
     
-    setNodeValue(node?.name !== "智能节点" ? node?.key : []);
+    setNodeValue(node_value || []);
     setNodeHistory(serverNode?.nodeHistory);
     setSelectRegion(select);
   }, [value]);
@@ -89,20 +89,18 @@ const CustomNode: React.FC<NodeProps> = ({
                 (item: any) => item?.key === key
               )?.[0];
 
-              setNodeHistory(key)
               startAcceleration(select);
             }}
           >
             {nodeHistory?.length > 0 &&
-              nodeHistory?.map((item: any) => {
-                if (item?.name !== "智能节点") {
-                  return (
+              nodeHistory?.map(
+                (item: any) =>
+                  item?.name !== "智能节点" && (
                     <Option key={item?.key} value={item?.key}>
                       {item?.name}
                     </Option>
-                  );
-                }
-              })}
+                  )
+              )}
           </Select>
           <Button
             className="refresh-button"
