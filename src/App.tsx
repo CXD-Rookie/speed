@@ -643,7 +643,7 @@ const App: React.FC = (props: any) => {
         console.error("Invalid data for newUser:", newUser);
       }
 
-      if(token){
+      if(token && (data.code === 0 || data.code === "0")){
         let filteredData = allData;
         const firstAuth = data?.data?.first_purchase_renewed;
         // console.log(firstAuth,"是否首冲和是否首次续费")
