@@ -23,7 +23,7 @@ import searchIcon from "@/assets/images/common/search.svg";
 type RootState = {
   search: {
     query: string;
-    results: { id: string; name: string; name_en: string }[];
+    results: { id: string; name: string; name_en: string, note?: string }[];
   };
 };
 
@@ -74,17 +74,16 @@ const SearchBar: React.FC = () => {
           placeholder={placeholder}
           value={query}
           onChange={handleSearch}
-          // onFocus={() =>  query.trim().length > 0 && setShowDropdown(true)}
           onFocus={() => {
-            setPlaceholder('');
+            setPlaceholder("");
+
             if (query.trim().length > 0) {
               setShowDropdown(true);
             }
           }}
-          // onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           onBlur={() => {
             setTimeout(() => setShowDropdown(false), 200);
-            setPlaceholder('搜索游戏');
+            setPlaceholder("搜索游戏");
           }}
           onKeyDown={handleEnterKeyPress}
         />
@@ -93,13 +92,24 @@ const SearchBar: React.FC = () => {
         <div className="search-dropdown-box">
           <div className="search-dropdown">
             {results.map((result, index) => (
-              <div
-                key={index}
-                className="search-item"
-                onClick={() => handleSearchResultClick(result)}
-              >
-                <div>{result.name}</div>
-                <img src={rightArrowIcon} alt="" />
+              <div key={index} className="search-item">
+                <div className="name-box">
+                  <div className="search-result-name ellipsis">
+                    {result.name}
+                  </div>
+                  <div className="name-note ellipsis">
+                    {result?.note || result?.name_en}
+                  </div>
+                </div>
+                <div
+                  className="acc-text"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSearchResultClick(result);
+                  }}
+                >
+                  加速
+                </div>
               </div>
             ))}
           </div>

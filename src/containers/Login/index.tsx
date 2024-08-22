@@ -18,7 +18,7 @@ import loginApi from "@/api/login";
 import "./index.scss";
 
 import clotureIcon from "@/assets/images/common/cloture.svg";
-import logoIcon from "@/assets/images/common/logo.svg";
+import logoIcon from "@/assets/images/common/logo.png";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
 import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
