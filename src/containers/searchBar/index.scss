@@ -102,7 +102,7 @@
     }
 
     & .search-item {
-      width: 17.4vw;
+      width: 18.2vw;
       height: 7.2vh;
       font-size: 1.4vw;
       font-weight: Regular;
@@ -111,6 +111,7 @@
       cursor: default;
       display: flex;
       align-items: center;
+      justify-content: space-between;
 
       & .name-box {
         width: 100%;
@@ -141,12 +142,14 @@
           line-height: 2.6vh;
         }
       }
+
       &:hover {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 0.5vw;
-        }
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 0.5vw;
+      }
+
       &:hover .name-box {
-        width: 12vw;
+        width: 13vw;
       }
 
       .acc-text {
