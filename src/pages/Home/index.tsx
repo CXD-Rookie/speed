@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-05-21 21:05:55
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-08-21 14:37:54
+ * @LastEditTime: 2024-08-22 11:29:56
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
       setIsImagesLoaded(true); // 数据加载完成
     };
 
-    const timer = setTimeout(fetchImages, 10);
+    const timer = setTimeout(fetchImages, 300);
     return () => clearTimeout(timer);
   }, []);
 
