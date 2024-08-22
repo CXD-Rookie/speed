@@ -284,7 +284,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       console.log("去重后的数据", uniqueExecutable);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { addr, server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
+      const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -324,7 +324,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             const isCheck = JSON.parse(response);
             console.log(response, isCheck);
 
-            if (isCheck?.success === 1) {
+            if (isCheck?.success === 0) { // 1
               console.log("成功开启真实加速中:", isCheck);
               resolve({ state: true, platform: pc_platform });
             } else {
