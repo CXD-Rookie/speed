@@ -131,7 +131,11 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         content={popoverContent(accountInfo?.userInfo.is_vip)}
       >
         <div className="user-text">
-          <span>{accountInfo?.userInfo?.nickname}</span>
+          <span
+            style={{ color: accountInfo?.userInfo.is_vip ? "#f2d4a6" : "#fff" }}
+          >
+            {accountInfo?.userInfo?.nickname}
+          </span>
           <UserAvatarCom
             isVip={accountInfo?.userInfo?.is_vip}
             isLogin={accountInfo?.isLogin}

@@ -7,7 +7,7 @@
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
@@ -18,7 +18,7 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
 import tracking from "@/common/tracking";
 import "./style.scss";
-import RegionNodeSelector from "@/containers/RegionNodeSelector";
+import RegionNodeSelector from "@/containers/region-node";
 import RealNameModal from "@/containers/real-name";
 import MinorModal from "@/containers/minor";
 import PayModal from "@/containers/Pay";
@@ -50,7 +50,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     customAccelerationData = {},
     triggerDataUpdate = () => {},
   } = props;
-
+  const childRef: any = useRef(null);
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
 
@@ -260,8 +260,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       tracking.trackBoostStart(option.name);
       tracking.trackBoostSuccess(
         option.name,
-        option.region.select_region.u + option.region.select_region.fu,
-        option?.dom_info?.select_dom
+        option?.serverNode?.selectRegion?.qu +
+          option?.serverNode?.selectRegion?.fu,
+        option.serverNode.selectNode
       );
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
@@ -283,7 +284,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       console.log("去重后的数据", uniqueExecutable);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { ip, server, id } = option?.dom_info?.select_dom; //目前只有一个服务器，后期增多要遍历
+      const { ip, server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -340,11 +341,26 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 加速实际操作
-  const accelerateProcessing = (option = selectAccelerateOption) => {
-    if (!option?.dom_info?.select_dom?.id) {
+  const accelerateProcessing = async (event = selectAccelerateOption) => {
+    let option = { ...event };
+    const node = option?.serverNode;
+    const nodeHistory = node?.nodeHistory || [];
+    const region = node?.region || [];
+    const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
+    const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
+ 
+    if (!selectNode?.id) {
       setIsOpenRegion(true);
       return;
     }
+    
+    // 如果是手动触发就不需要进行重新ping节点
+    if (!option?.is_manual && childRef?.current) {
+      option = await childRef?.current?.getFastestNode(selectRegion, option);
+    }
+
+    option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
+    option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
 
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
@@ -436,9 +452,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         let game_list = getGameList(); // 获取当前我的游戏列表
         let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
-
+        
         option = await checkGameisFree(option);
-
+        
         // 是否实名认证 isRealNamel === "1" 是
         // 是否是未成年
         // 是否是vip
@@ -670,18 +686,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         />
       ) : null}
       {/* 节点区服弹窗 */}
-      {isOpenRegion ? (
-        <RegionNodeSelector
-          open={isOpenRegion}
-          type={"acelerate"}
-          options={selectAccelerateOption}
-          onCancel={() => {
-            triggerDataUpdate();
-            setIsOpenRegion(false);
-          }}
-          notice={(e) => accelerateDataHandling(e)}
-        />
-      ) : null}
+      <RegionNodeSelector
+        ref={childRef}
+        open={isOpenRegion}
+        type={"acelerate"}
+        options={selectAccelerateOption}
+        onCancel={() => {
+          triggerDataUpdate();
+          setIsOpenRegion(false);
+        }}
+        notice={(e) => accelerateDataHandling(e)}
+      />
       {/* 续费提醒确认弹窗 */}
       {renewalOpen ? (
         <BreakConfirmModal

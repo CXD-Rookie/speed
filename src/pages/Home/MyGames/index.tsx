@@ -80,9 +80,7 @@ const MyGames: React.FC = () => {
   return (
     <div className="my-games-module">
       <div className="back-box">
-        <div className="back" onClick={() => navigate("/home")}>
-          <LeftOutlined /> 返回
-        </div>
+        <LeftOutlined className="back" onClick={() => navigate("/home")} />
         <div className="games">我的游戏 ({gamesList?.length})</div>
       </div>
       <div id="myScrollableDiv" className="game-list">

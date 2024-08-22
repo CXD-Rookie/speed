@@ -123,10 +123,7 @@ const GameLibrary: React.FC = () => {
 
   return (
     <div className="game-list-module-container">
-      <button className="back-button" onClick={handleGoBack}>
-        <LeftOutlined />
-        <span>返回</span>
-      </button>
+      <LeftOutlined className="back-button" onClick={handleGoBack} />
       <span className="num-search">共{games?.length}个搜索结果</span>
       {games.length > 0 ? (
         <div className="game-list">

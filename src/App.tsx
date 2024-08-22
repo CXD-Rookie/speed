@@ -36,7 +36,7 @@ import loginApi from "./api/login";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
-import logoIcon from "@/assets/images/common/logo.svg";
+import logoIcon from "@/assets/images/common/logo.png";
 
 const { Header, Content } = Layout;
 

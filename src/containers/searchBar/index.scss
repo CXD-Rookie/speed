@@ -10,7 +10,6 @@
 .search-bar {
   position: relative;
   margin-left: 3vw;
-  // margin: 0 auto;
 
   .search-box {
     display: flex;
@@ -46,7 +45,6 @@
       color: #fff;
       outline: none;
       padding: 0 3vw;
-      // padding-right: 1vw;
     }
 
     input::placeholder {
@@ -67,52 +65,99 @@
     border-radius: 1vw;
     box-shadow: 0px 0px 3vw 0px rgba(0, 0, 0, 0.5);
     padding: 0.6vw;
-  }
 
-  .search-dropdown {
-    width: 100%;
-    max-height: 34vh;
-    overflow-y: scroll;
+    .search-dropdown {
+      width: 100%;
+      max-height: 34vh;
+      overflow-y: scroll;
 
-    &::-webkit-scrollbar {
-      width: 0.6vw;
+      &::-webkit-scrollbar {
+        width: 0.6vw;
+      }
     }
-  }
 
-  .search-item, .check-more {
-    width: 17.4vw;
-    height: 4.8vh;
-    display: flex;
-    align-items: center;
-    font-size: 1.4vw;
-    font-weight: Regular;
-    color: #ffffff;
-    cursor: pointer;
-    padding: 0 1vw;
-
-    div {
-      width: 16.2vw;
-      white-space: nowrap;    /* 禁止换行 */
-      overflow: hidden;       /* 隐藏溢出内容 */
-      text-overflow: ellipsis;/* 使用省略号表示溢出 */
+    .line {
+      width: 15.4vw;
+      height: 0.1vh;
+      opacity: 0.1;
+      background: #ffffff;
+      margin: 1.8vh 1vw;
     }
-    
-    img {
-      width: 1.2vw;
-      height: 1.2vw;
+
+    .check-more {
+      width: 17.4vw;
+      height: 4.8vh;
+      display: flex;
+      align-items: center;
+      font-size: 1.4vw;
+      font-weight: Regular;
+      color: #ffffff;
+      cursor: pointer;
+      padding: 0 1vw;
+
+      img {
+        width: 1.2vw;
+        height: 1.2vw;
+      }
     }
-  }
 
-  .line {
-    width: 15.4vw;
-    height: 0.1vh;
-    opacity: 0.1;
-    background: #ffffff;
-    margin: 1.8vh 1vw;
-  }
+    & .search-item {
+      width: 17.4vw;
+      height: 7.2vh;
+      font-size: 1.4vw;
+      font-weight: Regular;
+      color: #ffffff;
+      padding: 0 1vw;
+      cursor: default;
+      display: flex;
+      align-items: center;
 
-  .search-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 0.5vw;
+      & .name-box {
+        width: 100%;
+        height: 7.2vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        & .ellipsis {
+          white-space: nowrap;    /* 禁止换行 */
+          overflow: hidden;       /* 隐藏溢出内容 */
+          text-overflow: ellipsis;/* 使用省略号表示溢出 */
+        }
+
+        & .search-result-name {
+          width: 100%;
+          height: 2.4vh;
+          font-size: 1.4vw;
+          line-height: 2.4vh;
+        }
+
+        & .name-note {
+          width: 100%;
+          height: 2.6vh;
+          font-size: 1.2vw;
+          color: rgba(255,255,255,0.4);
+          line-height: 2.6vh;
+        }
+      }
+      &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 0.5vw;
+        }
+      &:hover .name-box {
+        width: 12vw;
+      }
+
+      .acc-text {
+        color: #F86C34;
+        display: none;
+        cursor: pointer;
+      }
+
+      &:hover .acc-text {
+        display: block;
+      }
+    }
   }
 }
