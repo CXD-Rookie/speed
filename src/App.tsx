@@ -175,7 +175,7 @@ const App: React.FC = (props: any) => {
     if (res.error === 0) { 
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
-      localStorage.removeItem("is_new_user");
+      // localStorage.removeItem("is_new_user");
       eventBus.emit('clearTimer');
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
@@ -624,6 +624,7 @@ const App: React.FC = (props: any) => {
           // 获取localStorage中是否展示过标志
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
+      const vipExperienceTime = localStorage.getItem('vip_experience_time');
       const images = JSON.parse(localStorage.getItem("all_data") || "[]");
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
@@ -676,9 +677,10 @@ const App: React.FC = (props: any) => {
        
         //24小时充值活动
         if(images?.length > 0){
-          if (isNewUser && !isModalDisplayed) { // 判断是否为新用户且弹窗尚未展示过
+          if (isNewUser && !isModalDisplayed && data.data.user_info) { 
+            // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
             setTimeout(() => {
-              setModalVisible(true); // 新用户弹出
+                setModalVisible(true); // 新用户弹出
             }, 500);
           }
           if(isModalDisplayed){
