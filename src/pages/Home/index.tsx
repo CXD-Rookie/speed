@@ -17,7 +17,6 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
 
-import activePayApi from "@/api/activePay";
 import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
 import PayModal from "../../containers/Pay/index";
@@ -42,13 +41,16 @@ const Home: React.FC = () => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+
   // const [images, setImages] = useState<{ image_url: string; params: any }[]>([]);
-  const firstAuth = useSelector((state: any) => state.firstAuth);
+  // const firstAuth = useSelector((state: any) => state.firstAuth);  
+  // const imagesRef = useRef<ImageItem[]>([]); // 使用 useRef 存储数据
+
   const [images, setImages] = useState<ImageItem[]>([]);
-  const imagesRef = useRef<ImageItem[]>([]); // 使用 useRef 存储数据
+
   const [isImagesLoaded, setIsImagesLoaded] = useState(false);
   //@ts-ignore
-  const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
+  // const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
   const [isModalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<number | null>(null);
   const [status, setStatus] = useState<number>(0); // 触发首页展示数据更新的状态
@@ -203,31 +205,31 @@ const Home: React.FC = () => {
       )}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
       {isImagesLoaded && (
-      <div className="functional-areas">
-        {images?.length > 0 && (
-          <div className="swiper">
-            <Swiper onImageClick={handleShowModal} />
+        <div className="functional-areas">
+          {images?.length > 0 && (
+            <div className="swiper">
+              <Swiper onImageClick={handleShowModal} />
+            </div>
+          )}
+          <div
+            className={`membership-recharge ${
+              images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
+            }`}
+            onClick={openModal}
+          >
+            <img src={rechargeIcon} alt="" />
+            会员充值
           </div>
-        )}
-        <div
-          className={`membership-recharge ${
-            images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
-          }`}
-          onClick={openModal}
-        >
-          <img src={rechargeIcon} alt="" />
-          会员充值
+          <div
+            className={`may-games ${
+              images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
+            }`}
+            onClick={() => navigate("/myGames")}
+          >
+            <img src={gamesIcon} alt="" />
+            我的游戏 ({getGameList()?.length})
+          </div>
         </div>
-        <div
-          className={`may-games ${
-            images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
-          }`}
-          onClick={() => navigate("/myGames")}
-        >
-          <img src={gamesIcon} alt="" />
-          我的游戏 ({getGameList()?.length})
-        </div>
-      </div>
       )}
       {!!isModalOpen && (
         <PayModal
@@ -235,7 +237,7 @@ const Home: React.FC = () => {
           setIsModalOpen={(e) => setIsModalOpen(e)}
         />
       )}
-      {!!isModalOpenNew && ( 
+      {!!isModalOpenNew && (
         <PayModalNew
           isModalOpen={isModalOpenNew}
           setIsModalOpen={(e) => setIsModalOpenNew(e)}

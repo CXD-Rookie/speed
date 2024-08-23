@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
@@ -53,6 +53,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const childRef: any = useRef(null);
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
+  const location = useLocation();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
@@ -89,7 +90,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const userToken = localStorage.getItem("token");
   const jsKey = localStorage.getItem("StartKey");
 
@@ -361,7 +361,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
     option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
-
+    console.log(location?.pathname);
+    
+    localStorage.setItem("isAccelLoaindg", "1") // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
@@ -417,6 +419,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     );
 
     setTimeout(() => {
+      localStorage.removeItem("isAccelLoaindg"); // 删除存储临时的加速中状态
       setIsAllowAcceleration(true); // 启用立即加速
       setIsAllowShowAccelerating(true); // 启用显示加速中
       setIsStartAnimate(false); // 结束加速动画
@@ -426,7 +429,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       }
     }, 5000);
   };
-
+  
   // 确认开始加速
   const confirmStartAcceleration = () => {
     setAccelOpen(false); // 关闭确认框
@@ -500,7 +503,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
 
   const openModal = async (event: React.MouseEvent<HTMLImageElement>, option: any) => {
-
     const latestAccountInfo = store.getState().accountInfo;
 
     if (accountInfo?.isLogin) {
@@ -548,7 +550,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               alt={option.name}
             />
             {/* 立即加速卡片 */}
-            {isAllowAcceleration ? (
+            {localStorage.getItem("isAccelLoaindg") !== "1" &&
+              isAllowAcceleration ? (
               <div
                 className="accelerate-immediately-card"
                 onClick={() => accelerateDataHandling(option)}
