@@ -92,7 +92,14 @@ const SearchBar: React.FC = () => {
         <div className="search-dropdown-box">
           <div className="search-dropdown">
             {results.map((result, index) => (
-              <div key={index} className="search-item">
+              <div
+                key={index}
+                className="search-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSearchResultClick(result);
+                }}
+              >
                 <div className="name-box">
                   <div className="search-result-name ellipsis">
                     {result.name}
@@ -101,13 +108,7 @@ const SearchBar: React.FC = () => {
                     {result?.note || result?.name_en}
                   </div>
                 </div>
-                <div
-                  className="acc-text"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSearchResultClick(result);
-                  }}
-                >
+                <div className="acc-text">
                   加速
                 </div>
               </div>
