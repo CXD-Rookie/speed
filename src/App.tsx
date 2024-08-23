@@ -651,7 +651,6 @@ const App: React.FC = (props: any) => {
         let filteredData = allData;
         const firstAuth = data?.data?.first_purchase_renewed;
         
-        
         dispatch(setFirstAuth(firstAuth));
         // 过滤掉 newUser 的数据
         filteredData = allData.filter((item: any) => {
@@ -740,7 +739,7 @@ const App: React.FC = (props: any) => {
               tracking.trackLoginSuccess("0");
               setBindOpen(true); // 触发成功弹窗
             }
-            debugger
+            
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
             webSocketService.loginReconnect();
           }
