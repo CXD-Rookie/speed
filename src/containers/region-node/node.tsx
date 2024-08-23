@@ -43,7 +43,7 @@ const CustomNode: React.FC<NodeProps> = ({
 
   const columms: TableProps<DataType>["columns"] = [
     {
-      title: "智能节点",
+      title: "全部节点",
       dataIndex: "name",
       render: (name: any, record) => (
         <span
