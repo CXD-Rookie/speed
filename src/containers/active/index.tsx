@@ -32,7 +32,7 @@ const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
           您已获得
           <span className="highlight">
             {convertSecondsToDays(
-              vip_experience_time ? Number(JSON.parse(vip_experience_time)) : 0
+              Number(JSON.parse(vip_experience_time ? vip_experience_time : "0"))
             )}
             天免费会员体验
           </span>
