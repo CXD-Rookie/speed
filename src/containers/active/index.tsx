@@ -20,6 +20,10 @@ interface ActiveModalProps {
 const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const vip_experience_time = localStorage.getItem("vip_experience_time");
+  console.log(
+    vip_experience_time,
+    !!vip_experience_time ? vip_experience_time : "0"
+  );
   
   return (
     <div className={`modal-wrapper ${isVisible ? "visible" : ""}`}>
@@ -32,7 +36,13 @@ const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
           您已获得
           <span className="highlight">
             {convertSecondsToDays(
-              Number(JSON.parse(vip_experience_time ? vip_experience_time : "0"))
+              Number(
+                JSON.parse(
+                  !(!vip_experience_time || vip_experience_time === "undefined")
+                    ? vip_experience_time
+                    : "0"
+                )
+              )
             )}
             天免费会员体验
           </span>
