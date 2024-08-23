@@ -621,10 +621,10 @@ const App: React.FC = (props: any) => {
       const firstPurchase = JSON.parse(localStorage.getItem("first_purchase") || "[]"); // 首次充值
       const firstRenewal = JSON.parse(localStorage.getItem("first_renewal") || "[]"); // 首次续费
       const newUser = JSON.parse(localStorage.getItem("new_user") || "[]"); //首次登录的活动
-          // 获取localStorage中是否展示过标志
+      // 获取localStorage中是否展示过标志
       const isModalDisplayed = localStorage.getItem('isModalDisplayed') === 'true';
       const isNewUser = localStorage.getItem('is_new_user') === 'true';
-      const vipExperienceTime = localStorage.getItem('vip_experience_time');
+      // const vipExperienceTime = localStorage.getItem('vip_experience_time');
       const images = JSON.parse(localStorage.getItem("all_data") || "[]");
       // console.log(versionNowRef.current, "客户端获取的版本---------------");
       // console.log(data, "ws返回的信息---------------");
@@ -643,15 +643,16 @@ const App: React.FC = (props: any) => {
       if (!Array.isArray(newUser)) {
         console.error("Invalid data for newUser:", newUser);
       }
+      
+      const first_purchase = firstAuth?.first_purchase;
+      const first_renewed = firstAuth?.first_renewed;
 
       if(token && (data.code === 0 || data.code === "0")){
         let filteredData = allData;
         const firstAuth = data?.data?.first_purchase_renewed;
-        // console.log(firstAuth,"是否首冲和是否首次续费")
-        dispatch(setFirstAuth(firstAuth));  
-        // const { first_purchase, first_renewed } = firstAuth;
-        const first_purchase = firstAuth?.first_purchase;
-        const first_renewed = firstAuth?.first_renewed;
+        
+        
+        dispatch(setFirstAuth(firstAuth));
         // 过滤掉 newUser 的数据
         filteredData = allData.filter((item: any) => {
           return !newUser.some((newItem: any) => newItem.image_url === item.image_url);
@@ -674,23 +675,7 @@ const App: React.FC = (props: any) => {
 
         // 通过 eventBus 通知更新
         eventBus.emit('dataUpdated', filteredData);
-       
-        //24小时充值活动
-        if(images?.length > 0){
-          if (isNewUser && !isModalDisplayed) { 
-            // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
-            setTimeout(() => {
-                setModalVisible(true); // 新用户弹出
-            }, 500);
-          }
-          if(isModalDisplayed){
-            payNewActive(first_renewed,first_purchase); 
-          }
-        }
-
-
       }
-
 
       if (token && (isClosed === null || isClosed === undefined || isClosed === "") && (version != null || version != undefined || version != "")) {
         //升级弹窗要在登录之后才会弹出
@@ -755,19 +740,30 @@ const App: React.FC = (props: any) => {
               tracking.trackLoginSuccess("0");
               setBindOpen(true); // 触发成功弹窗
             }
-
+            debugger
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
             webSocketService.loginReconnect();
           }
         } else {
           let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
           
-          console.log(store.getState().auth?.isBindPhone);
           if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
-            console.log(111);
             localStorage.removeItem("thirdBind");
             dispatch(updateBindPhoneState(true));
             eventBus.emit("clearTimer");
+          } else {
+            //24小时充值活动
+            if (images?.length > 0) {
+              if (isNewUser && !isModalDisplayed) {
+                // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
+                setTimeout(() => {
+                  setModalVisible(true); // 新用户弹出
+                }, 500);
+              }
+              if (isModalDisplayed) {
+                payNewActive(first_renewed, first_purchase);
+              }
+            }
           }
         }
       }
