@@ -420,7 +420,7 @@ const App: React.FC = (props: any) => {
     );
   };
 
-      // 是否关闭新用户三天会员
+  // 是否关闭新用户三天会员
   const handleCloseModal = () => {
     // 标记弹窗已展示
     localStorage.setItem('isModalDisplayed', 'true');
@@ -643,14 +643,13 @@ const App: React.FC = (props: any) => {
       if (!Array.isArray(newUser)) {
         console.error("Invalid data for newUser:", newUser);
       }
-      
-      const first_purchase = firstAuth?.first_purchase;
-      const first_renewed = firstAuth?.first_renewed;
 
       if(token && (data.code === 0 || data.code === "0")){
         let filteredData = allData;
         const firstAuth = data?.data?.first_purchase_renewed;
-        
+        const first_purchase = firstAuth?.first_purchase;
+        const first_renewed = firstAuth?.first_renewed;
+
         dispatch(setFirstAuth(firstAuth));
         // 过滤掉 newUser 的数据
         filteredData = allData.filter((item: any) => {
@@ -676,11 +675,12 @@ const App: React.FC = (props: any) => {
               setModalVisible(true); // 新用户弹出
             }, 500);
           }
+          
           if (isModalDisplayed) {
             payNewActive(first_renewed, first_purchase);
           }
         }
-        
+
         // 更新 localStorage 中的 all_data
         localStorage.setItem("all_data", JSON.stringify(filteredData));
 
