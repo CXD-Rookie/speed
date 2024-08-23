@@ -57,7 +57,7 @@ const CustomNode: React.FC<NodeProps> = ({
       ),
     },
     {
-      title: "当前最优",
+      title: "延迟",
       dataIndex: "delay",
       align: "right",
       render: (delay: any, record) => (
