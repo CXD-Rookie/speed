@@ -60,13 +60,13 @@ const GameDetail: React.FC = () => {
   const [lostBag, setLostBag] = useState<any>(1); // 实时延迟
   const [packetLoss, setPacketLoss] = useState<any>(0); // 丢包率
 
-  const [regionInfo, setRegionInfo] = useState<any>(); // 当前加速区服
+  const [regionNode, setRegionNode] = useState("智能匹配-智能节点");
   const [chartData, setChartData] = useState<any>([]); // 柱形图数据示例
 
   // 使用 useMemo 确保只有 data 变化时才会重新计算
   const memoizedData = useMemo(() => chartData, [chartData]);
 
-  const domName = (data = regionInfo) => {
+  const domName = (data: any = {}) => {
     let fu = data?.region?.fu ? data?.region?.fu + "-" : "";
     let dom = data?.node?.name || "";
 
@@ -202,12 +202,12 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     const find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
     const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
-
-    historyContext?.accelerateTime?.startTimer();
-
     const jsonString = JSON.stringify({
       params: { ip: node?.addr },
     });
+
+    historyContext?.accelerateTime?.startTimer();
+    setRegionNode(domName({ region, node }));
 
     (window as any).NativeApi_AsynchronousRequest(
       "NativeApi_GetIpDelayByICMP",
@@ -232,8 +232,6 @@ const GameDetail: React.FC = () => {
         setLostBag(lost_bag); // 更新延迟数
         setPacketLoss(delay === 9999 ? 100 : 0); // 更新丢包率
         setDetailData(find_accel);
-        setRegionInfo({ region, node });
-
         dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
       }
     );
@@ -379,7 +377,7 @@ const GameDetail: React.FC = () => {
           </div>
           <div className="game-right">
             <div className="info-switch info-common-style" onClick={showModal}>
-              <span>{domName(regionInfo) || ""}</span>
+              <span>{regionNode}</span>
               <span>切换</span>
             </div>
             <div className="info-speed info-common-style">
