@@ -667,8 +667,8 @@ const App: React.FC = (props: any) => {
           // 如果两者都是 false，清空 filteredData
           filteredData = [];
         }
-
-        if (images?.length > 0 && accountInfo?.isLogin) {
+        
+        if (images?.length > 0 && store?.getState()?.accountInfo?.isLogin) {
           if (isNewUser && !isModalDisplayed) {
             // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
             setTimeout(() => {
