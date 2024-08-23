@@ -668,15 +668,15 @@ const App: React.FC = (props: any) => {
           filteredData = [];
         }
 
-        if (images?.length > 0) {
+        if (images?.length > 0 && accountInfo?.isLogin) {
           if (isNewUser && !isModalDisplayed) {
             // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
             setTimeout(() => {
               setModalVisible(true); // 新用户弹出
             }, 500);
           }
-          
-          if (isModalDisplayed && accountInfo?.isLogin) {
+
+          if (isModalDisplayed) {
             payNewActive(first_renewed, first_purchase);
           }
         }
