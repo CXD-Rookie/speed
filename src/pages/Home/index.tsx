@@ -159,7 +159,7 @@ const Home: React.FC = () => {
 
     const timer = setTimeout(fetchImages, 300);
     return () => clearTimeout(timer);
-  }, []);
+  }, [location]);
 
   // useEffect(() => {
   //   const handleWheel = throttle((event: WheelEvent) => {

@@ -324,7 +324,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             const isCheck = JSON.parse(response);
             console.log(response, isCheck);
 
-            if (isCheck?.success === 0) { // 1
+            if (isCheck?.success === 1) {
               console.log("成功开启真实加速中:", isCheck);
               resolve({ state: true, platform: pc_platform });
             } else {

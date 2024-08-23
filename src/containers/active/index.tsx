@@ -19,19 +19,31 @@ interface ActiveModalProps {
 
 const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-  const vip_experience_time = localStorage.getItem('vip_experience_time');
-  useEffect(() => {
-    // console.log(accountInfo,"---------------用户信息")
-  }, [accountInfo])
+  const vip_experience_time = localStorage.getItem("vip_experience_time");
   
   return (
-    <div className={`modal-wrapper ${isVisible ? 'visible' : ''}`}>
+    <div className={`modal-wrapper ${isVisible ? "visible" : ""}`}>
       <div className="modal-content">
-        <div className="close-button" onClick={onClose}>×</div>
+        <div className="close-button" onClick={onClose}>
+          ×
+        </div>
         <h3>恭喜！领取成功！</h3>
-        <p>您已获得<span className="highlight">{convertSecondsToDays(Number(vip_experience_time))}天免费会员体验</span></p>
-        <h6>有效期至{formatDate(accountInfo?.userInfo.vip_expiration_time - 86400)}</h6>
-        <button className="confirm-button" onClick={onClose}>好的</button>
+        <p>
+          您已获得
+          <span className="highlight">
+            {convertSecondsToDays(
+              Number(JSON.parse(vip_experience_time ? vip_experience_time : "0"))
+            )}
+            天免费会员体验
+          </span>
+        </p>
+        <h6>
+          有效期至
+          {formatDate(accountInfo?.userInfo.vip_expiration_time - 86400)}
+        </h6>
+        <button className="confirm-button" onClick={onClose}>
+          好的
+        </button>
       </div>
     </div>
   );

@@ -420,7 +420,7 @@ const App: React.FC = (props: any) => {
     );
   };
 
-      // 是否关闭新用户三天会员
+  // 是否关闭新用户三天会员
   const handleCloseModal = () => {
     // 标记弹窗已展示
     localStorage.setItem('isModalDisplayed', 'true');
@@ -643,15 +643,13 @@ const App: React.FC = (props: any) => {
       if (!Array.isArray(newUser)) {
         console.error("Invalid data for newUser:", newUser);
       }
-      
-      const first_purchase = firstAuth?.first_purchase;
-      const first_renewed = firstAuth?.first_renewed;
 
       if(token && (data.code === 0 || data.code === "0")){
         let filteredData = allData;
         const firstAuth = data?.data?.first_purchase_renewed;
-        
-        
+        const first_purchase = firstAuth?.first_purchase;
+        const first_renewed = firstAuth?.first_renewed;
+
         dispatch(setFirstAuth(firstAuth));
         // 过滤掉 newUser 的数据
         filteredData = allData.filter((item: any) => {
@@ -668,6 +666,19 @@ const App: React.FC = (props: any) => {
         } else if (!first_purchase && !first_renewed) {
           // 如果两者都是 false，清空 filteredData
           filteredData = [];
+        }
+
+        if (images?.length > 0 && accountInfo?.isLogin) {
+          if (isNewUser && !isModalDisplayed) {
+            // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
+            setTimeout(() => {
+              setModalVisible(true); // 新用户弹出
+            }, 500);
+          }
+
+          if (isModalDisplayed) {
+            payNewActive(first_renewed, first_purchase);
+          }
         }
 
         // 更新 localStorage 中的 all_data
@@ -740,7 +751,7 @@ const App: React.FC = (props: any) => {
               tracking.trackLoginSuccess("0");
               setBindOpen(true); // 触发成功弹窗
             }
-            debugger
+            
             localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
             webSocketService.loginReconnect();
           }
@@ -753,17 +764,17 @@ const App: React.FC = (props: any) => {
             eventBus.emit("clearTimer");
           } else {
             //24小时充值活动
-            if (images?.length > 0) {
-              if (isNewUser && !isModalDisplayed) {
-                // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
-                setTimeout(() => {
-                  setModalVisible(true); // 新用户弹出
-                }, 500);
-              }
-              if (isModalDisplayed) {
-                payNewActive(first_renewed, first_purchase);
-              }
-            }
+            // if (images?.length > 0) {
+            //   if (isNewUser && !isModalDisplayed) {
+            //     // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
+            //     setTimeout(() => {
+            //       setModalVisible(true); // 新用户弹出
+            //     }, 500);
+            //   }
+            //   if (isModalDisplayed) {
+            //     payNewActive(first_renewed, first_purchase);
+            //   }
+            // }
           }
         }
       }
