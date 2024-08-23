@@ -19,10 +19,8 @@ interface ActiveModalProps {
 
 const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-  const vip_experience_time = localStorage.getItem('vip_experience_time');
-  useEffect(() => {
-    // console.log(accountInfo,"---------------用户信息")
-  }, [accountInfo])
+  const vip_experience_time =
+    JSON.parse(localStorage.getItem("vip_experience_time") || "0");
   
   return (
     <div className={`modal-wrapper ${isVisible ? 'visible' : ''}`}>

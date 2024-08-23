@@ -669,6 +669,18 @@ const App: React.FC = (props: any) => {
           filteredData = [];
         }
 
+        if (images?.length > 0) {
+          if (isNewUser && !isModalDisplayed) {
+            // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
+            setTimeout(() => {
+              setModalVisible(true); // 新用户弹出
+            }, 500);
+          }
+          if (isModalDisplayed) {
+            payNewActive(first_renewed, first_purchase);
+          }
+        }
+        
         // 更新 localStorage 中的 all_data
         localStorage.setItem("all_data", JSON.stringify(filteredData));
 
@@ -752,17 +764,17 @@ const App: React.FC = (props: any) => {
             eventBus.emit("clearTimer");
           } else {
             //24小时充值活动
-            if (images?.length > 0) {
-              if (isNewUser && !isModalDisplayed) {
-                // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
-                setTimeout(() => {
-                  setModalVisible(true); // 新用户弹出
-                }, 500);
-              }
-              if (isModalDisplayed) {
-                payNewActive(first_renewed, first_purchase);
-              }
-            }
+            // if (images?.length > 0) {
+            //   if (isNewUser && !isModalDisplayed) {
+            //     // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
+            //     setTimeout(() => {
+            //       setModalVisible(true); // 新用户弹出
+            //     }, 500);
+            //   }
+            //   if (isModalDisplayed) {
+            //     payNewActive(first_renewed, first_purchase);
+            //   }
+            // }
           }
         }
       }
