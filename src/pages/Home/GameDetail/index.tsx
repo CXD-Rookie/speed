@@ -75,9 +75,9 @@ const GameDetail: React.FC = () => {
 
   // 当前选择的区服，节点
   const selectServerNode = (serverNode: any) => {
-    const region = serverNode.region.filter((item: any) => item?.is_select)?.[0] || {};
+    const region = (serverNode?.region || []).filter((item: any) => item?.is_select)?.[0] || {};
     const node =
-      serverNode.nodeHistory.filter((item: any) => item?.is_select)?.[0] || {};
+      (serverNode?.nodeHistory || []).filter((item: any) => item?.is_select)?.[0] || {};
 
     return {
       region,
