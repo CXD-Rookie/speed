@@ -676,7 +676,7 @@ const App: React.FC = (props: any) => {
             }, 500);
           }
           
-          if (isModalDisplayed) {
+          if (isModalDisplayed && accountInfo?.isLogin) {
             payNewActive(first_renewed, first_purchase);
           }
         }
