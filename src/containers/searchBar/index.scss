@@ -85,7 +85,7 @@
     }
 
     .check-more {
-      width: 17.4vw;
+      width: 18.2vw;
       height: 4.8vh;
       display: flex;
       align-items: center;
@@ -98,6 +98,11 @@
       img {
         width: 1.2vw;
         height: 1.2vw;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 0.5vw;
       }
     }
 

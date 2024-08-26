@@ -7,7 +7,7 @@
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\index.tsx
  */
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -159,7 +159,7 @@ const Home: React.FC = () => {
 
     const timer = setTimeout(fetchImages, 300);
     return () => clearTimeout(timer);
-  }, [location]);
+  }, [accountInfo]);
 
   // useEffect(() => {
   //   const handleWheel = throttle((event: WheelEvent) => {

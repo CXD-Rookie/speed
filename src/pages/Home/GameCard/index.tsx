@@ -53,7 +53,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const childRef: any = useRef(null);
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
-  const location = useLocation();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
@@ -267,8 +266,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
-      console.log(WhiteBlackList.blacklist.domain);
-      console.log(WhiteBlackList.blacklist.ipv4);
       let { executable, pc_platform } = gameFiles;
 
       if (pc_platform?.length > 0) {
@@ -281,7 +278,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const uniqueExecutable = Array.from(
         new Map(executable.map((item: any) => [item.path, item])).values()
       );
-      console.log("去重后的数据", uniqueExecutable);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
@@ -322,14 +318,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           jsonResult,
           function (response: any) {
             const isCheck = JSON.parse(response);
-            console.log(response, isCheck);
 
             if (isCheck?.success === 1) {
               console.log("成功开启真实加速中:", isCheck);
               resolve({ state: true, platform: pc_platform });
             } else {
               tracking.trackBoostFailure("加速失败，检查文件合法性");
-              tracking.trackBoostDisconnectManual("手动停止加速");
+              // tracking.trackBoostDisconnectManual("手动停止加速");
+              stopAcceleration()
               resolve({ state: false });
             }
           }
@@ -361,7 +357,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
     option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
-    console.log(location?.pathname);
     
     localStorage.setItem("isAccelLoaindg", "1") // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
