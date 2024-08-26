@@ -49,13 +49,18 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   const dispatch: any = useDispatch();
   const divRef = useRef<HTMLDivElement>(null);
+  const intervalIdRef: any = useRef(null); // 用于存储interval的引用
   //@ts-ignore
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [, setPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayRenewedTypes, setFirstPayRenewedTypes] = useState<{ [key: string]: string }>({});
+  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
+    {}
+  );
+  const [firstPayRenewedTypes, setFirstPayRenewedTypes] = useState<{
+    [key: string]: string;
+  }>({});
   const [activeTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -65,6 +70,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
 
   const [payErrorModalOpen, setPayErrorModalOpen] = useState(false);
+
+  const [pollingTime, setPollingTime] = useState(5000); // 轮询支付接口的时间
+  const [QRCodeState, setQRCodeState] = useState("normal"); // 二维码状态 normal 正常 incoming 支付中 timeout 超时
+  const [, setPollingTimeNum] = useState(0); // 轮询支付接口时长
+  const [refresh, setRefresh] = useState(0); // 控制是否属性页面重新请求
 
   const guid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -100,7 +110,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           payApi.getfirst_purchase_renewed_discount(),
           payApi.UnpaidOrder(),
         ]);
-        console.log(commodityResponse,'6666666666666666666666')
+        console.log(commodityResponse, "6666666666666666666666");
         if (
           payTypeResponse.error === 0 &&
           commodityResponse.error === 0 &&
@@ -117,7 +127,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             const newKey = guid();
             setPollingKey(newKey);
             setQrCodeUrl(
-              `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${commodityResponse.data.list[0].id}&user_id=${userToken}&key=${newKey}&platform=${3}`
+              `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${
+                commodityResponse.data.list[0].id
+              }&user_id=${userToken}&key=${newKey}&platform=${3}`
             );
           }
         } else {
@@ -131,7 +143,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     if (userToken) {
       fetchData();
     }
-  }, [userToken]);
+  }, [userToken, refresh]);
 
   useEffect(() => {
     const handleLeftArrowClick = () => {
@@ -187,7 +199,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         const newKey = guid();
         setPollingKey(newKey);
         setQrCodeUrl(
-          `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${commodities[activeTabIndex].id}&user_id=${userToken}&key=${newKey}&platform=${3}`
+          `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${
+            commodities[activeTabIndex].id
+          }&user_id=${userToken}&key=${newKey}&platform=${3}`
         );
       } catch (error) {
         console.error("Error updating QR code", error);
@@ -196,7 +210,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   useEffect(() => {
-    console.log(commodities,"commoditiescommodities")
     tracking.trackPurchasePageShow();
     updateQrCode();
   }, [activeTabIndex, commodities, userToken]);
@@ -207,10 +220,29 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         const response = await payApi.getPolling({
           key: pollingKey,
         });
-        console.log(response, "initialQrCodeResponse------");
+        // console.log(response, "initialQrCodeResponse------");
 
         if (response.error === 0) {
           const status = response.data?.status;
+
+          if (status) {
+            setQRCodeState("incoming");
+            setPollingTime(3000);
+            setPollingTimeNum(0);
+          } else if (QRCodeState === "normal") {
+            setPollingTimeNum((num) => {
+              const time = num + pollingTime;
+
+              if (time >= 10000) {
+                setQRCodeState("timeout");
+                setPollingTimeNum(0);
+                return 0;
+              } else {
+                return time;
+              }
+            });
+          }
+
           if (status === 2) {
             console.log("支付成功");
             let jsonResponse = await loginApi.userInfo();
@@ -249,10 +281,21 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       }
     }, 3000);
 
-    if (paymentStatus !== 1) {
-      return () => clearInterval(intervalId);
+    intervalIdRef.current = intervalId;
+
+    return () => {
+      if (paymentStatus !== 1 || QRCodeState === "timeout") {
+        clearInterval(intervalId);
+      }
+    };
+  }, [paymentStatus, pollingKey, QRCodeState]);
+
+  useEffect(() => {
+    // 当 paymentStatus 或 QRCodeState 发生变化时，确保定时器被清除
+    if (paymentStatus !== 1 || QRCodeState === "timeout") {
+      clearInterval(intervalIdRef?.current);
     }
-  }, [paymentStatus, pollingKey]);
+  }, [paymentStatus, QRCodeState]);
 
   useEffect(() => {
     console.log(firstAuth, "是否新用户充值信息--------------");
@@ -316,6 +359,31 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             {qrCodeUrl && (
               <div className="qrcode">
                 <img className="header-icon" src={qrCodeUrl} alt="" />
+                {QRCodeState !== "normal" && (
+                  <div className="pay-mask">
+                    <div className="title">
+                      {QRCodeState === "incoming" && "手机支付中"}
+                      {QRCodeState === "timeout" && "二维码已超时"}
+                    </div>
+                    <div className="text">
+                      {QRCodeState === "incoming" && "如遇到问题"}
+                      <span
+                        onClick={() => {
+                          setRefresh(refresh + 1);
+                          setQRCodeState("normal");
+                          setPollingTime(5000);
+                          setPollingTimeNum(0);
+                        }}
+                      >
+                        点击刷新
+                      </span>
+                    </div>
+                    <div>
+                      {QRCodeState === "timeout" && "二维码"}
+                      {QRCodeState === "incoming" && "二维码重试"}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             <div className="carousel">
