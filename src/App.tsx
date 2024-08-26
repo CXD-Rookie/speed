@@ -1033,7 +1033,7 @@ const App: React.FC = (props: any) => {
               dispatch(openRealNameModal());
               return;
             }
-            
+
             setIsModalOpenVip(true);
           }}
         />
@@ -1078,10 +1078,7 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
-      <ActiveNew
-        isVisible={isModalVisibleNew}
-        onClose={handleCloseModalNew}
-      />
+      <ActiveNew isVisible={isModalVisibleNew} onClose={handleCloseModalNew} />
       {!!isModalOpenNew && (
         <PayModalNew
           isModalOpen={isModalOpenNew}

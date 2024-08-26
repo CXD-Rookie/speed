@@ -265,6 +265,7 @@
       display: inline-block;
       margin-left: 15px;
       background-color: #fff;
+      position: relative;
 
       .qrcode canvas,
       img {
@@ -272,6 +273,36 @@
         height: 12vw;
         display: block;
         margin: 0.5vw 0 0 0.5vw;
+      }
+
+      .pay-mask {
+        width: 13vw;
+        height: 13vw;
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.8);
+        text-align: center;
+        
+        & .title {
+          height: 1.75vw;
+          font-size: 1.2vw;
+          font-weight: bold;
+          line-height: 1.75vw;
+          margin-top: 3.6vw;
+        }
+
+        & .text {
+          font-size: 1.0vw;
+          padding-top: 1.6vw;
+          margin: 0 auto;
+
+          & span {
+            color: #E16534;
+            cursor: pointer;
+          }
+        }
       }
     }
 
