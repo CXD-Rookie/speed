@@ -49,15 +49,19 @@ interface ImageItem {
 
 const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {} } = props;
-
+  const intervalIdRef: any = useRef(null); // 用于存储interval的引用
   const dispatch: any = useDispatch();
   //@ts-ignore
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const firstAuth = useSelector((state: any) => state.firstAuth);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayRenewedTypes, setFirstPayRenewedTypes] = useState<{ [key: string]: string }>({});
+  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
+    {}
+  );
+  const [firstPayRenewedTypes, setFirstPayRenewedTypes] = useState<{
+    [key: string]: string;
+  }>({});
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
@@ -72,7 +76,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [isOldUser, setIsOldUser] = useState(false);
   const [connectionPayOpen, setConnectionPayOpen] = useState(false); // 当前是否有订单处理中弹窗
 
-  const [arrow, setArrow] = useState(0) // 移动的位置
+  const [pollingTime, setPollingTime] = useState(5000); // 轮询支付接口的时间
+  const [QRCodeState, setQRCodeState] = useState("normal"); // 二维码状态 normal 正常 incoming 支付中 timeout 超时
+  const [, setPollingTimeNum] = useState(0); // 轮询支付接口时长
+  const [refresh, setRefresh] = useState(0); // 控制是否属性页面重新请求
+
+  const [arrow, setArrow] = useState(0); // 移动的位置
   const [images, setImages] = useState<ImageItem[]>([]);
   const guid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -132,21 +141,22 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             //测试数据
             // setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
             // setFirstPurchase(true);
-            setIsOldUser(true);//正式
+            setIsOldUser(true); //正式
           } else if (first_purchase && !first_renewed) {
             setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
             setFirstPurchase(true);
-;
           } else if (!first_purchase && first_renewed) {
             setFirstPayRenewedTypes(firstPurchaseResponse.data.first_renewed);
-            setFirstRenewal(true)
+            setFirstRenewal(true);
           }
           // Fetch the initial QR code URL based on the first commodity
           if (commodityResponse.data.list.length > 0) {
             const newKey = guid();
             setPollingKey(newKey);
             setQrCodeUrl(
-              `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${commodityResponse.data.list[0].id}&user_id=${userToken}&key=${newKey}&platform=${3}`
+              `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${
+                commodityResponse.data.list[0].id
+              }&user_id=${userToken}&key=${newKey}&platform=${3}`
             );
           }
         } else {
@@ -160,7 +170,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     if (userToken) {
       fetchData();
     }
-  }, [userToken]);
+  }, [userToken, refresh]);
 
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
@@ -172,11 +182,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       setImages(newData);
     };
 
-    eventBus.on('dataUpdated', handleDataUpdated);
+    eventBus.on("dataUpdated", handleDataUpdated);
 
     // 清理工作
     return () => {
-      eventBus.off('dataUpdated', handleDataUpdated);
+      eventBus.off("dataUpdated", handleDataUpdated);
     };
   }, []);
 
@@ -234,7 +244,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         const newKey = guid();
         setPollingKey(newKey);
         setQrCodeUrl(
-          `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${commodities[activeTabIndex].id}&user_id=${userToken}&key=${newKey}&platform=${3}`
+          `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${
+            commodities[activeTabIndex].id
+          }&user_id=${userToken}&key=${newKey}&platform=${3}`
         );
       } catch (error) {
         console.error("Error updating QR code", error);
@@ -249,14 +261,37 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
+      if (QRCodeState === "timeout") {
+        return;
+      }
+
       try {
         const response = await payApi.getPolling({
           key: pollingKey,
         });
-        console.log(response, "initialQrCodeResponse------");
+        // console.log(response, "initialQrCodeResponse------");
 
         if (response.error === 0) {
           const status = response.data?.status;
+
+          if (status) {
+            setQRCodeState("incoming");
+            setPollingTime(3000);
+            setPollingTimeNum(0);
+          } else if (QRCodeState === "normal") {
+            setPollingTimeNum((num) => {
+              const time = num + pollingTime;
+
+              if (time >= 120000) {
+                setQRCodeState("timeout");
+                setPollingTimeNum(0);
+                return 0;
+              } else {
+                return time;
+              }
+            });
+          }
+
           if (status === 2) {
             console.log("支付成功");
             let jsonResponse = await loginApi.userInfo();
@@ -293,12 +328,23 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       } catch (error) {
         console.error("Error fetching payment status:", error);
       }
-    }, 3000);
+    }, pollingTime);
     
-    if (paymentStatus !== 1) {
-      return () => clearInterval(intervalId);
+    intervalIdRef.current = intervalId;
+
+    return () => {
+      if (paymentStatus !== 1 || QRCodeState === "timeout") {
+        clearInterval(intervalId);
+      }
+    };
+  }, [paymentStatus, pollingKey, QRCodeState]);
+
+  useEffect(() => {
+    // 当 paymentStatus 或 QRCodeState 发生变化时，确保定时器被清除
+    if (paymentStatus !== 1 || QRCodeState === "timeout") {
+      clearInterval(intervalIdRef?.current);
     }
-  }, [paymentStatus, pollingKey]);
+  }, [paymentStatus, QRCodeState]);
 
   return (
     <Fragment>
@@ -349,28 +395,39 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   style={{ transform: `translateX(${arrow * 15.25}vw)` }}
                   onClick={() => updateActiveTabIndex(index)}
                 >
-
-                  {(images?.length > 0 && (firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed)) && (
-                    <div className={`${isOldUser ? "" : "discount"}`}>
-                      {!firstAuth.firstAuth.first_purchase &&
-                        `续费${Number(firstPayRenewedTypes[item.type]) / 10}折`}
-                      {!firstAuth.firstAuth.first_renewed &&
-                        `首充${Number(firstPayTypes[item.type]) / 10}折`}
-                    </div>
-                  )}
+                  {images?.length > 0 &&
+                    (firstAuth.firstAuth.first_purchase ||
+                      firstAuth.firstAuth.first_renewed) && (
+                      <div className={`${isOldUser ? "" : "discount"}`}>
+                        {!firstAuth.firstAuth.first_purchase &&
+                          `续费${
+                            Number(firstPayRenewedTypes[item.type]) / 10
+                          }折`}
+                        {!firstAuth.firstAuth.first_renewed &&
+                          `首充${Number(firstPayTypes[item.type]) / 10}折`}
+                      </div>
+                    )}
 
                   <div className="term">{item.name}</div>
                   <div className="price">
                     ¥<span className="price-text">{item.month_price}</span>/月
-                    {(images?.length > 0 && (firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed)) && (
-                        <span className="text">¥{item.scribing_month_price}</span>
+                    {images?.length > 0 &&
+                      (firstAuth.firstAuth.first_purchase ||
+                        firstAuth.firstAuth.first_renewed) && (
+                        <span className="text">
+                          ¥{item.scribing_month_price}
+                        </span>
                       )}
                   </div>
                   <div className="amount">
-                  总价：¥<span>{item.price}</span>
-                  {(images?.length > 0 && (firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed)) && (
-                    <span className="text">原价: ¥{item.scribing_price}</span>
-                  )}
+                    总价：¥<span>{item.price}</span>
+                    {images?.length > 0 &&
+                      (firstAuth.firstAuth.first_purchase ||
+                        firstAuth.firstAuth.first_renewed) && (
+                        <span className="text">
+                          原价: ¥{item.scribing_price}
+                        </span>
+                      )}
                   </div>
                 </div>
               ))}
@@ -380,6 +437,31 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           {qrCodeUrl && (
             <div className="qrcode">
               <img className="header-icon" src={qrCodeUrl} alt="" />
+              {QRCodeState !== "normal" && (
+                <div className="pay-mask">
+                  <div className="title">
+                    {QRCodeState === "incoming" && "手机支付中"}
+                    {QRCodeState === "timeout" && "二维码已超时"}
+                  </div>
+                  <div className="text">
+                    {QRCodeState === "incoming" && "如遇到问题"}
+                    <span
+                      onClick={() => {
+                        setRefresh(refresh + 1);
+                        setQRCodeState("normal");
+                        setPollingTime(5000);
+                        setPollingTimeNum(0);
+                      }}
+                    >
+                      点击刷新
+                    </span>
+                  </div>
+                  <div>
+                    {QRCodeState === "timeout" && "二维码"}
+                    {QRCodeState === "incoming" && "二维码重试"}
+                  </div>
+                </div>
+              )}
             </div>
           )}
           <div className="carousel">
