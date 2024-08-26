@@ -279,7 +279,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       } catch (error) {
         console.error("Error fetching payment status:", error);
       }
-    }, 3000);
+    }, pollingTime);
 
     intervalIdRef.current = intervalId;
 
