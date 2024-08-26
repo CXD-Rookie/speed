@@ -261,10 +261,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      // if (QRCodeState === "timeout") {
-      //   return;
-      // }
-
       try {
         const response = await payApi.getPolling({
           key: pollingKey,
