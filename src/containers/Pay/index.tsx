@@ -278,7 +278,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             setPollingTimeNum((num) => {
               const time = num + pollingTime;
 
-              if (time >= 120000) {
+              if (time >= 10000) {
                 setQRCodeState("timeout");
                 setPollingTimeNum(0);
                 return 0;
@@ -337,7 +337,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   useEffect(() => {
     // 当 paymentStatus 或 QRCodeState 发生变化时，确保定时器被清除
-    if (paymentStatus !== 1 || QRCodeState === "timeout") {
+    if (QRCodeState === "timeout") {
       clearInterval(intervalIdRef?.current);
     }
   }, [paymentStatus, QRCodeState]);
