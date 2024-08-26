@@ -53,7 +53,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const childRef: any = useRef(null);
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
-  const location = useLocation();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
@@ -377,8 +376,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         if (!response) {
           tracking.trackBoostFailure("加速失败，检查文件合法性");
-          // tracking.trackBoostDisconnectManual("手动停止加速");
-          stopAcceleration();
+          tracking.trackBoostDisconnectManual("手动停止加速");
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",
@@ -396,8 +394,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             isPre = true;
           } else {
             tracking.trackBoostFailure("加速失败，检查文件合法性");
-            // tracking.trackBoostDisconnectManual("手动停止加速");
-            stopAcceleration();
+            tracking.trackBoostDisconnectManual("手动停止加速");
             isPre = false;
             eventBus.emit("showModal", {
               show: true,
@@ -407,8 +404,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
           tracking.trackBoostFailure("加速失败，检查文件合法性");
-          // tracking.trackBoostDisconnectManual("手动停止加速");
-          stopAcceleration();
+          tracking.trackBoostDisconnectManual("手动停止加速");
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",

@@ -102,7 +102,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   useEffect(() => {
-    const isNewUser = localStorage.getItem("is_new_user") === "true";
+    // const isNewUser = localStorage.getItem("is_new_user") === "true";
     const fetchData = async () => {
       try {
         const [
@@ -294,7 +294,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         console.error("Error fetching payment status:", error);
       }
     }, 3000);
-
+    
     if (paymentStatus !== 1) {
       return () => clearInterval(intervalId);
     }
