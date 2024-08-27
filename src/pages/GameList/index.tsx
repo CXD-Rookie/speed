@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -45,11 +45,11 @@ interface Game {
 
 const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch: any = useDispatch();
   const historyContext: any = useHistoryContext();
 
   const { appendGameToList } = useGamesInitialize();
-
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
@@ -61,22 +61,17 @@ const GameLibrary: React.FC = () => {
   const [oldSearchBarValue, setOldSearchBarValue] = useState();
   const [games, setGames] = useState<any>([]);
 
-  const clickAddGame = (option: any) => {
+  const clickAddGame = (option: Game) => {
     appendGameToList(option);
     navigate("/home");
   };
 
   const fetchGames = async () => {
     try {
-      let res = await gameApi.gameList({
-        params: {},
-      });
-
+      const res = await gameApi.gameList({ params: {} });
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
-        cover_img: `https://cdn.accessorx.com/${
-          game.cover_img ? game.cover_img : game.background_img
-        }`,
+        cover_img: `https://cdn.accessorx.com/${game.cover_img || game.background_img}`,
       }));
       setGames(gamesWithFullImgUrl);
     } catch (error) {
@@ -102,7 +97,7 @@ const GameLibrary: React.FC = () => {
   };
 
   useEffect(() => {
-    let result_game = [];
+    let result_game: Game[] = [];
 
     if (searchResults.length === 0) {
       setGames([]); // 清空游戏列表
@@ -119,10 +114,10 @@ const GameLibrary: React.FC = () => {
     if (result_game?.length === 0) {
       setOldSearchBarValue(searchBarValue);
     }
-  }, [enterSign]);
+  }, [location.key, enterSign]);
 
   return (
-    <div className="game-list-module-container">
+    <div className="game-list-module-container" key={location.key}>
       <div className="back-button-box">
         <img
           src={fanhuiIcon}
