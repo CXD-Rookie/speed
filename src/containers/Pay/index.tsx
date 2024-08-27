@@ -265,7 +265,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         const response = await payApi.getPolling({
           key: pollingKey,
         });
-        // console.log(response, "initialQrCodeResponse------");
 
         if (response.error === 0) {
           const status = response.data?.status;
@@ -289,7 +288,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           }
 
           if (status === 2) {
-            console.log("支付成功");
             let jsonResponse = await loginApi.userInfo();
 
             // 3个参数 用户信息 是否登录 是否显示登录
@@ -302,6 +300,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               JSON.stringify(jsonResponse.data.token)
             );
           }
+
+          if ([2, 3].includes(status)) {
+            setRefresh(refresh + 1);
+            setQRCodeState("normal");
+            setPollingTime(5000);
+            setPollingTimeNum(0);
+          }
+
           if (status !== 1 && response.data?.cid) {
             const res = await payApi.getCommodityInfo(response.data?.cid);
             console.log(res, "订单信息----------", response);

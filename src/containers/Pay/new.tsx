@@ -258,6 +258,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               JSON.stringify(jsonResponse.data.token)
             );
           }
+
+          if ([2, 3].includes(status)) {
+            setRefresh(refresh + 1);
+            setQRCodeState("normal");
+            setPollingTime(5000);
+            setPollingTimeNum(0);
+          }
+          
           if (status !== 1 && response.data?.cid) {
             const res = await payApi.getCommodityInfo(response.data?.cid);
             console.log(res, "订单信息----------", response);
