@@ -110,7 +110,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           payApi.getfirst_purchase_renewed_discount(),
           payApi.UnpaidOrder(),
         ]);
-        console.log(commodityResponse, "6666666666666666666666");
+        // console.log(commodityResponse, "6666666666666666666666");
         if (
           payTypeResponse.error === 0 &&
           commodityResponse.error === 0 &&
@@ -226,6 +226,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           const status = response.data?.status;
 
           if (status) {
+            setPaymentStatus(status);
             setQRCodeState("incoming");
             setPollingTime(3000);
             setPollingTimeNum(0);
@@ -257,6 +258,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               JSON.stringify(jsonResponse.data.token)
             );
           }
+
+          if ([2, 3].includes(status)) {
+            setRefresh(refresh + 1);
+            setQRCodeState("normal");
+            setPollingTime(5000);
+            setPollingTimeNum(0);
+          }
+
           if (status !== 1 && response.data?.cid) {
             const res = await payApi.getCommodityInfo(response.data?.cid);
             console.log(res, "订单信息----------", response);
@@ -279,34 +288,34 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       } catch (error) {
         console.error("Error fetching payment status:", error);
       }
-    }, 3000);
+    }, pollingTime);
 
     intervalIdRef.current = intervalId;
 
     return () => {
       if (paymentStatus !== 1 || QRCodeState === "timeout") {
         clearInterval(intervalId);
+        clearInterval(intervalIdRef?.current);
       }
     };
   }, [paymentStatus, pollingKey, QRCodeState]);
 
   useEffect(() => {
     // 当 paymentStatus 或 QRCodeState 发生变化时，确保定时器被清除
-    if (paymentStatus !== 1 || QRCodeState === "timeout") {
+    if (QRCodeState === "timeout") {
       clearInterval(intervalIdRef?.current);
     }
-  }, [paymentStatus, QRCodeState]);
-
-  useEffect(() => {
-    console.log(firstAuth, "是否新用户充值信息--------------");
-  }, [firstAuth]);
+  }, [paymentStatus, QRCodeState, isModalOpen]);
 
   return (
     <Fragment>
       <Modal
         className="pay-module pay-module-new"
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={() => {
+          clearInterval(intervalIdRef?.current);
+          setIsModalOpen(false)
+        }}
         title=""
         destroyOnClose
         width={"92vw"}
@@ -316,7 +325,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         footer={null}
       >
         <div className="pay-modal">
-          <div className="close-icon" onClick={() => setIsModalOpen(false)}>
+          <div className="close-icon" onClick={() => {
+            setIsModalOpen(false)
+            clearInterval(intervalIdRef?.current)
+          }}>
             <img src={closeIcon} alt="" />
           </div>
           <div
@@ -428,6 +440,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         open={!!showPopup}
         info={orderInfo}
         setOpen={(e) => {
+          clearInterval(intervalIdRef?.current);
           setIsModalOpen(false);
           setShowPopup(e);
         }}

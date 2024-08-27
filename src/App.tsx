@@ -1079,13 +1079,13 @@ const App: React.FC = (props: any) => {
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
       <ActiveNew isVisible={isModalVisibleNew} onClose={handleCloseModalNew} />
-      {!!isModalOpenNew && (
+      {!!isModalOpenNew ? (
         <PayModalNew
           isModalOpen={isModalOpenNew}
           setIsModalOpen={(e) => setIsModalOpenNew(e)}
           type={modalType}
         />
-      )}
+      ) : null}
     </Layout>
   );
 };
