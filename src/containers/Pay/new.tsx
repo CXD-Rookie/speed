@@ -110,7 +110,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           payApi.getfirst_purchase_renewed_discount(),
           payApi.UnpaidOrder(),
         ]);
-        console.log(commodityResponse, "6666666666666666666666");
+        // console.log(commodityResponse, "6666666666666666666666");
         if (
           payTypeResponse.error === 0 &&
           commodityResponse.error === 0 &&
@@ -265,7 +265,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             setPollingTime(5000);
             setPollingTimeNum(0);
           }
-          
+
           if (status !== 1 && response.data?.cid) {
             const res = await payApi.getCommodityInfo(response.data?.cid);
             console.log(res, "订单信息----------", response);
@@ -295,6 +295,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     return () => {
       if (paymentStatus !== 1 || QRCodeState === "timeout") {
         clearInterval(intervalId);
+        clearInterval(intervalIdRef?.current);
       }
     };
   }, [paymentStatus, pollingKey, QRCodeState]);
@@ -304,18 +305,17 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     if (QRCodeState === "timeout") {
       clearInterval(intervalIdRef?.current);
     }
-  }, [paymentStatus, QRCodeState]);
-
-  useEffect(() => {
-    console.log(firstAuth, "是否新用户充值信息--------------");
-  }, [firstAuth]);
+  }, [paymentStatus, QRCodeState, isModalOpen]);
 
   return (
     <Fragment>
       <Modal
         className="pay-module pay-module-new"
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={() => {
+          clearInterval(intervalIdRef?.current);
+          setIsModalOpen(false)
+        }}
         title=""
         destroyOnClose
         width={"92vw"}
@@ -325,7 +325,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         footer={null}
       >
         <div className="pay-modal">
-          <div className="close-icon" onClick={() => setIsModalOpen(false)}>
+          <div className="close-icon" onClick={() => {
+            setIsModalOpen(false)
+            clearInterval(intervalIdRef?.current)
+          }}>
             <img src={closeIcon} alt="" />
           </div>
           <div
@@ -437,6 +440,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         open={!!showPopup}
         info={orderInfo}
         setOpen={(e) => {
+          clearInterval(intervalIdRef?.current);
           setIsModalOpen(false);
           setShowPopup(e);
         }}
