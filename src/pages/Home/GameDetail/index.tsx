@@ -202,15 +202,18 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     const find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
     const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
+    console.log(node);
+    
     const jsonString = JSON.stringify({
-      params: { ip: node?.addr },
+      // params: { ip: node?.addr },
+      params: { addr: node?.addr, server: node?.server },
     });
 
     historyContext?.accelerateTime?.startTimer();
     setRegionNode(domName({ region, node }));
 
     (window as any).NativeApi_AsynchronousRequest(
-      "NativeApi_GetIpDelayByICMP",
+      "NativeApi_GetAddrDelay",
       jsonString,
       function (response: any) {
         if (!response) {
@@ -244,11 +247,12 @@ const GameDetail: React.FC = () => {
       const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
 
       const jsonString = JSON.stringify({
-        params: { ip: node?.addr },
+        // params: { ip: node?.addr },
+        params: { addr: node?.addr, server: node?.server },
       });
 
       (window as any).NativeApi_AsynchronousRequest(
-        "NativeApi_GetIpDelayByICMP",
+        "NativeApi_GetAddrDelay",
         jsonString,
         function (response: any) {
           console.log("Success response from 详情丢包信息:", response);

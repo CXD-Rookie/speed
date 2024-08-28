@@ -201,7 +201,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           try {
             const updatedNode = await new Promise<any>((resolve, reject) => {
               const jsonString = JSON.stringify({
-                params: { ip: node?.addr },
+                // params: { ip: node?.addr },
+                params: { addr: node?.addr, server: node?.server },
               });
 
               // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
@@ -213,7 +214,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
               }, 5000); // 5秒超时，可以根据需要调整
 
               (window as any).NativeApi_AsynchronousRequest(
-                "NativeApi_GetIpDelayByICMP",
+                "NativeApi_GetAddrDelay",
                 jsonString,
                 function (response: any) {
                   console.log("Success response from 获取延迟:", response);
@@ -341,7 +342,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
       // 点击新区服进行添加到历史记录
       if (Object?.keys(event)?.length > 0) {
-        let find_index = serverNode.region.findIndex(
+        let find_index = serverNode?.region?.findIndex(
           (item: any) => item?.qu === event?.qu
         );
 
