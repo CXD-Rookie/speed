@@ -1,6 +1,6 @@
 import { useState, useEffect, Fragment, forwardRef, useImperativeHandle } from "react";
 import { useNavigate } from "react-router-dom";
-import { Modal, Tabs } from "antd";
+import { Modal, Tabs, Spin } from "antd";
 import type { TabsProps } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
@@ -195,52 +195,48 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             : (res?.data || []).filter((value: any) =>
                 (value?.playsuits || []).includes(Number(key))
               );
-        const updatedNodes: any[] = [];
-
-        for (const node of nodes) {
-          try {
-            const updatedNode = await new Promise<any>((resolve, reject) => {
+        const updatedNodes = await Promise.all(
+          nodes.map(async (node: any) => {
+            try {
               const jsonString = JSON.stringify({
-                // params: { ip: node?.addr },
                 params: { addr: node?.addr, server: node?.server },
               });
 
               // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
-              const timeoutId = setTimeout(() => {
-                resolve({
-                  ...node,
-                  delay: "超时",
-                });
-              }, 5000); // 5秒超时，可以根据需要调整
-
-              (window as any).NativeApi_AsynchronousRequest(
-                "NativeApi_GetAddrDelay",
-                jsonString,
-                function (response: any) {
-                  console.log("Success response from 获取延迟:", response);
-                  const jsonResponse = JSON.parse(response);
-                  // const delay = jsonResponse?.delay + node?.proxy_delay;
-                  const delay = jsonResponse?.delay;
-
-                  clearTimeout(timeoutId); // 请求成功时清除超时定时器
+              return new Promise<any>((resolve) => {
+                const timeoutId = setTimeout(() => {
                   resolve({
                     ...node,
-                    delay: delay >= 9999 ? "超时" : delay,
+                    delay: "超时",
                   });
-                }
-              );
-            });
+                }, 3000); // 5秒超时，可以根据需要调整
 
-            updatedNodes.push(updatedNode);
-          } catch (error) {
-            console.error("Error processing node:", node, error);
-            updatedNodes.push({
-              ...node,
-              delay: "超时",
-            });
-          }
-        }
+                (window as any).NativeApi_AsynchronousRequest(
+                  "NativeApi_GetAddrDelay",
+                  jsonString,
+                  function (response: any) {
+                    console.log("Success response from 获取延迟:", response);
+                    const jsonResponse = JSON.parse(response);
+                    const delay = jsonResponse?.delay;
 
+                    clearTimeout(timeoutId); // 请求成功时清除超时定时器
+                    resolve({
+                      ...node,
+                      delay: delay >= 9999 ? "超时" : delay,
+                    });
+                  }
+                );
+              });
+            } catch (error) {
+              console.error("Error processing node:", node, error);
+              return {
+                ...node,
+                delay: "超时",
+              };
+            }
+          })
+        );
+        
         const sortedData = updatedNodes.sort((a, b) => {
           if (a.health !== b.health) {
             return a.health - b.health; // 首先比较 health 字段
@@ -285,7 +281,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         // 从数组中随机选择一个操作
         const randomOffset =
           operations[Math.floor(Math.random() * operations.length)];
-        const delay = item.delay + randomOffset;
+        const delay =
+          item?.delay === "超时" ? item.delay : item.delay + randomOffset;
         
         return {
           ...item,
@@ -411,7 +408,9 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       {
         key: "region",
         label: "区服",
-        children: (
+        children: loading ? (
+          <Spin className={"loading-spin"} size="large" />
+        ) : (
           <CustomRegion
             value={presentGameData}
             loading={loading}
@@ -425,6 +424,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       {
         key: "node",
         label: "节点",
+        disabled: loading,
         children: (
           <CustomNode
             value={presentGameData}
@@ -469,6 +469,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           handleSubRegions(),
           updateGamesRegion(options), // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
         ]);
+
         setActiveTab("region");
         setLoading(false);
       };

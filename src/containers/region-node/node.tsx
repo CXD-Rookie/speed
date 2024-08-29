@@ -132,7 +132,7 @@ const CustomNode: React.FC<NodeProps> = ({
         rowKey="key"
         dataSource={nodeTableList}
         columns={columms}
-        scroll={{ y: 200 }} // 设置表格的最大高度为240px，超过部分滚动
+        scroll={{ y: "35vh" }} // 设置表格的最大高度为240px，超过部分滚动
         pagination={false}
         loading={tableLoading}
         rowClassName={(record: any) =>
