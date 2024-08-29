@@ -196,7 +196,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                 (value?.playsuits || []).includes(Number(key))
               );
         const updatedNodes: any[] = [];
-
+        console.log(nodes);
+        
         for (const node of nodes) {
           try {
             const updatedNode = await new Promise<any>((resolve, reject) => {
@@ -204,7 +205,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                 // params: { ip: node?.addr },
                 params: { addr: node?.addr, server: node?.server },
               });
-
+              
               // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
               const timeoutId = setTimeout(() => {
                 resolve({
@@ -219,7 +220,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                 function (response: any) {
                   console.log("Success response from 获取延迟:", response);
                   const jsonResponse = JSON.parse(response);
-                  // const delay = jsonResponse?.delay + node?.proxy_delay;
                   const delay = jsonResponse?.delay;
 
                   clearTimeout(timeoutId); // 请求成功时清除超时定时器
@@ -285,7 +285,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         // 从数组中随机选择一个操作
         const randomOffset =
           operations[Math.floor(Math.random() * operations.length)];
-        const delay = item.delay + randomOffset;
+        const delay =
+          item?.delay === "超时" ? item.delay : item.delay + randomOffset;
         
         return {
           ...item,
