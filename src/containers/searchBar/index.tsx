@@ -49,10 +49,12 @@ const SearchBar: React.FC = () => {
   };
 
   const handleSearchResultClick = (option: any) => {
-    appendGameToList(option);
+    const data = appendGameToList(option);
+    const optionParams = data.filter((item: any) => item?.id === option?.id)?.[0] || {};
+    
     // 跳转到首页并触发自动加速autoAccelerate
     navigate("/home", {
-      state: { isNav: true, data: option, autoAccelerate: true },
+      state: { isNav: true, data: optionParams, autoAccelerate: true },
     });
   };
 

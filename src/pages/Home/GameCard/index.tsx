@@ -342,6 +342,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速实际操作
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
+    console.log(option);
+    
     const node = option?.serverNode;
     const nodeHistory = node?.nodeHistory || [];
     const region = node?.region || [];
@@ -512,7 +514,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         setMinorType("recharge");
         return;
       } else {
-        console.log("8888888888888888888888888888888888")
         event.stopPropagation();
         setIsOpenRegion(true);
         setSelectAccelerateOption(option);
