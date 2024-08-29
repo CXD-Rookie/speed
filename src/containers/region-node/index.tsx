@@ -195,50 +195,48 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             : (res?.data || []).filter((value: any) =>
                 (value?.playsuits || []).includes(Number(key))
               );
-        const updatedNodes: any[] = [];
-        
-        for (const node of nodes) {
-          try {
-            const updatedNode = await new Promise<any>((resolve, reject) => {
+        const updatedNodes = await Promise.all(
+          nodes.map(async (node: any) => {
+            try {
               const jsonString = JSON.stringify({
                 params: { addr: node?.addr, server: node?.server },
               });
-              
+
               // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
-              const timeoutId = setTimeout(() => {
-                resolve({
-                  ...node,
-                  delay: "超时",
-                });
-              }, 5000); // 5秒超时，可以根据需要调整
-
-              (window as any).NativeApi_AsynchronousRequest(
-                "NativeApi_GetAddrDelay",
-                jsonString,
-                function (response: any) {
-                  console.log("Success response from 获取延迟:", response);
-                  const jsonResponse = JSON.parse(response);
-                  const delay = jsonResponse?.delay;
-
-                  clearTimeout(timeoutId); // 请求成功时清除超时定时器
+              return new Promise<any>((resolve) => {
+                const timeoutId = setTimeout(() => {
                   resolve({
                     ...node,
-                    delay: delay >= 9999 ? "超时" : delay,
+                    delay: "超时",
                   });
-                }
-              );
-            });
+                }, 3000); // 5秒超时，可以根据需要调整
 
-            updatedNodes.push(updatedNode);
-          } catch (error) {
-            console.error("Error processing node:", node, error);
-            updatedNodes.push({
-              ...node,
-              delay: "超时",
-            });
-          }
-        }
+                (window as any).NativeApi_AsynchronousRequest(
+                  "NativeApi_GetAddrDelay",
+                  jsonString,
+                  function (response: any) {
+                    console.log("Success response from 获取延迟:", response);
+                    const jsonResponse = JSON.parse(response);
+                    const delay = jsonResponse?.delay;
 
+                    clearTimeout(timeoutId); // 请求成功时清除超时定时器
+                    resolve({
+                      ...node,
+                      delay: delay >= 9999 ? "超时" : delay,
+                    });
+                  }
+                );
+              });
+            } catch (error) {
+              console.error("Error processing node:", node, error);
+              return {
+                ...node,
+                delay: "超时",
+              };
+            }
+          })
+        );
+        
         const sortedData = updatedNodes.sort((a, b) => {
           if (a.health !== b.health) {
             return a.health - b.health; // 首先比较 health 字段
