@@ -6,6 +6,13 @@
     padding: 1.2vw 2.4vh;
   }
 
+  & .loading-spin {
+    width: 100%;
+    height: 65.7vh;
+    line-height: 60vh;
+    text-align: center;
+  }
+
   .ant-modal-header {
     color: #fff;
     background-color: #3e3e4a;

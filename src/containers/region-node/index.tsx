@@ -1,6 +1,6 @@
 import { useState, useEffect, Fragment, forwardRef, useImperativeHandle } from "react";
 import { useNavigate } from "react-router-dom";
-import { Modal, Tabs } from "antd";
+import { Modal, Tabs, Spin } from "antd";
 import type { TabsProps } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
@@ -196,13 +196,11 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                 (value?.playsuits || []).includes(Number(key))
               );
         const updatedNodes: any[] = [];
-        console.log(nodes);
         
         for (const node of nodes) {
           try {
             const updatedNode = await new Promise<any>((resolve, reject) => {
               const jsonString = JSON.stringify({
-                // params: { ip: node?.addr },
                 params: { addr: node?.addr, server: node?.server },
               });
               
@@ -412,7 +410,9 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       {
         key: "region",
         label: "区服",
-        children: (
+        children: loading ? (
+          <Spin className={"loading-spin"} size="large" />
+        ) : (
           <CustomRegion
             value={presentGameData}
             loading={loading}
@@ -426,6 +426,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       {
         key: "node",
         label: "节点",
+        disabled: loading,
         children: (
           <CustomNode
             value={presentGameData}
@@ -470,6 +471,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           handleSubRegions(),
           updateGamesRegion(options), // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
         ]);
+
         setActiveTab("region");
         setLoading(false);
       };
