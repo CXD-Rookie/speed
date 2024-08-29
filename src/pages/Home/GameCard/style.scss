@@ -128,7 +128,7 @@
 
       & .accelerate-animate {
         position: absolute;
-        left: 10px;
+        left: calc(-100% + 20px);
         width: calc(100% - 20px);
         height: 0.5vh;
         background: linear-gradient(to right, rgba(255, 69, 0, 0) 0%, rgba(255, 69, 0, 1) 50%, rgba(255, 69, 0, 0) 100%);

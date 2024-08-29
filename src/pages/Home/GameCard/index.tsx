@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
  */
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
@@ -347,25 +347,25 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     const region = node?.region || [];
     const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
     const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
- 
+
     if (!selectNode?.id) {
       setIsOpenRegion(true);
       return;
     }
-    
-    // 如果是手动触发就不需要进行重新ping节点
-    if (!option?.is_manual && childRef?.current) {
-      option = await childRef?.current?.getFastestNode(selectRegion, option);
-    }
 
     option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
     option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
-    
-    localStorage.setItem("isAccelLoaindg", "1") // 存储临时的加速中状态
+
+    localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
     stopAcceleration(); // 停止加速
+
+    // 如果是手动触发就不需要进行重新ping节点
+    if (!option?.is_manual && childRef?.current) {
+      option = await childRef?.current?.getFastestNode(selectRegion, option);
+    }
 
     let isPre: boolean;
 
@@ -549,7 +549,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             />
             {/* 立即加速卡片 */}
             {localStorage.getItem("isAccelLoaindg") !== "1" &&
-              isAllowAcceleration ? (
+            isAllowAcceleration ? (
               <div
                 className="accelerate-immediately-card"
                 onClick={() => accelerateDataHandling(option)}
