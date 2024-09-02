@@ -118,7 +118,7 @@ class WebSocketService {
 
   sendMessage(message: any) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      console.log('Sending message:发送消息',);
+      // console.log('Sending message:发送消息',);
       this.ws.send(JSON.stringify(message));
     } else {
       console.error('WebSocket is not open. Unable to send message:', message);
