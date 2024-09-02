@@ -342,7 +342,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速实际操作
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
-    console.log(option);
     
     const node = option?.serverNode;
     const nodeHistory = node?.nodeHistory || [];

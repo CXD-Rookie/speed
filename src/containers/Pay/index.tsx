@@ -450,7 +450,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                     {QRCodeState === "timeout" && "二维码已超时"}
                   </div>
                   <div className="text">
-                    {QRCodeState === "incoming" && "如遇到问题"}
+                    {QRCodeState === "incoming" && "如遇问题"}
                     <span onClick={() => iniliteReset()}>点击刷新</span>
                   </div>
                   <div>
