@@ -42,7 +42,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const { getGameList, identifyAccelerationData, removeGameList } =
       useGamesInitialize();
     const historyContext: any = useHistoryContext();
-
+    
     const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState("region"); // tab栏值
@@ -428,6 +428,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         children: (
           <CustomNode
             value={presentGameData}
+            type={type}
             nodeTableList={nodeTableList}
             selectNode={selectNode}
             tableLoading={tableLoading}
