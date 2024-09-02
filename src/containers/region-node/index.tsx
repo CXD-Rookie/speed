@@ -281,8 +281,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         // 从数组中随机选择一个操作
         const randomOffset =
           operations[Math.floor(Math.random() * operations.length)];
-        const delay =
-          item?.delay === "超时" ? item.delay : item.delay + randomOffset;
+        const delay = item.delay;
+          // item?.delay === "超时" ? item.delay : item.delay + randomOffset;
         
         return {
           ...item,
@@ -467,13 +467,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     useEffect(() => {
       const iniliteFun = async () => {
         setLoading(true);
+        setActiveTab("region");
 
         await Promise.all([
           handleSubRegions(),
           updateGamesRegion(options), // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
         ]);
 
-        setActiveTab("region");
         setLoading(false);
       };
 
