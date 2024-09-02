@@ -330,7 +330,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           region: [
             {
               ...iniliteSmart,
-              suit: playsuit === 2 ? "国服" : "智能匹配", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+              suit:
+                playsuit === 2 ? "国服" : playsuit === 1 ? "国际服" : "智能匹配", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
               is_select: true, // 是否选择当前区服
             },
           ],
@@ -356,7 +357,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         result.serverNode.region = [
           {
             ...event,
-            suit: playsuit === 2 ? "国服" : event?.qu, // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+            suit:
+              playsuit === 2 ? "国服" : playsuit === 1 ? "国际服" : event?.qu, // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
             is_select: true, // 是否选择当前区服
           },
           ...[
