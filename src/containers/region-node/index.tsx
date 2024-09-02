@@ -4,6 +4,7 @@ import { Modal, Tabs, Spin } from "antd";
 import type { TabsProps } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import { debounce } from "@/common/utils";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
@@ -157,6 +158,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       );
     };
 
+    const debouncedAccelerateDataHandling = debounce((option: any) => {
+      clickStartOn(option);
+    }, 300);
+
     // 开始加速
     const startAcceleration = async (node: any = selectNode) => {
       let isFind = identifyAccelerationData()?.[0] || {}; // 当前是否有加速数据
@@ -164,7 +169,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       if (isFind && type === "details") {
         setAccelOpen(true);
       } else {
-        clickStartOn(node);
+        // clickStartOn(node);
+        debouncedAccelerateDataHandling(node);
       }
     };
 
@@ -506,7 +512,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             accelOpen={accelOpen}
             type={"switchServer"}
             setAccelOpen={setAccelOpen}
-            onConfirm={() => clickStartOn(selectNode)}
+            onConfirm={() => debouncedAccelerateDataHandling(selectNode)}
           />
         ) : null}
       </Fragment>

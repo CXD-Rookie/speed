@@ -71,6 +71,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     connectionPay:
       "当前有一笔订单正在支付处理中。如需切换支付方式或会员套餐，请等待该订单自动关闭（约20分钟）后再尝试提交新订单.",
     switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
+    gamesAccelerating: "其他游戏正在加速！"
   };
 
   // footer 确认按钮的文案
@@ -85,6 +86,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     serverDisconnected: "重启客户端",
     issueFeedback: "好的",
     connectionPay: "继续支付",
+    gamesAccelerating: "我知道了",
   };
 
   // footer 只显示一个按钮的类型
@@ -98,6 +100,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "serverDisconnected", // 服务器断开连接
     "issueFeedback", // 问题反馈
     "connectionPay", //继续支付，订单未支付
+    "gamesAccelerating",
   ];
 
   // 不显示右上角关闭的类型
