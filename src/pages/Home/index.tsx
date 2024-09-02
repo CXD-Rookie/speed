@@ -141,8 +141,6 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (location.state?.autoAccelerate && location.state?.data) {
       console.log("其他页面携带游戏进入首页");
-      setAccelTag(location?.state?.data);
-
       window.history.replaceState({}, document.title); // Remove state from history
 
       setStatus(status + 1);

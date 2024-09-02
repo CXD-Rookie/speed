@@ -76,6 +76,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [, setPollingTimeNum] = useState(0); // 轮询支付接口时长
   const [refresh, setRefresh] = useState(0); // 控制是否属性页面重新请求
 
+  const [pollingKey, setPollingKey] = useState<string>("");
+  const env_url = process.env.REACT_APP_API_URL;
+
   const guid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
@@ -87,7 +90,13 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     );
   };
 
-  const [pollingKey, setPollingKey] = useState<string>(guid());
+  const iniliteReset = () => {
+    clearInterval(intervalIdRef?.current);
+    setRefresh(refresh + 1);
+    setQRCodeState("normal");
+    setPollingTime(5000);
+    setPollingTimeNum(0);
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
@@ -96,54 +105,105 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     console.log("data-title:", dataTitle);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [
-          payTypeResponse,
-          commodityResponse,
-          firstPurchaseResponse,
-          unpaidOrder,
-        ] = await Promise.all([
-          payApi.getPayTypeList(),
-          payApi.getCommodityList(),
-          payApi.getfirst_purchase_renewed_discount(),
-          payApi.UnpaidOrder(),
-        ]);
-        // console.log(commodityResponse, "6666666666666666666666");
-        if (
-          payTypeResponse.error === 0 &&
-          commodityResponse.error === 0 &&
-          (unpaidOrder.data != null ||
-            unpaidOrder.data != "" ||
-            unpaidOrder.data != undefined)
-        ) {
-          setPayTypes(payTypeResponse.data);
-          setCommodities(commodityResponse.data.list);
-          setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
-          setFirstPayRenewedTypes(firstPurchaseResponse.data.first_renewed);
-          // Fetch the initial QR code URL based on the first commodity
-          if (commodityResponse.data.list.length > 0) {
-            const newKey = guid();
-            setPollingKey(newKey);
-            setQrCodeUrl(
-              `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${
-                commodityResponse.data.list[0].id
-              }&user_id=${userToken}&key=${newKey}&platform=${3}`
-            );
-          }
-        } else {
-          eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
-        }
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
-    };
+  // 获取单价，类型列表
+  const fetchData = async () => {
+    try {
+      const [
+        payTypeResponse,
+        commodityResponse,
+        firstPurchaseResponse,
+        unpaidOrder,
+      ] = await Promise.all([
+        payApi.getPayTypeList(),
+        payApi.getCommodityList(),
+        payApi.getfirst_purchase_renewed_discount(),
+        payApi.UnpaidOrder(),
+      ]);
 
-    if (userToken) {
-      fetchData();
+      if (
+        payTypeResponse.error === 0 &&
+        commodityResponse.error === 0 &&
+        unpaidOrder?.data
+      ) {
+        setPayTypes(payTypeResponse.data);
+        setCommodities(commodityResponse.data.list);
+        setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
+        setFirstPayRenewedTypes(firstPurchaseResponse.data.first_renewed);
+
+        return {
+          commodity: commodityResponse.data.list || [],
+        };
+      } else {
+        eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
+      }
+    } catch (error) {
+      console.error("Error fetching data", error);
     }
-  }, [userToken, refresh]);
+  };
+
+  const fetchPolling = async () => {
+    try {
+      const response = await payApi.getPolling({
+        key: pollingKey,
+      });
+
+      if (response.error === 0) {
+        const status = response.data?.status;
+
+        setPaymentStatus(status);
+
+        if (status) {
+          setQRCodeState("incoming");
+          setPollingTime(3000);
+          setPollingTimeNum(0);
+        } else if (QRCodeState === "normal") {
+          setPollingTimeNum((num) => {
+            const time = num + pollingTime;
+
+            if (time >= 120000) {
+              setQRCodeState("timeout");
+              setPollingTimeNum(0);
+              return 0;
+            } else {
+              return time;
+            }
+          });
+        }
+
+        if (status === 2) {
+          let jsonResponse = await loginApi.userInfo();
+
+          // 3个参数 用户信息 是否登录 是否显示登录
+          dispatch(
+            setAccountInfo(jsonResponse.data.user_info, undefined, undefined)
+          );
+
+          localStorage.setItem(
+            "token",
+            JSON.stringify(jsonResponse.data.token)
+          );
+        }
+
+        if (status !== 1 && response.data?.cid) {
+          const res = await payApi.getCommodityInfo(response.data?.cid);
+          console.log(res, "订单信息----------", response);
+
+          setShowPopup(null);
+          setOrderInfo({ ...res.data, ...response.data });
+
+          if (status === 5 || status === 3 || status === 4) {
+            setPayErrorModalOpen(true);
+          }
+
+          setShowPopup(
+            status === 2 ? "支付成功" : status === 1 ? "待支付" : null
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching payment status:", error);
+    }
+  };
 
   useEffect(() => {
     const handleLeftArrowClick = () => {
@@ -193,101 +253,32 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     };
   }, []);
 
-  const updateQrCode = async () => {
-    if (commodities.length > 0) {
-      try {
+  useEffect(() => {
+    const inilteFun = async () => {
+      const iniliteData = await fetchData();
+
+      if (iniliteData?.commodity?.length > 0) {
         const newKey = guid();
+
+        tracking.trackPurchasePageShow();
+
         setPollingKey(newKey);
         setQrCodeUrl(
-          `${process.env.REACT_APP_API_URL}/pay/qrcode?cid=${
-            commodities[activeTabIndex].id
+          `${env_url}/pay/qrcode?cid=${
+            iniliteData?.commodity[activeTabIndex].id
           }&user_id=${userToken}&key=${newKey}&platform=${3}`
         );
-      } catch (error) {
-        console.error("Error updating QR code", error);
       }
+    };
+
+    if (userToken && refresh >= 0) {
+      inilteFun();
     }
-  };
+  }, [userToken, refresh]);
 
   useEffect(() => {
-    tracking.trackPurchasePageShow();
-    updateQrCode();
-  }, [activeTabIndex, commodities, userToken]);
-
-  useEffect(() => {
-    const intervalId = setInterval(async () => {
-      try {
-        const response = await payApi.getPolling({
-          key: pollingKey,
-        });
-        // console.log(response, "initialQrCodeResponse------");
-
-        if (response.error === 0) {
-          const status = response.data?.status;
-
-          if (status) {
-            setPaymentStatus(status);
-            setQRCodeState("incoming");
-            setPollingTime(3000);
-            setPollingTimeNum(0);
-          } else if (QRCodeState === "normal") {
-            setPollingTimeNum((num) => {
-              const time = num + pollingTime;
-
-              if (time >= 120000) {
-                setQRCodeState("timeout");
-                setPollingTimeNum(0);
-                return 0;
-              } else {
-                return time;
-              }
-            });
-          }
-
-          if (status === 2) {
-            console.log("支付成功");
-            let jsonResponse = await loginApi.userInfo();
-
-            // 3个参数 用户信息 是否登录 是否显示登录
-            dispatch(
-              setAccountInfo(jsonResponse.data.user_info, undefined, undefined)
-            );
-
-            localStorage.setItem(
-              "token",
-              JSON.stringify(jsonResponse.data.token)
-            );
-          }
-
-          if ([2, 3].includes(status)) {
-            setRefresh(refresh + 1);
-            setQRCodeState("normal");
-            setPollingTime(5000);
-            setPollingTimeNum(0);
-          }
-
-          if (status !== 1 && response.data?.cid) {
-            const res = await payApi.getCommodityInfo(response.data?.cid);
-            console.log(res, "订单信息----------", response);
-
-            setPaymentStatus(status);
-            setShowPopup(null);
-            setOrderInfo({ ...res.data, ...response.data });
-
-            if (status === 5 || status === 3 || status === 4) {
-              setPayErrorModalOpen(true);
-            }
-
-            setShowPopup(
-              status === 2 ? "支付成功" : status === 1 ? "待支付" : null
-            );
-
-            return () => clearInterval(intervalId);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching payment status:", error);
-      }
+    const intervalId = setInterval(() => {
+      fetchPolling();
     }, pollingTime);
 
     intervalIdRef.current = intervalId;
@@ -295,17 +286,20 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     return () => {
       if (paymentStatus !== 1 || QRCodeState === "timeout") {
         clearInterval(intervalId);
-        clearInterval(intervalIdRef?.current);
       }
     };
-  }, [paymentStatus, pollingKey, QRCodeState]);
+  }, [pollingKey, QRCodeState]);
 
   useEffect(() => {
-    // 当 paymentStatus 或 QRCodeState 发生变化时，确保定时器被清除
     if (QRCodeState === "timeout") {
       clearInterval(intervalIdRef?.current);
     }
-  }, [paymentStatus, QRCodeState, isModalOpen]);
+
+    if (([2, 3] as any).includes(paymentStatus)) {
+      clearInterval(intervalIdRef?.current);
+      iniliteReset();
+    }
+  }, [paymentStatus, QRCodeState, refresh]);
 
   return (
     <Fragment>
@@ -313,8 +307,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         className="pay-module pay-module-new"
         open={isModalOpen}
         onCancel={() => {
-          clearInterval(intervalIdRef?.current);
-          setIsModalOpen(false)
+          // clearInterval(intervalIdRef?.current);
+          iniliteReset();
+          setIsModalOpen(false);
         }}
         title=""
         destroyOnClose
@@ -325,10 +320,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         footer={null}
       >
         <div className="pay-modal">
-          <div className="close-icon" onClick={() => {
-            setIsModalOpen(false)
-            clearInterval(intervalIdRef?.current)
-          }}>
+          <div
+            className="close-icon"
+            onClick={() => {
+              iniliteReset();
+              setIsModalOpen(false);
+              // clearInterval(intervalIdRef?.current);
+            }}
+          >
             <img src={closeIcon} alt="" />
           </div>
           <div
@@ -378,17 +377,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                       {QRCodeState === "timeout" && "二维码已超时"}
                     </div>
                     <div className="text">
-                      {QRCodeState === "incoming" && "如遇到问题"}
-                      <span
-                        onClick={() => {
-                          setRefresh(refresh + 1);
-                          setQRCodeState("normal");
-                          setPollingTime(5000);
-                          setPollingTimeNum(0);
-                        }}
-                      >
-                        点击刷新
-                      </span>
+                      {QRCodeState === "incoming" && "如遇问题"}
+                      <span onClick={() => iniliteReset()}>点击刷新</span>
                     </div>
                     <div>
                       {QRCodeState === "timeout" && "二维码"}
@@ -440,7 +430,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         open={!!showPopup}
         info={orderInfo}
         setOpen={(e) => {
-          clearInterval(intervalIdRef?.current);
+          iniliteReset();
           setIsModalOpen(false);
           setShowPopup(e);
         }}
@@ -449,11 +439,13 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         <PayErrorModal
           accelOpen={payErrorModalOpen}
           setAccelOpen={(e) => {
-            updateQrCode();
+            // updateQrCode();
+            iniliteReset();
             setPayErrorModalOpen(e);
           }}
           onConfirm={() => {
-            updateQrCode();
+            // updateQrCode();
+            iniliteReset();
             setPayErrorModalOpen(false);
           }}
         />

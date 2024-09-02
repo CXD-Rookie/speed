@@ -16,6 +16,8 @@ import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
+import { debounce } from "@/common/utils";
+
 import tracking from "@/common/tracking";
 import "./style.scss";
 import RegionNodeSelector from "@/containers/region-node";
@@ -342,6 +344,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速实际操作
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
+    
     const node = option?.serverNode;
     const nodeHistory = node?.nodeHistory || [];
     const region = node?.region || [];
@@ -512,18 +515,20 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         setMinorType("recharge");
         return;
       } else {
-        console.log("8888888888888888888888888888888888")
         event.stopPropagation();
         setIsOpenRegion(true);
         setSelectAccelerateOption(option);
-        // accelerateDataHandling(option);
       }
     } else {
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo(undefined, undefined, true));
     }
-
   };
+
+  // 创建一个防抖函数
+  const debouncedAccelerateDataHandling = debounce((option: any) => {
+    accelerateDataHandling(option);
+  }, 300);
 
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
@@ -552,7 +557,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             isAllowAcceleration ? (
               <div
                 className="accelerate-immediately-card"
-                onClick={() => accelerateDataHandling(option)}
+                onClick={() => debouncedAccelerateDataHandling(option)}
               >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
                 <img
@@ -574,7 +579,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   className="accelerate-immediately-button"
                   onClick={(event) => {
                     event.stopPropagation();
-                    accelerateDataHandling(option);
+                    debouncedAccelerateDataHandling(option);
                   }}
                 >
                   <span className="accelerate-immediately-text">立即加速</span>

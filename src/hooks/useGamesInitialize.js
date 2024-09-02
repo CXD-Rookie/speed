@@ -104,7 +104,12 @@ export const useGamesInitialize = () => {
 
     if (find_index !== -1) {
       if (find_index > 4) {
-        sort_list.splice(is_accelerate ? 1 : 0, 0, option)
+        // sort_list.splice(is_accelerate ? 1 : 0, 0, option)
+        let temp = sort_list[find_index];
+        // 将第二个索引处的值移动到第一个索引处
+        sort_list[find_index] = sort_list[is_accelerate ? 1 : 0];
+        // 将临时存储的值移动到第二个索引处
+        sort_list[is_accelerate ? 1 : 0] = temp;
       }
     } else if (find_index === -1) {
       if (sort_list?.length < 4) {

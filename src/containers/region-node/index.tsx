@@ -4,6 +4,7 @@ import { Modal, Tabs, Spin } from "antd";
 import type { TabsProps } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import { debounce } from "@/common/utils";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
@@ -42,7 +43,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const { getGameList, identifyAccelerationData, removeGameList } =
       useGamesInitialize();
     const historyContext: any = useHistoryContext();
-
+    
     const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState("region"); // tab栏值
@@ -157,6 +158,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       );
     };
 
+    const debouncedAccelerateDataHandling = debounce((option: any) => {
+      clickStartOn(option);
+    }, 300);
+
     // 开始加速
     const startAcceleration = async (node: any = selectNode) => {
       let isFind = identifyAccelerationData()?.[0] || {}; // 当前是否有加速数据
@@ -164,7 +169,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       if (isFind && type === "details") {
         setAccelOpen(true);
       } else {
-        clickStartOn(node);
+        // clickStartOn(node);
+        debouncedAccelerateDataHandling(node);
       }
     };
 
@@ -281,8 +287,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         // 从数组中随机选择一个操作
         const randomOffset =
           operations[Math.floor(Math.random() * operations.length)];
-        const delay =
-          item?.delay === "超时" ? item.delay : item.delay + randomOffset;
+        const delay = item.delay;
+          // item?.delay === "超时" ? item.delay : item.delay + randomOffset;
         
         return {
           ...item,
@@ -330,7 +336,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           region: [
             {
               ...iniliteSmart,
-              suit: playsuit === 2 ? "国服" : "智能匹配", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+              suit:
+                playsuit === 2 ? "国服" : playsuit === 1 ? "国际服" : "智能匹配", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
               is_select: true, // 是否选择当前区服
             },
           ],
@@ -356,7 +363,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         result.serverNode.region = [
           {
             ...event,
-            suit: playsuit === 2 ? "国服" : event?.qu, // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+            suit:
+              playsuit === 2 ? "国服" : playsuit === 1 ? "国际服" : event?.qu, // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
             is_select: true, // 是否选择当前区服
           },
           ...[
@@ -428,6 +436,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         children: (
           <CustomNode
             value={presentGameData}
+            type={type}
             nodeTableList={nodeTableList}
             selectNode={selectNode}
             tableLoading={tableLoading}
@@ -464,13 +473,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     useEffect(() => {
       const iniliteFun = async () => {
         setLoading(true);
+        setActiveTab("region");
 
         await Promise.all([
           handleSubRegions(),
           updateGamesRegion(options), // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
         ]);
 
-        setActiveTab("region");
         setLoading(false);
       };
 
@@ -503,7 +512,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             accelOpen={accelOpen}
             type={"switchServer"}
             setAccelOpen={setAccelOpen}
-            onConfirm={() => clickStartOn(selectNode)}
+            onConfirm={() => debouncedAccelerateDataHandling(selectNode)}
           />
         ) : null}
       </Fragment>
