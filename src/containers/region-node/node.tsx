@@ -46,12 +46,7 @@ const CustomNode: React.FC<NodeProps> = ({
       title: "全部节点",
       dataIndex: "name",
       render: (name: any, record) => (
-        <span
-          style={record?.name === "智能节点"
-              ? { color: "#F86C34" }
-              : {}
-          }
-        >
+        <span style={record?.name === "智能节点" ? { color: "#F86C34" } : {}}>
           {name}
         </span>
       ),
@@ -63,15 +58,15 @@ const CustomNode: React.FC<NodeProps> = ({
       render: (delay: any, record) => (
         <span
           style={
-            delay === "超时"
+            delay >= 9999
               ? { color: "#FF0000" }
               : record?.name === "智能节点"
               ? { color: "#F86C34" }
               : {}
           }
         >
-          {delay}
-          {!(delay === "超时") && record?.name !== "智能节点" && "ms"}
+          {delay >= 9999 ? "超时" : delay}
+          {!(delay >= 9999) && record?.name !== "智能节点" && "ms"}
         </span>
       ),
     },

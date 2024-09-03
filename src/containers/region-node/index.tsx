@@ -230,7 +230,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                     // clearTimeout(timeoutId); // 请求成功时清除超时定时器
                     resolve({
                       ...node,
-                      delay: delay >= 9999 ? "超时" : delay,
+                      delay,
                     });
                   }
                 );
@@ -239,7 +239,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
               console.error("Error processing node:", node, error);
               return {
                 ...node,
-                delay: "超时",
+                delay: 9999,
               };
             }
           })
