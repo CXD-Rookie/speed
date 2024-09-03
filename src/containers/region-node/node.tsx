@@ -16,6 +16,7 @@ interface NodeProps {
   startAcceleration?: (node: any) => void;
   setSelectNode?: (node: any) => void;
   buildNodeList?: (node: any) => void;
+  generateNode?: (node?: any) => void;
 }
 
 interface DataType {
@@ -35,6 +36,7 @@ const CustomNode: React.FC<NodeProps> = ({
   setSelectNode = () => {},
   startAcceleration = () => {},
   buildNodeList = () => {},
+  generateNode = () => {},
 }) => {
   const [selectRegion, setSelectRegion] = useState<any>(""); // 选中区服信息
   const [nodeHistory, setNodeHistory] = useState<any>([]); // 节点历史列表
@@ -46,12 +48,7 @@ const CustomNode: React.FC<NodeProps> = ({
       title: "全部节点",
       dataIndex: "name",
       render: (name: any, record) => (
-        <span
-          style={record?.name === "智能节点"
-              ? { color: "#F86C34" }
-              : {}
-          }
-        >
+        <span style={record?.name === "智能节点" ? { color: "#F86C34" } : {}}>
           {name}
         </span>
       ),
@@ -63,35 +60,42 @@ const CustomNode: React.FC<NodeProps> = ({
       render: (delay: any, record) => (
         <span
           style={
-            delay === "超时"
+            delay >= 9999
               ? { color: "#FF0000" }
               : record?.name === "智能节点"
               ? { color: "#F86C34" }
               : {}
           }
         >
-          {delay}
-          {!(delay === "超时") && record?.name !== "智能节点" && "ms"}
+          {delay >= 9999 ? "超时" : delay}
+          {!(delay >= 9999) && record?.name !== "智能节点" && "ms"}
         </span>
       ),
     },
   ];
 
   useEffect(() => {
-    let serverNode = value?.serverNode || {};
-    let select = (serverNode?.region || []).filter(
-      (item: any) => item?.is_select
-    )?.[0];
-    const node = serverNode?.nodeHistory?.filter(
-      (item: any) => item?.is_select
-    )?.[0];
-    const node_value:any = node?.name !== "智能节点" ? node?.key : "";
-    
-    setNodeValue(node_value || []);
-    setNodeHistory(serverNode?.nodeHistory);
-    setSelectRegion(select);
+    const iniliteFun = async () => {
+      let serverNode = value?.serverNode?.region || {};
+      let select = (serverNode?.region || []).filter(
+        (item: any) => item?.is_select
+      )?.[0];
+
+      const node = serverNode?.nodeHistory?.filter(
+        (item: any) => item?.is_select
+      )?.[0];
+      const node_value: any = node?.name !== "智能节点" ? node?.key : "";
+
+      setNodeValue(node_value || []);
+      setNodeHistory(serverNode?.nodeHistory);
+      setSelectRegion(select);
+    }
+
+    if (value) {
+      iniliteFun();
+    }
   }, [value]);
-  
+
   return (
     <div className="content">
       <div className="current-settings">

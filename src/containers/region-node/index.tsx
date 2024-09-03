@@ -55,7 +55,30 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const [currentGameServer, setCurrentGameServer] = useState([]); // 当前游戏的区服
 
     const [nodeTableList, setNodeTableList] = useState([]); // 节点表格数据
-    const [selectNode, setSelectNode] = useState({}); // 选中节点
+    const [selectNode, setSelectNode] = useState<any>({}); // 选中节点
+
+    const generateNode = async (data = presentGameData) => {
+      const result = { ...data };
+      // 当前选中的区服
+      const select = result.serverNode.region?.filter(
+        (item: any) => item?.is_select
+      )?.[0];
+
+      let allNodes = await buildNodeList(select);
+      const node = updateSelectNode(presentGameData, allNodes);
+
+      if (node?.is_select && node?.name !== "智能节点") {
+        const find = allNodes.findIndex((item: any) => item?.key === node?.key)
+        const elementToMove = allNodes[find];
+
+        allNodes.splice(find, 1);
+        allNodes.splice(1, 0, elementToMove);
+
+        setNodeTableList(allNodes);
+      }
+
+      return result;
+    };
 
     // 更新历史节点
     const updateGamesDom = (node: any) => {
@@ -63,7 +86,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       let nodeHistory = gameData?.serverNode?.nodeHistory || [];
 
       let find_index = nodeHistory.findIndex(
-        (item: any) => item?.key === node?.key
+        (item: any) =>
+          item?.key === node?.key || (item?.name === "智能节点" && node?.name === "智能节点")
       );
 
       // 删除重复数据
@@ -86,7 +110,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         is_select: true,
       });
       gameData.serverNode.nodeHistory = nodeHistory;
-
+      
       refreshAndShowCurrentServer(gameData);
       return nodeHistory;
     };
@@ -114,23 +138,31 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           tracking.trackBoostDisconnectManual("手动停止加速");
           historyContext?.accelerateTime?.stopTimer();
 
-          const nodeHistory = updateGamesDom(node);
-
           if ((window as any).stopDelayTimer) {
             (window as any).stopDelayTimer();
           }
 
           removeGameList("initialize"); // 更新我的游戏
+          
+          let serverNode = {
+            ...presentGameData?.serverNode,
+          };
+          let isNode = true;
+          
+          if (Object.keys(node)?.length > 0) {
+            serverNode = {
+              ...presentGameData?.serverNode,
+              nodeHistory: updateGamesDom(node),
+            };
+            isNode = false
+          }
 
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           if (type === "acelerate") {
             notice({
               ...presentGameData,
-              serverNode: {
-                ...presentGameData?.serverNode,
-                nodeHistory,
-              },
-              is_manual: true,
+              serverNode,
+              isNode,
             });
 
             navigate("/home");
@@ -141,14 +173,11 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                 isNav: true,
                 data: {
                   ...presentGameData,
-                  serverNode: {
-                    ...presentGameData?.serverNode,
-                    nodeHistory,
-                  },
+                  serverNode,
                   router: "details",
                 },
+                isNode,
                 autoAccelerate: true,
-                is_manual: true,
               },
             });
           }
@@ -201,7 +230,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             : (res?.data || []).filter((value: any) =>
                 (value?.playsuits || []).includes(Number(key))
               );
-              console.log(nodes);
               
         const updatedNodes = await Promise.all(
           nodes.map(async (node: any) => {
@@ -230,7 +258,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                     // clearTimeout(timeoutId); // 请求成功时清除超时定时器
                     resolve({
                       ...node,
-                      delay: delay >= 9999 ? "超时" : delay,
+                      delay,
                     });
                   }
                 );
@@ -239,7 +267,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
               console.error("Error processing node:", node, error);
               return {
                 ...node,
-                delay: "超时",
+                delay: 9999,
               };
             }
           })
@@ -339,13 +367,17 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             {
               ...iniliteSmart,
               suit:
-                playsuit === 2 ? "国服" : playsuit === 1 ? "国际服" : "智能匹配", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+                playsuit === 2
+                  ? "国服"
+                  : currentGameServer?.length > 0
+                  ? "智能匹配"
+                  : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
               is_select: true, // 是否选择当前区服
             },
           ],
         };
       }
-
+      
       // 点击新区服进行添加到历史记录
       if (Object?.keys(event)?.length > 0) {
         let find_index = serverNode?.region?.findIndex(
@@ -370,7 +402,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                 ? event?.qu
                 : playsuit === 2
                 ? "国服"
-                : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+                : currentGameServer?.length > 0 ? "智能匹配" : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
             is_select: true, // 是否选择当前区服
           },
           ...[
@@ -382,14 +414,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         ];
       }
 
-      // 当前选中的区服
-      const select = result.serverNode.region?.filter(
-        (item: any) => item?.is_select
-      )?.[0];
-      
-      const allNodes = await buildNodeList(select);
-
-      updateSelectNode(result, allNodes);
       refreshAndShowCurrentServer(result);
 
       return result;
@@ -446,6 +470,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             nodeTableList={nodeTableList}
             selectNode={selectNode}
             tableLoading={tableLoading}
+            generateNode={generateNode}
             setSelectNode={setSelectNode}
             startAcceleration={startAcceleration}
             buildNodeList={buildNodeList}
@@ -457,18 +482,26 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     useImperativeHandle(ref, () => ({
       getFastestNode: async (value: any, option: any) => {
         let allNodes = await buildNodeList(value);
-        let nodes = option?.serverNode?.nodeHistory || [];
+        let nodes: any = [];
 
-        nodes = nodes.map((item: any) => {
-          if (item?.key === allNodes?.[0]?.key) {
-            return {
-              ...allNodes?.[0],
-              is_select: true
-            };
-          }
+        if (option?.isNode) {
+          const node = allNodes?.[0];
+          nodes = await updateGamesDom(node);
+        } else {
+          nodes = option?.serverNode?.nodeHistory || [];
+          nodes.push(allNodes?.[0]);
 
-          return { ...item, is_select: false };
-        })
+          nodes = nodes.map((item: any) => {
+            if (item?.key === allNodes?.[0]?.key) {
+              return {
+                ...allNodes?.[0],
+                is_select: true,
+              };
+            }
+
+            return { ...item, is_select: false };
+          });
+        }
 
         option.serverNode.nodeHistory = nodes;
         
@@ -510,7 +543,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           <Tabs
             activeKey={activeTab}
             items={items}
-            onChange={(key: string) => setActiveTab(key)}
+            onChange={(key: string) => {
+              setActiveTab(key);
+
+              if (key === "node") {
+                generateNode();
+              }
+            }}
           />
         </Modal>
         {accelOpen ? (
