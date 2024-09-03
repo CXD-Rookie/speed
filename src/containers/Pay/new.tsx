@@ -165,7 +165,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           setPollingTimeNum((num) => {
             const time = num + pollingTime;
 
-            if (time >= 20000) {
+            if (time >= 120000) {
               setQRCodeState("timeout");
               setPollingTimeNum(0);
               return 0;
