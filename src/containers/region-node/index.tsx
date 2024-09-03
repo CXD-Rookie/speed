@@ -367,13 +367,17 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             {
               ...iniliteSmart,
               suit:
-                playsuit === 2 ? "国服" : playsuit === 1 ? "国际服" : "智能匹配", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+                playsuit === 2
+                  ? "国服"
+                  : currentGameServer?.length > 0
+                  ? "智能匹配"
+                  : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
               is_select: true, // 是否选择当前区服
             },
           ],
         };
       }
-
+      
       // 点击新区服进行添加到历史记录
       if (Object?.keys(event)?.length > 0) {
         let find_index = serverNode?.region?.findIndex(
@@ -398,7 +402,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                 ? event?.qu
                 : playsuit === 2
                 ? "国服"
-                : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+                : currentGameServer?.length > 0 ? "智能匹配" : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
             is_select: true, // 是否选择当前区服
           },
           ...[
