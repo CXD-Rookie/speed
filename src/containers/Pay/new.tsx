@@ -152,15 +152,19 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
         setPaymentStatus(status);
 
-        if (status) {
+        // 支付中
+        if (status === 1) {
           setQRCodeState("incoming");
           setPollingTime(3000);
           setPollingTimeNum(0);
-        } else if (QRCodeState === "normal") {
+        }
+
+        // 没有返回状态，并且是没有超时，支付中的时候进行延时计时判断
+        if (!status && status !== 1 && QRCodeState === "normal") {
           setPollingTimeNum((num) => {
             const time = num + pollingTime;
 
-            if (time >= 120000) {
+            if (time >= 20000) {
               setQRCodeState("timeout");
               setPollingTimeNum(0);
               return 0;
@@ -170,34 +174,35 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           });
         }
 
-        if (status === 2) {
-          let jsonResponse = await loginApi.userInfo();
+        // if (status === 2) {
+        //   let jsonResponse = await loginApi.userInfo();
 
-          // 3个参数 用户信息 是否登录 是否显示登录
-          dispatch(
-            setAccountInfo(jsonResponse.data.user_info, undefined, undefined)
-          );
+        //   // 3个参数 用户信息 是否登录 是否显示登录
+        //   dispatch(
+        //     setAccountInfo(jsonResponse.data.user_info, undefined, undefined)
+        //   );
 
-          localStorage.setItem(
-            "token",
-            JSON.stringify(jsonResponse.data.token)
-          );
-        }
+        //   localStorage.setItem(
+        //     "token",
+        //     JSON.stringify(jsonResponse.data.token)
+        //   );
+        // }
 
-        if (status !== 1 && response.data?.cid) {
+        if ([2, 3, 4, 5].includes(status) && response.data?.cid) {
           const res = await payApi.getCommodityInfo(response.data?.cid);
-          console.log(res, "订单信息----------", response);
 
-          setShowPopup(null);
           setOrderInfo({ ...res.data, ...response.data });
 
-          if (status === 5 || status === 3 || status === 4) {
+          if ([3, 4, 5].includes(status)) {
+            setShowPopup(null);
             setPayErrorModalOpen(true);
           }
 
-          setShowPopup(
-            status === 2 ? "支付成功" : status === 1 ? "待支付" : null
-          );
+          if (status === 2) {
+            setShowPopup("支付成功");
+          }
+
+          setPaymentStatus(status);
         }
       }
     } catch (error) {
@@ -285,19 +290,17 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
     return () => {
       if (paymentStatus !== 1 || QRCodeState === "timeout") {
-        clearInterval(intervalId);
+        clearInterval(intervalIdRef?.current);
       }
     };
   }, [pollingKey, QRCodeState]);
 
   useEffect(() => {
-    if (QRCodeState === "timeout") {
+    if (
+      ([2, 3, 4, 5] as any).includes(paymentStatus) ||
+      QRCodeState === "timeout"
+    ) {
       clearInterval(intervalIdRef?.current);
-    }
-
-    if (([2, 3] as any).includes(paymentStatus)) {
-      clearInterval(intervalIdRef?.current);
-      iniliteReset();
     }
   }, [paymentStatus, QRCodeState, refresh]);
 
