@@ -201,6 +201,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             : (res?.data || []).filter((value: any) =>
                 (value?.playsuits || []).includes(Number(key))
               );
+              console.log(nodes);
+              
         const updatedNodes = await Promise.all(
           nodes.map(async (node: any) => {
             try {
@@ -210,12 +212,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
               // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
               return new Promise<any>((resolve) => {
-                const timeoutId = setTimeout(() => {
-                  resolve({
-                    ...node,
-                    delay: "超时",
-                  });
-                }, 3000); // 5秒超时，可以根据需要调整
+                // const timeoutId = setTimeout(() => {
+                //   resolve({
+                //     ...node,
+                //     delay: "超时",
+                //   });
+                // }, 3000); // 5秒超时，可以根据需要调整
 
                 (window as any).NativeApi_AsynchronousRequest(
                   "NativeApi_GetAddrDelay",
@@ -225,7 +227,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                     const jsonResponse = JSON.parse(response);
                     const delay = jsonResponse?.delay;
 
-                    clearTimeout(timeoutId); // 请求成功时清除超时定时器
+                    // clearTimeout(timeoutId); // 请求成功时清除超时定时器
                     resolve({
                       ...node,
                       delay: delay >= 9999 ? "超时" : delay,
@@ -359,12 +361,16 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         if (serverNode.region?.length >= 10) {
           result.serverNode.region.splice(9);
         }
-
+        
         result.serverNode.region = [
           {
             ...event,
             suit:
-              playsuit === 2 ? "国服" : playsuit === 1 ? "国际服" : event?.qu, // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+              event?.qu !== "智能匹配"
+                ? event?.qu
+                : playsuit === 2
+                ? "国服"
+                : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
             is_select: true, // 是否选择当前区服
           },
           ...[
