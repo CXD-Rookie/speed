@@ -92,10 +92,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   const iniliteReset = () => {
     clearInterval(intervalIdRef?.current);
-    setRefresh(refresh + 1);
-    setQRCodeState("normal");
+    // setQRCodeState("normal");
     setPollingTime(5000);
     setPollingTimeNum(0);
+
+    setRefresh(refresh + 1);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -267,6 +268,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
         tracking.trackPurchasePageShow();
 
+        setQRCodeState("normal");
         setPollingKey(newKey);
         setQrCodeUrl(
           `${env_url}/pay/qrcode?cid=${
@@ -443,11 +445,13 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           accelOpen={payErrorModalOpen}
           setAccelOpen={(e) => {
             // updateQrCode();
+            setQRCodeState("normal");
             iniliteReset();
             setPayErrorModalOpen(e);
           }}
           onConfirm={() => {
             // updateQrCode();
+            setQRCodeState("normal");
             iniliteReset();
             setPayErrorModalOpen(false);
           }}
