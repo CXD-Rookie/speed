@@ -344,20 +344,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速实际操作
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
-    
-    const node = option?.serverNode;
-    const nodeHistory = node?.nodeHistory || [];
-    const region = node?.region || [];
-    const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
+
+    const region = option?.serverNode?.region || [];
     const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
 
-    if (!selectNode?.id) {
+    if (!selectRegion) {
       setIsOpenRegion(true);
       return;
     }
-
-    option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
-    option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
 
     localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
@@ -365,10 +359,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setIsStartAnimate(true); // 开始加速动画
     stopAcceleration(); // 停止加速
 
-    // 如果是手动触发就不需要进行重新ping节点
-    if (!option?.is_manual && childRef?.current) {
+    // 进行重新ping节点
+    if (childRef?.current) {
       option = await childRef?.current?.getFastestNode(selectRegion, option);
     }
+    
+    const nodeHistory = option?.serverNode?.nodeHistory || [];
+    const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
+
+    option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
+    option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
 
     let isPre: boolean;
 
