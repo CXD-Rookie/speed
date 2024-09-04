@@ -114,7 +114,7 @@ const CustomNode: React.FC<NodeProps> = ({
               const select = nodeHistory?.filter(
                 (item: any) => item?.key === key
               )?.[0];
-              
+
               startAcceleration(select);
             }}
           >
@@ -131,9 +131,9 @@ const CustomNode: React.FC<NodeProps> = ({
           <Button
             className="refresh-button"
             onClick={async () => {
-              const allNodes = await buildNodeList(value);
+              const allNodes = await buildNodeList(selectRegion);
               const node = allNodes?.[0];
-
+              
               setSelectNode(node)
             }}
           >
