@@ -39,6 +39,7 @@ const SearchBar: React.FC = () => {
   const results = useSelector((state: RootState) => state.search.results) || [];
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
@@ -98,17 +99,24 @@ const SearchBar: React.FC = () => {
               <div
                 key={index}
                 className="search-item"
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.stopPropagation();
 
+                  setIsClicking(true)
+
+                  
                   if (localStorage.getItem("isAccelLoaindg") !== "1") {
-                    handleSearchResultClick(result);
+                    if (!isClicking) {
+                      await handleSearchResultClick(result);
+                    }
                   } else {
                     eventBus.emit("showModal", {
                       show: true,
                       type: "gamesAccelerating",
                     });
                   }
+
+                  setIsClicking(false)
                 }}
               >
                 <div className="name-box">
