@@ -76,7 +76,7 @@ const CustomNode: React.FC<NodeProps> = ({
 
   useEffect(() => {
     const iniliteFun = async () => {
-      let serverNode = value?.serverNode?.region || {};
+      let serverNode = value?.serverNode || {};
       let select = (serverNode?.region || []).filter(
         (item: any) => item?.is_select
       )?.[0];
@@ -85,7 +85,7 @@ const CustomNode: React.FC<NodeProps> = ({
         (item: any) => item?.is_select
       )?.[0];
       const node_value: any = node?.name !== "智能节点" ? node?.key : "";
-
+      
       setNodeValue(node_value || []);
       setNodeHistory(serverNode?.nodeHistory);
       setSelectRegion(select);
