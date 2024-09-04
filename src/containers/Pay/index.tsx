@@ -183,6 +183,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       if (response.error === 0) {
         const status = response.data?.status;
         
+        setPaymentStatus(status);
         // 支付中
         if (status === 1) {
           setQRCodeState("incoming");
@@ -232,8 +233,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           if (status === 2) {
             setShowPopup("支付成功");
           }
-
-          setPaymentStatus(status)
         }
       }
     } catch (error) {
@@ -333,6 +332,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   }, [userToken, refresh]);
 
   useEffect(() => {
+    console.log(QRCodeState, paymentStatus);
+    
     const intervalId = setInterval(() => {
       fetchPolling();
     }, pollingTime);
