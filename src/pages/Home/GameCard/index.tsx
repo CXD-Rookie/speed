@@ -352,13 +352,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       setIsOpenRegion(true);
       return;
     }
-
-    localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
+    
+    // localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
     stopAcceleration(); // 停止加速
-
+    
     // 进行重新ping节点
     if (childRef?.current) {
       option = await childRef?.current?.getFastestNode(selectRegion, option);
@@ -366,7 +366,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     
     const nodeHistory = option?.serverNode?.nodeHistory || [];
     const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
-
+    
     option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
     option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
 

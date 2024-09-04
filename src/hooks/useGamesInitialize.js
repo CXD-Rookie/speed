@@ -203,6 +203,10 @@ export const useGamesInitialize = () => {
             delete data.isNode;
           }
           
+          if (data?.isAuto) {
+            delete data.isAuto;
+          }
+
           return data
         }
 

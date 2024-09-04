@@ -326,6 +326,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     }
 
     if (userToken && refresh >= 0) {
+      console.log(111);
+      
       inilteFun();
     }
   }, [userToken, refresh]);

@@ -81,15 +81,16 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     };
 
     // 更新历史节点
-    const updateGamesDom = (node: any) => {
-      let gameData = { ...presentGameData };
+    const updateGamesDom = (node: any, option: any = presentGameData) => {
+      let gameData = { ...option };
       let nodeHistory = gameData?.serverNode?.nodeHistory || [];
 
       let find_index = nodeHistory.findIndex(
         (item: any) =>
-          item?.key === node?.key || (item?.name === "智能节点" && node?.name === "智能节点")
+          item?.key === node?.key ||
+          (item?.name === "智能节点" && node?.name === "智能节点")
       );
-
+      
       // 删除重复数据
       if (find_index !== -1) {
         nodeHistory.splice(find_index, 1);
@@ -103,14 +104,15 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       // 非本条数据全部置为未选中
       nodeHistory = nodeHistory.map((item: any) => ({
         ...item,
-        is_select: item?.is_select,
+        is_select: false,
       }));
       nodeHistory.unshift({
         ...node,
         is_select: true,
       });
+
       gameData.serverNode.nodeHistory = nodeHistory;
-      
+
       refreshAndShowCurrentServer(gameData);
       return nodeHistory;
     };
@@ -134,7 +136,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         "NativeApi_StopProxy",
         jsonString,
         function (response: any) {
-          console.log("Success response from 停止加速:", response);
+          // console.log("Success response from 停止加速:", response);
           tracking.trackBoostDisconnectManual("手动停止加速");
           historyContext?.accelerateTime?.stopTimer();
 
@@ -148,21 +150,25 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             ...presentGameData?.serverNode,
           };
           let isNode = true;
-          
+          let isAuto = false;
+
           if (Object.keys(node)?.length > 0) {
             serverNode = {
               ...presentGameData?.serverNode,
               nodeHistory: updateGamesDom(node),
             };
-            isNode = false
+            
+            isNode = false;
+            isAuto = true;
           }
-
+          
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           if (type === "acelerate") {
             notice({
               ...presentGameData,
               serverNode,
               isNode,
+              isAuto,
             });
 
             navigate("/home");
@@ -177,6 +183,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                   router: "details",
                 },
                 isNode,
+                isAuto,
                 autoAccelerate: true,
               },
             });
@@ -355,7 +362,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     // 更新游戏历史选择区服
     const updateGamesRegion = async (
       info: any = {},
-      event: RegionProps = {}
+      event: RegionProps = {},
+      current: any = {},
     ) => {
       const result = { ...info };
       const { serverNode = {}, playsuit = 2 } = result; // 获取当前游戏数据的区服
@@ -369,7 +377,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
               suit:
                 playsuit === 2
                   ? "国服"
-                  : currentGameServer?.length > 0
+                  : current?.length > 0
                   ? "智能匹配"
                   : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
               is_select: true, // 是否选择当前区服
@@ -481,30 +489,19 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     useImperativeHandle(ref, () => ({
       getFastestNode: async (value: any, option: any) => {
-        let allNodes = await buildNodeList(value);
         let nodes: any = [];
-
-        if (option?.isNode) {
+        
+        if (
+          option?.isNode ||
+          (!option?.isNode && !option?.isAuto)
+        ) {
+          const allNodes = await buildNodeList(value);
           const node = allNodes?.[0];
-          nodes = await updateGamesDom(node);
-        } else {
-          nodes = option?.serverNode?.nodeHistory || [];
-          nodes.push(allNodes?.[0]);
 
-          nodes = nodes.map((item: any) => {
-            if (item?.key === allNodes?.[0]?.key) {
-              return {
-                ...allNodes?.[0],
-                is_select: true,
-              };
-            }
-
-            return { ...item, is_select: false };
-          });
+          nodes = await updateGamesDom(node, option);
+          option.serverNode.nodeHistory = nodes;
         }
 
-        option.serverNode.nodeHistory = nodes;
-        
         return option;
       },
     }));
@@ -514,11 +511,9 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         setLoading(true);
         setActiveTab("region");
 
-        await Promise.all([
-          handleSubRegions(),
-          updateGamesRegion(options), // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
-        ]);
-
+        const data = await handleSubRegions(); // 当前区服列表
+        await updateGamesRegion(options, {}, data); // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
+        
         setLoading(false);
       };
 

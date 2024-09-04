@@ -202,7 +202,6 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     const find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
     const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
-    console.log(node);
     
     const jsonString = JSON.stringify({
       // params: { ip: node?.addr },

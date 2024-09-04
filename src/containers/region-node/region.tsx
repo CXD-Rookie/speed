@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Select, Button } from "antd";
+import { debounce } from "@/common/utils";
 
 import "./index.scss";
 import IssueModal from "@/containers/IssueModal/index";
@@ -55,6 +56,10 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
       updateGamesRegion(value, option);
     }
   };
+
+  const debouncedAccelerateDataHandling = debounce((option: any) => {
+    startAcceleration(option);
+  }, 300);
 
   useEffect(() => {
     if (Object.keys(value)?.length > 0) {
@@ -161,7 +166,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
         type="primary"
         className="region-start-button"
         disabled={loading}
-        onClick={() => startAcceleration()}
+        onClick={() => debouncedAccelerateDataHandling()}
       >
         {type === "details" ? "重新加速" : "开始加速"}
       </Button>
