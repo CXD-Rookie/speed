@@ -353,7 +353,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       return;
     }
     
-    // localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
+    localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
@@ -447,18 +447,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accelerateDataHandling = async (option: any) => {
     // 是否登录
     if (accountInfo?.isLogin) {
-      let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
+      // let res = await handleUserInfo(); // 先请求用户信息，进行用户信息的更新
+      const latestAccountInfo = store.getState().accountInfo;
 
-      if (res) {
-        const latestAccountInfo = store.getState().accountInfo;
+      if (latestAccountInfo) {
         const userInfo = latestAccountInfo?.userInfo; // 用户信息
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
         let game_list = getGameList(); // 获取当前我的游戏列表
         let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
-        
+
         option = await checkGameisFree(option);
-        
+
         // 是否实名认证 isRealNamel === "1" 是
         // 是否是未成年
         // 是否是vip
