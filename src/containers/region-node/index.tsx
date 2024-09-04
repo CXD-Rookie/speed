@@ -370,6 +370,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     ) => {
       const result = { ...info };
       const { serverNode = {}, playsuit = 2 } = result; // 获取当前游戏数据的区服
+      // console.log(serverNode, playsuit, current);
       
       // 如果当前没有游戏没有选择过区服 则进行默认选择 智能匹配
       if (!serverNode?.region) {
