@@ -141,7 +141,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           <span
             style={{ color: accountInfo?.userInfo.is_vip ? "#f2d4a6" : "#fff" }}
           >
-            {accountInfo?.userInfo?.nickname}
+            {/* {accountInfo?.userInfo?.nickname} */}
           </span>
           <UserAvatarCom
             isVip={accountInfo?.userInfo?.is_vip}
