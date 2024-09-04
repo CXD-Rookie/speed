@@ -16,7 +16,7 @@ import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
-import { debounce } from "@/common/utils";
+import { nodeDebounce } from "@/common/utils";
 
 import tracking from "@/common/tracking";
 import "./style.scss";
@@ -87,7 +87,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const [isAllowAcceleration, setIsAllowAcceleration] = useState<boolean>(true); // 是否允许加速
   const [isAllowShowAccelerating, setIsAllowShowAccelerating] =
     useState<boolean>(true); // 是否允许显示加速中
-
+  const [isClicking, setIsClicking] = useState(false);
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
 
@@ -476,7 +476,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ) {
           setIsModalOpenVip(true);
           return;
-        } else if (find_accel?.[0]) {
+        } else if (find_accel?.[0] && option?.router !== "details") {
           setAccelOpen(true);
           setSelectAccelerateOption(option);
           return;
@@ -526,7 +526,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 创建一个防抖函数
-  const debouncedAccelerateDataHandling = debounce((option: any) => {
+  const debouncedAccelerateDataHandling = nodeDebounce((option: any) => {
     accelerateDataHandling(option);
   }, 300);
 
@@ -557,7 +557,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             isAllowAcceleration ? (
               <div
                 className="accelerate-immediately-card"
-                onClick={() => debouncedAccelerateDataHandling(option)}
+                onClick={async () => {
+                  setIsClicking(true);
+
+                  if (!isClicking) {
+                    // debouncedAccelerateDataHandling(option);
+                    await accelerateDataHandling(option);
+                  }
+
+                  setIsClicking(false)
+                }}
               >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
                 <img
@@ -577,9 +586,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 />
                 <div
                   className="accelerate-immediately-button"
-                  onClick={(event) => {
+                  onClick={async (event) => {
                     event.stopPropagation();
-                    debouncedAccelerateDataHandling(option);
+                    setIsClicking(true);
+
+                    if (!isClicking) {
+                      // debouncedAccelerateDataHandling(option);
+                      await accelerateDataHandling(option);
+                    }
+
+                    setIsClicking(false);
                   }}
                 >
                   <span className="accelerate-immediately-text">立即加速</span>

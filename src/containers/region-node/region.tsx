@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Select, Button } from "antd";
-import { debounce } from "@/common/utils";
+import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
 import IssueModal from "@/containers/IssueModal/index";
@@ -33,6 +33,8 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
   
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
+  
+  const [isClicking, setIsClicking] = useState(false);
 
   // 选择的服
   const togglePanel = (option: any, type = "default") => {
@@ -57,9 +59,9 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
     }
   };
 
-  const debouncedAccelerateDataHandling = debounce((option: any) => {
+  const debouncedAccelerateDataHandling = nodeDebounce((option: any = {}) => {
     startAcceleration(option);
-  }, 300);
+  }, 800);
 
   useEffect(() => {
     if (Object.keys(value)?.length > 0) {
@@ -166,7 +168,15 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
         type="primary"
         className="region-start-button"
         disabled={loading}
-        onClick={() => debouncedAccelerateDataHandling()}
+        onClick={async () => {
+          setIsClicking(true);
+
+          if (!isClicking) {
+            await startAcceleration();
+          }
+
+          setIsClicking(false);
+        }}
       >
         {type === "details" ? "重新加速" : "开始加速"}
       </Button>

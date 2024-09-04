@@ -56,7 +56,18 @@ export const debounce = (func, delay) => {
   };
 };
 
-export const formatDate = (timestamp: number) => {
+export const nodeDebounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId); // 清除上一个定时器
+    timeoutId = setTimeout(() => {
+      func(...args);
+      timeoutId = null; // 清除引用，确保下次点击时重新创建定时器
+    }, delay);
+  };
+};
+
+export const formatDate = (timestamp) => {
   const date = new Date(timestamp * 1000);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
