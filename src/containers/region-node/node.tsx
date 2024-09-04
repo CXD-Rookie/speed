@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Select, Button, Table } from "antd";
 import type { TableProps } from "antd";
+import { debounce } from "@/common/utils";
 
 import "./index.scss";
 import refreshIcon from "@/assets/images/common/refresh.png";
@@ -74,6 +75,10 @@ const CustomNode: React.FC<NodeProps> = ({
     },
   ];
 
+  const debouncedAccelerateDataHandling = debounce((option: any) => {
+    startAcceleration(option);
+  }, 300);
+
   useEffect(() => {
     const iniliteFun = async () => {
       let serverNode = value?.serverNode || {};
@@ -109,7 +114,7 @@ const CustomNode: React.FC<NodeProps> = ({
               const select = nodeHistory?.filter(
                 (item: any) => item?.key === key
               )?.[0];
-
+              
               startAcceleration(select);
             }}
           >
@@ -125,7 +130,12 @@ const CustomNode: React.FC<NodeProps> = ({
           </Select>
           <Button
             className="refresh-button"
-            onClick={() => buildNodeList(selectRegion)}
+            onClick={async () => {
+              const allNodes = await buildNodeList(value);
+              const node = allNodes?.[0];
+
+              setSelectNode(node)
+            }}
           >
             <img src={refreshIcon} alt="" />
             刷新
@@ -150,7 +160,9 @@ const CustomNode: React.FC<NodeProps> = ({
         type="primary"
         className="start-button"
         disabled={tableLoading}
-        onClick={() => startAcceleration(selectNode)}
+        onClick={() =>
+          debouncedAccelerateDataHandling(selectNode)
+        }
       >
         {type === "details" ? "重新加速" : "开始加速"}
       </Button>

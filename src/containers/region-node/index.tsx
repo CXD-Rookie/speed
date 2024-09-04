@@ -90,7 +90,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           item?.key === node?.key ||
           (item?.name === "智能节点" && node?.name === "智能节点")
       );
-
+      
       // 删除重复数据
       if (find_index !== -1) {
         nodeHistory.splice(find_index, 1);
@@ -150,22 +150,25 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             ...presentGameData?.serverNode,
           };
           let isNode = true;
-          
+          let isAuto = false;
+
           if (Object.keys(node)?.length > 0) {
             serverNode = {
               ...presentGameData?.serverNode,
               nodeHistory: updateGamesDom(node),
-              isAuto: true,
             };
-            isNode = false
+            
+            isNode = false;
+            isAuto = true;
           }
-
+          
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           if (type === "acelerate") {
             notice({
               ...presentGameData,
               serverNode,
               isNode,
+              isAuto,
             });
 
             navigate("/home");
@@ -180,6 +183,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                   router: "details",
                 },
                 isNode,
+                isAuto,
                 autoAccelerate: true,
               },
             });
@@ -486,11 +490,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     useImperativeHandle(ref, () => ({
       getFastestNode: async (value: any, option: any) => {
         let nodes: any = [];
-        console.log(option?.isNode, option?.serverNode?.isAuto);
         
         if (
           option?.isNode ||
-          (!option?.isNode && !option?.serverNode?.isAuto)
+          (!option?.isNode && !option?.isAuto)
         ) {
           const allNodes = await buildNodeList(value);
           const node = allNodes?.[0];
