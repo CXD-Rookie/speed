@@ -370,7 +370,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     ) => {
       const result = { ...info };
       const { serverNode = {}, playsuit = 2 } = result; // 获取当前游戏数据的区服
-
+      
       // 如果当前没有游戏没有选择过区服 则进行默认选择 智能匹配
       if (!serverNode?.region) {
         result.serverNode = {
@@ -380,7 +380,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
               suit:
                 playsuit === 2
                   ? "国服"
-                  : current?.length > 0
+                  : current?.length > 1
                   ? "智能匹配"
                   : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
               is_select: true, // 是否选择当前区服
@@ -413,7 +413,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                 ? event?.qu
                 : playsuit === 2
                 ? "国服"
-                : currentGameServer?.length > 0 ? "智能匹配" : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+                : currentGameServer?.length > 1 ? "智能匹配" : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
             is_select: true, // 是否选择当前区服
           },
           ...[
