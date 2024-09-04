@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Select, Button, Table } from "antd";
 import type { TableProps } from "antd";
-import { debounce } from "@/common/utils";
+import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
 import refreshIcon from "@/assets/images/common/refresh.png";
@@ -43,6 +43,7 @@ const CustomNode: React.FC<NodeProps> = ({
   const [nodeHistory, setNodeHistory] = useState<any>([]); // 节点历史列表
 
   const [nodeValue, setNodeValue] = useState(""); // 节点历史value
+  const [isClicking, setIsClicking] = useState(false);
 
   const columms: TableProps<DataType>["columns"] = [
     {
@@ -75,9 +76,9 @@ const CustomNode: React.FC<NodeProps> = ({
     },
   ];
 
-  const debouncedAccelerateDataHandling = debounce((option: any) => {
+  const debouncedAccelerateDataHandling = nodeDebounce((option: any) => {
     startAcceleration(option);
-  }, 300);
+  }, 800);
 
   useEffect(() => {
     const iniliteFun = async () => {
@@ -160,9 +161,15 @@ const CustomNode: React.FC<NodeProps> = ({
         type="primary"
         className="start-button"
         disabled={tableLoading}
-        onClick={() =>
-          debouncedAccelerateDataHandling(selectNode)
-        }
+        onClick={async () => {
+          setIsClicking(true)
+
+          if (!isClicking) {
+            startAcceleration(selectNode);
+          }
+
+          setIsClicking(false)
+        }}
       >
         {type === "details" ? "重新加速" : "开始加速"}
       </Button>

@@ -4,7 +4,7 @@ import { Modal, Tabs, Spin } from "antd";
 import type { TabsProps } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
-import { debounce } from "@/common/utils";
+import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
@@ -56,6 +56,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     const [nodeTableList, setNodeTableList] = useState([]); // 节点表格数据
     const [selectNode, setSelectNode] = useState<any>({}); // 选中节点
+
+    const [isClicking, setIsClicking] = useState(false);
 
     const generateNode = async (data = presentGameData) => {
       const result = { ...data };
@@ -169,6 +171,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
               serverNode,
               isNode,
               isAuto,
+              router: "details",
             });
 
             navigate("/home");
@@ -194,19 +197,19 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       );
     };
 
-    const debouncedAccelerateDataHandling = debounce((option: any) => {
+    const debouncedAccelerateDataHandling = nodeDebounce((option: any) => {
       clickStartOn(option);
-    }, 300);
+    }, 500);
 
     // 开始加速
     const startAcceleration = async (node: any = selectNode) => {
-      let isFind = identifyAccelerationData()?.[0] || {}; // 当前是否有加速数据
-
-      if (isFind && type === "details") {
+      let isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
+      
+      if (isFind) {
         setAccelOpen(true);
       } else {
-        // clickStartOn(node);
-        debouncedAccelerateDataHandling(node);
+        clickStartOn(node);
+        // debouncedAccelerateDataHandling(node);
       }
     };
 
@@ -552,7 +555,16 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             accelOpen={accelOpen}
             type={"switchServer"}
             setAccelOpen={setAccelOpen}
-            onConfirm={() => debouncedAccelerateDataHandling(selectNode)}
+            onConfirm={async () => {
+              setAccelOpen(false)
+              setIsClicking(true)
+
+              if (!isClicking) {
+                await clickStartOn(selectNode);
+              }
+              
+              setIsClicking(false)
+            }}
           />
         ) : null}
       </Fragment>
