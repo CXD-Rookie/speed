@@ -163,6 +163,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             isNode = false;
             isAuto = true;
           }
+          console.log(type, {
+            ...presentGameData,
+            serverNode,
+            isNode,
+            isAuto,
+            router: "details",
+          });
           
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           if (type === "acelerate") {
@@ -184,9 +191,9 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                   ...presentGameData,
                   serverNode,
                   router: "details",
+                  isNode,
+                  isAuto,
                 },
-                isNode,
-                isAuto,
                 autoAccelerate: true,
               },
             });
