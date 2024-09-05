@@ -237,6 +237,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     // 初始化获取所有的加速服务器列表
     const fetchAllSpeedList = async (keys: any = []) => {
+      console.log(keys);
+      
       try {
         let res = await playSuitApi.playSpeedList({
           platform: 3,
@@ -415,16 +417,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         if (serverNode.region?.length >= 10) {
           result.serverNode.region.splice(9);
         }
+        console.log(event, playsuit);
         
         result.serverNode.region = [
           {
             ...event,
-            suit:
-              event?.qu !== "智能匹配"
-                ? event?.qu
-                : playsuit === 2
-                ? "国服"
-                : currentGameServer?.length > 1 ? "智能匹配" : "国际服", // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+            suit: playsuit === 2 ? "国服" : event?.qu, // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
             is_select: true, // 是否选择当前区服
           },
           ...[
