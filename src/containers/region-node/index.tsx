@@ -229,18 +229,18 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     };
 
     // 初始化获取所有的加速服务器列表
-    const fetchAllSpeedList = async (key = -1) => {
+    const fetchAllSpeedList = async (keys: any = []) => {
       try {
         let res = await playSuitApi.playSpeedList({
           platform: 3,
         });
-        const nodes =
-          key === -1
-            ? res?.data || []
-            : (res?.data || []).filter((value: any) =>
-                (value?.playsuits || []).includes(Number(key))
-              );
-              
+        const nodes = (res?.data || []).filter((value: any) =>
+          (value?.playsuits || []).some((item: any) =>
+            keys.includes(String(item))
+          )
+        );
+        console.log(nodes);
+        
         const updatedNodes = await Promise.all(
           nodes.map(async (node: any) => {
             try {
@@ -282,7 +282,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             }
           })
         );
-        
+
         const sortedData = updatedNodes.sort((a, b) => {
           if (a.health !== b.health) {
             return a.health - b.health; // 首先比较 health 字段
@@ -300,11 +300,14 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const fetchPlaysuit = async (qu = "") => {
       try {
         const res = await playSuitApi.playSuitList();
-        const key = Object.entries(res?.data || {}).find(
-          ([key, value]) => value === qu
-        )?.[0];
-
-        return key || -1;
+        const data = res?.data || {};
+        const keys = Object.keys(data).filter((key) =>
+          qu === "智能匹配"
+            ? currentGameServer.some((child: any) => child?.qu === data?.[key])
+            : data?.[key] === qu
+        );
+        
+        return keys || [];
       } catch (error) {
         console.log("error", error);
       }
@@ -313,9 +316,9 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     // 生成所有的加速节点服务器列表
     const buildNodeList = async (option: any = {}) => {
       setTableLoading(true);
-
+      
       let suit = await fetchPlaysuit(option?.suit);
-      let all: any = (await fetchAllSpeedList(Number(suit))) || []; // 获取节点列表
+      let all: any = (await fetchAllSpeedList(suit)) || []; // 获取节点列表
 
       all.unshift({
         ...all?.[0],
