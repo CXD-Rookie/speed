@@ -86,7 +86,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     serverDisconnected: "重启客户端",
     issueFeedback: "好的",
     connectionPay: "继续支付",
-    gamesAccelerating: "我知道了",
+    gamesAccelerating: "好的",
   };
 
   // footer 只显示一个按钮的类型
