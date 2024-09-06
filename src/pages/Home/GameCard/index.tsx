@@ -353,7 +353,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       return;
     }
     
-    // localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
+    localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
