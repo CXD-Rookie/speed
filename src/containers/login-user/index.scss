@@ -24,6 +24,7 @@
 }
 
 .dropdown-content {
+  width: 22vw;
   background: #3E3E4A;
   padding: 3.6vh 1.2vw 2.4vh 1.2vw;
   border-radius: var(--speed-dominant-border-radius);
@@ -41,8 +42,12 @@
       align-items: center;
 
       & .name-text {
+        width: 12vw;
         color: #fff;
         margin-left: 0.8vw;
+        white-space: nowrap;    /* 禁止换行 */
+        overflow: hidden;       /* 隐藏溢出内容 */
+        text-overflow: ellipsis;/* 使用省略号表示溢出 */
       }
     }
 

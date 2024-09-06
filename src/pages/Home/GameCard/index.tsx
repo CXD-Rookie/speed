@@ -364,6 +364,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       option = await childRef?.current?.getFastestNode(selectRegion, option);
     }
     
+    // if (option) {
+    //   return;
+    // }
+
     const nodeHistory = option?.serverNode?.nodeHistory || [];
     const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
     
