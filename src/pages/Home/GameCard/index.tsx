@@ -462,7 +462,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         let find_accel = identifyAccelerationData(game_list); // 查找是否有已加速的信息
 
         option = await checkGameisFree(option);
-
+        
         // 是否实名认证 isRealNamel === "1" 是
         // 是否是未成年
         // 是否是vip
@@ -480,7 +480,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ) {
           setIsModalOpenVip(true);
           return;
-        } else if (find_accel?.[0] && option?.router !== "details") {
+        } else if (find_accel?.[0] && (option?.router !== "details")) {
+          console.log(222);
+          
           setAccelOpen(true);
           setSelectAccelerateOption(option);
           return;
