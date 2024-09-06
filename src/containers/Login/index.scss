@@ -134,16 +134,19 @@ body {
 }
 
 .visitor-login-text {
-  font-size: 1vw;
+  font-size: 1.4vw;
   color:#F86C34;
-  margin: 2vh 0 0 11.2vw;
+  margin: 2vh 0 0 10.2vw;
   cursor: pointer;
   display: flex;
+  // align-items: flex-start;
   align-items: flex-start;
   column-gap: 0.4vw;
 
   img {
-    width: 1.2vw;
-    height: 1.2vw;
+    width: 1.6vw;
+    height: 1.6vw;
+    border: 1px solid #fff;
+    border-radius: 50%;
   }
 }

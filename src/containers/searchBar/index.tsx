@@ -56,7 +56,14 @@ const SearchBar: React.FC = () => {
     
     // 跳转到首页并触发自动加速autoAccelerate
     navigate("/home", {
-      state: { isNav: true, data: optionParams, autoAccelerate: true },
+      state: {
+        isNav: true,
+        data: {
+          ...optionParams,
+          // router: "search",
+        },
+        autoAccelerate: true,
+      },
     });
   };
 
@@ -103,7 +110,6 @@ const SearchBar: React.FC = () => {
                   e.stopPropagation();
 
                   setIsClicking(true)
-
                   
                   if (localStorage.getItem("isAccelLoaindg") !== "1") {
                     if (!isClicking) {
