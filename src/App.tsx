@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { Layout, Dropdown } from "antd";
 import type { MenuProps } from "antd";
@@ -72,6 +72,7 @@ const App: React.FC = (props: any) => {
   const dispatch: any = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const isFirstRender = useRef(true);
 
   const historyContext: any = useHistoryContext();
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
@@ -861,9 +862,37 @@ const App: React.FC = (props: any) => {
   }, [navigate, location.pathname]);
 
   useEffect(() => {
-    stopProxy()
+    stopProxy();
   }, []);
 
+  useEffect(() => {
+    console.log(document.readyState);
+
+    // 检查当前文档是否已经加载完毕
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
+      // 如果 DOM 已经加载完毕，直接执行
+      setTimeout(() => {
+        (window as any).NativeApi_RenderComplete();
+      }, 1000);
+    } else {
+      // 否则监听 DOMContentLoaded 事件
+      document.addEventListener(
+        "DOMContentLoaded",
+        (window as any).NativeApi_RenderComplete()
+      );
+
+      // 清理函数
+      return () => {
+        document.removeEventListener(
+          "DOMContentLoaded",
+          (window as any).NativeApi_RenderComplete()
+        );
+      };
+    }
+  }, []);
 
   return (
     <Layout className="app-module">
