@@ -280,10 +280,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const uniqueExecutable = Array.from(
         new Map(executable.map((item: any) => [item.path, item])).values()
       );
-      
+
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
-      // console.log(addr);
+      console.log(option.serverNode.selectNode, addr);
 
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
@@ -323,14 +323,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           function (response: any) {
             const isCheck = JSON.parse(response);
             console.log("是否开启真实加速(1成功)", response);
-            
+
             if (isCheck?.success === 1) {
               // console.log("成功开启真实加速中:", isCheck);
               resolve({ state: true, platform: pc_platform });
             } else {
               tracking.trackBoostFailure("加速失败，检查文件合法性");
               // tracking.trackBoostDisconnectManual("手动停止加速");
-              stopAcceleration()
+              stopAcceleration();
               resolve({ state: false });
             }
           }
