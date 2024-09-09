@@ -482,6 +482,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             currentGameServer={currentGameServer}
             updateGamesRegion={updateGamesRegion}
             startAcceleration={startAcceleration}
+            setSelectNode={setSelectNode}
           />
         ),
       },

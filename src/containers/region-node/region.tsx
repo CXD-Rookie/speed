@@ -15,6 +15,7 @@ interface RegionProps {
   updateGamesRegion?: (a?: any, b?: any) => void;
   startAcceleration?: (node?: any) => void;
   notice?: (value: any) => void;
+  setSelectNode?: (value: any) => void;
 }
 
 const CustomRegion: React.FC<RegionProps> = (props) => {
@@ -25,6 +26,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
     type,
     updateGamesRegion = () => {},
     startAcceleration = () => {},
+    setSelectNode = ()  => {},
   } = props;
 
   const [selectRegion, setSelectRegion] = useState<any>({}); // 当前选中的区服
@@ -40,6 +42,8 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
   const togglePanel = (option: any, type = "default") => {
     // 如果当前游戏服具有不同的区，进行更新节点操作
     let result: any = { ...option };
+
+    setSelectNode({});
 
     if (option?.fu) {
       result = currentGameServer.filter(
