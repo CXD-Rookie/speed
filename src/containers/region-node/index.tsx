@@ -561,6 +561,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
               if (key === "node") {
                 generateNode();
+              } else {
+                setSelectNode({})
               }
             }}
           />
