@@ -16,7 +16,7 @@
 }
 
 .ant-popover .ant-popover-inner {
-  width: 20vw;
+  width: 28vw;
   height: 22.6vh;
   background-color: #3E3E4A !important;
   padding: 0;
@@ -24,32 +24,40 @@
 }
 
 .dropdown-content {
-  width: 22vw;
+  width: 28vw;
   background: #3E3E4A;
-  padding: 3.6vh 1.2vw 2.4vh 1.2vw;
+  padding: 1.2vw;
   border-radius: var(--speed-dominant-border-radius);
 
   .avatar-box {
     width: 100%;
-    padding: 0 0.8vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
     & div {
       display: flex;
-      justify-content: center;
       align-items: center;
       cursor: default;
 
       & .name-text {
-        width: 12vw;
-        color: #fff;
+        width: 17vw;
         margin-left: 0.8vw;
         white-space: nowrap;    /* 禁止换行 */
         overflow: hidden;       /* 隐藏溢出内容 */
         text-overflow: ellipsis;/* 使用省略号表示溢出 */
         cursor: default;
+        text-align: left;
+
+        & span {
+          font-size: 1.4vw;
+          font-weight: bold;
+        }
+
+        & div {
+          font-size: 1.2vw;
+          color: #f2d4a6;
+        }
       }
     }
 
@@ -59,34 +67,43 @@
       cursor: pointer;
     }
   }
-  .vip{
-    background: linear-gradient(270deg,#ffe3b6, #d8ba90) !important;
-    box-shadow: 0px 9.6px 13.44px 0px rgba(241,212,166,0.20) !important; 
-    color: #725423 !important;
-  }
-  .vips{
-    color: #f2d4a6 !important;
+
+  .banner {
+    width: 25.6vw;
+    height: 6.6vw;
+    margin-top: 1.2vw;
+    cursor: pointer;
   }
 
-  & button {
+  & .login-user-line {
     width: 100%;
-    height: 4.8vh;
-    font-size: 1.4vw;
-    border-radius: 2.4vh;
-    margin: 3vh 0 1.2vh 0;
+    height: 0.15vh;
+    background-color: #525262;
+    margin-top: 1.625vw;
   }
 
-  & p {
-    width: 16.8vw;
-    
-    height: 4.8vh;
-    opacity: 0.5;
-    font-size: 1.2vw;
-    font-weight: Regular;
-    text-align: center;
-    color: #ffffff;
-    line-height: 2.4vh;
-    margin: 0 auto;
+  & .login-suer-coupon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.75vw 0 0.75vw 0;
+
+    & .text {
+      color: #fff;
+      font-size: 1.4vw;
+    }
+
+    & .coupon {
+      font-size: 1.2vw;
+      color: #f86c34;
+      margin-left: 0.4vw;
+    }
+
+    & .num {
+      font-size: 1.2vw;
+      color: #999;
+      cursor: pointer;
+    }
   }
 
   &.vip-content {

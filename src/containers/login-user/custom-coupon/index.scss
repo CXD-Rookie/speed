@@ -1,0 +1,79 @@
+.custon-coupon {
+  .ant-modal-content {
+    width: 67.6vw;
+    height: 75vh;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.2vw;
+    right: 1.2vw;
+    top: 1.8vh;
+  }
+
+  .ant-modal-title,
+  .ant-modal-close-x {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: Regular;
+    color: #ffffff;
+  }
+
+  .ant-tabs {
+    width: 100%;
+    height: calc(75vh - 80px);
+  }
+
+  .ant-tabs-ink-bar {
+    width: 2vw !important;
+    height: 0.3vh !important;
+    background: #f86c34;
+    border-radius: 0.2vw !important;
+  }
+
+  .ant-tabs-nav::before {
+    border: none !important;
+  }
+
+  .ant-tabs-nav-wrap {
+    height: 6vh;
+  }
+
+  .ant-tabs-nav-list {
+    margin: 0 auto;
+    column-gap: 20vw;
+  }
+
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs
+    .ant-tabs-tab.ant-tabs-tab-active
+    .ant-tabs-tab-btn {
+    color: #fff !important;
+  }
+
+  .ant-tabs-tab,
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible),
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:focus:not(:focus-visible),
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:active, 
+  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:active {
+    font-size: 2vw;
+    color: #999;
+  }
+
+  .ant-tabs-tab:hover,
+  .ant-tabs-tab:active,
+  .ant-tabs-tab-btn:hover,
+  .ant-tabs-tab-btn:active {
+    color: #fff;
+  }
+
+  .coupon-tabs-content {
+    width: 100%;
+    height: calc(69vh - 96px);
+  }
+}

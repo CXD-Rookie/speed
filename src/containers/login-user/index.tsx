@@ -7,7 +7,7 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useEffect, useState } from "react";
-import { Button, Popover } from "antd";
+import { Popover } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 
@@ -16,7 +16,11 @@ import RealNameModal from "../real-name";
 import UserAvatarCom from "./user-avatar";
 import SettingsModal from "../setting";
 import PayModal from "../Pay";
+import CustonCoupon from "./custom-coupon";
 import "./index.scss";
+
+import bannerRechargeIcon from "@/assets/images/common/banner-recharge.svg";
+import bannerRenewalIcon from "@/assets/images/common/banner-renewal.svg";
 
 interface CustomDropdownProps {}
 
@@ -34,7 +38,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
-  // const [accountInfo, setAccountInfo] = useState<any>(); // 用户信息
+  const [couponOpen, setCouponOpen] = useState(false);
+
   const [isFirst, setIsFirst] = useState(1);
 
   const hide = () => {
@@ -60,69 +65,74 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
     }
   }, [open]);
 
-  useEffect(() => {
- 
-  }, [open]);
-
   const popoverContent = (isVip: boolean) => (
-    <div>
-      <div className="dropdown-content">
-        <div className="avatar-box">
-          <div>
-            <UserAvatarCom
-              isVip={accountInfo?.userInfo?.is_vip}
-              isLogin={accountInfo?.isLogin}
-            />
+    <div className="dropdown-content">
+      <div className="avatar-box">
+        <div>
+          <UserAvatarCom
+            isVip={accountInfo?.userInfo?.is_vip}
+            isLogin={accountInfo?.isLogin}
+            type={"edit"}
+          />
+          <span className="name-text">
             <span
               style={{
                 color: accountInfo?.userInfo.is_vip ? "#f2d4a6" : "#fff",
               }}
-              className="name-text"
             >
               {accountInfo?.userInfo?.nickname}
             </span>
-          </div>
-          <span
-            className={isVip ? "vips" : "novips"}
-            onClick={() => {
-              hide();
-              setEditOpen(true);
-            }}
-          >
-            编辑
+            {accountInfo?.userInfo.is_vip && (
+              <div>
+                会员到期：
+                {formatDate(accountInfo?.userInfo.vip_expiration_time - 86400)}
+              </div>
+            )}
           </span>
         </div>
-        <Button
+        <span
+          className={isVip ? "vips" : "novips"}
           onClick={() => {
-            const isRealNamel = localStorage.getItem("isRealName");
-
             hide();
-
-            if (isRealNamel === "1") {
-              dispatch(openRealNameModal());
-              return;
-            } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-              setIsMinorOpen(true);
-              setMinorType("recharge");
-              return;
-            } else {
-              setIsModalOpenVip(true);
-            }
+            setEditOpen(true);
           }}
-          className={isVip ? "vip" : "novip"}
-          type={"primary"}
         >
-          {isVip ? "续费" : "会员充值"}
-        </Button>
+          编辑
+        </span>
+      </div>
+      <img
+        className={"banner"}
+        src={isVip ? bannerRenewalIcon : bannerRechargeIcon}
+        alt=""
+        onClick={() => {
+          const isRealNamel = localStorage.getItem("isRealName");
 
-        {isVip ? (
-          <p>
-            会员到期：
-            {formatDate(accountInfo?.userInfo.vip_expiration_time - 86400)}
-          </p>
-        ) : (
-          <p>解锁全新游戏体验，畅玩游戏从未有过的速度！</p>
-        )}
+          hide();
+
+          if (isRealNamel === "1") {
+            dispatch(openRealNameModal());
+            return;
+          } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+            setIsMinorOpen(true);
+            setMinorType("recharge");
+            return;
+          } else {
+            setIsModalOpenVip(true);
+          }
+        }}
+      />
+      <div className="login-user-line" />
+      <div className="login-suer-coupon">
+        <span className="text">
+          我的优惠券
+          <span className="coupon">优惠劵即将到期</span>
+        </span>
+        <span className="num" onClick={() => {
+          setOpen(false)
+          setCouponOpen(true);
+        }}>
+          {}张优惠券
+        </span>
       </div>
     </div>
   );
@@ -138,11 +148,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         content={popoverContent(accountInfo?.userInfo.is_vip)}
       >
         <div className="user-text">
-          <span
-            style={{ color: accountInfo?.userInfo.is_vip ? "#f2d4a6" : "#fff" }}
-          >
-            {/* {accountInfo?.userInfo?.nickname} */}
-          </span>
           <UserAvatarCom
             isVip={accountInfo?.userInfo?.is_vip}
             isLogin={accountInfo?.isLogin}
@@ -170,6 +175,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           type={minorType}
         />
       ) : null}
+      {couponOpen ? <CustonCoupon open={couponOpen} /> : null}
     </div>
   );
 };
