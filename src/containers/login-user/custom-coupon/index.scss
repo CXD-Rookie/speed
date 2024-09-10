@@ -1,7 +1,7 @@
 .custon-coupon {
   .ant-modal-content {
     width: 67.6vw;
-    height: 75vh;
+    height: 75vh !important;
     background-color: #3e3e4a;
   }
 
@@ -75,5 +75,147 @@
   .coupon-tabs-content {
     width: 100%;
     height: calc(69vh - 96px);
+
+    .no-data-box {
+      width: 100%;
+      text-align: center;
+      padding-top: calc(25vh - 48px);
+
+      & div {
+        font-size: 1.4vw;
+        color: #999;
+      }
+    }
+
+    .content-box {
+      display: flex;
+      justify-content: space-between;
+      column-gap: 1.6vw;
+      padding: 0 1.6vw;
+
+      & .card {
+        width: 50%;
+        height: 12vh;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        margin-top: 2.4vh;
+        padding: 0.8vw;
+        display: flex;
+
+        & .icon-box {
+          width: 7.2vw;
+          height: 100%;
+          font-size: 1.6vw;
+          text-align: center;
+          line-height: 6.8vw;
+          position: relative;
+
+          & div {
+            width: 0.9vw; /* 两倍半径 */
+            height: 1.8vw; /* 半径 */
+            position: absolute;
+            top: calc(50% - 0.9vw);
+          }
+
+          & .left {
+            border-radius: 0 0.9vw 0.9vw 0; /* 右侧圆角 */
+            left: 0;
+          }
+
+          & .right {
+            border-radius: 0.9vw 0 0 0.9vw; /* 右侧圆角 */
+            right: 0;
+          }
+        }
+
+        & .text-box {
+          width: calc(100% - 7.2vw);
+          height: 100%;
+          padding: 0.8vw;
+
+          & .title {
+            font-size: 1.4vw;
+            font-weight: bold;
+          }
+
+          & .time-box {
+            font-size: 1.2vw;
+            color: #f86c34;
+            margin-top: 1.8vh;
+            display: flex;
+            justify-content: space-between;
+
+            & button {
+              width: 7.2vw;
+              height: 3.2vh;
+              font-size: 1.2vw;
+              color: #f86c34;
+              background-color: transparent;
+              line-height: 1.6vh;
+              border-radius: 1.6vh;
+              border-color: #f86c34;
+
+              &:hover {
+                color: #fff;
+                background-color: #f86c34;
+              }
+            }
+          }
+        }
+      }
+
+      & .mask-card {
+        background: #fff6f2;
+
+        .icon-box {
+          color: #f86c34;
+          background-color: #FFE5DA;
+
+          & div {
+            background-color: #fff;
+          }
+        }
+
+        & .text-box {
+          & .title {
+            color: #222;
+          }
+        }
+      }
+
+      & .lose-card {
+        position: relative;
+        background: #ccc;
+
+        & .icon-box {
+          color: #666;
+          background-color: #C1C1C1;
+
+          & div {
+            background-color: #ccc;
+          }
+        }
+
+        & .text-box {
+          & .title {
+            color: #666;
+          }
+
+          & .time-text {
+            font-size: 1.2vw;
+            color: #666;
+            margin-top: 1.8vh;
+          }
+        }
+
+        .lose-icon {
+          width: 5vw;
+          height: 4.8vw;
+          position: absolute;
+          bottom: 0;
+          right: 0;
+        }
+      }
+    }
   }
 }
