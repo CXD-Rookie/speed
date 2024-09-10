@@ -22,6 +22,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   const { open, setOpen } = props;
 
   const [currencyCode, setCurrencyCode] = useState(""); // 输入的兑换码
+  const [currencyState, setCurrencyState] = useState(false); // 兑换状态 true | false
   const [currencyTable, setCurrencyTable] = useState<any>([]); // 兑换的表格数据
 
   const columns: TableProps<DataType>["columns"] = [
@@ -49,8 +50,16 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   ];
 
   const onClose = () => {
+    setCurrencyState(false);
+    setCurrencyTable([])
+    setCurrencyCode("")
     setOpen(false);
   };
+
+  // 立即兑换点击事件
+  const handleExchange = () => {
+    setCurrencyState(true)
+  }
 
   useEffect(() => {
     setCurrencyTable([
@@ -89,10 +98,14 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           onChange={(event) => setCurrencyCode(event?.target.value)}
         />
         <div className="currency-btn-box">
+          {currencyState && (
+            <div className="exchange-error">领取失败，兑换码已过期。</div>
+          )}
           <Button
             className="currency-btn"
             type="primary"
             disabled={!currencyCode}
+            onClick={handleExchange}
           >
             立即兑换
           </Button>
