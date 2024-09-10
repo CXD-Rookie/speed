@@ -7,10 +7,11 @@ import loseIcon from "@/assets/images/common/yishiyong.svg";
 
 interface CouponProps {
   open: boolean;
+  setOpen: (event: boolean) => void;
 }
 
 const CustonCoupon: React.FC<CouponProps> = (props) => {
-  const { open } = props;
+  const { open, setOpen } = props;
 
   const [activeTab, setActiveTab] = useState("make");
 
@@ -20,7 +21,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   const [mouseoverState, setMouseoverState] = useState(false);
 
   const onClose = () => {
-
+    setOpen(false);
   }
 
   useEffect(() => {

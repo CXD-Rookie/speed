@@ -175,7 +175,12 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           type={minorType}
         />
       ) : null}
-      {couponOpen ? <CustonCoupon open={couponOpen} /> : null}
+      {couponOpen ? (
+        <CustonCoupon
+          open={couponOpen}
+          setOpen={(event: boolean) => setCouponOpen(event)}
+        />
+      ) : null}
     </div>
   );
 };
