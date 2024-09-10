@@ -37,6 +37,7 @@ import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
 import logoIcon from "@/assets/images/common/logo.png";
+import CurrencyExchange from "./containers/currency-exchange";
 
 const { Header, Content } = Layout;
 
@@ -101,6 +102,9 @@ const App: React.FC = (props: any) => {
   const versionNowRef = useRef(versionNow);
   const [modalType, setModalType] = useState<number | null>(null);// 新用户的支付弹窗类型2是充值，3是续费
   const [isModalOpenNew, setIsModalOpenNew] = useState(false); // 新用户的支付弹窗
+
+  const [currencyOpen, setCurrencyOpen] = useState(false); // 口令兑换弹窗
+
   const menuList: CustomMenuProps[] = [
     {
       key: "home",
@@ -936,6 +940,9 @@ const App: React.FC = (props: any) => {
             onMouseDown={stopPropagation}
             onMouseUp={stopPropagation}
           >
+            <div className="currency-exchange" onClick={() => setCurrencyOpen(true)}>
+              口令兑换
+            </div>
             {accountInfo?.isLogin ? (
               <CustomDropdown />
             ) : (
@@ -1113,6 +1120,12 @@ const App: React.FC = (props: any) => {
           isModalOpen={isModalOpenNew}
           setIsModalOpen={(e) => setIsModalOpenNew(e)}
           type={modalType}
+        />
+      ) : null}
+      {currencyOpen ? (
+        <CurrencyExchange
+          open={currencyOpen}
+          setOpen={(event) => setCurrencyOpen(event)}
         />
       ) : null}
     </Layout>
