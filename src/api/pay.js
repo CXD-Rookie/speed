@@ -48,6 +48,11 @@ class PayApi {
   redeemPick (params) {
     return post(`${this.url}/redeem_code/pick_up?platform=3`, params);
   }
+
+  // 兑换码记录
+  redeemList (params) {
+    return get(`${this.url}/redeem_code/use_list?platform=3&type=${params?.type}&status=${params?.status}&page=${params?.page}&pagesize=${params?.pagesize}`, params);
+  }
 }
 
 const payApi = new PayApi();

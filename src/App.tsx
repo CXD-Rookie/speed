@@ -655,6 +655,8 @@ const App: React.FC = (props: any) => {
         const first_purchase = firstAuth?.first_purchase;
         const first_renewed = firstAuth?.first_renewed;
 
+        localStorage.setItem("timestamp", data?.data?.timestamp || 0);
+        
         dispatch(setFirstAuth(firstAuth));
         // 过滤掉 newUser 的数据
         filteredData = allData.filter((item: any) => {

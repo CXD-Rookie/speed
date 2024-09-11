@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Modal, Table } from "antd";
 import type { TableProps } from "antd";
+import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
 import payApi from "@/api/pay";
@@ -20,6 +21,13 @@ interface DataType {
   tags: string[];
 }
 
+const inilitePagination = { page: 1, pageSize: 20 };
+const iniliteStatusObj: any = {
+  1: "立即使用>",
+  2: "已使用",
+  3: "已过期",
+}
+
 const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   const { open, setOpen } = props;
 
@@ -30,29 +38,73 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   const [promptOpen, setPromptOpen] = useState(false); // 是否触发领取成功提示
   const [promptInfo, setPromptInfo] = useState({}); // 领取成功优惠信息
 
+  const [pagination, setPagination] = useState(inilitePagination); // 兑换记录分页
+  const [tableTotal, setTableTotal] = useState(0);
+
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "兑换内容",
-      dataIndex: "a",
-      render: (text) => <span className="a-columns-render">{text}</span>,
+      dataIndex: "redeem_code",
+      render: (redeem_code) => (
+        <span className="code-columns-render">{redeem_code?.name}</span>
+      ),
     },
     {
       title: "兑换码",
-      dataIndex: "b",
-      render: (text) => <span className="a-columns-render">{text}</span>,
+      dataIndex: "redeem_code",
+      render: (redeem_code) => (
+        <span className="code-columns-render">{redeem_code?.redeem_code}</span>
+      ),
     },
     {
       title: "有效期",
-      dataIndex: "c",
-      render: (text) => <span className="c-columns-render">{text}</span>,
+      render: (record) => (
+        <span className="record-columns-render">{validityPeriod(record)}</span>
+      ),
     },
     {
       title: "状态",
       align: "right",
-      dataIndex: "state",
-      render: (text) => <span className="a-columns-render">{text}</span>,
+      render: (record) => (
+        <span className="record-columns-render">
+          {iniliteStatusObj?.[record?.status]}
+        </span>
+      ),
     },
   ];
+
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}年${month}月${day}日`;
+  };
+
+  const validityPeriod = (record:any = 0) => {
+    const {
+      redeem_code = {
+        goods_expire_time: 0,
+      },
+      status,
+    } = record;
+    const timestamp = Number(localStorage.getItem("timestamp"));
+    const difference = redeem_code?.goods_expire_time - timestamp;
+    const days = Math.floor(difference / 86400);
+    
+    if (days >= 5 || [2, 3].includes(status)) {
+      return formatDate(redeem_code?.goods_expire_time);
+    } else if (days >= 10950) {
+      return "无期限";
+    } else if (days >= 2 && days < 5) {
+      return days + "天后到期";
+    } else if (days <= 1 && days > 0) {
+      return "今天到期"
+    } else {
+      return "--"
+    }
+  }
 
   const onClose = () => {
     setCurrencyState("");
@@ -118,22 +170,46 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
     }
   };
 
+  // 获取兑换记录
+  const fetchRecords = async (
+    default_pagination: any = pagination,
+    search: any = {}
+  ) => {
+    try {
+      const res = await payApi.redeemList({
+        ...default_pagination,
+        ...search,
+      });
+      const data = res?.data?.list || [];
+
+      setTableTotal(res?.data?.total || 0);
+      setCurrencyTable(default_pagination > 1 ? [...currencyTable, ...data] : data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 表格滚动
+  function handleScroll(e: any) {
+    if (e.target.getAttribute("class") === "ant-table-body") {
+      let scrollTop = e.target.scrollTop;
+      let clientHeight = e.target.clientHeight;
+      let scrollHeight = e.target.scrollHeight;
+
+      if (
+        Math.ceil(scrollTop) + Math.ceil(clientHeight) + 1 >= scrollHeight &&
+        tableTotal > currencyTable?.length
+      ) {
+        setPagination({ ...pagination, page: pagination?.page + 1 });
+      }
+    }
+  }
+
   useEffect(() => {
-    setCurrencyTable([
-      {
-        a: "75折卡",
-        b: "vipAAA",
-        c: "3天后过期",
-        state: 1,
-      },
-      {
-        a: "75折卡",
-        b: "vipAAA",
-        c: "3天后过期",
-        state: 1,
-      },
-    ]);
-  }, []);
+    if (open) {
+      fetchRecords();
+    }
+  }, [open, pagination]);
 
   return (
     <Fragment>
@@ -177,15 +253,20 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
             className="table"
             dataSource={currencyTable}
             columns={columns}
-            rowKey={"rid"}
+            rowKey={"id"}
             pagination={false}
+            onScroll={nodeDebounce(handleScroll, 200)}
             scroll={{
-              y: ``,
+              y: `30vh`,
             }}
           />
         </div>
       </Modal>
-      <Active isVisible={promptOpen} value={promptInfo} onClose={() => setPromptOpen(false)} />
+      <Active
+        isVisible={promptOpen}
+        value={promptInfo}
+        onClose={() => setPromptOpen(false)}
+      />
     </Fragment>
   );
 };

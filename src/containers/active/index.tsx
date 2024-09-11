@@ -31,8 +31,6 @@ const Active: React.FC<ActiveModalProps> = (props) => {
 
   useEffect(() => {
     if (Object?.keys(value)?.length > 0) {
-      console.log(111, value);
-      
       setCurrencyInfo({
         name: value?.name,
         rebates_time: 0,
