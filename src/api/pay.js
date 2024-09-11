@@ -11,7 +11,6 @@
 import { get, post } from "./api";
 
 class PayApi {
-
   url = process.env.REACT_APP_API_URL;
 
   getPayTypeList (params) {
@@ -43,6 +42,11 @@ class PayApi {
   UnpaidOrder (params) {
     const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/pay/unpaid_order?platform=3`);
+  }
+
+  // 使用兑换码
+  redeemPick (params) {
+    return post(`${this.url}/redeem_code/pick_up?platform=3`, params);
   }
 }
 

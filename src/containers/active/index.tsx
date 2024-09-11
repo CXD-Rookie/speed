@@ -7,7 +7,7 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 // index.tsx 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { convertSecondsToDays,formatDate } from "@/common/utils";
 import './index.scss';
@@ -15,12 +15,32 @@ import './index.scss';
 interface ActiveModalProps {
   isVisible: boolean;
   onClose: () => void;
+  value?: any;
 }
 
-const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
+const Active: React.FC<ActiveModalProps> = (props) => {
+  const { isVisible, onClose, value = {} } = props;
+
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const vip_experience_time = localStorage.getItem("vip_experience_time");
-  
+
+  const [currencyInfo, setCurrencyInfo] = useState<any>({
+    rebates_time: vip_experience_time ? JSON.parse(vip_experience_time) : 0,
+    vip_time: accountInfo?.userInfo.vip_expiration_time - 86400,
+  });
+
+  useEffect(() => {
+    if (Object?.keys(value)?.length > 0) {
+      console.log(111, value);
+      
+      setCurrencyInfo({
+        name: value?.name,
+        rebates_time: 0,
+        vip_time: value?.goods_expire_time,
+      });
+    }
+  }, [value]);
+
   return (
     <div className={`modal-wrapper ${isVisible ? "visible" : ""}`}>
       <div className="modal-content">
@@ -31,21 +51,14 @@ const Active: React.FC<ActiveModalProps> = ({ isVisible, onClose }) => {
         <p>
           您已获得
           <span className="highlight">
-            {convertSecondsToDays(
-              Number(
-                JSON.parse(
-                  !(!vip_experience_time || vip_experience_time === "undefined")
-                    ? vip_experience_time
-                    : "0"
-                )
-              )
-            )}
-            天免费会员体验
+            {currencyInfo?.name ??
+              convertSecondsToDays(currencyInfo?.rebates_time || 0) +
+                "天免费会员体验"}
           </span>
         </p>
         <h6>
           有效期至
-          {formatDate(accountInfo?.userInfo.vip_expiration_time - 86400)}
+          {formatDate(currencyInfo?.vip_time || 0)}
         </h6>
         <button className="confirm-button" onClick={onClose}>
           好的

@@ -78,10 +78,10 @@
       position: relative;
 
       .exchange-error {
-        width: 17vw;
+        width: 100%;
         position: absolute;
-        left: calc(50% - 8.5vw);
         top: -3.9vh;
+        left: 0;
         font-size: 1.2vw;
         color: rgba(255,59,60,1);
         text-align: center;
@@ -96,6 +96,10 @@
         border-radius: 2.4vh;
         border: none;
         outline: none;
+
+        &:hover {
+          background-color: #EF622A;
+        }
       }
 
       .ant-btn-primary:disabled {

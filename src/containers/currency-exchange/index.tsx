@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Modal, Table } from "antd";
 import type { TableProps } from "antd";
 
 import "./index.scss";
+import payApi from "@/api/pay";
 import currencyBanner from "@/assets/images/common/currency-banner.svg";
+import Active from "../active";
 
 interface CurrencyProps {
   open: boolean;
@@ -22,8 +24,11 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   const { open, setOpen } = props;
 
   const [currencyCode, setCurrencyCode] = useState(""); // 输入的兑换码
-  const [currencyState, setCurrencyState] = useState(false); // 兑换状态 true | false
+  const [currencyState, setCurrencyState] = useState(""); // 兑换错误提示
   const [currencyTable, setCurrencyTable] = useState<any>([]); // 兑换的表格数据
+
+  const [promptOpen, setPromptOpen] = useState(false); // 是否触发领取成功提示
+  const [promptInfo, setPromptInfo] = useState({}); // 领取成功优惠信息
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -50,16 +55,68 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   ];
 
   const onClose = () => {
-    setCurrencyState(false);
+    setCurrencyState("");
     setCurrencyTable([])
     setCurrencyCode("")
     setOpen(false);
   };
 
-  // 立即兑换点击事件
-  const handleExchange = () => {
-    setCurrencyState(true)
-  }
+  // 图形码验证通过回调兑换口令
+  const codeCallback = async (captcha_verify_param: any) => {
+    try {
+      if (captcha_verify_param?.ret !== 0) {
+        return;
+      }
+
+      let res = await payApi.redeemPick({
+        code: currencyCode,
+        ticket: captcha_verify_param.ticket,
+        randstr: captcha_verify_param.randstr,
+      });
+
+      if (res?.error === 0) {
+        setCurrencyState("");
+        setPromptOpen(true);
+        setPromptInfo(res?.data ?? {})
+      } else {
+        setCurrencyState(res?.message);
+      }
+    } catch (error) {
+      console.log("验证码错误", error);
+    }
+  };
+
+  // 定义验证码js加载错误处理函数
+  const loadErrorCallback = () => {
+    let appid = "195964536"; // 生成容灾票据或自行做其它处理
+    let ticket =
+      "terror_1001_" + appid + Math.floor(new Date().getTime() / 1000);
+
+    codeCallback({
+      ret: 0,
+      randstr: "@" + Math.random().toString(36).substr(2),
+      ticket,
+      errorCode: 1001,
+      errorMessage: "jsload_error",
+    });
+  };
+
+  // 唤醒图形验证码
+  const handleVerifyCode = () => {
+    try {
+      let captcha = new (window as any).TencentCaptcha(
+        "195964536",
+        codeCallback,
+        {
+          userLanguage: "zh",
+        }
+      );
+
+      captcha.show();
+    } catch (error) {
+      loadErrorCallback();
+    }
+  };
 
   useEffect(() => {
     setCurrencyTable([
@@ -79,49 +136,57 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   }, []);
 
   return (
-    <Modal
-      className="currency-exchange"
-      open={open}
-      onCancel={onClose}
-      title="我的优惠券"
-      width={"67.6vw"}
-      centered
-      maskClosable={false}
-      footer={null}
-    >
-      <img className="currency-banner" src={currencyBanner} alt="" />
-      <div className="currency-content">
-        <div className="currency-title">口令兑换</div>
-        <Input
-          className="currency-input"
-          placeholder="请输入口令/兑换码"
-          onChange={(event) => setCurrencyCode(event?.target.value)}
-        />
-        <div className="currency-btn-box">
-          {currencyState && (
-            <div className="exchange-error">领取失败，兑换码已过期。</div>
-          )}
-          <Button
-            className="currency-btn"
-            type="primary"
-            disabled={!currencyCode}
-            onClick={handleExchange}
-          >
-            立即兑换
-          </Button>
+    <Fragment>
+      <Modal
+        className="currency-exchange"
+        open={open}
+        onCancel={onClose}
+        title="我的优惠券"
+        width={"67.6vw"}
+        centered
+        maskClosable={false}
+        footer={null}
+      >
+        <img className="currency-banner" src={currencyBanner} alt="" />
+        <div className="currency-content">
+          <div className="currency-title">口令兑换</div>
+          <Input
+            className="currency-input"
+            placeholder="请输入口令/兑换码"
+            onChange={(event) => setCurrencyCode(event?.target.value)}
+          />
+          <div className="currency-btn-box">
+            {currencyState && (
+              <div className="exchange-error">{currencyState}</div>
+            )}
+            <Button
+              className="currency-btn"
+              type="primary"
+              disabled={!currencyCode}
+              onClick={handleVerifyCode}
+              onMouseEnter={() => {
+                if (!currencyCode) {
+                  setCurrencyState("请输入兑换码后再尝试兑换");
+                }
+              }}
+            >
+              立即兑换
+            </Button>
+          </div>
+          <Table
+            className="table"
+            dataSource={currencyTable}
+            columns={columns}
+            rowKey={"rid"}
+            pagination={false}
+            scroll={{
+              y: ``,
+            }}
+          />
         </div>
-        <Table
-          className="table"
-          dataSource={currencyTable}
-          columns={columns}
-          rowKey={"rid"}
-          pagination={false}
-          scroll={{
-            y: ``,
-          }}
-        />
-      </div>
-    </Modal>
+      </Modal>
+      <Active isVisible={promptOpen} value={promptInfo} onClose={() => setPromptOpen(false)} />
+    </Fragment>
   );
 };
 

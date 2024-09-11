@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { setAccountInfo } from "@/redux/actions/account-info";
+import { useSelector } from "react-redux";
 
 import tracking from "@/common/tracking";
 import eventBus from '../../api/eventBus'; 
@@ -9,7 +8,6 @@ import "./index.scss";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
-import loginApi from "@/api/login";
 import PaymentModal from "../payment";
 import BreakConfirmModal from "../break-confirm";
 
@@ -51,7 +49,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {} } = props;
 
   const intervalIdRef: any = useRef(null); // 用于存储interval的引用
-  const dispatch: any = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const firstAuth = useSelector((state: any) => state.firstAuth);
@@ -87,6 +84,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [images, setImages] = useState<ImageItem[]>([]);
   
   const [pollingKey, setPollingKey] = useState<string>("");
+
+  const [couponOpen, setCouponOpen] = useState(false); // 是否展开优惠券
+  const [couponData, setCouponData] = useState({}); // 选中优惠券信息
 
   const env_url = process.env.REACT_APP_API_URL;
 
@@ -196,7 +196,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           setPollingTimeNum((num) => {
             const time = num + pollingTime;
 
-            if (time >= 120000) {
+            if (time >= 10000) {
               setQRCodeState("timeout");
               setPollingTimeNum(0);
               return 0;
@@ -446,70 +446,102 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               ))}
             </div>
           </div>
-          <div className="line"></div>
-          {qrCodeUrl && (
-            <div className="qrcode">
-              <img className="header-icon" src={qrCodeUrl} alt="" />
-              {QRCodeState !== "normal" && (
-                <div className="pay-mask">
-                  <div className="title">
-                    {QRCodeState === "incoming" && "手机支付中"}
-                    {QRCodeState === "timeout" && "二维码已超时"}
+          <div className="content">
+            {qrCodeUrl && (
+              <div className="qrcode">
+                <img className="header-icon" src={qrCodeUrl} alt="" />
+                {QRCodeState !== "normal" && (
+                  <div className="pay-mask">
+                    <div className="title">
+                      {QRCodeState === "incoming" && "手机支付中"}
+                      {QRCodeState === "timeout" && "二维码已超时"}
+                    </div>
+                    <div className="text">
+                      {QRCodeState === "incoming" && "如遇问题"}
+                      <span onClick={() => iniliteReset()}>点击刷新</span>
+                    </div>
+                    <div>
+                      {QRCodeState === "timeout" && "二维码"}
+                      {QRCodeState === "incoming" && "二维码重试"}
+                    </div>
                   </div>
-                  <div className="text">
-                    {QRCodeState === "incoming" && "如遇问题"}
-                    <span onClick={() => iniliteReset()}>点击刷新</span>
-                  </div>
-                  <div>
-                    {QRCodeState === "timeout" && "二维码"}
-                    {QRCodeState === "incoming" && "二维码重试"}
+                )}
+              </div>
+            )}
+            <div className="carousel">
+              {commodities.map((item, index) => (
+                <div
+                  key={index}
+                  className="carousel-item"
+                  style={{
+                    display: index === activeTabIndex ? "block" : "none",
+                  }}
+                >
+                  <div className="priceAll" data-price={item.price}>
+                    <ul>
+                      <li>
+                        <span className="txt">支付宝或微信扫码支付</span>
+                      </li>
+                      <li>
+                        <span className="priceBig">{item.price}</span>
+                      </li>
+                      <li>
+                        我已同意《
+                        <div
+                          style={{ cursor: "pointer" }}
+                          className="txt"
+                          onClick={handleClick}
+                          ref={divRef}
+                          data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                        >
+                          用户协议
+                        </div>
+                        》及《
+                        <div
+                          style={{ cursor: "pointer" }}
+                          className="txt"
+                          onClick={handleClick}
+                          ref={divRef}
+                          data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
+                        >
+                          自动续费协议
+                        </div>
+                        》到期按每月29元自动续费，可随时取消 <TooltipCom />
+                      </li>
+                    </ul>
                   </div>
                 </div>
-              )}
+              ))}
             </div>
-          )}
-          <div className="carousel">
-            {commodities.map((item, index) => (
-              <div
-                key={index}
-                className="carousel-item"
-                style={{ display: index === activeTabIndex ? "block" : "none" }}
-              >
-                <div className="priceAll" data-price={item.price}>
-                  <ul>
-                    <li>
-                      <span className="txt">支付宝或微信扫码支付</span>
-                    </li>
-                    <li>
-                      <span className="priceBig">{item.price}</span>
-                    </li>
-                    <li>
-                      我已同意《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/terms_of_service.html"
-                      >
-                        用户协议
-                      </div>
-                      》及《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
-                      >
-                        自动续费协议
-                      </div>
-                      》到期按每月29元自动续费，可随时取消 <TooltipCom />
-                    </li>
-                  </ul>
+            <div className="my-coupons">
+              <div className="title">我的优惠券： </div>
+              <div className="coupons">
+                <div className="custom-input">
+                  <span>您有2张优惠券可使用</span>
+                  <div
+                    className={
+                      couponOpen ? "triangles-top" : "triangles-bottom"
+                    }
+                  />
+                </div>
+                <div className="custom-down">
+                  <div className="mask-card card">
+                    <div className="icon-box">
+                      <div className="left" />
+                      <div className="right" />
+                      {}75折
+                    </div>
+                    <div className="text-box">
+                      <div className="title">75折卡</div>
+                      <div className="time-box">2天后过期</div>
+                    </div>
+                    <div className="custom-radio">
+                      <div className="radio-after" />
+                    </div>
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </Modal>

@@ -869,34 +869,34 @@ const App: React.FC = (props: any) => {
     stopProxy();
   }, []);
 
-  // useEffect(() => {
-  //   console.log(document.readyState);
+  useEffect(() => {
+    console.log(document.readyState);
 
-  //   // 检查当前文档是否已经加载完毕
-  //   if (
-  //     document.readyState === "complete" ||
-  //     document.readyState === "interactive"
-  //   ) {
-  //     // 如果 DOM 已经加载完毕，直接执行
-  //     setTimeout(() => {
-  //       (window as any).NativeApi_RenderComplete();
-  //     }, 1000);
-  //   } else {
-  //     // 否则监听 DOMContentLoaded 事件
-  //     document.addEventListener(
-  //       "DOMContentLoaded",
-  //       (window as any).NativeApi_RenderComplete()
-  //     );
+    // 检查当前文档是否已经加载完毕
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
+      // 如果 DOM 已经加载完毕，直接执行
+      setTimeout(() => {
+        (window as any).NativeApi_RenderComplete();
+      }, 1000);
+    } else {
+      // 否则监听 DOMContentLoaded 事件
+      document.addEventListener(
+        "DOMContentLoaded",
+        (window as any).NativeApi_RenderComplete()
+      );
 
-  //     // 清理函数
-  //     return () => {
-  //       document.removeEventListener(
-  //         "DOMContentLoaded",
-  //         (window as any).NativeApi_RenderComplete()
-  //       );
-  //     };
-  //   }
-  // }, []);
+      // 清理函数
+      return () => {
+        document.removeEventListener(
+          "DOMContentLoaded",
+          (window as any).NativeApi_RenderComplete()
+        );
+      };
+    }
+  }, []);
 
   return (
     <Layout className="app-module">
