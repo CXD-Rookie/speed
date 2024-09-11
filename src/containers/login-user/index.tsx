@@ -7,10 +7,11 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useEffect, useState } from "react";
-import { Popover } from "antd";
+import { Popover, Tooltip } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 
+import payApi from "@/api/pay";
 import MinorModal from "../minor";
 import RealNameModal from "../real-name";
 import UserAvatarCom from "./user-avatar";
@@ -21,10 +22,16 @@ import "./index.scss";
 
 import bannerRechargeIcon from "@/assets/images/common/banner-recharge.svg";
 import bannerRenewalIcon from "@/assets/images/common/banner-renewal.svg";
+import fanhuiIcon from "@/assets/images/common/fanhui.svg";
+import closeIcon from "@/assets/images/common/cloture.svg";
 
-interface CustomDropdownProps {}
+interface CustomDropdownProps {
+  isCouponRefresh?: number;
+}
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
+  const { isCouponRefresh } = props;
+
   const dispatch = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
@@ -38,7 +45,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
-  const [couponOpen, setCouponOpen] = useState(false);
+  const [couponOpen, setCouponOpen] = useState(false); // 优惠券 modal
+  const [couponTooltip, setCouponTooltip] = useState(false); // 优惠券提醒是否到期
+  const [tableTotal, setTableTotal] = useState(0); // 可使用优惠券数量
+  const [currencyTable, setCurrencyTable] = useState([]); // 可使用优惠券
 
   const [isFirst, setIsFirst] = useState(1);
 
@@ -59,11 +69,73 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
     return `${year}-${month}-${day}`;
   };
 
+  // 获取可使用优惠券
+  const fetchRecords = async (
+    search: any = {
+      type: 2,
+      status: 1,
+    }
+  ) => {
+    try {
+      const res = await payApi.redeemList({
+        ...search,
+      });
+      const data = res?.data?.list || [];
+
+      setTableTotal(res?.data?.total || 0);
+      setCurrencyTable(data);
+
+      return data || []
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  function getCouponTimeLock() {
+    // 获取当前日期时间
+    let now = new Date();
+
+    // 计算明天的日期
+    now.setDate(now.getDate() + 1);
+    // 设置时间为00:00:00
+    now.setHours(0, 0, 0, 0);
+
+    // 获取该时间的时间戳，并转换为秒级时间戳
+    return Math.floor(now.getTime() / 1000);
+  }
+
   useEffect(() => {
     if (isFirst === 1 || open) {
       setIsFirst(isFirst + 1);
+
+      if (open) {
+        fetchRecords();
+      }
     }
   }, [open]);
+  
+  useEffect(() => {
+    const iniliteFun = async () => {
+      const tiem_lock: any = getCouponTimeLock();
+      const timestamp = Number(localStorage.getItem("timestamp"));
+      const record = await fetchRecords();
+
+      if (
+        record.some(
+          (item: any) =>
+            item?.redeem_code?.goods_expire_time - timestamp <= 432000
+        )
+      ) {
+        localStorage.setItem("isCouponExpiry", "1"); // 是否距离优惠券过期小于5天
+      } else {
+        localStorage.removeItem("isCouponExpiry");
+      }
+      
+      localStorage.setItem("couponTimeLock", tiem_lock);
+    };
+
+    iniliteFun();
+  }, [isCouponRefresh]);
 
   const popoverContent = (isVip: boolean) => (
     <div className="dropdown-content">
@@ -127,11 +199,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           我的优惠券
           <span className="coupon">优惠劵即将到期</span>
         </span>
-        <span className="num" onClick={() => {
-          setOpen(false)
-          setCouponOpen(true);
-        }}>
-          {}张优惠券
+        <span
+          className="num"
+          onClick={() => {
+            setOpen(false);
+            setCouponOpen(true);
+          }}
+        >
+          {tableTotal}张优惠券
+          <img src={fanhuiIcon} alt="" />
         </span>
       </div>
     </div>
@@ -154,6 +230,22 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           />
         </div>
       </Popover>
+      <Tooltip
+        overlayClassName={"custom-dropdown-ant-tooltip-overlay"}
+        title={
+          <div className="custom-dropdown-title-tooltip">
+            优惠券即将到期
+            <img src={closeIcon} alt="" onClick={() => {
+              setCouponTooltip(false)
+              localStorage.removeItem("isCouponExpiry");
+            }} />
+          </div>
+        }
+        placement={"bottomRight"}
+        open={localStorage.getItem("isCouponExpiry") === "1" || couponTooltip}
+      >
+        <span className="user-text"></span>
+      </Tooltip>
       {editOpen ? (
         <SettingsModal
           type="edit"

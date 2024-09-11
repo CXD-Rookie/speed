@@ -11,6 +11,32 @@
   }
 }
 
+.custom-dropdown-ant-tooltip-overlay {
+  .ant-tooltip-arrow::before {
+    background-color: #3e3e4a !important;
+    bottom: -1px;
+  }
+
+  .ant-tooltip-inner {
+    width: 16.5vw;
+    font-size: 1.2vw;
+    color: #999;
+    background-color: #3e3e4a !important;
+    padding: 1.2vw 1.6vw !important;
+    border-radius: 1.5vh;
+  }
+}
+
+
+.custom-dropdown-title-tooltip {
+  display: flex;
+  justify-content: space-between;
+
+  & img {
+    cursor: pointer;
+  }
+}
+
 .ant-popover {
   inset: 9vh 13vw auto auto !important;
 }
@@ -103,6 +129,21 @@
       font-size: 1.2vw;
       color: #999;
       cursor: pointer;
+      position: relative;
+      margin-right: 1.2vw;
+
+      img {
+        width: 1.2vw;
+        height: 1.2vw;
+        transform: rotate(180deg);
+        position: absolute;
+        top: 0.6vh;
+        right: -1.2vw;
+      }
+
+      &:hover {
+        color: #666;
+      }
     }
   }
 

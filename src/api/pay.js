@@ -51,7 +51,7 @@ class PayApi {
 
   // 兑换码记录
   redeemList (params) {
-    return get(`${this.url}/redeem_code/use_list?platform=3&type=${params?.type}&status=${params?.status}&page=${params?.page}&pagesize=${params?.pagesize}`, params);
+    return get(`${this.url}/redeem_code/use_list?platform=3`, params);
   }
 }
 

@@ -104,6 +104,7 @@ const App: React.FC = (props: any) => {
   const [isModalOpenNew, setIsModalOpenNew] = useState(false); // 新用户的支付弹窗
 
   const [currencyOpen, setCurrencyOpen] = useState(false); // 口令兑换弹窗
+  const [couponRefreshNum, setCouponRefreshNum] = useState(0); // 是否刷新优惠券过期判断
 
   const menuList: CustomMenuProps[] = [
     {
@@ -656,13 +657,18 @@ const App: React.FC = (props: any) => {
         const first_renewed = firstAuth?.first_renewed;
 
         localStorage.setItem("timestamp", data?.data?.timestamp || 0);
+        const couponTimeLock = localStorage.getItem("couponTimeLock") || 0;
+
+        if (data?.data?.timestamp > couponTimeLock) {
+          setCouponRefreshNum(couponRefreshNum + 1);
+        }
         
         dispatch(setFirstAuth(firstAuth));
         // 过滤掉 newUser 的数据
         filteredData = allData.filter((item: any) => {
           return !newUser.some((newItem: any) => newItem.image_url === item.image_url);
         });
-
+        
         // 根据 first_purchase 和 first_renewal 的状态进行筛选
         if (first_purchase && !first_renewed) {
           // 保持 all_data 中只有 first_purchase 的数据
@@ -872,8 +878,6 @@ const App: React.FC = (props: any) => {
   }, []);
 
   useEffect(() => {
-    console.log(document.readyState);
-
     // 检查当前文档是否已经加载完毕
     if (
       document.readyState === "complete" ||
@@ -942,11 +946,14 @@ const App: React.FC = (props: any) => {
             onMouseDown={stopPropagation}
             onMouseUp={stopPropagation}
           >
-            <div className="currency-exchange" onClick={() => setCurrencyOpen(true)}>
+            <div
+              className="currency-exchange"
+              onClick={() => setCurrencyOpen(true)}
+            >
               口令兑换
             </div>
             {accountInfo?.isLogin ? (
-              <CustomDropdown />
+              <CustomDropdown isCouponRefresh={couponRefreshNum} />
             ) : (
               <div
                 className="login-enroll-text"
