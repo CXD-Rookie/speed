@@ -265,7 +265,10 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
       <Active
         isVisible={promptOpen}
         value={promptInfo}
-        onClose={() => setPromptOpen(false)}
+        onClose={() => {
+          setPromptOpen(false);
+          fetchRecords();
+        }}
       />
     </Fragment>
   );
