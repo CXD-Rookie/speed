@@ -658,8 +658,8 @@ const App: React.FC = (props: any) => {
 
         localStorage.setItem("timestamp", data?.data?.timestamp || 0);
         const couponTimeLock = localStorage.getItem("couponTimeLock") || 0;
-
-        if (data?.data?.timestamp > couponTimeLock) {
+        
+        if (data?.data?.timestamp > Number(couponTimeLock)) {
           setCouponRefreshNum(couponRefreshNum + 1);
         }
         

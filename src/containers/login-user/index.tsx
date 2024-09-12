@@ -28,6 +28,7 @@ import closeIcon from "@/assets/images/common/cloture.svg";
 interface CustomDropdownProps {
   isCouponRefresh?: number;
 }
+const inilitePagination = { page: 1, pageSize: 20 };
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const { isCouponRefresh } = props;
@@ -47,8 +48,12 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   const [couponOpen, setCouponOpen] = useState(false); // 优惠券 modal
   const [couponTooltip, setCouponTooltip] = useState(false); // 优惠券提醒是否到期
+
   const [tableTotal, setTableTotal] = useState(0); // 可使用优惠券数量
   const [currencyTable, setCurrencyTable] = useState([]); // 可使用优惠券
+
+  const [makeSearch] = useState({ type: 2, status: 1 }); // 可使用优惠券请求参数
+  const [makePagination, setMakePagination] = useState(inilitePagination); // 可使用优惠券请求分页
 
   const [isFirst, setIsFirst] = useState(1);
 
@@ -58,6 +63,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
+    setMakePagination(inilitePagination);
   };
 
   const formatDate = (timestamp: number) => {
@@ -71,21 +77,26 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   // 获取可使用优惠券
   const fetchRecords = async (
-    search: any = {
-      type: 2,
-      status: 1,
-    }
+    search: any = makeSearch,
+    default_pagination = inilitePagination
   ) => {
     try {
       const res = await payApi.redeemList({
         ...search,
+        ...default_pagination,
       });
       const data = res?.data?.list || [];
+      const total = res?.data?.total || 0;
 
-      setTableTotal(res?.data?.total || 0);
-      setCurrencyTable(data);
+      if (search?.status === 1) {
+        setTableTotal(total);
+        setCurrencyTable(data);
+      }
 
-      return data || []
+      return {
+        data,
+        total,
+      };
     } catch (error) {
       console.log(error);
     }
@@ -113,12 +124,12 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       }
     }
   }, [open]);
-  
+
   useEffect(() => {
     const iniliteFun = async () => {
       const tiem_lock: any = getCouponTimeLock();
       const timestamp = Number(localStorage.getItem("timestamp"));
-      const record = await fetchRecords();
+      const record: any = (await fetchRecords())?.data;
 
       if (
         record.some(
@@ -130,7 +141,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       } else {
         localStorage.removeItem("isCouponExpiry");
       }
-      
+
       localStorage.setItem("couponTimeLock", tiem_lock);
     };
 
@@ -197,7 +208,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       <div className="login-suer-coupon">
         <span className="text">
           我的优惠券
-          <span className="coupon">优惠劵即将到期</span>
+          {localStorage.getItem("isCouponExpiry") === "1" && (
+            <span className="coupon">优惠劵即将到期</span>
+          )}
         </span>
         <span
           className="num"
@@ -235,10 +248,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         title={
           <div className="custom-dropdown-title-tooltip">
             优惠券即将到期
-            <img src={closeIcon} alt="" onClick={() => {
-              setCouponTooltip(false)
-              localStorage.removeItem("isCouponExpiry");
-            }} />
+            <img
+              src={closeIcon}
+              alt=""
+              onClick={() => {
+                setCouponTooltip(false);
+                localStorage.removeItem("isCouponExpiry");
+              }}
+            />
           </div>
         }
         placement={"bottomRight"}
@@ -271,6 +288,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         <CustonCoupon
           open={couponOpen}
           setOpen={(event: boolean) => setCouponOpen(event)}
+          value={currencyTable}
+          fetchRecords={fetchRecords}
+          makeParams={{
+            makeSearch,
+            makePagination,
+            makeTotal: tableTotal,
+            makeData: currencyTable,
+            setMakePagination,
+          }}
         />
       ) : null}
     </div>
