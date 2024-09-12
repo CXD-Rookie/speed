@@ -315,7 +315,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           proxy_speed_limit,
         },
       });
-
+      
       return new Promise((resolve, reject) => {
         (window as any).NativeApi_AsynchronousRequest(
           "NativeApi_StartProcessProxy",
@@ -363,10 +363,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     if (childRef?.current) {
       option = await childRef?.current?.getFastestNode(selectRegion, option);
     }
-    
-    // if (option) {
-    //   return;
-    // }
 
     const nodeHistory = option?.serverNode?.nodeHistory || [];
     const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
@@ -392,7 +388,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             type: "infectedOrHijacked",
           });
         }
-
+        
         // 暂时注释 实际生产打开
         if (isCheck?.pre_check_status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
@@ -415,24 +411,26 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           console.log(`不是合法文件，请重新安装加速器`);
           tracking.trackBoostFailure("加速失败，检查文件合法性");
           tracking.trackBoostDisconnectManual("手动停止加速");
+          isPre = false;
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",
           });
         }
+
+        setTimeout(() => {
+          localStorage.removeItem("isAccelLoaindg"); // 删除存储临时的加速中状态
+          setIsAllowAcceleration(true); // 启用立即加速
+          setIsAllowShowAccelerating(true); // 启用显示加速中
+          setIsStartAnimate(false); // 结束加速动画
+          console.log(2222);
+
+          if (isPre) {
+            navigate("/gameDetail");
+          }
+        }, 1000);
       }
     );
-
-    setTimeout(() => {
-      localStorage.removeItem("isAccelLoaindg"); // 删除存储临时的加速中状态
-      setIsAllowAcceleration(true); // 启用立即加速
-      setIsAllowShowAccelerating(true); // 启用显示加速中
-      setIsStartAnimate(false); // 结束加速动画
-
-      if (isPre) {
-        navigate("/gameDetail");
-      }
-    }, 5000);
   };
   
   // 确认开始加速
