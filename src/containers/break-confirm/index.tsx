@@ -225,6 +225,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
             ? false
             : true
         }
+        width={"32vw"}
         onCancel={cancel}
         title="提示"
         centered

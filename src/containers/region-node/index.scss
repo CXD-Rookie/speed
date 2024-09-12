@@ -3,7 +3,7 @@
     width: 67.6vw;
     height: 75vh;
     background-color: #3e3e4a;
-    padding: 1.2vw 2.4vh;
+    padding: 2.4vh 1.2vw;
   }
 
   & .loading-spin {
@@ -14,15 +14,15 @@
   }
 
   .ant-modal-header {
+    height: 2.4vh;
     color: #fff;
     background-color: #3e3e4a;
+    margin-bottom: 0;
   }
 
   .ant-modal-close {
     width: 1.2vw;
     height: 1.2vw;
-    right: 1.2vw;
-    top: 1.8vh;
   }
 
   .ant-modal-title,
@@ -35,7 +35,7 @@
 
   .ant-tabs {
     width: 100%;
-    height: calc(75vh - 4vw);
+    height: 67.8vh;
   }
 
   .ant-tabs-ink-bar {
@@ -47,6 +47,10 @@
 
   .ant-tabs-nav::before {
     border: none !important;
+  }
+  
+  .ant-tabs-nav {
+    margin-bottom: 0;
   }
 
   .ant-tabs-nav-wrap {
@@ -89,11 +93,9 @@
   }
 
   .content {
-    margin-top: 1.35vh;
-    height: 60.85vh;
-    padding: 0 1.6vw 1.2vh 1.6vw;
+    height: 61.8vh;
+    padding: 2.4vh 1.6vw 1.2vh 1.6vw;
     position: relative;
-    // background-color: red;
 
     .current-box {
       display: flex;
@@ -207,7 +209,7 @@
       background-color: #F86C34;
       border: none;
       border-radius: 3.3vh;
-      top: 50vh;
+      bottom: 0;
       left: calc(50% - 9.25vw);
 
       &:hover, &:active {
@@ -223,7 +225,7 @@
       text-align: left;
       color: #ffffff;
       line-height: 2.4vh;
-      top: 46vh;
+      bottom: 7.2vh;
       left: calc(50% - 3.5vw);
       cursor: pointer;
     }
