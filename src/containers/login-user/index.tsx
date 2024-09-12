@@ -90,7 +90,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
       if (search?.status === 1) {
         setTableTotal(total);
-        setCurrencyTable(data);
+        setCurrencyTable(default_pagination?.page > 1 ? [...currencyTable, ...data]: data);
       }
 
       return {

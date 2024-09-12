@@ -52,7 +52,9 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
 
     if (key === "lose") {
       setLoseTotal(res?.total)
-      setCouponLoseData(res?.data);
+      setCouponLoseData(
+        pagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
+      );
     }
   };
 
@@ -85,7 +87,9 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
 
           setLosePagination(pagination);
           setLoseTotal(res?.total);
-          setCouponLoseData(res?.data);
+          setCouponLoseData(
+            pagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
+          );
         }
       }
     }
