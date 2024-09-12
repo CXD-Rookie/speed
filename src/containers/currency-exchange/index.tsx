@@ -6,6 +6,7 @@ import { validityPeriod } from "./utils";
 
 import "./index.scss";
 import payApi from "@/api/pay";
+import PayModal from "../Pay";
 import currencyBanner from "@/assets/images/common/currency-banner.svg";
 import Active from "../active";
 
@@ -42,6 +43,9 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   const [pagination, setPagination] = useState(inilitePagination); // 兑换记录分页
   const [tableTotal, setTableTotal] = useState(0);
 
+  const [payOpen, setPayOpen] = useState(false); // 购买开关
+  const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
+
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "兑换内容",
@@ -67,21 +71,27 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
       title: "状态",
       align: "right",
       render: (record) => (
-        <span className="record-columns-render">
+        <span
+          className="record-columns-render"
+          style={record?.status === 1 ? { cursor: "pointer" } : {}}
+          onClick={() => {
+            if (record?.status === 1) {
+              setpayCoupon(record)
+              setPayOpen(true);
+              setOpen(false);
+            }
+          }}
+        >
           {iniliteStatusObj?.[record?.status]}
         </span>
       ),
     },
   ];
 
-  
-
-  
-
   const onClose = () => {
     setCurrencyState("");
-    setCurrencyTable([])
-    setCurrencyCode("")
+    setCurrencyTable([]);
+    setCurrencyCode("");
     setOpen(false);
   };
 
@@ -101,7 +111,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
       if (res?.error === 0) {
         setCurrencyState("");
         setPromptOpen(true);
-        setPromptInfo(res?.data ?? {})
+        setPromptInfo(res?.data ?? {});
       } else {
         setCurrencyState(res?.message);
       }
@@ -155,7 +165,9 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
       const data = res?.data?.list || [];
 
       setTableTotal(res?.data?.total || 0);
-      setCurrencyTable(default_pagination > 1 ? [...currencyTable, ...data] : data);
+      setCurrencyTable(
+        default_pagination > 1 ? [...currencyTable, ...data] : data
+      );
     } catch (error) {
       console.log(error);
     }
@@ -242,6 +254,13 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           fetchRecords();
         }}
       />
+      {payOpen ? (
+        <PayModal
+          isModalOpen={payOpen}
+          setIsModalOpen={setPayOpen}
+          couponValue={payCoupon}
+        />
+      ) : null}
     </Fragment>
   );
 };

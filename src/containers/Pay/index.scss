@@ -288,13 +288,14 @@
           justify-content: space-between;
           align-items: center;
           cursor: pointer;
+          margin-top: 1.2vh;
 
           .triangles-bottom {
             width: 0;
             height: 0;
             border-left: 0.5vw solid transparent;
             border-right: 0.5vw solid transparent;
-            border-top: 0.6vw solid white;
+            border-bottom: 0.6vw solid white;
           }
 
           .triangles-top {
@@ -309,13 +310,14 @@
         .custom-down {
           width: 31.4vw;
           height: 27.6vh;
+          overflow-y: scroll;
           background-color: #3e3e4a;
           padding: 1.6vw;
           border-radius: 0.75vh;
           box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.50); 
           overflow-y: scroll;
           position: absolute;
-          top: 5vh;
+          top: 6vh;
           right: 0;
 
           &::-webkit-scrollbar {
@@ -384,11 +386,22 @@
               border-radius: 50%;
               margin: auto 0;
               cursor: pointer;
+              display: flex;
+              align-items: center;
 
               & .radio-after {
-                width: 0.8vw;
-                height: 0.8vw;
+                width: 0.6vw;
+                height: 0.6vw;
                 border-radius: 50%;
+                margin: 0 auto;
+              }
+            }
+
+            & .active-custom-radio {
+              border-color: #f97d4c;
+
+              & .radio-after {
+                background-color: #f97d4c;
               }
             }
           }

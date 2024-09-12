@@ -284,21 +284,19 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           type={minorType}
         />
       ) : null}
-      {couponOpen ? (
-        <CustonCoupon
-          open={couponOpen}
-          setOpen={(event: boolean) => setCouponOpen(event)}
-          value={currencyTable}
-          fetchRecords={fetchRecords}
-          makeParams={{
-            makeSearch,
-            makePagination,
-            makeTotal: tableTotal,
-            makeData: currencyTable,
-            setMakePagination,
-          }}
-        />
-      ) : null}
+      <CustonCoupon
+        open={couponOpen}
+        setOpen={(event: boolean) => setCouponOpen(event)}
+        value={currencyTable}
+        fetchRecords={fetchRecords}
+        makeParams={{
+          makeSearch,
+          makePagination,
+          makeTotal: tableTotal,
+          makeData: currencyTable,
+          setMakePagination,
+        }}
+      />
     </div>
   );
 };

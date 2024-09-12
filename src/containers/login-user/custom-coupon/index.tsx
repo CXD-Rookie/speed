@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Modal, Tabs } from "antd";
 import { validityPeriod } from "@/containers/currency-exchange/utils";
 import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
+import PayModal from "@/containers/Pay";
 import noIcon from "@/assets/images/common/no-data.svg";
 import loseIcon from "@/assets/images/common/yishiyong.svg";
 import expiresIcon from "@/assets/images/common/yiguoqi.svg";
@@ -32,6 +33,9 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   const [couponLoseData, setCouponLoseData] = useState<any>([]); // 已失效数据
 
   const [mouseoverState, setMouseoverState] = useState(false);
+
+  const [payOpen, setPayOpen] = useState(false); // 购买开关
+  const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
 
   const [loseSearch] = useState({ type: 2, status: "2, 3" }); // 已失效类型参数
   const [losePagination, setLosePagination] = useState(inilitePagination); // 已失效分页参数
@@ -100,83 +104,88 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   }, [value]);
 
   return (
-    <Modal
-      className="custon-coupon"
-      open={open}
-      onCancel={onClose}
-      title="我的优惠券"
-      width={"67.6vw"}
-      centered
-      maskClosable={false}
-      footer={null}
-    >
-      <Tabs
-        activeKey={activeTab}
-        onChange={handleTabChange}
-        items={[
-          {
-            key: "make",
-            label: `未使用（${couponMaskData?.length}）`,
-            children: (
-              <div className="coupon-tabs-content">
-                {couponMaskData?.length >= 0 ? (
-                  <div
-                    className="content-box"
-                    onScrollCapture={nodeDebounce(handleScroll, 200)}
-                  >
-                    {couponMaskData.map((mask: any) => {
-                      const redeem_code = mask?.redeem_code;
+    <Fragment>
+      <Modal
+        className="custon-coupon"
+        open={open}
+        onCancel={onClose}
+        title="我的优惠券"
+        width={"67.6vw"}
+        centered
+        maskClosable={false}
+        footer={null}
+      >
+        <Tabs
+          activeKey={activeTab}
+          onChange={handleTabChange}
+          items={[
+            {
+              key: "make",
+              label: `未使用（${couponMaskData?.length}）`,
+              children: (
+                <div className="coupon-tabs-content">
+                  {couponMaskData?.length >= 0 ? (
+                    <div
+                      className="content-box"
+                      onScrollCapture={nodeDebounce(handleScroll, 200)}
+                    >
+                      {couponMaskData.map((mask: any) => {
+                        const redeem_code = mask?.redeem_code;
 
-                      return (
-                        <div
-                          className="mask-card card"
-                          key={mask?.id}
-                          style={{
-                            borderColor: mouseoverState
-                              ? "#f86c34"
-                              : "transparent",
-                          }}
-                        >
-                          <div className="icon-box">
-                            <div className="left" />
-                            <div className="right" />
-                            {redeem_code?.content}折
-                          </div>
-                          <div className="text-box">
-                            <div className="title">{redeem_code?.name}</div>
-                            <div className="time-box">
-                              {validityPeriod(mask)}
-                              <Button
-                                type="default"
-                                onMouseOver={() => setMouseoverState(true)}
-                                onMouseLeave={() => setMouseoverState(false)}
-                              >
-                                立即使用
-                              </Button>
+                        return (
+                          <div
+                            className="mask-card card"
+                            key={mask?.id}
+                            style={{
+                              borderColor: mouseoverState
+                                ? "#f86c34"
+                                : "transparent",
+                            }}
+                          >
+                            <div className="icon-box">
+                              <div className="left" />
+                              <div className="right" />
+                              {redeem_code?.content}折
+                            </div>
+                            <div className="text-box">
+                              <div className="title">{redeem_code?.name}</div>
+                              <div className="time-box">
+                                {validityPeriod(mask)}
+                                <Button
+                                  type="default"
+                                  onMouseOver={() => setMouseoverState(true)}
+                                  onMouseLeave={() => setMouseoverState(false)}
+                                  onClick={() => {
+                                    setpayCoupon(mask);
+                                    setPayOpen(true);
+                                    setOpen(false);
+                                  }}
+                                >
+                                  立即使用
+                                </Button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="no-data-box">
-                    <img src={noIcon} alt="" />
-                    <div>暂无优惠券</div>
-                  </div>
-                )}
-              </div>
-            ),
-          },
-          {
-            key: "lose",
-            label: `已失效（${couponLoseData?.length}）`,
-            children: (
-              <div className="coupon-tabs-content">
-                {couponLoseData?.length >= 0 ? (
-                  <div className="content-box">
-                    {
-                      couponLoseData.map((lose: any) => {
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="no-data-box">
+                      <img src={noIcon} alt="" />
+                      <div>暂无优惠券</div>
+                    </div>
+                  )}
+                </div>
+              ),
+            },
+            {
+              key: "lose",
+              label: `已失效（${couponLoseData?.length}）`,
+              children: (
+                <div className="coupon-tabs-content">
+                  {couponLoseData?.length >= 0 ? (
+                    <div className="content-box">
+                      {couponLoseData.map((lose: any) => {
                         const redeem_code = lose?.redeem_code;
 
                         return (
@@ -207,21 +216,28 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                             />
                           </div>
                         );
-                      })
-                    }
-                  </div>
-                ) : (
-                  <div className="no-data-box">
-                    <img src={noIcon} alt="" />
-                    <div>暂无优惠券</div>
-                  </div>
-                )}
-              </div>
-            ),
-          },
-        ]}
-      />
-    </Modal>
+                      })}
+                    </div>
+                  ) : (
+                    <div className="no-data-box">
+                      <img src={noIcon} alt="" />
+                      <div>暂无优惠券</div>
+                    </div>
+                  )}
+                </div>
+              ),
+            },
+          ]}
+        />
+      </Modal>
+      {payOpen ? (
+        <PayModal
+          isModalOpen={payOpen}
+          setIsModalOpen={setPayOpen}
+          couponValue={payCoupon}
+        />
+      ) : null}
+    </Fragment>
   );
 };
 

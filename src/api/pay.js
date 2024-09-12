@@ -19,7 +19,7 @@ class PayApi {
   }
   getCommodityList (params) {
     const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/commodity/list?platform=3`);
+    return get(`${this.url}/commodity/list?platform=3`, params);
   }
   getQrCodeUrl (params) {
     // const queryString = new URLSearchParams(params).toString();

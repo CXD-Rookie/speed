@@ -1131,12 +1131,10 @@ const App: React.FC = (props: any) => {
           type={modalType}
         />
       ) : null}
-      {currencyOpen ? (
-        <CurrencyExchange
-          open={currencyOpen}
-          setOpen={(event) => setCurrencyOpen(event)}
-        />
-      ) : null}
+      <CurrencyExchange
+        open={currencyOpen}
+        setOpen={(event) => setCurrencyOpen(event)}
+      />
     </Layout>
   );
 };
