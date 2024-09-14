@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { setAccountInfo } from "@/redux/actions/account-info";
+import { useSelector } from "react-redux";
+import { validityPeriod } from "../currency-exchange/utils";
 
 import tracking from "@/common/tracking";
 import eventBus from '../../api/eventBus'; 
@@ -9,13 +9,14 @@ import "./index.scss";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
-import loginApi from "@/api/login";
 import PaymentModal from "../payment";
 import BreakConfirmModal from "../break-confirm";
+import { nodeDebounce } from "@/common/utils";
 
 interface PayModalProps {
   isModalOpen?: boolean;
   setIsModalOpen?: (e: any) => void;
+  couponValue?: any;
 }
 
 interface Commodity {
@@ -48,10 +49,9 @@ interface ImageItem {
 }
 
 const PayModal: React.FC<PayModalProps> = (props) => {
-  const { isModalOpen, setIsModalOpen = () => {} } = props;
-
+  const { isModalOpen, setIsModalOpen = () => {}, couponValue = {} } = props;
+  
   const intervalIdRef: any = useRef(null); // 用于存储interval的引用
-  const dispatch: any = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const firstAuth = useSelector((state: any) => state.firstAuth);
@@ -85,8 +85,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   const [arrow, setArrow] = useState(0); // 移动的位置
   const [images, setImages] = useState<ImageItem[]>([]);
-  
+
   const [pollingKey, setPollingKey] = useState<string>("");
+
+  const [couponOpen, setCouponOpen] = useState(false); // 是否展开优惠券
+  const [couponData, setCouponData] = useState([]); // 优惠券列表信息
+  const [activeCoupon, setActiveCoupon] = useState<any>(couponValue); // 选中优惠券信息
 
   const env_url = process.env.REACT_APP_API_URL;
 
@@ -107,7 +111,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     setQRCodeState("normal");
     setPollingTime(5000);
     setPollingTimeNum(0);
-  }
+  };
 
   const updateActiveTabIndex = (index: number) => {
     if (QRCodeState === "timeout") {
@@ -134,11 +138,13 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         commodityResponse,
         firstPurchaseResponse,
         unpaidOrder,
+        makeData,
       ] = await Promise.all([
         payApi.getPayTypeList(),
-        payApi.getCommodityList(),
+        payApi.getCommodityList({ rid: activeCoupon?.rid }),
         payApi.getfirst_purchase_renewed_discount(),
         payApi.UnpaidOrder(),
+        payApi.redeemList({ type: 2, status: 1, page: 1, pageSize: 100 }),
       ]);
 
       if (
@@ -146,6 +152,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         commodityResponse.error === 0 &&
         unpaidOrder?.data
       ) {
+        setCouponData(makeData?.data?.list);
         setPayTypes(payTypeResponse?.data);
         setCommodities(commodityResponse?.data?.list);
 
@@ -168,7 +175,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         setConnectionPayOpen(true); //发现重复订单继续支付
       }
 
-      // return 
+      // return
     } catch (error) {
       console.error("Error fetching data", error);
     }
@@ -182,13 +189,13 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
       if (response.error === 0) {
         const status = response.data?.status;
-        
+
         setPaymentStatus(status);
         // 支付中
         if (status === 1) {
           setQRCodeState("incoming");
           setPollingTime(3000);
-          setPollingTimeNum(0)
+          setPollingTimeNum(0);
         }
 
         // 没有返回状态，并且是没有超时，支付中的时候进行延时计时判断
@@ -196,7 +203,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           setPollingTimeNum((num) => {
             const time = num + pollingTime;
 
-            if (time >= 120000) {
+            if (time >= 10000) {
               setQRCodeState("timeout");
               setPollingTimeNum(0);
               return 0;
@@ -222,7 +229,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
         if ([2, 3, 4, 5].includes(status) && response.data?.cid) {
           const res = await payApi.getCommodityInfo(response.data?.cid);
-          
+
           setOrderInfo({ ...res.data, ...response.data });
 
           if ([3, 4, 5].includes(status)) {
@@ -238,7 +245,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     } catch (error) {
       console.error("Error fetching payment status:", error);
     }
-  }
+  };
 
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
@@ -306,6 +313,13 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   if (couponValue?.id) {
+  //     setActiveCoupon(couponValue);
+  //   }
+  //   return () => {};
+  // }, [couponValue]);
+
   useEffect(() => {
     const inilteFun = async () => {
       const iniliteData = await fetchData();
@@ -319,21 +333,21 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         setQrCodeUrl(
           `${env_url}/pay/qrcode?cid=${
             iniliteData?.commodity[activeTabIndex].id
-          }&user_id=${userToken}&key=${newKey}&platform=${3}`
+          }&user_id=${userToken}&key=${newKey}&platform=${3}&rid=${
+            activeCoupon?.rid || ""
+          }`
         );
       }
-    }
+    };
 
     if (userToken && refresh >= 0) {
-      console.log(111);
-      
       inilteFun();
     }
-  }, [userToken, refresh]);
+  }, [userToken, refresh, activeCoupon]);
 
   useEffect(() => {
     console.log(QRCodeState, paymentStatus);
-    
+
     const intervalId = setInterval(() => {
       fetchPolling();
     }, pollingTime);
@@ -408,7 +422,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   style={{ transform: `translateX(${arrow * 15.25}vw)` }}
                   onClick={() => updateActiveTabIndex(index)}
                 >
-                  {images?.length > 0 &&
+                  {activeCoupon?.id ? (
+                    <div className="discount">
+                      {activeCoupon?.redeem_code?.content}折
+                    </div>
+                  ) : (
+                    images?.length > 0 &&
                     (firstAuth.firstAuth.first_purchase ||
                       firstAuth.firstAuth.first_renewed) && (
                       <div className={`${isOldUser ? "" : "discount"}`}>
@@ -419,97 +438,184 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                         {!firstAuth.firstAuth.first_renewed &&
                           `首充${Number(firstPayTypes[item.type]) / 10}折`}
                       </div>
-                    )}
-
+                    )
+                  )}
                   <div className="term">{item.name}</div>
                   <div className="price">
                     ¥<span className="price-text">{item.month_price}</span>/月
-                    {images?.length > 0 &&
-                      (firstAuth.firstAuth.first_purchase ||
-                        firstAuth.firstAuth.first_renewed) && (
-                        <span className="text">
-                          ¥{item.scribing_month_price}
-                        </span>
-                      )}
+                    {(activeCoupon?.id ||
+                      (images?.length > 0 &&
+                        (firstAuth.firstAuth.first_purchase ||
+                          firstAuth.firstAuth.first_renewed))) && (
+                      <span className="text">¥{item.scribing_month_price}</span>
+                    )}
                   </div>
                   <div className="amount">
                     总价：¥<span>{item.price}</span>
-                    {images?.length > 0 &&
-                      (firstAuth.firstAuth.first_purchase ||
-                        firstAuth.firstAuth.first_renewed) && (
-                        <span className="text">
-                          原价: ¥{item.scribing_price}
-                        </span>
-                      )}
+                    {(activeCoupon?.id ||
+                      (images?.length > 0 &&
+                        (firstAuth.firstAuth.first_purchase ||
+                          firstAuth.firstAuth.first_renewed))) && (
+                      <span className="text">原价: ¥{item.scribing_price}</span>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="line"></div>
-          {qrCodeUrl && (
-            <div className="qrcode">
-              <img className="header-icon" src={qrCodeUrl} alt="" />
-              {QRCodeState !== "normal" && (
-                <div className="pay-mask">
-                  <div className="title">
-                    {QRCodeState === "incoming" && "手机支付中"}
-                    {QRCodeState === "timeout" && "二维码已超时"}
+          <div className="content">
+            {qrCodeUrl && (
+              <div className="qrcode">
+                <img className="header-icon" src={qrCodeUrl} alt="" />
+                {QRCodeState !== "normal" && (
+                  <div className="pay-mask">
+                    <div className="title">
+                      {QRCodeState === "incoming" && "手机支付中"}
+                      {QRCodeState === "timeout" && "二维码已超时"}
+                    </div>
+                    <div className="text">
+                      {QRCodeState === "incoming" && "如遇问题"}
+                      <span onClick={() => iniliteReset()}>点击刷新</span>
+                    </div>
+                    <div>
+                      {QRCodeState === "timeout" && "二维码"}
+                      {QRCodeState === "incoming" && "二维码重试"}
+                    </div>
                   </div>
-                  <div className="text">
-                    {QRCodeState === "incoming" && "如遇问题"}
-                    <span onClick={() => iniliteReset()}>点击刷新</span>
-                  </div>
-                  <div>
-                    {QRCodeState === "timeout" && "二维码"}
-                    {QRCodeState === "incoming" && "二维码重试"}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          <div className="carousel">
-            {commodities.map((item, index) => (
-              <div
-                key={index}
-                className="carousel-item"
-                style={{ display: index === activeTabIndex ? "block" : "none" }}
-              >
-                <div className="priceAll" data-price={item.price}>
-                  <ul>
-                    <li>
-                      <span className="txt">支付宝或微信扫码支付</span>
-                    </li>
-                    <li>
-                      <span className="priceBig">{item.price}</span>
-                    </li>
-                    <li>
-                      我已同意《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/terms_of_service.html"
-                      >
-                        用户协议
-                      </div>
-                      》及《
-                      <div
-                        style={{ cursor: "pointer" }}
-                        className="txt"
-                        onClick={handleClick}
-                        ref={divRef}
-                        data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
-                      >
-                        自动续费协议
-                      </div>
-                      》到期按每月29元自动续费，可随时取消 <TooltipCom />
-                    </li>
-                  </ul>
-                </div>
+                )}
               </div>
-            ))}
+            )}
+            <div className="carousel">
+              {commodities.map((item, index) => (
+                <div
+                  key={index}
+                  className="carousel-item"
+                  style={{
+                    display: index === activeTabIndex ? "block" : "none",
+                  }}
+                >
+                  <div className="priceAll" data-price={item.price}>
+                    <ul>
+                      <li>
+                        <span className="txt">支付宝或微信扫码支付</span>
+                      </li>
+                      <li>
+                        <span className="priceBig">{item.price}</span>
+                      </li>
+                      <li>
+                        我已同意《
+                        <div
+                          style={{ cursor: "pointer" }}
+                          className="txt"
+                          onClick={handleClick}
+                          ref={divRef}
+                          data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                        >
+                          用户协议
+                        </div>
+                        》及《
+                        <div
+                          style={{ cursor: "pointer" }}
+                          className="txt"
+                          onClick={handleClick}
+                          ref={divRef}
+                          data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
+                        >
+                          自动续费协议
+                        </div>
+                        》到期按每月29元自动续费，可随时取消 <TooltipCom />
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="my-coupons">
+              <div className="title">我的优惠券： </div>
+              <div className="coupons">
+                <div
+                  className="custom-input"
+                  style={
+                    couponData?.length > 0 && activeCoupon?.id
+                      ? {
+                          color: "#f97d4c",
+                          borderColor: "#f97d4c",
+                        }
+                      : {}
+                  }
+                  onClick={() => {
+                    if (couponData?.length > 0) {
+                      setCouponOpen(!couponOpen);
+                    }
+                  }}
+                >
+                  {couponData?.length < 1 ? (
+                    <span>暂无优惠券可使用</span>
+                  ) : activeCoupon?.id ? (
+                    <span
+                      style={
+                        activeCoupon?.id
+                          ? {
+                              color: "#f97d4c",
+                              borderColor: "#f97d4c",
+                            }
+                          : {}
+                      }
+                    >
+                      已选择：{activeCoupon?.redeem_code?.name}
+                    </span>
+                  ) : (
+                    <span>您有{couponData?.length}张优惠券可使用</span>
+                  )}
+                  <div
+                    className={
+                      couponOpen ? "triangles-top" : "triangles-bottom"
+                    }
+                  />
+                </div>
+                {couponOpen && (
+                  <div className="custom-down">
+                    {couponData.map((item: any) => {
+                      return (
+                        <div className="mask-card card" key={item?.id}>
+                          <div className="icon-box">
+                            <div className="left" />
+                            <div className="right" />
+                            {item?.redeem_code?.content}折
+                          </div>
+                          <div className="text-box">
+                            <div className="title">
+                              {item?.redeem_code?.name}
+                            </div>
+                            <div className="time-box">
+                              {validityPeriod(item)}
+                            </div>
+                          </div>
+                          <div
+                            className={`custom-radio ${
+                              activeCoupon?.id === item?.id
+                                ? "active-custom-radio"
+                                : ""
+                            }`}
+                            onClick={nodeDebounce(() => {
+                              clearInterval(intervalIdRef?.current);
+                              setQRCodeState("normal");
+                              setPollingTime(5000);
+                              setPollingTimeNum(0);
+                              setActiveCoupon(
+                                activeCoupon?.id === item?.id ? {} : item
+                              );
+                            }, 500)}
+                          >
+                            <div className="radio-after" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </Modal>

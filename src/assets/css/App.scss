@@ -67,6 +67,18 @@
         align-items: center;
         column-gap: 2vw;
 
+        .currency-exchange {
+          width: 8vw;
+          height: 3.6vh;
+          font-size: 1.2vw;
+          color: #f86c34;
+          border: 0.5px solid #f86c34;
+          border-radius: 1.8vh;
+          text-align: center;
+          line-height: 3.6vh;
+          cursor: pointer;
+        }
+
         .login-enroll-text {
           color: #999;
           font-size: 1.4vw;

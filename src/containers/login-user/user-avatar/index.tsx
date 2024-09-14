@@ -24,23 +24,28 @@ interface UserAvatarComProps {
 const UserAvatarCom: React.FC<UserAvatarComProps> = (props) => {
   const { isVip = false, isLogin = false, type = "default" } = props;
 
+  const styleTypeObj: any = {
+    default: {
+      style: { border: isVip ? "0.2vw solid #ffe3b6" : "none" },
+      class: "",
+    },
+    edit: {
+      style: { border: isVip ? "0.2vw solid #ffe3b6" : "none" },
+      class: "user-edit-avatar-com-module",
+    },
+    setting: {
+      style: {},
+      class: "setting-user-avatar-com-module",
+    },
+  };
+
   return (
-    <div
-      className={`user-avatar-com-module ${
-        type === "setting" && "setting-user-avatar-com-module"
-      }`}
-    >
+    <div className={`user-avatar-com-module ${styleTypeObj?.[type]?.class}`}>
       <Avatar
-        style={
-          type === "setting"
-            ? {}
-            : {
-                border: isVip ? "0.2vw solid #ffe3b6" : "none",
-              }
-        }
+        style={styleTypeObj?.[type]?.style}
         src={isLogin ? defaultAvatarIcon : noLoginIcon}
       />
-      {type === "default" && isVip && (
+      {type === "edit" && isVip && (
         <img className="vip-icon" src={avatarVipIcon} alt="" />
       )}
     </div>

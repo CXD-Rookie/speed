@@ -11,7 +11,6 @@
 import { get, post } from "./api";
 
 class PayApi {
-
   url = process.env.REACT_APP_API_URL;
 
   getPayTypeList (params) {
@@ -20,7 +19,7 @@ class PayApi {
   }
   getCommodityList (params) {
     const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/commodity/list?platform=3`);
+    return get(`${this.url}/commodity/list?platform=3`, params);
   }
   getQrCodeUrl (params) {
     // const queryString = new URLSearchParams(params).toString();
@@ -43,6 +42,16 @@ class PayApi {
   UnpaidOrder (params) {
     const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/pay/unpaid_order?platform=3`);
+  }
+
+  // 使用兑换码
+  redeemPick (params) {
+    return post(`${this.url}/redeem_code/pick_up?platform=3`, params);
+  }
+
+  // 兑换码记录
+  redeemList (params) {
+    return get(`${this.url}/redeem_code/use_list?platform=3`, params);
   }
 }
 

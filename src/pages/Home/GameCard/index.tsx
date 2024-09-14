@@ -423,7 +423,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsAllowAcceleration(true); // 启用立即加速
           setIsAllowShowAccelerating(true); // 启用显示加速中
           setIsStartAnimate(false); // 结束加速动画
-          console.log(2222);
 
           if (isPre) {
             navigate("/gameDetail");
