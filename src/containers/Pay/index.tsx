@@ -144,7 +144,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         payApi.getCommodityList({ rid: activeCoupon?.rid }),
         payApi.getfirst_purchase_renewed_discount(),
         payApi.UnpaidOrder(),
-        payApi.redeemList({ type: 2, status: 1, page: 1, pageSize: 100 }),
+        payApi.redeemList({ type: 2, status: 1, page: 1, pagesize: 100 }),
       ]);
 
       if (
@@ -152,7 +152,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         commodityResponse.error === 0 &&
         unpaidOrder?.data
       ) {
-        setCouponData(makeData?.data?.list);
+        setCouponData(makeData?.data?.list || []);
         setPayTypes(payTypeResponse?.data);
         setCommodities(commodityResponse?.data?.list);
 
@@ -203,7 +203,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           setPollingTimeNum((num) => {
             const time = num + pollingTime;
 
-            if (time >= 10000) {
+            if (time >= 120000) {
               setQRCodeState("timeout");
               setPollingTimeNum(0);
               return 0;
@@ -587,7 +587,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                             <div className="title">
                               {item?.redeem_code?.name}
                             </div>
-                            <div className="time-box">
+                            <div
+                              className="time-box"
+                              style={
+                                validityPeriod(item).indexOf("到期") === -1
+                                  ? { color: "#999" }
+                                  : {}
+                              }
+                            >
                               {validityPeriod(item)}
                             </div>
                           </div>

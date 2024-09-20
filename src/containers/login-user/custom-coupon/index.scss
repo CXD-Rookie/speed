@@ -139,7 +139,7 @@
         & .text-box {
           width: calc(100% - 7.2vw);
           height: 100%;
-          padding: 0.8vw;
+          padding: 0.8vw 0 0.8vw 0.4vw; 
 
           & .title {
             font-size: 1.4vw;
@@ -147,11 +147,12 @@
           }
 
           & .time-box {
-            font-size: 1.2vw;
+            font-size: 1.1vw;
             color: #f86c34;
             margin-top: 1.8vh;
             display: flex;
             justify-content: space-between;
+            align-items: center;
 
             & button {
               width: 7.2vw;

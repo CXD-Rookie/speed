@@ -19,7 +19,7 @@ const validityPeriod = (record = {}) => {
   const days = Math.floor(difference / 86400);
 
   if (days >= 5 || [2, 3].includes(status)) {
-    return formatDate(redeem_code?.goods_expire_time);
+    return "有效期至 " + formatDate(redeem_code?.goods_expire_time);
   } else if (days >= 10950) {
     return "无期限";
   } else if (days >= 2 && days < 5) {
