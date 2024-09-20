@@ -89,10 +89,11 @@
 
     .content-box {
       width: 100%;
-      height: calc(69vh - 96px);
+      max-height: calc(69vh - 96px);
       overflow-y: scroll;
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       flex-wrap: wrap;
       column-gap: 1.6vw;
       padding: 0 1.6vw;

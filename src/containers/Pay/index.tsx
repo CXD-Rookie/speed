@@ -94,6 +94,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   const env_url = process.env.REACT_APP_API_URL;
 
+  const isInteger = (num: number) => {
+    return Number.isInteger(num / 10) ? num / 10 : num;
+  };
+
   const guid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
@@ -432,11 +436,13 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                       firstAuth.firstAuth.first_renewed) && (
                       <div className={`${isOldUser ? "" : "discount"}`}>
                         {!firstAuth.firstAuth.first_purchase &&
-                          `续费${
-                            Number(firstPayRenewedTypes[item.type]) / 10
-                          }折`}
+                          `续费${isInteger(
+                            Number(firstPayRenewedTypes[item.type])
+                          )}折`}
                         {!firstAuth.firstAuth.first_renewed &&
-                          `首充${Number(firstPayTypes[item.type]) / 10}折`}
+                          `首充${
+                            isInteger(Number(firstPayTypes[item.type]))
+                          }折`}
                       </div>
                     )
                   )}
