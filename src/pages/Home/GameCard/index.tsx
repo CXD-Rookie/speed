@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-09-20 14:01:04
+ * @LastEditTime: 2024-09-20 14:40:26
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -359,7 +359,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             console.log("是否开启真实加速(1成功)", response);
             const responseObj = JSON.parse(response);  // 解析外层 response
             const restfulObj = JSON.parse(responseObj.restful);  // 解析内部 restful
-            
+            const isCheck = JSON.parse(response);
+            console.log("是否开启真实加速(1成功)", response);
             console.log(restfulObj);  // { port: 57499, version: "1.0.0.1" }
             // 检查是否有 restful 字段，并解析为 JSON
             if (restfulObj) {
@@ -377,7 +378,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   });
       
                   console.log('请求成功:', result.data);
-                  resolve(result.data); // 请求成功，返回响应数据
+                  if (result.data === "Acceleration started") {
+                    // console.log("成功开启真实加速中:", isCheck);
+                    resolve({ state: true, platform: pc_platform });
+                  } else {
+                    tracking.trackBoostFailure("加速失败，检查文件合法性");
+                    // tracking.trackBoostDisconnectManual("手动停止加速");
+                    stopAcceleration();
+                    resolve({ state: false });
+                  }
+                   
                 } catch (error) {
                   console.error('请求失败:', error);
                   reject(error); // 请求失败，返回错误信息
