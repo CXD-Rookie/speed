@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-09-20 18:16:43
+ * @LastEditTime: 2024-09-20 19:17:08
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -274,12 +274,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const gameResult = await queryGameIdByPlatform(pc_platform, platform);
         const processResult = await triggerMultipleRequests(gameResult);
 
-        executable = [...executable, ...processResult?.executable];
+        // executable = [...executable, ...processResult?.executable];
       }
 
-      const uniqueExecutable = Array.from(
-        new Map(executable.map((item: any) => [item.path, item])).values()
-      );
+      // const uniqueExecutable = Array.from(
+      //   new Map(executable.map((item: any) => [item.path, item])).values()
+      // );
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
@@ -317,7 +317,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // });
       const jsonResult = JSON.stringify({
         running_status: true,
-        accelerated_apps: uniqueExecutable,
+        accelerated_apps: [...executable],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
         domain_whitelist: [], // Assuming empty for now
