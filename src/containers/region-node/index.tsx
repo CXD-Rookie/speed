@@ -204,10 +204,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       );
     };
 
-    const debouncedAccelerateDataHandling = nodeDebounce((option: any) => {
-      clickStartOn(option);
-    }, 500);
-
     // 开始加速
     const startAcceleration = async (node: any = selectNode) => {
       let isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
@@ -216,7 +212,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         setAccelOpen(true);
       } else {
         clickStartOn(node);
-        // debouncedAccelerateDataHandling(node);
       }
     };
 
@@ -569,17 +564,17 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         {accelOpen ? (
           <BreakConfirmModal
             accelOpen={accelOpen}
-            type={"switchServer"}
+            type={"accelerate"}
             setAccelOpen={setAccelOpen}
             onConfirm={async () => {
-              setAccelOpen(false)
-              setIsClicking(true)
+              setAccelOpen(false);
+              setIsClicking(true);
 
               if (!isClicking) {
                 await clickStartOn(selectNode);
               }
-              
-              setIsClicking(false)
+
+              setIsClicking(false);
             }}
           />
         ) : null}
