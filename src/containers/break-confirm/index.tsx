@@ -156,6 +156,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   };
 
   const cancel = () => {
+    if (noticeType === "gamesAccelerating") {
+      localStorage.removeItem("isAccelLoading");
+    }
     if (accelOpen) {
       setAccelOpen(false);
     } else {
@@ -189,6 +192,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         break;
       case "issueFeedback":
         feedbackClose.onClose();
+        break;
+      case "gamesAccelerating":
+        localStorage.removeItem("isAccelLoading");
         break;
       default:
         break;

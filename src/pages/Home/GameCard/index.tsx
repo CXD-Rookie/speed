@@ -410,7 +410,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       return;
     }
     
-    localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
+    localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
@@ -476,7 +476,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         setTimeout(() => {
-          localStorage.removeItem("isAccelLoaindg"); // 删除存储临时的加速中状态
+          localStorage.removeItem("isAccelLoading"); // 删除存储临时的加速中状态
           setIsAllowAcceleration(true); // 启用立即加速
           setIsAllowShowAccelerating(true); // 启用显示加速中
           setIsStartAnimate(false); // 结束加速动画
@@ -550,7 +550,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             setRenewalOpen(true);
             localStorage.setItem("renewalTime", String(time));
           } else {
-            // localStorage.setItem("isAccelLoaindg", "1");
+            // localStorage.setItem("isAccelLoading", "1");
             accelerateProcessing(option);
             setSelectAccelerateOption(option);
           }
@@ -612,7 +612,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               alt={option.name}
             />
             {/* 立即加速卡片 */}
-            {localStorage.getItem("isAccelLoaindg") !== "1" &&
+            {localStorage.getItem("isAccelLoading") !== "1" &&
             isAllowAcceleration ? (
               <div
                 className="accelerate-immediately-card"

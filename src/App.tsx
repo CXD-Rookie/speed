@@ -883,6 +883,7 @@ const App: React.FC = (props: any) => {
       document.readyState === "complete" ||
       document.readyState === "interactive"
     ) {
+      localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
         (window as any).NativeApi_RenderComplete();
