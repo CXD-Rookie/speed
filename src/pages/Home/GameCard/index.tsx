@@ -415,10 +415,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     const region = option?.serverNode?.region || [];
     const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
 
-    if (!selectRegion) {
-      setIsOpenRegion(true);
-      return;
-    }
+    // if (!selectRegion) {
+    //   setIsOpenRegion(true);
+    //   return;
+    // }
     
     localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
@@ -527,9 +527,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         option = await checkGameisFree(option);
 
+        const region = option?.serverNode?.region || [];
+        const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
+
         // 是否实名认证 isRealNamel === "1" 是
-        // 是否是未成年
-        // 是否是vip
+        // 是否是未成年 is_adult
+        // 是否限时免费 free_time 是否是vip
+        // 是否是第一次加速弹窗区服节点
         // 是否有加速中的游戏
         if (isRealNamel === "1") {
           dispatch(openRealNameModal());
@@ -544,7 +548,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ) {
           setIsModalOpenVip(true);
           return;
-        } else if (find_accel?.[0] && (option?.router !== "details")) {
+        } else if (!selectRegion) {
+          setIsOpenRegion(true);
+          return;
+        } else if (find_accel?.[0]) {
+          // && option?.router !== "details"
           setAccelOpen(true);
           setSelectAccelerateOption(option);
           return;
@@ -560,7 +568,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             setRenewalOpen(true);
             localStorage.setItem("renewalTime", String(time));
           } else {
-            // localStorage.setItem("isAccelLoading", "1");
             accelerateProcessing(option);
             setSelectAccelerateOption(option);
           }
@@ -594,11 +601,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     }
   };
 
-  // 创建一个防抖函数
-  const debouncedAccelerateDataHandling = nodeDebounce((option: any) => {
-    accelerateDataHandling(option);
-  }, 300);
-
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
@@ -630,7 +632,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   setIsClicking(true);
 
                   if (!isClicking) {
-                    // debouncedAccelerateDataHandling(option);
                     await accelerateDataHandling(option);
                   }
 
@@ -660,7 +661,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     setIsClicking(true);
 
                     if (!isClicking) {
-                      // debouncedAccelerateDataHandling(option);
                       await accelerateDataHandling(option);
                     }
 
