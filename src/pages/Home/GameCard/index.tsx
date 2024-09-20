@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-09-20 14:40:26
+ * @LastEditTime: 2024-09-20 18:16:43
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -324,8 +324,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ip_whitelist: [], // Assuming empty for now
         acceleration_nodes: server.map((s: any) => ({
           server_address: `${addr}:${s.port}`,
-          inbound_protocol: s.protocol.from,
-          outbound_protocol: s.protocol.to,
+          inbound_protocol: s.protocol.to,
+          outbound_protocol: s.protocol.from,
           acc_key: js_key
         }))
       });

@@ -37,7 +37,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   const [payOpen, setPayOpen] = useState(false); // 购买开关
   const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
 
-  const [loseSearch] = useState({ type: 2, status: "2, 3" }); // 已失效类型参数
+  const [loseSearch] = useState({ type: 2, status: "2,3" }); // 已失效类型参数
   const [losePagination, setLosePagination] = useState(inilitePagination); // 已失效分页参数
   const [loseTotal, setLoseTotal] = useState(0); // 已失效数量总数
 
@@ -150,7 +150,11 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                             <div className="text-box">
                               <div className="title">{redeem_code?.name}</div>
                               <div className="time-box">
-                                {validityPeriod(mask)}
+                                <span
+                                  style={
+                                    validityPeriod(mask).indexOf("到期") === -1 ? {color: "#999"} :{}
+                                  }
+                                >{validityPeriod(mask)}</span>
                                 <Button
                                   type="default"
                                   onMouseOver={() => setMouseoverState(true)}
