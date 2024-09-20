@@ -577,7 +577,19 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   <div className="custom-down">
                     {couponData.map((item: any) => {
                       return (
-                        <div className="mask-card card" key={item?.id}>
+                        <div
+                          className="mask-card card"
+                          key={item?.id}
+                          onClick={nodeDebounce(() => {
+                            clearInterval(intervalIdRef?.current);
+                            setQRCodeState("normal");
+                            setPollingTime(5000);
+                            setPollingTimeNum(0);
+                            setActiveCoupon(
+                              activeCoupon?.id === item?.id ? {} : item
+                            );
+                          }, 500)}
+                        >
                           <div className="icon-box">
                             <div className="left" />
                             <div className="right" />
@@ -604,15 +616,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                                 ? "active-custom-radio"
                                 : ""
                             }`}
-                            onClick={nodeDebounce(() => {
-                              clearInterval(intervalIdRef?.current);
-                              setQRCodeState("normal");
-                              setPollingTime(5000);
-                              setPollingTimeNum(0);
-                              setActiveCoupon(
-                                activeCoupon?.id === item?.id ? {} : item
-                              );
-                            }, 500)}
                           >
                             <div className="radio-after" />
                           </div>

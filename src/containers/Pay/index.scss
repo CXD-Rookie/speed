@@ -333,6 +333,11 @@
             padding: 0.8vw;
             display: flex;
             margin-bottom: 2.4vh;
+            cursor: pointer;
+            
+            &:hover {
+              border: 1px solid #f86c34;
+            }
 
             & .icon-box {
               width: 7.2vw;
