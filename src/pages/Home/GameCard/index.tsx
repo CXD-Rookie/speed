@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-07-24 10:58:22
+ * @LastEditTime: 2024-09-20 14:40:26
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
@@ -17,7 +17,7 @@ import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
 import { nodeDebounce } from "@/common/utils";
-
+import axios from 'axios'
 import tracking from "@/common/tracking";
 import "./style.scss";
 import RegionNodeSelector from "@/containers/region-node";
@@ -298,40 +298,107 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       localStorage.setItem("speedGid", option?.id);
 
       // 真实拼接
+      // const jsonResult = JSON.stringify({
+      //   params: {
+      //     process: [...uniqueExecutable],
+      //     black_ip: WhiteBlackList.blacklist.ipv4,
+      //     black_domain: WhiteBlackList.blacklist.domain,
+      //     // tcp_tunnel_mode: 0,
+      //     // udp_tunnel_mode: 1,
+      //     user_id: accountInfo?.userInfo?.id,
+      //     game_id: option?.id,
+      //     tunnel: {
+      //       address: addr,
+      //       server: server,
+      //     },
+      //     js_key,
+      //     proxy_speed_limit,
+      //   },
+      // });
       const jsonResult = JSON.stringify({
-        params: {
-          process: [...uniqueExecutable],
-          black_ip: WhiteBlackList.blacklist.ipv4,
-          black_domain: WhiteBlackList.blacklist.domain,
-          // tcp_tunnel_mode: 0,
-          // udp_tunnel_mode: 1,
-          user_id: accountInfo?.userInfo?.id,
-          game_id: option?.id,
-          tunnel: {
-            address: addr,
-            server: server,
-          },
-          js_key,
-          proxy_speed_limit,
-        },
+        running_status: true,
+        accelerated_apps: uniqueExecutable,
+        domain_blacklist: WhiteBlackList.blacklist.domain,
+        ip_blacklist: WhiteBlackList.blacklist.ipv4,
+        domain_whitelist: [], // Assuming empty for now
+        ip_whitelist: [], // Assuming empty for now
+        acceleration_nodes: server.map((s: any) => ({
+          server_address: `${addr}:${s.port}`,
+          inbound_protocol: s.protocol.from,
+          outbound_protocol: s.protocol.to,
+          acc_key: js_key
+        }))
       });
       
+      console.log(jsonResult);
+      // return new Promise((resolve, reject) => {
+      //   (window as any).NativeApi_AsynchronousRequest(
+      //     "NativeApi_StartProcessProxy",
+      //     jsonResult,
+      //     function (response: any) {
+      //       const isCheck = JSON.parse(response);
+      //       console.log("是否开启真实加速(1成功)", response);
+
+      //       if (isCheck?.success === 1) {
+      //         // console.log("成功开启真实加速中:", isCheck);
+      //         resolve({ state: true, platform: pc_platform });
+      //       } else {
+      //         tracking.trackBoostFailure("加速失败，检查文件合法性");
+      //         // tracking.trackBoostDisconnectManual("手动停止加速");
+      //         stopAcceleration();
+      //         resolve({ state: false });
+      //       }
+      //     }
+      //   );
+      // });
       return new Promise((resolve, reject) => {
         (window as any).NativeApi_AsynchronousRequest(
-          "NativeApi_StartProcessProxy",
-          jsonResult,
-          function (response: any) {
+          "NativeApi_StartProxy",
+          '',
+          async function (response: any) {
+            console.log("是否开启真实加速(1成功)", response);
+            const responseObj = JSON.parse(response);  // 解析外层 response
+            const restfulObj = JSON.parse(responseObj.restful);  // 解析内部 restful
             const isCheck = JSON.parse(response);
             console.log("是否开启真实加速(1成功)", response);
-
-            if (isCheck?.success === 1) {
-              // console.log("成功开启真实加速中:", isCheck);
-              resolve({ state: true, platform: pc_platform });
+            console.log(restfulObj);  // { port: 57499, version: "1.0.0.1" }
+            // 检查是否有 restful 字段，并解析为 JSON
+            if (restfulObj) {
+      
+              // 检查解析后的 restfulData 是否包含 port
+              if (restfulObj?.port) {
+                const url = `http://127.0.0.1:${restfulObj.port}/start`; // 拼接 URL
+      
+                try {
+                  // 发起 POST 请求，body 为 jsonResult
+                  const result = await axios.post(url, jsonResult, {
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                  });
+      
+                  console.log('请求成功:', result.data);
+                  if (result.data === "Acceleration started") {
+                    // console.log("成功开启真实加速中:", isCheck);
+                    resolve({ state: true, platform: pc_platform });
+                  } else {
+                    tracking.trackBoostFailure("加速失败，检查文件合法性");
+                    // tracking.trackBoostDisconnectManual("手动停止加速");
+                    stopAcceleration();
+                    resolve({ state: false });
+                  }
+                   
+                } catch (error) {
+                  console.error('请求失败:', error);
+                  reject(error); // 请求失败，返回错误信息
+                }
+              } else {
+                console.error("端口信息缺失");
+                reject("端口信息缺失");
+              }
             } else {
-              tracking.trackBoostFailure("加速失败，检查文件合法性");
-              // tracking.trackBoostDisconnectManual("手动停止加速");
-              stopAcceleration();
-              resolve({ state: false });
+              console.error("响应数据缺失");
+              reject("响应数据缺失");
             }
           }
         );
@@ -348,12 +415,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     const region = option?.serverNode?.region || [];
     const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
 
-    if (!selectRegion) {
-      setIsOpenRegion(true);
-      return;
-    }
+    // if (!selectRegion) {
+    //   setIsOpenRegion(true);
+    //   return;
+    // }
     
-    localStorage.setItem("isAccelLoaindg", "1"); // 存储临时的加速中状态
+    localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
@@ -419,7 +486,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         setTimeout(() => {
-          localStorage.removeItem("isAccelLoaindg"); // 删除存储临时的加速中状态
+          localStorage.removeItem("isAccelLoading"); // 删除存储临时的加速中状态
           setIsAllowAcceleration(true); // 启用立即加速
           setIsAllowShowAccelerating(true); // 启用显示加速中
           setIsStartAnimate(false); // 结束加速动画
@@ -460,9 +527,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         option = await checkGameisFree(option);
 
+        const region = option?.serverNode?.region || [];
+        const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
+
         // 是否实名认证 isRealNamel === "1" 是
-        // 是否是未成年
-        // 是否是vip
+        // 是否是未成年 is_adult
+        // 是否限时免费 free_time 是否是vip
+        // 是否是第一次加速弹窗区服节点
         // 是否有加速中的游戏
         if (isRealNamel === "1") {
           dispatch(openRealNameModal());
@@ -477,7 +548,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ) {
           setIsModalOpenVip(true);
           return;
-        } else if (find_accel?.[0] && (option?.router !== "details")) {
+        } else if (!selectRegion) {
+          setIsOpenRegion(true);
+          return;
+        } else if (find_accel?.[0]) {
+          // && option?.router !== "details"
           setAccelOpen(true);
           setSelectAccelerateOption(option);
           return;
@@ -493,7 +568,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             setRenewalOpen(true);
             localStorage.setItem("renewalTime", String(time));
           } else {
-            // localStorage.setItem("isAccelLoaindg", "1");
             accelerateProcessing(option);
             setSelectAccelerateOption(option);
           }
@@ -527,11 +601,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     }
   };
 
-  // 创建一个防抖函数
-  const debouncedAccelerateDataHandling = nodeDebounce((option: any) => {
-    accelerateDataHandling(option);
-  }, 300);
-
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
@@ -555,7 +624,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               alt={option.name}
             />
             {/* 立即加速卡片 */}
-            {localStorage.getItem("isAccelLoaindg") !== "1" &&
+            {localStorage.getItem("isAccelLoading") !== "1" &&
             isAllowAcceleration ? (
               <div
                 className="accelerate-immediately-card"
@@ -563,7 +632,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   setIsClicking(true);
 
                   if (!isClicking) {
-                    // debouncedAccelerateDataHandling(option);
                     await accelerateDataHandling(option);
                   }
 
@@ -593,7 +661,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     setIsClicking(true);
 
                     if (!isClicking) {
-                      // debouncedAccelerateDataHandling(option);
                       await accelerateDataHandling(option);
                     }
 
