@@ -210,6 +210,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       let isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
       
       if (isFind) {
+        // 在游戏详情中进行区服节点切换进行提示窗类型
         if (window.location.hash === "#/gameDetail") {
           setAccelOpenType("switchServer");
         }
@@ -388,7 +389,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     ) => {
       const result = { ...info };
       const { serverNode = {}, playsuit = 2 } = result; // 获取当前游戏数据的区服
-      // console.log(serverNode, playsuit, current);
       
       // 如果当前没有游戏没有选择过区服 则进行默认选择 智能匹配
       if (!serverNode?.region) {
@@ -447,15 +447,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     // 获取每个区服的子区服列表
     const handleSubRegions = async (event: any = options) => {
-      console.log(event);
-      
       try {
         let res = await playSuitApi.playSuitInfo({
           system_id: 3,
           gid: event?.id,
         });
         let data = res?.data || [];
-        console.log(data);
         
         data.unshift({
           fu: "",
@@ -463,7 +460,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           gid: event?.id,
           system_id: 3,
         });
-        console.log(data);
         
         setCurrentGameServer(data);
         if (data)  {

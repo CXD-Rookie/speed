@@ -270,6 +270,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
       let { executable, pc_platform } = gameFiles;
 
+      // 同步加速商店的进程
       if (pc_platform?.length > 0) {
         const gameResult = await queryGameIdByPlatform(pc_platform, platform);
         const processResult = await triggerMultipleRequests(gameResult);
@@ -277,6 +278,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         executable = [...executable, ...processResult?.executable];
       }
       
+      // 对进程进行去重
       const uniqueExecutable = executable.filter((value: any, index: any, self: any) => {
         return self.indexOf(value) === index;
       });
@@ -414,11 +416,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     const region = option?.serverNode?.region || [];
     const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
-
-    // if (!selectRegion) {
-    //   setIsOpenRegion(true);
-    //   return;
-    // }
     
     localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
