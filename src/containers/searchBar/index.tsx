@@ -60,7 +60,7 @@ const SearchBar: React.FC = () => {
         isNav: true,
         data: {
           ...optionParams,
-          // router: "search",
+          router: "search",
         },
         autoAccelerate: true,
       },

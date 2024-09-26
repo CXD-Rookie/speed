@@ -50,6 +50,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const [loading, setLoading] = useState(false); // 初始化loading
     const [tableLoading, setTableLoading] = useState(false); // 刷新节点loading
     const [accelOpen, setAccelOpen] = useState(false); // 加速确认
+    const [accelOpenType, setAccelOpenType] = useState("accelerate"); // 详情加速游戏类型
 
     const [presentGameData, setPresentGameInfo] = useState<any>({}); // 当前期望加速的游戏信息
     const [currentGameServer, setCurrentGameServer] = useState([]); // 当前游戏的区服
@@ -209,6 +210,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       let isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
       
       if (isFind) {
+        if (window.location.hash === "#/gameDetail") {
+          setAccelOpenType("switchServer");
+        }
+
         setAccelOpen(true);
       } else {
         clickStartOn(node);
@@ -442,21 +447,28 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     // 获取每个区服的子区服列表
     const handleSubRegions = async (event: any = options) => {
+      console.log(event);
+      
       try {
         let res = await playSuitApi.playSuitInfo({
           system_id: 3,
           gid: event?.id,
         });
         let data = res?.data || [];
-
+        console.log(data);
+        
         data.unshift({
           fu: "",
           qu: "智能匹配",
           gid: event?.id,
           system_id: 3,
         });
-
+        console.log(data);
+        
         setCurrentGameServer(data);
+        if (data)  {
+          return data
+        }
         return data;
       } catch (error) {
         console.log(error);
@@ -530,7 +542,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
         setLoading(false);
       };
-      // iniliteFun();
+
       if (open) {
         iniliteFun();
       }
@@ -564,7 +576,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         {accelOpen ? (
           <BreakConfirmModal
             accelOpen={accelOpen}
-            type={"accelerate"}
+            type={accelOpenType}
             setAccelOpen={setAccelOpen}
             onConfirm={async () => {
               setAccelOpen(false);

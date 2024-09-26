@@ -274,13 +274,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const gameResult = await queryGameIdByPlatform(pc_platform, platform);
         const processResult = await triggerMultipleRequests(gameResult);
 
-        // executable = [...executable, ...processResult?.executable];
+        executable = [...executable, ...processResult?.executable];
       }
-
-      // const uniqueExecutable = Array.from(
-      //   new Map(executable.map((item: any) => [item.path, item])).values()
-      // );
-
+      
+      const uniqueExecutable = executable.filter((value: any, index: any, self: any) => {
+        return self.indexOf(value) === index;
+      });
+      
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
       console.log(option.serverNode.selectNode, addr);
@@ -291,7 +291,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         nid: id,
       }); // 游戏加速信息
       const js_key = startInfo?.data?.js_key;
-      const proxy_speed_limit = startInfo?.data?.proxy_speed_limit;
+      // const proxy_speed_limit = startInfo?.data?.proxy_speed_limit;
 
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", addr);
@@ -317,7 +317,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // });
       const jsonResult = JSON.stringify({
         running_status: true,
-        accelerated_apps: [...executable],
+        accelerated_apps: [...uniqueExecutable],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
         domain_whitelist: [], // Assuming empty for now
@@ -326,8 +326,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           server_address: `${addr}:${s.port}`,
           inbound_protocol: s.protocol.to,
           outbound_protocol: s.protocol.from,
-          acc_key: js_key
-        }))
+          acc_key: js_key,
+        })),
       });
       
       console.log(jsonResult);
@@ -530,15 +530,24 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const region = option?.serverNode?.region || [];
         const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
 
+        // 是否是第一次加速弹窗区服节点
+        if (!selectRegion) {
+          localStorage.removeItem("isAccelLoading");
+          setIsOpenRegion(true);
+          setSelectAccelerateOption(option);
+          return;
+        }
+
         // 是否实名认证 isRealNamel === "1" 是
         // 是否是未成年 is_adult
         // 是否限时免费 free_time 是否是vip
-        // 是否是第一次加速弹窗区服节点
         // 是否有加速中的游戏
         if (isRealNamel === "1") {
+          localStorage.removeItem("isAccelLoading");
           dispatch(openRealNameModal());
           return;
         } else if (!userInfo?.user_ext?.is_adult) {
+          localStorage.removeItem("isAccelLoading");
           setIsMinorOpen(true);
           setMinorType("acceleration");
           return;
@@ -546,13 +555,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           !(option?.free_time && option?.tags.includes("限时免费")) &&
           !userInfo?.is_vip
         ) {
+          localStorage.removeItem("isAccelLoading");
           setIsModalOpenVip(true);
           return;
-        } else if (!selectRegion) {
-          setIsOpenRegion(true);
-          return;
-        } else if (find_accel?.[0]) {
+        } else if (find_accel?.[0] && option?.router !== "details") {
           // && option?.router !== "details"
+          localStorage.removeItem("isAccelLoading");
           setAccelOpen(true);
           setSelectAccelerateOption(option);
           return;
@@ -565,6 +573,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             time - renewalTime > 86400 &&
             userInfo?.vip_expiration_time - time <= 432000
           ) {
+            localStorage.removeItem("isAccelLoading");
             setRenewalOpen(true);
             localStorage.setItem("renewalTime", String(time));
           } else {
@@ -574,10 +583,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
       }
     } else {
+      localStorage.removeItem("isAccelLoading");
       dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
     }
   };
-
 
   const openModal = async (event: React.MouseEvent<HTMLImageElement>, option: any) => {
     const latestAccountInfo = store.getState().accountInfo;
@@ -632,7 +641,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   setIsClicking(true);
 
                   if (!isClicking) {
-                    await accelerateDataHandling(option);
+                    await accelerateDataHandling({ ...option, router: "home" });
                   }
 
                   setIsClicking(false)
@@ -661,7 +670,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     setIsClicking(true);
 
                     if (!isClicking) {
-                      await accelerateDataHandling(option);
+                      await accelerateDataHandling({
+                        ...option,
+                        router: "home",
+                      });
                     }
 
                     setIsClicking(false);
