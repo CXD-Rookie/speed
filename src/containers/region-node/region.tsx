@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import { Select, Button } from "antd";
+import { Button } from "antd";
 import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
 import IssueModal from "@/containers/IssueModal/index";
-
-const { Option } = Select;
 
 interface RegionProps {
   value: any;
@@ -69,48 +67,21 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
 
   useEffect(() => {
     if (Object.keys(value)?.length > 0) {
-      const list = value?.serverNode?.region; // 区服列表
-      const select = list.filter((item: any) => item?.is_select)?.[0]; // 默认选中的区服
-      const expand = (currentGameServer || []).filter(
-        (item: any) => select?.fu && select?.fu === item?.qu
-      )?.[0] || {} // 初始化判断是否有选中的多级区服
+      const select_r = value?.serverNode?.region; // 区服列表
+      // const select = list.filter((item: any) => item?.is_select)?.[0]; // 默认选中的区服
+      // const expand = (currentGameServer || []).filter(
+      //   (item: any) => select?.fu && select?.fu === item?.qu
+      // )?.[0] || {} // 初始化判断是否有选中的多级区服
       
-      setExpandedPanels(expand)
-      setSelectRegion(select);
+      // setExpandedPanels(expand)
+      // setSelectRegion(select);
     }
   }, [value]);
 
   return (
     <div className="content">
       <div className="current-box">
-        <div className="current-game">
-          <div className="current-text">当前游戏：</div>
-          <div className="game-name">{value?.name}</div>
-        </div>
-        <div className="current-region">
-          <div>当前区服：</div>
-          <Select
-            className="region-select"
-            value={selectRegion?.qu}
-            suffixIcon={<div className="triangle" />}
-            onChange={(e, option) =>
-              togglePanel(
-                value?.serverNode?.region?.filter(
-                  (child: any) => child?.qu === e
-                )?.[0]
-              )
-            }
-          >
-            {value?.serverNode?.region?.map((item: any) => {
-              return (
-                <Option key={item?.qu} value={item?.qu}>
-                  {item?.fu && item?.fu + "-"}
-                  {item?.qu}
-                </Option>
-              );
-            })}
-          </Select>
-        </div>
+        {value?.name} | {selectRegion?.qu}
       </div>
       <div className="region-buttons">
         {currentGameServer?.length > 0 &&

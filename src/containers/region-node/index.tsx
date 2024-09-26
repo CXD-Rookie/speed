@@ -4,7 +4,6 @@ import { Modal, Tabs, Spin } from "antd";
 import type { TabsProps } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
-import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
@@ -47,7 +46,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState("region"); // tab栏值
-    const [loading, setLoading] = useState(false); // 初始化loading
+    const [loading,] = useState(false); // 初始化loading
     const [tableLoading, setTableLoading] = useState(false); // 刷新节点loading
     const [accelOpen, setAccelOpen] = useState(false); // 加速确认
     const [accelOpenType, setAccelOpenType] = useState("accelerate"); // 详情加速游戏类型
@@ -164,13 +163,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             isNode = false;
             isAuto = true;
           }
-          console.log(type, {
-            ...presentGameData,
-            serverNode,
-            isNode,
-            isAuto,
-            router: "details",
-          });
           
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           if (type === "acelerate") {
@@ -238,8 +230,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     // 初始化获取所有的加速服务器列表
     const fetchAllSpeedList = async (keys: any = []) => {
-      console.log(keys);
-      
       try {
         let res = await playSuitApi.playSpeedList({
           platform: 3,
@@ -249,7 +239,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             keys.includes(String(item))
           )
         );
-        console.log(nodes);
         
         const updatedNodes = await Promise.all(
           nodes.map(async (node: any) => {
@@ -260,13 +249,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
               // 如果 NativeApi_AsynchronousRequest 没有错误回调，也可以添加一个超时机制
               return new Promise<any>((resolve) => {
-                // const timeoutId = setTimeout(() => {
-                //   resolve({
-                //     ...node,
-                //     delay: "超时",
-                //   });
-                // }, 3000); // 5秒超时，可以根据需要调整
-
                 (window as any).NativeApi_AsynchronousRequest(
                   "NativeApi_GetAddrDelay",
                   jsonString,
@@ -275,7 +257,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
                     const jsonResponse = JSON.parse(response);
                     const delay = jsonResponse?.delay;
 
-                    // clearTimeout(timeoutId); // 请求成功时清除超时定时器
                     resolve({
                       ...node,
                       delay,
@@ -316,7 +297,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             ? current.some((child: any) => child?.qu === data?.[key])
             : data?.[key] === qu
         );
-        console.log(current, qu, keys);
 
         return keys || [];
       } catch (error) {
@@ -342,12 +322,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       });
 
       all = all.map((item: any, index: number) => {
-        const operations = [-3, 3];
-        // 从数组中随机选择一个操作
-        const randomOffset =
-          operations[Math.floor(Math.random() * operations.length)];
         const delay = item.delay;
-        // item?.delay === "超时" ? item.delay : item.delay + randomOffset;
 
         return {
           ...item,
@@ -530,13 +505,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     useEffect(() => {
       const iniliteFun = async () => {
-        setLoading(true);
-        setActiveTab("region");
-
-        const data = await handleSubRegions(); // 当前区服列表
-        await updateGamesRegion(options, {}, data); // 检测是否有选择过的区服, 有就取值，没有就进行默认选择
-
-        setLoading(false);
+        setActiveTab("region"); // 初始化设置tabs为区服
+        await handleSubRegions(); // 获取区服列表接口
+        
+        setPresentGameInfo(options);
       };
 
       if (open) {
