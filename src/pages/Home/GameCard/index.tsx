@@ -270,6 +270,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
       let { executable, pc_platform } = gameFiles;
 
+      // 同步加速商店的进程
       if (pc_platform?.length > 0) {
         const gameResult = await queryGameIdByPlatform(pc_platform, platform);
         const processResult = await triggerMultipleRequests(gameResult);
@@ -277,6 +278,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         executable = [...executable, ...processResult?.executable];
       }
       
+      // 对进程进行去重
       const uniqueExecutable = executable.filter((value: any, index: any, self: any) => {
         return self.indexOf(value) === index;
       });
@@ -297,24 +299,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
 
-      // 真实拼接
-      // const jsonResult = JSON.stringify({
-      //   params: {
-      //     process: [...uniqueExecutable],
-      //     black_ip: WhiteBlackList.blacklist.ipv4,
-      //     black_domain: WhiteBlackList.blacklist.domain,
-      //     // tcp_tunnel_mode: 0,
-      //     // udp_tunnel_mode: 1,
-      //     user_id: accountInfo?.userInfo?.id,
-      //     game_id: option?.id,
-      //     tunnel: {
-      //       address: addr,
-      //       server: server,
-      //     },
-      //     js_key,
-      //     proxy_speed_limit,
-      //   },
-      // });
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
@@ -331,26 +315,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       });
       
       console.log(jsonResult);
-      // return new Promise((resolve, reject) => {
-      //   (window as any).NativeApi_AsynchronousRequest(
-      //     "NativeApi_StartProcessProxy",
-      //     jsonResult,
-      //     function (response: any) {
-      //       const isCheck = JSON.parse(response);
-      //       console.log("是否开启真实加速(1成功)", response);
 
-      //       if (isCheck?.success === 1) {
-      //         // console.log("成功开启真实加速中:", isCheck);
-      //         resolve({ state: true, platform: pc_platform });
-      //       } else {
-      //         tracking.trackBoostFailure("加速失败，检查文件合法性");
-      //         // tracking.trackBoostDisconnectManual("手动停止加速");
-      //         stopAcceleration();
-      //         resolve({ state: false });
-      //       }
-      //     }
-      //   );
-      // });
       return new Promise((resolve, reject) => {
         (window as any).NativeApi_AsynchronousRequest(
           "NativeApi_StartProxy",
@@ -412,13 +377,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
 
-    const region = option?.serverNode?.region || [];
-    const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
-
-    // if (!selectRegion) {
-    //   setIsOpenRegion(true);
-    //   return;
-    // }
+    const selectRegion = option?.serverNode?.selectRegion;
     
     localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
     setIsAllowAcceleration(false); // 禁用立即加速
@@ -527,8 +486,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         option = await checkGameisFree(option);
 
-        const region = option?.serverNode?.region || [];
-        const selectRegion = region.filter((item: any) => item?.is_select)?.[0];
+        // 当前历史选择区服
+        const selectRegion = option?.serverNode?.selectRegion;
 
         // 是否是第一次加速弹窗区服节点
         if (!selectRegion) {

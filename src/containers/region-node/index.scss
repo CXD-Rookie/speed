@@ -98,50 +98,8 @@
     position: relative;
 
     .current-box {
-      display: flex;
-      align-items: center;
-      column-gap: 6vw;
-
-      .current-game {
-        font-size: 1.4vw;
-
-        .current-text {
-          color: #999;
-        }
-
-        .game-name {
-          color: #fff;
-          height: 4.8vh;
-          line-height: 4.8vh;
-          margin-left: 0.8vw;
-        }
-      }
-
-      .current-region {
-        font-size: 1.4vw;
-        text-align: left;
-        color: #999999;
-      }
-
-      .region-select {
-        width: 20vw;
-        height: 4.8vh;
-        margin-top: 0.6vh;
-        .ant-select-open {
-          color: #fff;
-        }
-
-        .ant-select-selector {
-          font-size: 1.4vw;
-          color: #fff;
-          background: rgba(255, 255, 255, 0.1);
-          border: none;
-        }
-
-        .ant-select-focused .ant-select-selector {
-          border: none;
-        }
-      }
+      font-size: 1.4vw;
+      color: #fff;
     }
 
     .region-buttons {
