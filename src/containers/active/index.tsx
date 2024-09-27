@@ -36,9 +36,14 @@ const Active: React.FC<ActiveModalProps> = (props) => {
         rebates_time: 0,
         vip_time: value?.goods_expire_time,
       });
+    } else {
+      // setCurrencyInfo({
+      //   rebates_time: vip_experience_time ? JSON.parse(vip_experience_time) : 0,
+      //   vip_time: accountInfo?.userInfo.vip_expiration_time - 86400,
+      // });
     }
   }, [value]);
-
+  
   return (
     <div className={`modal-wrapper ${isVisible ? "visible" : ""}`}>
       <div className="modal-content">
