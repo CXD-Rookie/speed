@@ -118,7 +118,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   };
 
   const updateActiveTabIndex = (index: number) => {
-    if (QRCodeState === "timeout") {
+    if (QRCodeState !== "incoming") {
       iniliteReset();
     }
 
