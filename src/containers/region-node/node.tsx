@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Select, Button, Table } from "antd";
 import type { TableProps } from "antd";
-import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
 import refreshIcon from "@/assets/images/common/refresh.png";
@@ -17,7 +16,8 @@ interface NodeProps {
   startAcceleration?: (node: any) => void;
   setSelectNode?: (node: any) => void;
   buildNodeList?: (node: any) => void;
-  generateNode?: (node?: any) => void;
+  selectRegion?: any;
+  setSelectRegion?: (node: any) => void;
 }
 
 interface DataType {
@@ -37,9 +37,9 @@ const CustomNode: React.FC<NodeProps> = ({
   setSelectNode = () => {},
   startAcceleration = () => {},
   buildNodeList = () => {},
-  generateNode = () => {},
+  selectRegion,
+  setSelectRegion = () => {},
 }) => {
-  const [selectRegion, setSelectRegion] = useState<any>(""); // 选中区服信息
   const [nodeHistory, setNodeHistory] = useState<any>([]); // 节点历史列表
 
   const [nodeValue, setNodeValue] = useState(""); // 节点历史value
@@ -76,26 +76,17 @@ const CustomNode: React.FC<NodeProps> = ({
     },
   ];
 
-  const debouncedAccelerateDataHandling = nodeDebounce((option: any) => {
-    startAcceleration(option);
-  }, 800);
-
   useEffect(() => {
     const iniliteFun = async () => {
       let serverNode = value?.serverNode || {};
-      let select = (serverNode?.region || []).filter(
-        (item: any) => item?.is_select
-      )?.[0];
-
       const node = serverNode?.nodeHistory?.filter(
         (item: any) => item?.is_select
       )?.[0];
       const node_value: any = node?.name !== "智能节点" ? node?.key : "";
-      
+
       setNodeValue(node_value || []);
       setNodeHistory(serverNode?.nodeHistory);
-      setSelectRegion(select);
-    }
+    };
 
     if (value) {
       iniliteFun();
@@ -134,8 +125,8 @@ const CustomNode: React.FC<NodeProps> = ({
             onClick={async () => {
               const allNodes = await buildNodeList(selectRegion);
               const node = allNodes?.[0];
-              
-              setSelectNode(node)
+
+              setSelectNode(node);
             }}
           >
             <img src={refreshIcon} alt="" />
@@ -162,13 +153,13 @@ const CustomNode: React.FC<NodeProps> = ({
         className="start-button"
         disabled={tableLoading}
         onClick={async () => {
-          setIsClicking(true)
+          setIsClicking(true);
 
           if (!isClicking) {
             startAcceleration(selectNode);
           }
 
-          setIsClicking(false)
+          setIsClicking(false);
         }}
       >
         {type === "details" ? "重新加速" : "开始加速"}

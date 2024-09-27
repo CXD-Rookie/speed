@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button } from "antd";
-import { nodeDebounce } from "@/common/utils";
 
 import "./index.scss";
 import IssueModal from "@/containers/IssueModal/index";
@@ -9,32 +8,34 @@ interface RegionProps {
   value: any;
   currentGameServer?: any;
   type?: string;
-  loading?: boolean;
-  updateGamesRegion?: (a?: any, b?: any) => void;
   startAcceleration?: (node?: any) => void;
   notice?: (value: any) => void;
   setSelectNode?: (value: any) => void;
+  selectNode?: any;
+  selectRegion?: any;
+  setSelectRegion?: (value: any) => void;
+  generateRSuit?: (value?: any, current?: any, region?: any) => void;
 }
 
 const CustomRegion: React.FC<RegionProps> = (props) => {
   const {
-    value = {},
+    value = {}, // 当前游戏信息
     currentGameServer,
-    loading = false,
     type,
-    updateGamesRegion = () => {},
     startAcceleration = () => {},
-    setSelectNode = ()  => {},
+    setSelectNode = () => {},
+    selectNode,
+    selectRegion,
+    setSelectRegion = () => {},
+    generateRSuit = () => {},
   } = props;
 
-  const [selectRegion, setSelectRegion] = useState<any>({}); // 当前选中的区服
-
   const [expandedPanels, setExpandedPanels] = useState<any>({}); // 点击区服是否选择的信息
-  
+
   const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
   const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
-  
-  const [isClicking, setIsClicking] = useState(false);
+
+  const [isClicking, setIsClicking] = useState(false); // 如果点击了加速立即禁用第二次点击，避免多次点击
 
   // 选择的服
   const togglePanel = (option: any, type = "default") => {
@@ -49,6 +50,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
       )?.[0];
     }
 
+    // 如果区服结构是具有多层结构时
     if (result?.children) {
       let isTrue =
         Object.keys(expandedPanels)?.length > 0 &&
@@ -56,32 +58,27 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
       setExpandedPanels(isTrue ? {} : result);
     }
 
+    // 如果区服结构是单层结构时如 steam
     if (type === "default") {
-      updateGamesRegion(value, option);
+      generateRSuit(value, option, currentGameServer);
     }
   };
 
-  const debouncedAccelerateDataHandling = nodeDebounce((option: any = {}) => {
-    startAcceleration(option);
-  }, 800);
-
   useEffect(() => {
     if (Object.keys(value)?.length > 0) {
-      const select_r = value?.serverNode?.region; // 区服列表
-      // const select = list.filter((item: any) => item?.is_select)?.[0]; // 默认选中的区服
-      // const expand = (currentGameServer || []).filter(
-      //   (item: any) => select?.fu && select?.fu === item?.qu
-      // )?.[0] || {} // 初始化判断是否有选中的多级区服
-      
-      // setExpandedPanels(expand)
-      // setSelectRegion(select);
+      const expand =
+        (currentGameServer || []).filter(
+          (item: any) => selectRegion?.fu && selectRegion?.fu === item?.qu
+        )?.[0] || {}; // 初始化判断是否有选中的多级区服
+
+      setExpandedPanels(expand);
     }
   }, [value]);
 
   return (
     <div className="content">
       <div className="current-box">
-        {value?.name} | {selectRegion?.qu}
+        {value?.name} | {selectRegion?.qu} | {selectNode?.name || "智能节点"}
       </div>
       <div className="region-buttons">
         {currentGameServer?.length > 0 &&
@@ -123,7 +120,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
                 className={`${
                   selectRegion?.qu === item?.qu && "select-button"
                 } region-button`}
-                onClick={() => updateGamesRegion(value, item)}
+                onClick={() => generateRSuit(value, item, currentGameServer)}
               >
                 {item.qu}
               </Button>
@@ -142,7 +139,6 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
       <Button
         type="primary"
         className="region-start-button"
-        disabled={loading}
         onClick={async () => {
           setIsClicking(true);
 
