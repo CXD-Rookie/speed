@@ -440,9 +440,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                             Number(firstPayRenewedTypes[item.type])
                           )}折`}
                         {!firstAuth.firstAuth.first_renewed &&
-                          `首充${
-                            isInteger(Number(firstPayTypes[item.type]))
-                          }折`}
+                          `首充${isInteger(
+                            Number(firstPayTypes[item.type])
+                          )}折`}
                       </div>
                     )
                   )}
@@ -556,7 +556,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   }}
                 >
                   {couponData?.length < 1 ? (
-                    <span>暂无优惠券可使用</span>
+                    <span>暂无可用优惠券</span>
                   ) : activeCoupon?.id ? (
                     <span
                       style={
@@ -575,7 +575,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   )}
                   <div
                     className={
-                      couponOpen ? "triangles-top" : "triangles-bottom"
+                      couponOpen ? "triangles-bottom" : "triangles-top"
                     }
                   />
                 </div>
