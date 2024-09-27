@@ -236,7 +236,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           <Table
             className="table"
             dataSource={currencyTable}
-            columns={columns}
+            columns={currencyTable?.length > 0 ? columns : []}
             rowKey={"id"}
             pagination={false}
             onScroll={nodeDebounce(handleScroll, 200)}
