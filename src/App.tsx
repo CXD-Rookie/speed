@@ -951,7 +951,14 @@ const App: React.FC = (props: any) => {
           >
             <div
               className="currency-exchange"
-              onClick={() => setCurrencyOpen(true)}
+              onClick={() => {
+                if (accountInfo?.isLogin) {
+                  setCurrencyOpen(true);
+                } else {
+                  // 3个参数 用户信息 是否登录 是否显示登录
+                  dispatch(setAccountInfo(undefined, undefined, true));
+                }
+              }}
             >
               口令兑换
             </div>

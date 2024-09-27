@@ -40,7 +40,7 @@ const validityPeriod = (record = {}) => {
     status,
   } = record;
   const timestamp = Number(localStorage.getItem("timestamp"));
-  const difference = redeem_code?.goods_expire_time - timestamp;
+  const difference = 2989642932 - timestamp;
   const isSame = isSameDay(redeem_code?.goods_expire_time, timestamp) // 是否是同一天
   let days = 0;
 
@@ -53,7 +53,7 @@ const validityPeriod = (record = {}) => {
   }
   
   if ((days > 5 && days <= 10950) || [2, 3].includes(status)) {
-    return "有效期至 " + formatDate(redeem_code?.goods_expire_time);
+    return formatDate(redeem_code?.goods_expire_time);
   } else if (days > 10950) {
     return "无期限";
   } else if (days > 1 && days <= 5) {
