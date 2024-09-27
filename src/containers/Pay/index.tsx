@@ -608,7 +608,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                             <div
                               className="time-box"
                               style={
-                                validityPeriod(item).indexOf("到期") === -1
+                                validityPeriod(item).indexOf("过期") === -1
                                   ? { color: "#999" }
                                   : {}
                               }

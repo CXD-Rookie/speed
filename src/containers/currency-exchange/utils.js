@@ -57,9 +57,9 @@ const validityPeriod = (record = {}) => {
   } else if (days > 10950) {
     return "无期限";
   } else if (days > 1 && days <= 5) {
-    return days + "天后到期";
+    return days + "天后过期";
   } else if (difference > 0 && days <= 1 && days >= 0) {
-    return "今天到期"
+    return "今天过期"
   } else {
     return "--"
   }
