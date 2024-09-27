@@ -46,6 +46,8 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   const [payOpen, setPayOpen] = useState(false); // 购买开关
   const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
 
+  const [isHoverStatus, setIsHoverStatus] = useState(false);
+
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "兑换内容",
@@ -64,7 +66,16 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
     {
       title: "有效期",
       render: (record) => (
-        <span className="record-columns-render">{validityPeriod(record)}</span>
+        <span
+          className="record-columns-render"
+          style={
+            validityPeriod(record).indexOf("过期") === -1
+              ? { color: "#999" }
+              : {}
+          }
+        >
+          {validityPeriod(record)}
+        </span>
       ),
     },
     {
@@ -73,10 +84,18 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
       render: (record) => (
         <span
           className="record-columns-render"
-          style={record?.status === 1 ? { cursor: "pointer" } : {}}
+          style={
+            record?.status === 1
+              ? {
+                  color: isHoverStatus ? "#EF622A" : "#f86c34",
+                  cursor: "pointer",
+                }
+              : {}
+          }
+          onMouseOver={() => setIsHoverStatus(true)}
           onClick={() => {
             if (record?.status === 1) {
-              setpayCoupon(record)
+              setpayCoupon(record);
               setPayOpen(true);
               setOpen(false);
             }
@@ -236,7 +255,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           <Table
             className="table"
             dataSource={currencyTable}
-            columns={columns}
+            columns={currencyTable?.length > 0 ? columns : []}
             rowKey={"id"}
             pagination={false}
             onScroll={nodeDebounce(handleScroll, 200)}

@@ -152,9 +152,13 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                               <div className="time-box">
                                 <span
                                   style={
-                                    validityPeriod(mask).indexOf("到期") === -1 ? {color: "#999"} :{}
+                                    validityPeriod(mask).indexOf("过期") === -1
+                                      ? { color: "#999" }
+                                      : {}
                                   }
-                                >{validityPeriod(mask)}</span>
+                                >
+                                  {validityPeriod(mask)}
+                                </span>
                                 <Button
                                   type="default"
                                   onMouseOver={() => setMouseoverState(true)}
