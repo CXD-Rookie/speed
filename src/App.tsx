@@ -386,7 +386,9 @@ const App: React.FC = (props: any) => {
       (window as any).NativeApi_ShowWindow(); // 唤醒主程序客户端方法
       setExitOpen(true); // 弹出关闭确认框
     } else {
-      (window as any).NativeApi_ExitProcess();
+      if (localStorage.getItem("isAccelLoading") !== "1") {
+        (window as any).NativeApi_ExitProcess();
+      }
     }
   };
   (window as any).stopSpeed = stopSpeed;
