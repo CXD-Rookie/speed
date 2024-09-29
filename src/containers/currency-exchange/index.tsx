@@ -46,7 +46,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   const [payOpen, setPayOpen] = useState(false); // 购买开关
   const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
 
-  const [isHoverStatus, setIsHoverStatus] = useState(false);
+  const [isHoverStatus, setIsHoverStatus] = useState("");
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -87,13 +87,13 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           style={
             record?.status === 1
               ? {
-                  color: isHoverStatus ? "#EF622A" : "#666",
+                  color: isHoverStatus === record?.id ? "#EF622A" : "#666",
                   cursor: "pointer",
                 }
               : {}
           }
-          onMouseOver={() => setIsHoverStatus(true)}
-          onMouseLeave={() => setIsHoverStatus(false)}
+          onMouseOver={() => setIsHoverStatus(record?.id)}
+          onMouseLeave={() => setIsHoverStatus("")}
           onClick={() => {
             if (record?.status === 1) {
               setpayCoupon(record);
