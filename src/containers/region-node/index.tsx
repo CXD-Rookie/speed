@@ -371,7 +371,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       current: any = null, // current 当前点击选中的区服
       regionList = [] // regionList 当前游戏有多少区服
     ) => {
-      let region = data?.serverNode?.region; // 历史存储区服
+      let region = data?.serverNode?.selectRegion; // 历史存储区服
+      
       let suit =
         data?.playsuit === 2 // 当前游戏是否是国服游戏
           ? "国服"
@@ -394,6 +395,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           region = { ...iniliteSmart, suit }; // 默认智能匹配
         }
       }
+      console.log(region);
       
       setSelectRegion(region);
     };

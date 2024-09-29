@@ -157,9 +157,7 @@ const Login: React.FC = () => {
             value={phoneNumber}
             onChange={handlePhoneNumberChange}
           />
-          {phoneValue ? (
-            <div className="ercode">请输入手机号</div>
-          ) : null}
+          {phoneValue ? <div className="ercode">请输入手机号</div> : null}
           {isPhone ? (
             <div className="ercode">手机号无效，请重新输入</div>
           ) : null}
@@ -190,6 +188,7 @@ const Login: React.FC = () => {
                     phoneNumber={phoneNumber}
                     isPhoneNumberValid={isPhoneNumberValid}
                     setCountdown={setCountdown}
+                    setPhoneValue={setPhoneValue}
                   />
                 )}
               </div>
