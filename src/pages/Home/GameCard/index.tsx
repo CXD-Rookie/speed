@@ -136,6 +136,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       console.log(error);
     }
   };
+
   //查询黑白名单列表数据
   const fetchPcWhiteBlackList = async () => {
     try {
@@ -265,27 +266,34 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           option?.serverNode?.selectRegion?.fu,
         option.serverNode.selectNode
       );
+
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
-      let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件
+      let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
+        // 游戏本身的pc_platform为空时 执行文件运行平台默认为空
       let { executable, pc_platform } = gameFiles;
 
       // 同步加速商店的进程
-      if (pc_platform?.length > 0) {
-        const gameResult = await queryGameIdByPlatform(pc_platform, platform);
+      if (option?.pc_platform?.length > 0) {
+        const gameResult = await queryGameIdByPlatform(
+          option?.pc_platform,
+          platform
+        );
         const processResult = await triggerMultipleRequests(gameResult);
 
         executable = [...executable, ...processResult?.executable];
       }
-      
+
       // 对进程进行去重
-      const uniqueExecutable = executable.filter((value: any, index: any, self: any) => {
-        return self.indexOf(value) === index;
-      });
-      
+      const uniqueExecutable = executable.filter(
+        (value: any, index: any, self: any) => {
+          return self.indexOf(value) === index;
+        }
+      );
+
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
-      console.log(option.serverNode.selectNode, addr);
+      // console.log(option.serverNode.selectNode, addr);
 
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
@@ -313,38 +321,38 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           acc_key: js_key,
         })),
       });
-      
+
       console.log(jsonResult);
 
       return new Promise((resolve, reject) => {
         (window as any).NativeApi_AsynchronousRequest(
           "NativeApi_StartProxy",
-          '',
+          "",
           async function (response: any) {
             console.log("是否开启真实加速(1成功)", response);
-            const responseObj = JSON.parse(response);  // 解析外层 response
-            const restfulObj = JSON.parse(responseObj.restful);  // 解析内部 restful
-            const isCheck = JSON.parse(response);
+            const responseObj = JSON.parse(response); // 解析外层 response
+            const restfulObj = responseObj?.restful
+              ? JSON.parse(responseObj?.restful)
+              : {}; // 解析内部 restful
+
             console.log("是否开启真实加速(1成功)", response);
-            console.log(restfulObj);  // { port: 57499, version: "1.0.0.1" }
+            console.log(restfulObj); // { port: 57499, version: "1.0.0.1" }
             // 检查是否有 restful 字段，并解析为 JSON
             if (restfulObj) {
-      
               // 检查解析后的 restfulData 是否包含 port
               if (restfulObj?.port) {
                 const url = `http://127.0.0.1:${restfulObj.port}/start`; // 拼接 URL
-      
+
                 try {
                   // 发起 POST 请求，body 为 jsonResult
                   const result = await axios.post(url, jsonResult, {
                     headers: {
-                      'Content-Type': 'application/json',
+                      "Content-Type": "application/json",
                     },
                   });
-      
-                  console.log('请求成功:', result.data);
+
+                  console.log("请求成功:", result.data);
                   if (result.data === "Acceleration started") {
-                    // console.log("成功开启真实加速中:", isCheck);
                     resolve({ state: true, platform: pc_platform });
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
@@ -352,9 +360,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     stopAcceleration();
                     resolve({ state: false });
                   }
-                   
                 } catch (error) {
-                  console.error('请求失败:', error);
+                  console.error("请求失败:", error);
                   reject(error); // 请求失败，返回错误信息
                 }
               } else {

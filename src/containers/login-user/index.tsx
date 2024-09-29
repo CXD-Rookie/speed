@@ -28,7 +28,7 @@ import closeIcon from "@/assets/images/common/cloture.svg";
 interface CustomDropdownProps {
   isCouponRefresh?: number;
 }
-const inilitePagination = { page: 1, pageSize: 20 };
+const inilitePagination = { page: 1, pageSize: 10 };
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const { isCouponRefresh } = props;
@@ -284,19 +284,21 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           type={minorType}
         />
       ) : null}
-      <CustonCoupon
-        open={couponOpen}
-        setOpen={(event: boolean) => setCouponOpen(event)}
-        value={currencyTable}
-        fetchRecords={fetchRecords}
-        makeParams={{
-          makeSearch,
-          makePagination,
-          makeTotal: tableTotal,
-          makeData: currencyTable,
-          setMakePagination,
-        }}
-      />
+      {couponOpen ? 
+        <CustonCoupon
+          open={couponOpen}
+          setOpen={(event: boolean) => setCouponOpen(event)}
+          value={currencyTable}
+          fetchRecords={fetchRecords}
+          makeParams={{
+            makeSearch,
+            makePagination,
+            makeTotal: tableTotal,
+            makeData: currencyTable,
+            setMakePagination,
+          }}
+        /> : null
+        }
     </div>
   );
 };

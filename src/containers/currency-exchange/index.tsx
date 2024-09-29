@@ -46,7 +46,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   const [payOpen, setPayOpen] = useState(false); // 购买开关
   const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
 
-  const [isHoverStatus, setIsHoverStatus] = useState(false);
+  const [isHoverStatus, setIsHoverStatus] = useState("");
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -87,12 +87,13 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           style={
             record?.status === 1
               ? {
-                  color: isHoverStatus ? "#EF622A" : "#666",
+                  color: isHoverStatus === record?.id ? "#EF622A" : "#666",
                   cursor: "pointer",
                 }
               : {}
           }
-          onMouseOver={() => setIsHoverStatus(true)}
+          onMouseOver={() => setIsHoverStatus(record?.id)}
+          onMouseLeave={() => setIsHoverStatus("")}
           onClick={() => {
             if (record?.status === 1) {
               setpayCoupon(record);
@@ -111,7 +112,13 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
     setCurrencyCode("")
     setCurrencyState("");
     setCurrencyTable([]);
+    setpayCoupon({})
+    setPromptInfo({})
+    setPayOpen(false)
     setOpen(false);
+    setPromptOpen(false)
+    setPagination(inilitePagination);
+    setTableTotal(0)
   };
 
   // 图形码验证通过回调兑换口令
@@ -184,10 +191,10 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
         ...search,
       });
       const data = res?.data?.list || [];
-
+      
       setTableTotal(res?.data?.total || 0);
       setCurrencyTable(
-        default_pagination > 1 ? [...currencyTable, ...data] : data
+        default_pagination?.page > 1 ? [...currencyTable, ...data] : data
       );
     } catch (error) {
       console.log(error);
@@ -246,11 +253,6 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
               type="primary"
               disabled={!currencyCode}
               onClick={handleVerifyCode}
-              // onMouseEnter={() => {
-              //   if (!currencyCode) {
-              //     setCurrencyState("请输入兑换码后再尝试兑换");
-              //   }
-              // }}
             >
               立即兑换
             </Button>
@@ -268,7 +270,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           />
         </div>
       </Modal>
-      {promptOpen ? 
+      {promptOpen ? (
         <Active
           isVisible={promptOpen}
           value={promptInfo}
@@ -276,8 +278,8 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
             setPromptOpen(false);
             fetchRecords();
           }}
-        /> : null
-      }
+        />
+      ) : null}
       {payOpen ? (
         <PayModal
           isModalOpen={payOpen}

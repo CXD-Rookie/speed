@@ -46,20 +46,21 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
     setActiveTab("make");
   };
 
-  const handleTabChange = async (key: any) => {
-    const search = key === "make" ? makeParams?.makeSearch : loseSearch;
-    const pagination =
-      key === "make" ? makeParams?.makePagination : losePagination;
-    const res: any = await fetchRecords(search, pagination);
+  // 切换tab栏进行已失效数据请求
+  const handleTabChange = async (key: any, type = "change") => {
+    // const search = key === "make" ? makeParams?.makeSearch : loseSearch;
+    // const pagination =
+    //   key === "make" ? makeParams?.makePagination : losePagination;
+    // const res: any = await fetchRecords(search, pagination);
 
     setActiveTab(key);
 
-    if (key === "lose") {
-      setLoseTotal(res?.total)
-      setCouponLoseData(
-        pagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
-      );
-    }
+    // if (key === "lose") {
+    //   setLoseTotal(res?.total)
+    //   setCouponLoseData(
+    //     pagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
+    //   );
+    // }
   };
 
   // 表格滚动
@@ -69,10 +70,12 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
       let clientHeight = e.target.clientHeight;
       let scrollHeight = e.target.scrollHeight;
 
-      if (Math.ceil(scrollTop) + Math.ceil(clientHeight) + 1 >= scrollHeight) {
+      if (
+        Math.ceil(scrollTop) + Math.ceil(clientHeight) + 1 >= scrollHeight
+      ) {
         if (
           activeTab === "make" &&
-          makeParams?.makeTotal >= makeParams?.makeData?.length
+          makeParams?.makeTotal > makeParams?.makeData?.length
         ) {
           const old_pagination = makeParams?.makePagination;
           const pagination = {
@@ -102,6 +105,18 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   useEffect(() => {
     setCouponMaskData(value);
   }, [value]);
+
+  useEffect(() => {
+    const iniliteFun = async () => {
+      const res: any = await fetchRecords(loseSearch, losePagination);
+      setLoseTotal(res?.total);
+      setCouponLoseData(
+        losePagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
+      );
+    }
+
+    iniliteFun()
+  }, [losePagination]);
 
   return (
     <Fragment>
