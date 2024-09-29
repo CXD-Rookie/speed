@@ -93,6 +93,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
               : {}
           }
           onMouseOver={() => setIsHoverStatus(true)}
+          onMouseLeave={() => setIsHoverStatus(false)}
           onClick={() => {
             if (record?.status === 1) {
               setpayCoupon(record);

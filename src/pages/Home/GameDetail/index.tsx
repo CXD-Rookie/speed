@@ -168,7 +168,8 @@ const GameDetail: React.FC = () => {
   }
 
   const findMappingIcon = (data: any) => {
-    const platform = data?.acc_platform || [];
+    let platform = data?.pc_platform || []; // 同步加速的游戏，平台
+
     const iconMap: any = {
       "1": steamIcon,
       "2": garenaIcon,
@@ -184,7 +185,7 @@ const GameDetail: React.FC = () => {
       "12": primeGamIcon,
     };
     let resultData: any = [];
-    
+
     if (Array.isArray(platform) && platform?.length > 0) {
       resultData = platform.map((child: any) => {
         if (Object.keys(iconMap).includes(String(child))) {
