@@ -323,8 +323,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           async function (response: any) {
             console.log("是否开启真实加速(1成功)", response);
             const responseObj = JSON.parse(response);  // 解析外层 response
-            const restfulObj = JSON.parse(responseObj.restful);  // 解析内部 restful
-            const isCheck = JSON.parse(response);
+            const restfulObj = responseObj?.restful ? JSON.parse(
+              responseObj?.restful
+            ) : {};  // 解析内部 restful
+            
             console.log("是否开启真实加速(1成功)", response);
             console.log(restfulObj);  // { port: 57499, version: "1.0.0.1" }
             // 检查是否有 restful 字段，并解析为 JSON
@@ -344,7 +346,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       
                   console.log('请求成功:', result.data);
                   if (result.data === "Acceleration started") {
-                    // console.log("成功开启真实加速中:", isCheck);
                     resolve({ state: true, platform: pc_platform });
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
