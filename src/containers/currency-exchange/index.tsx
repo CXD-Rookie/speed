@@ -246,11 +246,11 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
               type="primary"
               disabled={!currencyCode}
               onClick={handleVerifyCode}
-              onMouseEnter={() => {
-                if (!currencyCode) {
-                  setCurrencyState("请输入兑换码后再尝试兑换");
-                }
-              }}
+              // onMouseEnter={() => {
+              //   if (!currencyCode) {
+              //     setCurrencyState("请输入兑换码后再尝试兑换");
+              //   }
+              // }}
             >
               立即兑换
             </Button>
