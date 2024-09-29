@@ -157,7 +157,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                                       : {}
                                   }
                                 >
-                                  {validityPeriod(mask)}
+                                  {validityPeriod(mask, "state")}
                                 </span>
                                 <Button
                                   type="default"

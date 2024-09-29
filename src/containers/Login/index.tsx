@@ -35,10 +35,10 @@ const Login: React.FC = () => {
 
   const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
+  const [phoneValue, setPhoneValue] = useState(false); // 点击获取验证码进行验证手机号是否输入
+
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
-
-  const [bindVisitorOpen, setBindVisitorOpen] = useState(false);
 
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
@@ -157,6 +157,7 @@ const Login: React.FC = () => {
             value={phoneNumber}
             onChange={handlePhoneNumberChange}
           />
+          {phoneValue ? <div className="ercode">请输入手机号</div> : null}
           {isPhone ? (
             <div className="ercode">手机号无效，请重新输入</div>
           ) : null}
@@ -181,12 +182,13 @@ const Login: React.FC = () => {
                 {countdown > 0 ? (
                   `${countdown}s后重新获取`
                 ) : !isPhoneNumberValid ? (
-                  "获取验证码"
+                  <div onClick={() => setPhoneValue(true)}>获取验证码</div>
                 ) : (
                   <Captcha
                     phoneNumber={phoneNumber}
                     isPhoneNumberValid={isPhoneNumberValid}
                     setCountdown={setCountdown}
+                    setPhoneValue={setPhoneValue}
                   />
                 )}
               </div>

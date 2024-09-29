@@ -613,7 +613,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                                   : {}
                               }
                             >
-                              {validityPeriod(item)}
+                              {validityPeriod(item, "state")}
                             </div>
                           </div>
                           <div

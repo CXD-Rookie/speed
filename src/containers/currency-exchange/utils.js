@@ -32,7 +32,7 @@ function isSameDay (timestamp1, timestamp2) {
   return dateOnly1.getTime() === dateOnly2.getTime();
 }
 
-const validityPeriod = (record = {}) => {
+const validityPeriod = (record = {}, type = "default") => {
   const {
     redeem_code = {
       goods_expire_time: 0,
@@ -52,7 +52,7 @@ const validityPeriod = (record = {}) => {
     days = days + Math.ceil((redeem_code?.goods_expire_time - nightTime) / 86400);
   }
   
-  if ((days > 5 && days <= 10950) || [2, 3].includes(status)) {
+  if ((days > 5 && days <= 10950) || (type !== "default" && [2, 3].includes(status))) {
     return formatDate(redeem_code?.goods_expire_time);
   } else if (days > 10950) {
     return "无期限";
