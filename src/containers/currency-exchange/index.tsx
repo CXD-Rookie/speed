@@ -71,7 +71,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           style={
             validityPeriod(record).indexOf("过期") === -1
               ? { color: "#999" }
-              : {}
+              : { color: "#EF622A" }
           }
         >
           {validityPeriod(record)}
@@ -87,7 +87,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           style={
             record?.status === 1
               ? {
-                  color: isHoverStatus ? "#EF622A" : "#f86c34",
+                  color: isHoverStatus ? "#EF622A" : "#666",
                   cursor: "pointer",
                 }
               : {}
