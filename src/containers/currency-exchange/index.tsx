@@ -23,7 +23,7 @@ interface DataType {
   tags: string[];
 }
 
-const inilitePagination = { page: 1, pageSize: 20 };
+const inilitePagination = { page: 1, pagesize: 20 };
 const iniliteStatusObj: any = {
   1: "立即使用>",
   2: "已使用",
@@ -108,9 +108,9 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   ];
 
   const onClose = () => {
+    setCurrencyCode("")
     setCurrencyState("");
     setCurrencyTable([]);
-    setCurrencyCode("");
     setOpen(false);
   };
 
@@ -174,7 +174,9 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   // 获取兑换记录
   const fetchRecords = async (
     default_pagination: any = pagination,
-    search: any = {}
+    search: any = {
+      sort: "create_time:-1",
+    }
   ) => {
     try {
       const res = await payApi.redeemList({
@@ -232,6 +234,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           <Input
             className="currency-input"
             placeholder="请输入口令/兑换码"
+            value={currencyCode}
             onChange={(event) => setCurrencyCode(event?.target.value)}
           />
           <div className="currency-btn-box">
@@ -265,14 +268,16 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           />
         </div>
       </Modal>
-      <Active
-        isVisible={promptOpen}
-        value={promptInfo}
-        onClose={() => {
-          setPromptOpen(false);
-          fetchRecords();
-        }}
-      />
+      {promptOpen ? 
+        <Active
+          isVisible={promptOpen}
+          value={promptInfo}
+          onClose={() => {
+            setPromptOpen(false);
+            fetchRecords();
+          }}
+        /> : null
+      }
       {payOpen ? (
         <PayModal
           isModalOpen={payOpen}

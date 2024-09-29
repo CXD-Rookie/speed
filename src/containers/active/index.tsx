@@ -29,6 +29,24 @@ const Active: React.FC<ActiveModalProps> = (props) => {
     vip_time: accountInfo?.userInfo.vip_expiration_time - 86400,
   });
 
+  // 是否无期限
+  function isApproximatelyThirtyYearsApart(timestamp: any) {
+    // 当前时间
+    const now: any = Date.now() / 1000;
+
+    // 计算两个日期之间的时间差（以秒为单位）
+    const diffInSeconds = Math.abs(timestamp - now);
+
+    // 平均每年的秒数 (忽略闰年)
+    const secondsPerYear = 31536000;
+
+    // 计算时间差大约为多少年
+    const yearsApart = diffInSeconds / secondsPerYear;
+    
+    // 判断是否相差大约30年
+    return yearsApart - 30 >= 0; // 允许误差范围为±2年
+  }
+  
   useEffect(() => {
     if (Object?.keys(value)?.length > 0) {
       setCurrencyInfo({
@@ -59,10 +77,14 @@ const Active: React.FC<ActiveModalProps> = (props) => {
                 "天免费会员体验"}
           </span>
         </p>
-        <h6>
-          有效期至
-          {formatDate(currencyInfo?.vip_time || 0)}
-        </h6>
+        {/* 如果领取弹窗是通过兑换码弹出的，那么在兑换类型为时间兑换码，也就是 type = 1时不展示 */}
+        {value?.type !== 1 ||
+          (!isApproximatelyThirtyYearsApart(currencyInfo?.vip_time) && (
+            <h6>
+              有效期至
+              {formatDate(currencyInfo?.vip_time || 0)}
+            </h6>
+          ))}
         <button className="confirm-button" onClick={onClose}>
           好的
         </button>
