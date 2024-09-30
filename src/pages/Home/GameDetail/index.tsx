@@ -319,17 +319,17 @@ const GameDetail: React.FC = () => {
         <div className="game-detail">
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>
-            {detailData?.acc_platform?.length > 0 && (
-              <div className="platfrom">
-                <div className="text">已同步加速</div>
-                <div className="icon-box">
-                  {findMappingIcon(detailData)?.length > 0 &&
-                    findMappingIcon(detailData)?.map((item: any) => {
-                      return <img key={item?.id} src={item?.icon} alt="" />;
-                    })}
+            {detailData?.pc_platform?.length > 0 && (
+                <div className="platfrom">
+                  <div className="text">已同步加速</div>
+                  <div className="icon-box">
+                    {findMappingIcon(detailData)?.length > 0 &&
+                      findMappingIcon(detailData)?.map((item: any) => {
+                        return <img key={item?.id} src={item?.icon} alt="" />;
+                      })}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
             <div className="game-btn">
               <Button
                 className="Launching on-game"
