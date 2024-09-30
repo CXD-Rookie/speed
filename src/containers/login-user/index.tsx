@@ -28,7 +28,7 @@ import closeIcon from "@/assets/images/common/cloture.svg";
 interface CustomDropdownProps {
   isCouponRefresh?: number;
 }
-const inilitePagination = { page: 1, pageSize: 10 };
+const inilitePagination = { page: 1, pagesize: 20 };
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const { isCouponRefresh } = props;
