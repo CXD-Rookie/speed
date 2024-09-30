@@ -138,6 +138,34 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     console.log("data-title:", dataTitle);
   };
 
+  // 找到 content 值最小的数据项，并且在有多个相同最小值时选择索引最小的项
+  function findMinContentItemWithLowestIndex(data:any = []) {
+    let minContent = Infinity;
+    let minIndex = -1;
+    let minItem = null;
+
+    for (let i = 0; i < data.length; i++) {
+        const currentItem = data[i];
+        const currentContent = currentItem.redeem_code.content;
+
+        if (currentContent < minContent || (currentContent === minContent && i < minIndex)) {
+            minContent = currentContent;
+            minIndex = i;
+            minItem = currentItem;
+        }
+    }
+
+    return minItem;
+  }
+
+  useEffect(() => {
+    // 初始化在没有别的页面点击立即使用优惠卡进入到支付页面的时候，默认选中折扣最小的，索引值靠前的数据进行默认选中折扣卡
+    if (!(Object.keys(couponValue)?.length > 0) && couponData?.length > 0 && !activeCoupon?.id) {
+      const data = findMinContentItemWithLowestIndex(couponData);
+      setActiveCoupon(data);
+    }
+  }, [couponData]);
+
   // 获取单价，类型列表
   const fetchData = async () => {
     try {
@@ -156,12 +184,15 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         payApi.UnpaidOrder(),
         payApi.redeemList({ type: 2, status: 1, page: 1, pagesize: 100 }),
       ]);
-
+      
       if (
         payTypeResponse.error === 0 &&
         commodityResponse.error === 0 &&
         unpaidOrder?.data
       ) {
+        const data = findMinContentItemWithLowestIndex(couponData);
+        setActiveCoupon(data);
+
         setCouponData(makeData?.data?.list || []);
         setPayTypes(payTypeResponse?.data);
         setCommodities(commodityResponse?.data?.list);
@@ -324,13 +355,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       }
     };
   }, []);
-
-  // useEffect(() => {
-  //   if (couponValue?.id) {
-  //     setActiveCoupon(couponValue);
-  //   }
-  //   return () => {};
-  // }, [couponValue]);
 
   useEffect(() => {
     const inilteFun = async () => {
