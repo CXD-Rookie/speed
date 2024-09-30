@@ -24,12 +24,20 @@
     position: relative;
 }
 
+:where(.css-dev-only-do-not-override-usln0u).ant-modal-root .ant-modal-mask {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
 .pay-module-new .ant-modal-content {
     width: 92vw;
     height: 82vh;
     background-color: transparent !important;
     box-shadow: none;
     padding-top: 9vh;
+
+    &:where(.css-dev-only-do-not-override-usln0u).ant-modal-root .ant-modal-mask {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+    }
 
     .close-icon {
         position: absolute;
@@ -106,7 +114,7 @@
         margin: 0 auto;
 
         .carousel {
-            width: fit-content;
+            width: 16vw;
             display: flex;
             align-items: flex-end;
         }
