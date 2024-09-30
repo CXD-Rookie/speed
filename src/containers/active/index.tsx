@@ -23,11 +23,22 @@ const Active: React.FC<ActiveModalProps> = (props) => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const vip_experience_time = localStorage.getItem("vip_experience_time");
+  
+  const iniliteFun = () => {
+    let rebates_time = vip_experience_time
+      ? JSON.parse(vip_experience_time)
+      : 0;
+    let vip_time = accountInfo?.userInfo.vip_expiration_time - 86400;
 
-  const [currencyInfo, setCurrencyInfo] = useState<any>({
-    rebates_time: vip_experience_time ? JSON.parse(vip_experience_time) : 0,
-    vip_time: accountInfo?.userInfo.vip_expiration_time - 86400,
-  });
+    return {
+      rebates_time,
+      vip_time,
+    };
+  };
+
+  const [currencyInfo, setCurrencyInfo] = useState<any>(iniliteFun());
+
+  
 
   // 是否无期限
   function isApproximatelyThirtyYearsApart(timestamp: any) {
@@ -54,11 +65,6 @@ const Active: React.FC<ActiveModalProps> = (props) => {
         rebates_time: 0,
         vip_time: value?.goods_expire_time,
       });
-    } else {
-      // setCurrencyInfo({
-      //   rebates_time: vip_experience_time ? JSON.parse(vip_experience_time) : 0,
-      //   vip_time: accountInfo?.userInfo.vip_expiration_time - 86400,
-      // });
     }
   }, [value]);
   
