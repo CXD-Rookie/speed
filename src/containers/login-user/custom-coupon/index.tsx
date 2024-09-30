@@ -139,7 +139,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
               label: `未使用（${couponMaskData?.length}）`,
               children: (
                 <div className="coupon-tabs-content">
-                  {couponMaskData?.length >= 0 ? (
+                  {couponMaskData?.length > 0 ? (
                     <div
                       className="content-box"
                       onScrollCapture={nodeDebounce(handleScroll, 200)}
@@ -206,7 +206,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
               label: `已失效（${couponLoseData?.length}）`,
               children: (
                 <div className="coupon-tabs-content">
-                  {couponLoseData?.length >= 0 ? (
+                  {couponLoseData?.length > 0 ? (
                     <div className="content-box">
                       {couponLoseData.map((lose: any) => {
                         const redeem_code = lose?.redeem_code;
