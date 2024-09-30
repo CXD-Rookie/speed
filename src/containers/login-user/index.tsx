@@ -20,8 +20,8 @@ import PayModal from "../Pay";
 import CustonCoupon from "./custom-coupon";
 import "./index.scss";
 
-import bannerRechargeIcon from "@/assets/images/common/banner-recharge.svg";
-import bannerRenewalIcon from "@/assets/images/common/banner-renewal.svg";
+import bannerRechargeIcon from "@/assets/images/common/banner-recharge.png";
+import bannerRenewalIcon from "@/assets/images/common/banner-renewal.png";
 import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
 

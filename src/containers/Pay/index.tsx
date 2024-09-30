@@ -190,9 +190,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         commodityResponse.error === 0 &&
         unpaidOrder?.data
       ) {
-        const data = findMinContentItemWithLowestIndex(couponData);
-        setActiveCoupon(data);
-
         setCouponData(makeData?.data?.list || []);
         setPayTypes(payTypeResponse?.data);
         setCommodities(commodityResponse?.data?.list);

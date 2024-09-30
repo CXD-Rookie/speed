@@ -31,8 +31,11 @@
 .custom-dropdown-title-tooltip {
   display: flex;
   justify-content: space-between;
-
+  align-items: center;
+  
   & img {
+    width: 1.2vw;
+    height: 1.2vw;
     cursor: pointer;
   }
 }

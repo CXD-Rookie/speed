@@ -309,6 +309,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   return (
     <Fragment>
       <Modal
+        wrapClassName="pay-wrap-module"
         className="pay-module pay-module-new"
         open={isModalOpen}
         onCancel={() => {

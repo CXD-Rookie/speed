@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Select, Button, Table } from "antd";
+import { Select, Button, Table, Dropdown } from "antd";
 import type { TableProps } from "antd";
 
 import "./index.scss";
@@ -99,8 +99,11 @@ const CustomNode: React.FC<NodeProps> = ({
         {value?.name} | {selectRegion?.qu} | {selectNode?.name || "所有服务器"}
         <div className="node-select">
           <Select
+            className="content-name"
             value={nodeValue}
             placeholder="节点记录"
+            placement={"bottomRight"}
+            popupMatchSelectWidth={false}
             suffixIcon={<div className="triangle" />}
             onChange={(key) => {
               const select = nodeHistory?.filter(
