@@ -183,21 +183,26 @@ const Login: React.FC = () => {
                 {countdown > 0 ? (
                   `${countdown}s后重新获取`
                 ) : !isPhoneNumberValid ? (
-                  <div onClick={() => {
-                     if (phoneNumber && !isPhoneNumberValid) {
-                       setPhoneValue(false);
-                       setIsPhone(true);
-                     } else {
-                      setIsPhone(false);
-                      setPhoneValue(true);
-                     }
-                  }}>获取验证码</div>
+                  <div
+                    onClick={() => {
+                      if (phoneNumber && !isPhoneNumberValid) {
+                        setPhoneValue(false);
+                        setIsPhone(true);
+                      } else {
+                        setIsPhone(false);
+                        setPhoneValue(true);
+                      }
+                    }}
+                  >
+                    获取验证码
+                  </div>
                 ) : (
                   <Captcha
                     phoneNumber={phoneNumber}
                     isPhoneNumberValid={isPhoneNumberValid}
                     setCountdown={setCountdown}
                     setPhoneValue={setPhoneValue}
+                    setIsPhone={setIsPhone}
                   />
                 )}
               </div>

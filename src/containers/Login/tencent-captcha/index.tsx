@@ -7,6 +7,7 @@ export interface CaptchaProps {
   phoneNumber?: string;
   setCountdown?: React.Dispatch<React.SetStateAction<number>>;
   setPhoneValue?: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPhone?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const TencentCatcha: React.FC<CaptchaProps> = (props) => {
@@ -14,6 +15,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
     phoneNumber,
     setCountdown = () => {},
     setPhoneValue = () => {},
+    setIsPhone = () => {},
   } = props;
 
   const codeCallback = async (captcha_verify_param: any) => {
@@ -69,6 +71,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
         }
       );
 
+      setIsPhone(false)
       setPhoneValue(false)
       captcha.show();
     } catch (error) {
