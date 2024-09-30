@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { convertSecondsToDays,formatDate } from "@/common/utils";
 import './index.scss';
+import { store } from "@/redux/store";
 
 interface ActiveModalProps {
   isVisible: boolean;
@@ -22,14 +23,17 @@ const Active: React.FC<ActiveModalProps> = (props) => {
   const { isVisible, onClose, value = {} } = props;
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-  const vip_experience_time = localStorage.getItem("vip_experience_time");
+  
   
   const iniliteFun = () => {
+    const vip_experience_time = localStorage.getItem("vip_experience_time");
+    const accountInfo = store.getState()?.accountInfo;
+    
     let rebates_time = vip_experience_time
       ? JSON.parse(vip_experience_time)
       : 0;
     let vip_time = accountInfo?.userInfo.vip_expiration_time - 86400;
-
+    
     return {
       rebates_time,
       vip_time,
@@ -37,8 +41,6 @@ const Active: React.FC<ActiveModalProps> = (props) => {
   };
 
   const [currencyInfo, setCurrencyInfo] = useState<any>(iniliteFun());
-
-  
 
   // 是否无期限
   function isApproximatelyThirtyYearsApart(timestamp: any) {
@@ -59,6 +61,12 @@ const Active: React.FC<ActiveModalProps> = (props) => {
   }
   
   useEffect(() => {
+    if (isVisible) {
+      setCurrencyInfo(iniliteFun());
+    }
+  }, [isVisible]);
+
+  useEffect(() => {
     if (Object?.keys(value)?.length > 0) {
       setCurrencyInfo({
         name: value?.name,
@@ -66,8 +74,8 @@ const Active: React.FC<ActiveModalProps> = (props) => {
         vip_time: value?.goods_expire_time,
       });
     }
-  }, [value]);
-  
+  }, [value, accountInfo]);
+
   return (
     <div className={`modal-wrapper ${isVisible ? "visible" : ""}`}>
       <div className="modal-content">
