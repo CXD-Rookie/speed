@@ -23,11 +23,22 @@ const Active: React.FC<ActiveModalProps> = (props) => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const vip_experience_time = localStorage.getItem("vip_experience_time");
+  
+  const iniliteFun = () => {
+    let rebates_time = vip_experience_time
+      ? JSON.parse(vip_experience_time)
+      : 0;
+    let vip_time = accountInfo?.userInfo.vip_expiration_time - 86400;
 
-  const [currencyInfo, setCurrencyInfo] = useState<any>({
-    rebates_time: vip_experience_time ? JSON.parse(vip_experience_time) : 0,
-    vip_time: accountInfo?.userInfo.vip_expiration_time - 86400,
-  });
+    return {
+      rebates_time,
+      vip_time,
+    };
+  };
+
+  const [currencyInfo, setCurrencyInfo] = useState<any>(iniliteFun());
+
+  
 
   // 是否无期限
   function isApproximatelyThirtyYearsApart(timestamp: any) {
@@ -54,11 +65,6 @@ const Active: React.FC<ActiveModalProps> = (props) => {
         rebates_time: 0,
         vip_time: value?.goods_expire_time,
       });
-    } else {
-      // setCurrencyInfo({
-      //   rebates_time: vip_experience_time ? JSON.parse(vip_experience_time) : 0,
-      //   vip_time: accountInfo?.userInfo.vip_expiration_time - 86400,
-      // });
     }
   }, [value]);
   
@@ -80,9 +86,8 @@ const Active: React.FC<ActiveModalProps> = (props) => {
         {/* 如果领取弹窗是通过兑换码弹出的，那么在兑换类型为时间兑换码，也就是 type = 1时不展示 */}
         {value?.type !== 1 && (
           <h6>
-            {!isApproximatelyThirtyYearsApart(currencyInfo?.vip_time) ? 
-              "有效期至" + formatDate(currencyInfo?.vip_time || 0) : 
-              "无期限"}
+            {!isApproximatelyThirtyYearsApart(currencyInfo?.vip_time) && 
+              "有效期至" + formatDate(currencyInfo?.vip_time || 0) }
           </h6>
         )}
         <button className="confirm-button" onClick={onClose}>

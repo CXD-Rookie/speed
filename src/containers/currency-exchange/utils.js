@@ -52,11 +52,11 @@ const validityPeriod = (record = {}, type = "default") => {
     days = days + Math.ceil((redeem_code?.goods_expire_time - nightTime) / 86400);
   }
   
-  if ((days > 5 && days <= 10950) || (type !== "default" && [2, 3].includes(status))) {
-    return formatDate(redeem_code?.goods_expire_time);
-  } else if (days > 10950) {
+  if (days > 10950) {
     return "无期限";
-  } else if (days > 1 && days <= 5) {
+  } else if ((days > 5 && days <= 10950) || (type !== "default" && [2, 3].includes(status))) {
+    return formatDate(redeem_code?.goods_expire_time);
+  }  else if (days > 1 && days <= 5) {
     return days + "天后过期";
   } else if (difference > 0 && days <= 1 && days >= 0) {
     return "今天过期"

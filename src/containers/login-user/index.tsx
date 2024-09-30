@@ -28,7 +28,7 @@ import closeIcon from "@/assets/images/common/cloture.svg";
 interface CustomDropdownProps {
   isCouponRefresh?: number;
 }
-const inilitePagination = { page: 1, pageSize: 10 };
+const inilitePagination = { page: 1, pagesize: 20 };
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const { isCouponRefresh } = props;
@@ -47,7 +47,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const [couponOpen, setCouponOpen] = useState(false); // 优惠券 modal
-  const [couponTooltip, setCouponTooltip] = useState(false); // 优惠券提醒是否到期
+  const [couponTooltip, setCouponTooltip] = useState(
+    localStorage.getItem("isCouponExpiry") === "1"
+  ); // 优惠券提醒是否到期
 
   const [tableTotal, setTableTotal] = useState(0); // 可使用优惠券数量
   const [currencyTable, setCurrencyTable] = useState([]); // 可使用优惠券
@@ -128,17 +130,20 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   useEffect(() => {
     const iniliteFun = async () => {
       const tiem_lock: any = getCouponTimeLock();
-      const timestamp = Number(localStorage.getItem("timestamp"));
+      const timestamp = Number(localStorage.getItem("timestamp")); // 服务端返回的当前时间
       const record: any = (await fetchRecords())?.data;
+      const couponTimeLock = localStorage.getItem("couponTimeLock") || 0; // 每天00点的时间锁
+      const isHave = record.some(
+        (item: any) =>
+          item?.redeem_code?.goods_expire_time - timestamp <= 432000
+      ); // 判断优惠券中是否包含到期时间在5天以内的
 
-      if (
-        record.some(
-          (item: any) =>
-            item?.redeem_code?.goods_expire_time - timestamp <= 432000
-        )
-      ) {
+      if (isHave && timestamp > Number(couponTimeLock)) {
         localStorage.setItem("isCouponExpiry", "1"); // 是否距离优惠券过期小于5天
-      } else {
+        setCouponTooltip(true);
+      } 
+      
+      if (!isHave) {
         localStorage.removeItem("isCouponExpiry");
       }
 
@@ -243,26 +248,29 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           />
         </div>
       </Popover>
-      <Tooltip
-        overlayClassName={"custom-dropdown-ant-tooltip-overlay"}
-        title={
-          <div className="custom-dropdown-title-tooltip">
-            优惠券即将到期
-            <img
-              src={closeIcon}
-              alt=""
-              onClick={() => {
-                setCouponTooltip(false);
-                localStorage.removeItem("isCouponExpiry");
-              }}
-            />
-          </div>
-        }
-        placement={"bottomRight"}
-        open={localStorage.getItem("isCouponExpiry") === "1" || couponTooltip}
-      >
-        <span className="user-text"></span>
-      </Tooltip>
+      {couponTooltip && (
+        <Tooltip
+          overlayClassName={"custom-dropdown-ant-tooltip-overlay"}
+          title={
+            <div className="custom-dropdown-title-tooltip">
+              优惠券即将到期
+              <img
+                src={closeIcon}
+                alt=""
+                onClick={() => {
+                  setCouponTooltip(false);
+                  localStorage.removeItem("isCouponExpiry");
+                }}
+              />
+            </div>
+          }
+          placement={"bottomRight"}
+          open={couponTooltip}
+        >
+          <span className="user-text"></span>
+        </Tooltip>
+      )}
+
       {editOpen ? (
         <SettingsModal
           type="edit"
@@ -284,7 +292,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           type={minorType}
         />
       ) : null}
-      {couponOpen ? 
+      {couponOpen ? (
         <CustonCoupon
           open={couponOpen}
           setOpen={(event: boolean) => setCouponOpen(event)}
@@ -297,8 +305,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
             makeData: currencyTable,
             setMakePagination,
           }}
-        /> : null
-        }
+        />
+      ) : null}
     </div>
   );
 };

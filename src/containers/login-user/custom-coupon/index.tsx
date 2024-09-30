@@ -16,7 +16,7 @@ interface CouponProps {
   makeParams?: any;
   fetchRecords?: (event: any, value: any) => void;
 }
-const inilitePagination = { page: 1, pageSize: 20 };
+const inilitePagination = { page: 1, pagesize: 20 };
 
 const CustonCoupon: React.FC<CouponProps> = (props) => {
   const {
@@ -136,10 +136,10 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
           items={[
             {
               key: "make",
-              label: `未使用（${couponMaskData?.length}）`,
+              label: `未使用（${makeParams?.makeTotal}）`,
               children: (
                 <div className="coupon-tabs-content">
-                  {couponMaskData?.length >= 0 ? (
+                  {couponMaskData?.length > 0 ? (
                     <div
                       className="content-box"
                       onScrollCapture={nodeDebounce(handleScroll, 200)}
@@ -203,10 +203,10 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
             },
             {
               key: "lose",
-              label: `已失效（${couponLoseData?.length}）`,
+              label: `已失效（${loseTotal}）`,
               children: (
                 <div className="coupon-tabs-content">
-                  {couponLoseData?.length >= 0 ? (
+                  {couponLoseData?.length > 0 ? (
                     <div className="content-box">
                       {couponLoseData.map((lose: any) => {
                         const redeem_code = lose?.redeem_code;

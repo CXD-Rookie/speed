@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useSelector } from "react-redux";
 import { validityPeriod } from "../currency-exchange/utils";
+import { nodeDebounce } from "@/common/utils";
 
 import tracking from "@/common/tracking";
 import eventBus from '../../api/eventBus'; 
@@ -11,7 +12,8 @@ import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
 import PaymentModal from "../payment";
 import BreakConfirmModal from "../break-confirm";
-import { nodeDebounce } from "@/common/utils";
+
+import loadingGif from '@/assets/images/common/jiazai.gif';
 
 interface PayModalProps {
   isModalOpen?: boolean;
@@ -92,6 +94,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [couponData, setCouponData] = useState([]); // 优惠券列表信息
   const [activeCoupon, setActiveCoupon] = useState<any>(couponValue); // 选中优惠券信息
 
+  const [loading, setLoading] = useState(false); // 初始化数据加载中
+
   const env_url = process.env.REACT_APP_API_URL;
 
   const isInteger = (num: number) => {
@@ -134,9 +138,39 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     console.log("data-title:", dataTitle);
   };
 
+  // 找到 content 值最小的数据项，并且在有多个相同最小值时选择索引最小的项
+  function findMinContentItemWithLowestIndex(data:any = []) {
+    let minContent = Infinity;
+    let minIndex = -1;
+    let minItem = null;
+
+    for (let i = 0; i < data.length; i++) {
+        const currentItem = data[i];
+        const currentContent = currentItem.redeem_code.content;
+
+        if (currentContent < minContent || (currentContent === minContent && i < minIndex)) {
+            minContent = currentContent;
+            minIndex = i;
+            minItem = currentItem;
+        }
+    }
+
+    return minItem;
+  }
+
+  useEffect(() => {
+    // 初始化在没有别的页面点击立即使用优惠卡进入到支付页面的时候，默认选中折扣最小的，索引值靠前的数据进行默认选中折扣卡
+    if (!(Object.keys(couponValue)?.length > 0) && couponData?.length > 0 && !activeCoupon?.id) {
+      const data = findMinContentItemWithLowestIndex(couponData);
+      setActiveCoupon(data);
+    }
+  }, [couponData]);
+
   // 获取单价，类型列表
   const fetchData = async () => {
     try {
+      setLoading(true);
+
       const [
         payTypeResponse,
         commodityResponse,
@@ -150,12 +184,15 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         payApi.UnpaidOrder(),
         payApi.redeemList({ type: 2, status: 1, page: 1, pagesize: 100 }),
       ]);
-
+      
       if (
         payTypeResponse.error === 0 &&
         commodityResponse.error === 0 &&
         unpaidOrder?.data
       ) {
+        const data = findMinContentItemWithLowestIndex(couponData);
+        setActiveCoupon(data);
+
         setCouponData(makeData?.data?.list || []);
         setPayTypes(payTypeResponse?.data);
         setCommodities(commodityResponse?.data?.list);
@@ -182,6 +219,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       // return
     } catch (error) {
       console.error("Error fetching data", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -317,13 +356,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (couponValue?.id) {
-  //     setActiveCoupon(couponValue);
-  //   }
-  //   return () => {};
-  // }, [couponValue]);
-
   useEffect(() => {
     const inilteFun = async () => {
       const iniliteData = await fetchData();
@@ -390,250 +422,260 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         maskClosable={false}
         footer={null}
       >
-        <div className="pay-modal">
-          <div className="headerAll">
-            <div className="title">全平台会员特权</div>
-            <div className="description">
-              电竞专线/海外专线/超低延迟/动态多包/智能加速/多平台加速
-            </div>
-          </div>
-          <div className="tabs-container">
-            {commodities?.length > 4 && (
-              <Fragment>
-                <div
-                  className="arrow left"
-                  onClick={() => {
-                    if (!(arrow === 0)) {
-                      setArrow(arrow + 1);
-                    }
-                  }}
-                />
-                <div
-                  className="arrow right"
-                  onClick={() => {
-                    if (!(arrow === -(commodities?.length - 4))) {
-                      setArrow(arrow - 1);
-                    }
-                  }}
-                />
-              </Fragment>
-            )}
-            <div className="tabs">
-              {commodities.map((item, index) => (
-                <div
-                  key={index}
-                  className={`tab ${index === activeTabIndex ? "active" : ""}`}
-                  style={{ transform: `translateX(${arrow * 15.25}vw)` }}
-                  onClick={() => updateActiveTabIndex(index)}
-                >
-                  {activeCoupon?.id ? (
-                    <div className="discount">
-                      {activeCoupon?.redeem_code?.content}折
-                    </div>
-                  ) : (
-                    images?.length > 0 &&
-                    (firstAuth.firstAuth.first_purchase ||
-                      firstAuth.firstAuth.first_renewed) && (
-                      <div className={`${isOldUser ? "" : "discount"}`}>
-                        {!firstAuth.firstAuth.first_purchase &&
-                          `续费${isInteger(
-                            Number(firstPayRenewedTypes[item.type])
-                          )}折`}
-                        {!firstAuth.firstAuth.first_renewed &&
-                          `首充${isInteger(
-                            Number(firstPayTypes[item.type])
-                          )}折`}
-                      </div>
-                    )
-                  )}
-                  <div className="term">{item.name}</div>
-                  <div className="price">
-                    ¥<span className="price-text">{item.month_price}</span>/月
-                    {(activeCoupon?.id ||
-                      (images?.length > 0 &&
-                        (firstAuth.firstAuth.first_purchase ||
-                          firstAuth.firstAuth.first_renewed))) && (
-                      <span className="text">¥{item.scribing_month_price}</span>
-                    )}
-                  </div>
-                  <div className="amount">
-                    总价：¥<span>{item.price}</span>
-                    {(activeCoupon?.id ||
-                      (images?.length > 0 &&
-                        (firstAuth.firstAuth.first_purchase ||
-                          firstAuth.firstAuth.first_renewed))) && (
-                      <span className="text">原价: ¥{item.scribing_price}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="content">
-            {qrCodeUrl && (
-              <div className="qrcode">
-                <img className="header-icon" src={qrCodeUrl} alt="" />
-                {QRCodeState !== "normal" && (
-                  <div className="pay-mask">
-                    <div className="title">
-                      {QRCodeState === "incoming" && "手机支付中"}
-                      {QRCodeState === "timeout" && "二维码已超时"}
-                    </div>
-                    <div className="text">
-                      {QRCodeState === "incoming" && "如遇问题"}
-                      <span onClick={() => iniliteReset()}>点击刷新</span>
-                    </div>
-                    <div>
-                      {QRCodeState === "timeout" && "二维码"}
-                      {QRCodeState === "incoming" && "二维码重试"}
-                    </div>
-                  </div>
-                )}
+        {loading ? (
+          <img className="pay-loading-img" src={loadingGif} alt="" />
+        ) : (
+          <div className="pay-modal">
+            <div className="headerAll">
+              <div className="title">全平台会员特权</div>
+              <div className="description">
+                电竞专线/海外专线/超低延迟/动态多包/智能加速/多平台加速
               </div>
-            )}
-            <div className="carousel">
-              {commodities.map((item, index) => (
-                <div
-                  key={index}
-                  className="carousel-item"
-                  style={{
-                    display: index === activeTabIndex ? "block" : "none",
-                  }}
-                >
-                  <div className="priceAll" data-price={item.price}>
-                    <ul>
-                      <li>
-                        <span className="txt">支付宝或微信扫码支付</span>
-                      </li>
-                      <li>
-                        <span className="priceBig">{item.price}</span>
-                      </li>
-                      <li>
-                        我已同意《
-                        <div
-                          style={{ cursor: "pointer" }}
-                          className="txt"
-                          onClick={handleClick}
-                          ref={divRef}
-                          data-title="https://cdn.accessorx.com/web/terms_of_service.html"
-                        >
-                          用户协议
-                        </div>
-                        》及《
-                        <div
-                          style={{ cursor: "pointer" }}
-                          className="txt"
-                          onClick={handleClick}
-                          ref={divRef}
-                          data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
-                        >
-                          自动续费协议
-                        </div>
-                        》到期按每月29元自动续费，可随时取消 <TooltipCom />
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              ))}
             </div>
-            <div className="my-coupons">
-              <div className="title">我的优惠券： </div>
-              <div className="coupons">
-                <div
-                  className="custom-input"
-                  style={
-                    couponData?.length > 0 && activeCoupon?.id
-                      ? {
-                          color: "#f97d4c",
-                          borderColor: "#f97d4c",
-                        }
-                      : {}
-                  }
-                  onClick={() => {
-                    if (couponData?.length > 0) {
-                      setCouponOpen(!couponOpen);
-                    }
-                  }}
-                >
-                  {couponData?.length < 1 ? (
-                    <span>暂无可用优惠券</span>
-                  ) : activeCoupon?.id ? (
-                    <span
-                      style={
-                        activeCoupon?.id
-                          ? {
-                              color: "#f97d4c",
-                              borderColor: "#f97d4c",
-                            }
-                          : {}
-                      }
-                    >
-                      已选择：{activeCoupon?.redeem_code?.name}
-                    </span>
-                  ) : (
-                    <span>您有{couponData?.length}张优惠券可使用</span>
-                  )}
+            <div className="tabs-container">
+              {commodities?.length > 4 && (
+                <Fragment>
                   <div
-                    className={
-                      couponOpen ? "triangles-bottom" : "triangles-top"
-                    }
+                    className="arrow left"
+                    onClick={() => {
+                      if (!(arrow === 0)) {
+                        setArrow(arrow + 1);
+                      }
+                    }}
                   />
+                  <div
+                    className="arrow right"
+                    onClick={() => {
+                      if (!(arrow === -(commodities?.length - 4))) {
+                        setArrow(arrow - 1);
+                      }
+                    }}
+                  />
+                </Fragment>
+              )}
+              <div className="tabs">
+                {commodities.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`tab ${
+                      index === activeTabIndex ? "active" : ""
+                    }`}
+                    style={{ transform: `translateX(${arrow * 15.25}vw)` }}
+                    onClick={() => updateActiveTabIndex(index)}
+                  >
+                    {activeCoupon?.id ? (
+                      <div className="discount">
+                        {activeCoupon?.redeem_code?.content}折
+                      </div>
+                    ) : (
+                      images?.length > 0 &&
+                      (firstAuth.firstAuth.first_purchase ||
+                        firstAuth.firstAuth.first_renewed) && (
+                        <div className={`${isOldUser ? "" : "discount"}`}>
+                          {!firstAuth.firstAuth.first_purchase &&
+                            `续费${isInteger(
+                              Number(firstPayRenewedTypes[item.type])
+                            )}折`}
+                          {!firstAuth.firstAuth.first_renewed &&
+                            `首充${isInteger(
+                              Number(firstPayTypes[item.type])
+                            )}折`}
+                        </div>
+                      )
+                    )}
+                    <div className="term">{item.name}</div>
+                    <div className="price">
+                      ¥<span className="price-text">{item.month_price}</span>/月
+                      {(activeCoupon?.id ||
+                        (images?.length > 0 &&
+                          (firstAuth.firstAuth.first_purchase ||
+                            firstAuth.firstAuth.first_renewed))) && (
+                        <span className="text">
+                          ¥{item.scribing_month_price}
+                        </span>
+                      )}
+                    </div>
+                    <div className="amount">
+                      总价：¥<span>{item.price}</span>
+                      {(activeCoupon?.id ||
+                        (images?.length > 0 &&
+                          (firstAuth.firstAuth.first_purchase ||
+                            firstAuth.firstAuth.first_renewed))) && (
+                        <span className="text">
+                          原价: ¥{item.scribing_price}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="content">
+              {qrCodeUrl && (
+                <div className="qrcode">
+                  <img className="header-icon" src={qrCodeUrl} alt="" />
+                  {QRCodeState !== "normal" && (
+                    <div className="pay-mask">
+                      <div className="title">
+                        {QRCodeState === "incoming" && "手机支付中"}
+                        {QRCodeState === "timeout" && "二维码已超时"}
+                      </div>
+                      <div className="text">
+                        {QRCodeState === "incoming" && "如遇问题"}
+                        <span onClick={() => iniliteReset()}>点击刷新</span>
+                      </div>
+                      <div>
+                        {QRCodeState === "timeout" && "二维码"}
+                        {QRCodeState === "incoming" && "二维码重试"}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {couponOpen && (
-                  <div className="custom-down">
-                    {couponData.map((item: any) => {
-                      return (
-                        <div
-                          className="mask-card card"
-                          key={item?.id}
-                          onClick={nodeDebounce(() => {
-                            clearInterval(intervalIdRef?.current);
-                            setQRCodeState("normal");
-                            setPollingTime(5000);
-                            setPollingTimeNum(0);
-                            setActiveCoupon(
-                              activeCoupon?.id === item?.id ? {} : item
-                            );
-                          }, 500)}
-                        >
-                          <div className="icon-box">
-                            <div className="left" />
-                            <div className="right" />
-                            {item?.redeem_code?.content}折
+              )}
+              <div className="carousel">
+                {commodities.map((item, index) => (
+                  <div
+                    key={index}
+                    className="carousel-item"
+                    style={{
+                      display: index === activeTabIndex ? "block" : "none",
+                    }}
+                  >
+                    <div className="priceAll" data-price={item.price}>
+                      <ul>
+                        <li>
+                          <span className="txt">支付宝或微信扫码支付</span>
+                        </li>
+                        <li>
+                          <span className="priceBig">{item.price}</span>
+                        </li>
+                        <li>
+                          我已同意《
+                          <div
+                            style={{ cursor: "pointer" }}
+                            className="txt"
+                            onClick={handleClick}
+                            ref={divRef}
+                            data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                          >
+                            用户协议
                           </div>
-                          <div className="text-box">
-                            <div className="title">
-                              {item?.redeem_code?.name}
+                          》及《
+                          <div
+                            style={{ cursor: "pointer" }}
+                            className="txt"
+                            onClick={handleClick}
+                            ref={divRef}
+                            data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
+                          >
+                            自动续费协议
+                          </div>
+                          》到期按每月29元自动续费，可随时取消 <TooltipCom />
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="my-coupons">
+                <div className="title">我的优惠券： </div>
+                <div className="coupons">
+                  <div
+                    className="custom-input"
+                    style={
+                      couponData?.length > 0 && activeCoupon?.id
+                        ? {
+                            color: "#f97d4c",
+                            borderColor: "#f97d4c",
+                          }
+                        : {}
+                    }
+                    onClick={() => {
+                      if (couponData?.length > 0) {
+                        setCouponOpen(!couponOpen);
+                      }
+                    }}
+                  >
+                    {couponData?.length < 1 ? (
+                      <span>暂无可用优惠券</span>
+                    ) : activeCoupon?.id ? (
+                      <span
+                        style={
+                          activeCoupon?.id
+                            ? {
+                                color: "#f97d4c",
+                                borderColor: "#f97d4c",
+                              }
+                            : {}
+                        }
+                      >
+                        已选择：{activeCoupon?.redeem_code?.name}
+                      </span>
+                    ) : (
+                      <span>您有{couponData?.length}张优惠券可使用</span>
+                    )}
+                    <div
+                      className={
+                        couponOpen ? "triangles-bottom" : "triangles-top"
+                      }
+                    />
+                  </div>
+                  {couponOpen && (
+                    <div className="custom-down">
+                      {couponData.map((item: any) => {
+                        return (
+                          <div
+                            className="mask-card card"
+                            key={item?.id}
+                            onClick={nodeDebounce(() => {
+                              clearInterval(intervalIdRef?.current);
+                              setQRCodeState("normal");
+                              setPollingTime(5000);
+                              setPollingTimeNum(0);
+                              setActiveCoupon(
+                                activeCoupon?.id === item?.id ? {} : item
+                              );
+                            }, 500)}
+                          >
+                            <div className="icon-box">
+                              <div className="left" />
+                              <div className="right" />
+                              {item?.redeem_code?.content}折
+                            </div>
+                            <div className="text-box">
+                              <div className="title">
+                                {item?.redeem_code?.name}
+                              </div>
+                              <div
+                                className="time-box"
+                                style={
+                                  validityPeriod(item).indexOf("过期") === -1
+                                    ? { color: "#999" }
+                                    : {}
+                                }
+                              >
+                                {validityPeriod(item, "state")}
+                              </div>
                             </div>
                             <div
-                              className="time-box"
-                              style={
-                                validityPeriod(item).indexOf("过期") === -1
-                                  ? { color: "#999" }
-                                  : {}
-                              }
+                              className={`custom-radio ${
+                                activeCoupon?.id === item?.id
+                                  ? "active-custom-radio"
+                                  : ""
+                              }`}
                             >
-                              {validityPeriod(item, "state")}
+                              <div className="radio-after" />
                             </div>
                           </div>
-                          <div
-                            className={`custom-radio ${
-                              activeCoupon?.id === item?.id
-                                ? "active-custom-radio"
-                                : ""
-                            }`}
-                          >
-                            <div className="radio-after" />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </Modal>
       <PaymentModal
         open={!!showPopup}
