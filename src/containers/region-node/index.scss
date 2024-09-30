@@ -213,12 +213,23 @@
         margin-right: 0.8vw;
       }
 
+      .popup-node-select {
+        width: 26vw !important;
+      }
+
+      .ant-select-fouces .ant-select-selector {
+        outline-color: #999999 !important;
+        border-color: #999999 !important;
+      }
+
       .ant-select-selector {
         width: 12vw;
         height: 4.8vh;
         color: #fff;
         background: transparent;
         border-radius: 0.5vw;
+        border-color: #999999 !important;
+        outline-color: #999999 !important;
         border: none;
         outline: none;
       }
@@ -321,8 +332,9 @@
 }
 
 .ant-select-dropdown {
+  width: 20vw;
   color: #fff !important;
-  background: #6b6b7d !important; 
+  background: #4B4B59 !important; 
   
   & div {
     font-size: 1.4vw !important;
@@ -335,20 +347,20 @@
 
 .ant-select-item-option {
   color: #fff !important;
+  background-color: #4B4B59 !important;
 }
 
 /* 修改选项在鼠标经过时的样式 */
 .ant-select-item-option-active {
-  background-color: #3E3E4A !important; /* 修改背景颜色 */
+  background-color: #4B4B59 !important; /* 修改背景颜色 */
   color: #fff !important;            /* 修改文字颜色 */
 }
 
 /* 修改选中项的样式 */
 .ant-select-item-option-selected {
-  background-color: #3E3E4A !important; /* 修改背景颜色 */
+  background-color: #4B4B59 !important; /* 修改背景颜色 */
   color: #fff !important;            /* 修改文字颜色 */
 }
-
 
 .up-triangle {
   border-bottom: 0.5vw solid #fff;
@@ -357,6 +369,7 @@
 .down-triangle {
   border-top: 0.5vw solid #fff;
 }
+
 .up-triangle, .down-triangle {
   display: inline-block;
   width: 1vw;
@@ -370,6 +383,7 @@
 .ant-table th {
   border-bottom: none; /* 移除底部边框 */
 }
+
 .ant-table-cell-scrollbar {
   display: none; /* 隐藏表头的滚动条补丁 */
 }
