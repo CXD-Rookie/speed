@@ -86,7 +86,7 @@ const GameLibrary: React.FC = () => {
   // 初始化时请求数据并缓存到 localStorage
   const fetchAndCacheGames = async () => {
     try {
-      const res = await gameApi.gameList({ page: 1, pagesize: 6000 }); // 获取全部游戏数据
+      const res = await gameApi.gameList({ page: 1, pagesize: 100 }); // 获取全部游戏数据
       const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
         ...game,
         cover_img: game.cover_img ? `https://cdn.accessorx.com/${game.cover_img}` : `https://cdn.accessorx.com/${game.background_img}`,
