@@ -71,6 +71,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       const result = { ...data };
       
       let allNodes = await buildNodeList(selectRegion);
+      
       const node = updateSelectNode(presentGameData, allNodes);
 
       if (node?.is_select && node?.name !== "智能节点") {
@@ -322,7 +323,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
       let suit = await fetchPlaysuit(option?.suit, data);
       let all: any = (await fetchAllSpeedList(suit)) || []; // 获取节点列表
-
+      console.log(suit);
+      
       all.unshift({
         ...all?.[0],
         name: "智能节点",
@@ -387,6 +389,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           suit:
             data?.playsuit === 2 // 当前游戏是否是国服游戏
               ? "国服"
+              : current?.qu === "智能匹配" ? "全部" 
               : current?.qu,
         };
       } else {
@@ -395,7 +398,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           region = { ...iniliteSmart, suit }; // 默认智能匹配
         }
       }
-      console.log(region);
       
       setSelectRegion(region);
     };
