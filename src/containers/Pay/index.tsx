@@ -52,6 +52,8 @@ interface ImageItem {
 
 const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {}, couponValue = {} } = props;
+  
+  const divRef = useRef<HTMLDivElement>(null); // 协议地址绑定引用ref
 
   const firstAuth = useSelector((state: any) => state.firstAuth); // 第一次优惠信息
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
@@ -113,6 +115,13 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     tracking.trackPurchasePageShow();
     setPollingKey(randomKey); // 存储当前二维码的规则key
     setQrCodeUrl(qRCodes); // 存储二维码地址
+  };
+
+  // 点击协议进行链接跳转到浏览器
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.currentTarget as HTMLDivElement;
+    const dataTitle = target.dataset.title;
+    (window as any).NativeApi_OpenBrowser(dataTitle);
   };
 
   // 点击关闭按钮函数
@@ -318,6 +327,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
               </div>
               {/* 支付和优惠券区域 */}
               <div className="content">
+                {/* 二维码区域 */}
                 {qrCodeUrl && (
                   <div className="qrcode">
                     <img className="header-icon" src={qrCodeUrl} alt="" />
@@ -339,6 +349,51 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                     )}
                   </div>
                 )}
+                {/* 支付金额，协议区域 */}
+                <div className="carousel">
+                  {commodities?.[activeTabIndex] ? (
+                    <div className="carousel-item">
+                      <div
+                        className="priceAll"
+                        data-price={commodities?.[activeTabIndex]?.price}
+                      >
+                        <ul>
+                          <li>
+                            <span className="txt">支付宝或微信扫码支付</span>
+                          </li>
+                          <li>
+                            <span className="priceBig">
+                              {commodities?.[activeTabIndex]?.price}
+                            </span>
+                          </li>
+                          <li>
+                            我已同意《
+                            <div
+                              style={{ cursor: "pointer" }}
+                              className="txt"
+                              onClick={handleClick}
+                              ref={divRef}
+                              data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                            >
+                              用户协议
+                            </div>
+                            》及《
+                            <div
+                              style={{ cursor: "pointer" }}
+                              className="txt"
+                              onClick={handleClick}
+                              ref={divRef}
+                              data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
+                            >
+                              自动续费协议
+                            </div>
+                            》到期按每月29元自动续费，可随时取消 <TooltipCom />
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
           )}
