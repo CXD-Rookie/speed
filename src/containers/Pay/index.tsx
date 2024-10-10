@@ -217,7 +217,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     } catch (error) {
       console.error("Error fetching data", error);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     }
   };
 
@@ -632,7 +634,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                               setActiveCoupon(
                                 activeCoupon?.id === item?.id ? {} : item
                               );
-                            }, 500)}
+                            }, 100)}
                           >
                             <div className="icon-box">
                               <div className="left" />
