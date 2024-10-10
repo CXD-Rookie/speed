@@ -69,7 +69,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
       let scrollTop = e.target.scrollTop;
       let clientHeight = e.target.clientHeight;
       let scrollHeight = e.target.scrollHeight;
-
+      
       if (
         Math.ceil(scrollTop) + Math.ceil(clientHeight) + 1 >= scrollHeight
       ) {
@@ -207,7 +207,10 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
               children: (
                 <div className="coupon-tabs-content">
                   {couponLoseData?.length > 0 ? (
-                    <div className="content-box">
+                    <div
+                      className="content-box"
+                      onScrollCapture={nodeDebounce(handleScroll, 200)}
+                    >
                       {couponLoseData.map((lose: any) => {
                         const redeem_code = lose?.redeem_code;
 
