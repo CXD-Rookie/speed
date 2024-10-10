@@ -82,12 +82,11 @@ const GameLibrary: React.FC = () => {
   const handleGoBack = () => {
     const currentPath = window.location.pathname;
     const history = historyContext?.history;
-
     const previousPath = history
       .slice(0, -1)
       .reverse()
       .find((path: any) => path !== currentPath);
-
+      
     if (previousPath) {
       navigate(previousPath);
     } else {
