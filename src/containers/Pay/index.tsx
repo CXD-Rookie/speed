@@ -217,9 +217,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     } catch (error) {
       console.error("Error fetching data", error);
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      setLoading(false);
     }
   };
 
