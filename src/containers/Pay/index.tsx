@@ -4,14 +4,13 @@ import { useSelector } from "react-redux";
 import { validityPeriod } from "../currency-exchange/utils";
 import { nodeDebounce } from "@/common/utils";
 
+import "./index.scss";
 import tracking from "@/common/tracking";
 import eventBus from '../../api/eventBus'; 
-import "./index.scss";
 import PayErrorModal from "../pay-error";
 import TooltipCom from "./tooltip";
 import payApi from "@/api/pay";
 import PaymentModal from "../payment";
-import BreakConfirmModal from "../break-confirm";
 
 import loadingGif from '@/assets/images/common/jiazai.gif';
 
@@ -52,13 +51,18 @@ interface ImageItem {
 
 const PayModal: React.FC<PayModalProps> = (props) => {
   const { isModalOpen, setIsModalOpen = () => {}, couponValue = {} } = props;
-  
+
   const divRef = useRef<HTMLDivElement>(null); // 协议地址绑定引用ref
+  const intervalIdRef: any = useRef(null); // 用于存储轮询计时器interval的引用
 
   const firstAuth = useSelector((state: any) => state.firstAuth); // 第一次优惠信息
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
   const userToken = accountInfo.userInfo.id; // 用户token
   const env_url = process.env.REACT_APP_API_URL;
+
+  const [showPopup, setShowPopup] = useState<string | null>(null); // 控制支付订单状态提示是否显示
+  const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null); // 支付订单信息
+  const [payErrorModalOpen, setPayErrorModalOpen] = useState(false); // 控制支付订单错误弹窗是否显示
 
   const [images, setImages] = useState<ImageItem[]>([]); // 存储是否有会员首充和会员折扣信息
   const [purchaseState, setPurchaseState] = useState<string>("none"); // 首充首续状态 none 都没有 purchase 首充 renewed 首续
@@ -66,13 +70,18 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   const [payTypes, setPayTypes] = useState<{ [key: string]: string }>({}); // 商品支付类型
   const [commodities, setCommodities] = useState<Commodity[]>([]); // 商品信息
+  const [couponOpen, setCouponOpen] = useState(false); // 是否展开优惠券
   const [couponData, setCouponData] = useState([]); // 优惠券列表信息
 
   const [activeCoupon, setActiveCoupon] = useState<any>(couponValue); // 选中优惠券信息
 
   const [qrCodeUrl, setQrCodeUrl] = useState(""); // 二维码cdn地址
+  const [QRCodeLoading, setQRCodeLoading] = useState(false); // 二维码是否加载中
   const [QRCodeState, setQRCodeState] = useState("normal"); // 二维码状态 normal 正常 incoming 支付中 timeout 超时 spining 生成中
   const [pollingKey, setPollingKey] = useState<string>(""); // 生成二维码的规则key
+  const [pollingTime, setPollingTime] = useState(5000); // 轮询支付接口的时间
+  const [paymentStatus, setPaymentStatus] = useState<number | null>(null); // 订单支付状态
+  const [, setPollingTimeNum] = useState(0); // 轮询计时器当前累计时长
 
   const [iniliteLoading, setIniliteLoading] = useState(false); // 全局加载动画判断值
   const [arrow, setArrow] = useState(0); // 商品列表左右箭头移动的位置
@@ -124,9 +133,41 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     (window as any).NativeApi_OpenBrowser(dataTitle);
   };
 
+  // 点击手动刷新函数
+  const iniliteReset = () => {
+    clearInterval(intervalIdRef?.current);
+    setRefresh(refresh + 1);
+    setQRCodeState("normal");
+    setPollingTime(5000);
+    setPollingTimeNum(0);
+  };
+
   // 点击关闭按钮函数
   const onCancel = () => {
+    setQRCodeState("normal"); // 重置二维码状态
+    setPollingTime(5000); // 还原轮询时间间隔
+    setPollingTimeNum(0); // 清空轮询计时器当前累计时长
+    setPollingKey(""); // 清空二维码的key
+    setPaymentStatus(null); // 重置支付订单状态
+    setRefresh(0); // 重置控制页面是否重新请求次数
+    clearInterval(intervalIdRef?.current); // 清除轮询计时器
+    setActiveTabIndex(0); // 还原选中选中商品索引
     setIsModalOpen(false); // 关闭会员充值页面
+  };
+
+  // 切换选中商品时
+  const updateActiveTabIndex = (index: number) => {
+    // 如果商品在支付中保持轮询不变
+    if (QRCodeState !== "incoming") {
+      setQRCodeLoading(true)
+      clearInterval(intervalIdRef?.current);
+      // 生成二维码信息
+      updateQRCodesInfo({
+        cid: commodities?.[activeTabIndex].id,
+      });
+    }
+
+    setActiveTabIndex(index);
   };
 
   // 数据请求
@@ -187,6 +228,62 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     }
   };
 
+  // 轮询接口，不断获取支付状态
+  const fetchPolling = async () => {
+    try {
+      // 轮询接口
+      const res = await payApi.getPolling({
+        key: pollingKey,
+      });
+
+      if (res?.error === 0) {
+        const status = res?.data?.status; // 订单状态
+
+        setPaymentStatus(status); // 更新订单状态
+
+        // 支付中
+        if (status === 1) {
+          setQRCodeState("incoming");
+          setPollingTime(3000);
+          setPollingTimeNum(0);
+        }
+
+        // 没有返回状态，并且是没有超时，支付中的时候进行延时计时判断
+        if (!status && status !== 1 && QRCodeState === "normal") {
+          setPollingTimeNum((num) => {
+            const time = num + pollingTime;
+
+            if (time >= 12000) {
+              setQRCodeState("timeout");
+              setPollingTimeNum(0);
+              return 0;
+            } else {
+              return time;
+            }
+          });
+        }
+
+        // 2已支付 3支付失败 4手动取消 5超时取消
+        if ([2, 3, 4, 5].includes(status) && res?.data?.cid) {
+          const commodityRes = await payApi.getCommodityInfo(res.data?.cid);
+
+          setOrderInfo({ ...commodityRes.data, ...res.data });
+
+          if ([3, 4, 5].includes(status)) {
+            setShowPopup(null);
+            setPayErrorModalOpen(true);
+          }
+
+          if (status === 2) {
+            setShowPopup("支付成功");
+          }
+        }
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   // 在初始化，token改变，进行刷新refresh，别的页面携带优惠券activeCoupon进入时触发逻辑刷新逻辑
   useEffect(() => {
     const inilteFun = async () => {
@@ -195,7 +292,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       if (iniliteData?.length > 0) {
         // 生成二维码信息
         updateQRCodesInfo({
-          cid: iniliteData?.[activeTabIndex].id
+          cid: iniliteData?.[activeTabIndex].id,
         });
       }
     };
@@ -204,6 +301,31 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       inilteFun();
     }
   }, [userToken, refresh, activeCoupon]);
+
+  useEffect(() => {
+    if (pollingKey) {
+      const intervalId = setInterval(() => {
+        fetchPolling();
+      }, pollingTime);
+
+      intervalIdRef.current = intervalId;
+    }
+
+    return () => {
+      if (paymentStatus !== 1 || QRCodeState === "timeout") {
+        clearInterval(intervalIdRef?.current);
+      }
+    };
+  }, [pollingKey, QRCodeState]);
+
+  useEffect(() => {
+    if (
+      ([2, 3, 4, 5] as any).includes(paymentStatus) ||
+      QRCodeState === "timeout"
+    ) {
+      clearInterval(intervalIdRef?.current);
+    }
+  }, [paymentStatus, QRCodeState, refresh]);
 
   // 初始化只执行一次
   useEffect(() => {
@@ -284,7 +406,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                         index === activeTabIndex ? "active" : ""
                       }`}
                       style={{ transform: `translateX(${arrow * 15.25}vw)` }}
-                      // onClick={() => updateActiveTabIndex(index)}
+                      onClick={() => updateActiveTabIndex(index)}
                     >
                       {/* 优惠券或者首充首续的折扣 */}
                       {activeCoupon?.id ? (
@@ -339,7 +461,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                         </div>
                         <div className="text">
                           {QRCodeState === "incoming" && "如遇问题"}
-                          {/* <span onClick={() => iniliteReset()}>点击刷新</span> */}
+                          <span onClick={() => iniliteReset()}>点击刷新</span>
                         </div>
                         <div>
                           {QRCodeState === "timeout" && "二维码"}
@@ -347,7 +469,14 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                         </div>
                       </div>
                     )}
-                  </div>
+                    {QRCodeLoading && (
+                      <img
+                        className="qrcode-loading-img"
+                        src={loadingGif}
+                        alt=""
+                      />
+                    )}
+                    </div>
                 )}
                 {/* 支付金额，协议区域 */}
                 <div className="carousel">
@@ -394,11 +523,131 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                     </div>
                   ) : null}
                 </div>
+                <div className="my-coupons">
+                  <div className="title">我的优惠券： </div>
+                  <div className="coupons">
+                    <div
+                      className="custom-input"
+                      style={
+                        couponData?.length > 0 && activeCoupon?.id
+                          ? {
+                              color: "#f97d4c",
+                              borderColor: "#f97d4c",
+                            }
+                          : {}
+                      }
+                      onClick={() => {
+                        if (couponData?.length > 0) {
+                          setCouponOpen(!couponOpen);
+                        }
+                      }}
+                    >
+                      {couponData?.length < 1 ? (
+                        <span>暂无可用优惠券</span>
+                      ) : activeCoupon?.id ? (
+                        <span
+                          style={
+                            activeCoupon?.id
+                              ? {
+                                  color: "#f97d4c",
+                                  borderColor: "#f97d4c",
+                                }
+                              : {}
+                          }
+                        >
+                          已选择：{activeCoupon?.redeem_code?.name}
+                        </span>
+                      ) : (
+                        <span>您有{couponData?.length}张优惠券可使用</span>
+                      )}
+                      <div
+                        className={
+                          couponOpen ? "triangles-bottom" : "triangles-top"
+                        }
+                      />
+                    </div>
+                    {couponOpen && (
+                      <div className="custom-down">
+                        {couponData.map((item: any) => {
+                          return (
+                            <div
+                              className="mask-card card"
+                              key={item?.id}
+                              onClick={nodeDebounce(() => {
+                                // clearInterval(intervalIdRef?.current);
+                                setQRCodeState("normal");
+                                // setPollingTime(5000);
+                                // setPollingTimeNum(0);
+                                setActiveCoupon(
+                                  activeCoupon?.id === item?.id ? {} : item
+                                );
+                              }, 100)}
+                            >
+                              <div className="icon-box">
+                                <div className="left" />
+                                <div className="right" />
+                                {item?.redeem_code?.content}折
+                              </div>
+                              <div className="text-box">
+                                <div className="title">
+                                  {item?.redeem_code?.name}
+                                </div>
+                                <div
+                                  className="time-box"
+                                  style={
+                                    validityPeriod(item).indexOf("过期") === -1
+                                      ? { color: "#999" }
+                                      : {}
+                                  }
+                                >
+                                  {validityPeriod(item, "state")}
+                                </div>
+                              </div>
+                              <div
+                                className={`custom-radio ${
+                                  activeCoupon?.id === item?.id
+                                    ? "active-custom-radio"
+                                    : ""
+                                }`}
+                              >
+                                <div className="radio-after" />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           )}
         </div>
       </Modal>
+      {/* 订单支付成功页面 */}
+      <PaymentModal
+        open={!!showPopup}
+        info={orderInfo}
+        payTypes={payTypes}
+        setOpen={(e) => {
+          onCancel();
+          setShowPopup(e);
+        }}
+      />
+      {/* 订单支付失败 */}
+      {payErrorModalOpen ? (
+        <PayErrorModal
+          accelOpen={payErrorModalOpen}
+          setAccelOpen={(e) => {
+            onCancel();
+            setPayErrorModalOpen(e);
+          }}
+          onConfirm={() => {
+            onCancel();
+            setPayErrorModalOpen(false);
+          }}
+        />
+      ) : null}
     </Fragment>
   );
 };

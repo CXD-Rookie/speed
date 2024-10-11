@@ -204,6 +204,16 @@
       height: 20vh;
       margin-top: 12vh;
       display: flex;
+
+      .qrcode-loading-box {
+        width: 25.2vw;
+        height: 20vh;
+        
+        .qrcode-loading-img {
+          width: 1.6vw;
+          height: 1.6vw;
+        }
+      }
     }
 
     /* Carousel container */
