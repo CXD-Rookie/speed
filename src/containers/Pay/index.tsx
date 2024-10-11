@@ -632,7 +632,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                               setActiveCoupon(
                                 activeCoupon?.id === item?.id ? {} : item
                               );
-                            }, 500)}
+                            }, 100)}
                           >
                             <div className="icon-box">
                               <div className="left" />

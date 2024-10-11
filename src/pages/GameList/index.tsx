@@ -82,7 +82,6 @@ const GameLibrary: React.FC = () => {
   const handleGoBack = () => {
     const currentPath = window.location.pathname;
     const history = historyContext?.history;
-
     const previousPath = history
       .slice(0, -1)
       .reverse()
@@ -148,7 +147,9 @@ const GameLibrary: React.FC = () => {
               </div>
               <div className="card-text-box">
                 <div className="game-name">{game.name}</div>
-                <div className="game-name-en">{game.name_en}</div>
+                <div className="game-name-en">
+                  {game.note ? game.note : `${game.name_en}`}
+                </div>
               </div>
             </div>
           ))}

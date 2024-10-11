@@ -52,7 +52,25 @@ export const HistoryProvider = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    setHistory((prevHistory) => [...prevHistory, location.pathname]);
+    setHistory((prevHistory) => {
+      const defHistory = [...prevHistory];
+      const pathname = location.pathname;
+      
+      if (defHistory.length > 0 && defHistory[defHistory.length - 1] === pathname) {
+        // 如果相同，则不添加新项
+        return defHistory;
+      }
+
+      // 添加新项
+      defHistory.push(pathname);
+
+      // 如果数组长度超过5，则从前面开始删除多余的项
+      while (defHistory.length > 5) {
+        defHistory.shift(); // 删除数组的第一个元素
+      }
+      
+      return defHistory;
+    });
   }, [location.pathname]);
 
   return (
