@@ -8,7 +8,7 @@ import gameApi from "@/api/gamelist";
 
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
-import {useActivate, useUnactivate} from "react-activation";
+
 interface Game {
   id: string;
   name: string;
