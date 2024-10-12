@@ -12,11 +12,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
-import { useHandleUserInfo } from "@/hooks/useHandleUserInfo";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
-import { nodeDebounce } from "@/common/utils";
+
 import axios from 'axios'
 import tracking from "@/common/tracking";
 import "./style.scss";
@@ -68,9 +67,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     removeGameList,
     accelerateGameToList,
     checkGameisFree,
+    checkShelves,
   } = useGamesInitialize();
-
-  const { handleUserInfo } = useHandleUserInfo();
 
   const [minorType, setMinorType] = useState<string>("acceleration"); // 是否成年 类型充值还是加速
   const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
@@ -557,6 +555,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const openModal = async (event: React.MouseEvent<HTMLImageElement>, option: any) => {
     const latestAccountInfo = store.getState().accountInfo;
 
+    event.stopPropagation();
+
+    if (await checkShelves(option)) return;
+
     if (accountInfo?.isLogin) {
       if (isRealNamel === "1") {
         dispatch(openRealNameModal());
@@ -578,9 +580,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
+    const iniliteFun = async (option: any) => {
+      if (await checkShelves(option)) return;
+
+      setSelectAccelerateOption(option);
+      accelerateDataHandling(option);
+    }
+
     if (Object.keys(customAccelerationData)?.length > 0) {
-      setSelectAccelerateOption(customAccelerationData);
-      accelerateDataHandling(customAccelerationData);
+      iniliteFun(customAccelerationData);
     }
   }, [customAccelerationData]);
 
@@ -604,6 +612,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               <div
                 className="accelerate-immediately-card"
                 onClick={async () => {
+                  if (await checkShelves(option)) return;
                   setIsClicking(true);
 
                   if (!isClicking) {
@@ -633,6 +642,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   className="accelerate-immediately-button"
                   onClick={async (event) => {
                     event.stopPropagation();
+                    // 判断是否当前游戏下架
+                    if (await checkShelves(option)) return;
+
                     setIsClicking(true);
 
                     if (!isClicking) {

@@ -22,13 +22,6 @@ interface RegionNodeSelectorProps {
   notice?: (value: any) => void;
 }
 
-interface RegionProps {
-  fu?: string;
-  qu?: string;
-  suit?: string;
-  is_select?: boolean;
-}
-
 const iniliteSmart = {
   fu: "",
   qu: "智能匹配",
@@ -45,8 +38,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       onCancel,
       notice = () => {},
     } = props;
-    const { getGameList, identifyAccelerationData, removeGameList } =
-      useGamesInitialize();
+    const {
+      getGameList,
+      identifyAccelerationData,
+      removeGameList,
+      checkShelves,
+    } = useGamesInitialize();
+
     const historyContext: any = useHistoryContext();
 
     const navigate = useNavigate();
@@ -204,8 +202,16 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     // 开始加速
     const startAcceleration = async (node: any = selectNode) => {
-      let isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
-
+      const isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
+      const isShelves = await checkShelves(
+        { ...presentGameData, name: "1111" },
+        onCancel,
+      );
+      
+      if (isShelves) {
+        return; // 判断是否当前游戏下架
+      }
+        
       if (isFind) {
         // 在游戏详情中进行区服节点切换进行提示窗类型
         if (window.location.hash === "#/gameDetail") {
