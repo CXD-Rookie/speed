@@ -46,23 +46,6 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
     setActiveTab("make");
   };
 
-  // 切换tab栏进行已失效数据请求
-  const handleTabChange = async (key: any, type = "change") => {
-    // const search = key === "make" ? makeParams?.makeSearch : loseSearch;
-    // const pagination =
-    //   key === "make" ? makeParams?.makePagination : losePagination;
-    // const res: any = await fetchRecords(search, pagination);
-
-    setActiveTab(key);
-
-    // if (key === "lose") {
-    //   setLoseTotal(res?.total)
-    //   setCouponLoseData(
-    //     pagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
-    //   );
-    // }
-  };
-
   // 表格滚动
   async function handleScroll(e: any) {
     if (e.target.getAttribute("class") === "content-box") {
@@ -90,13 +73,8 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
             ...losePagination,
             page: losePagination?.page + 1,
           };
-          const res: any = await fetchRecords(loseSearch, pagination);
-
+          
           setLosePagination(pagination);
-          setLoseTotal(res?.total);
-          setCouponLoseData(
-            pagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
-          );
         }
       }
     }
@@ -132,7 +110,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
       >
         <Tabs
           activeKey={activeTab}
-          onChange={handleTabChange}
+          onChange={(key) => setActiveTab(key)}
           items={[
             {
               key: "make",
