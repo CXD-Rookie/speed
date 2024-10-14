@@ -185,13 +185,12 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       setQRCodeLoading(true);
       clearInterval(intervalIdRef?.current);
       setQRCodeState("normal"); // 重置二维码状态
-      setPollingTime(5000); // 还原轮询时间间隔
       setPollingTimeNum(0); // 清空轮询计时器当前累计时长
+
       // 生成二维码信息
       updateQRCodesInfo({
         cid: commodities?.[activeTabIndex].id,
       });
-
       setQRCodeLoading(false);
     }
 
@@ -205,19 +204,29 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
       let payType: any = {}; // 商品支付类型
       let firstPurchase: any = {}; // 首次购买和首次续费的折扣
+      let makeCoupon: any = []; // 优惠券列表
 
       // 如果是第一次初始化请求, 执行只需要第一次执行的api
       if (refresh === 0) {
-        const [payTypeRes, firstPurchaseRes] = await Promise.all([
-          payApi.getPayTypeList(), // 商品支付类型api
-          payApi.getfirst_purchase_renewed_discount(), // 首次购买和首次续费的折扣api
-        ]);
+        const [payTypeRes, firstPurchaseRes, makeCouponRes] = await Promise.all(
+          [
+            payApi.getPayTypeList(), // 商品支付类型api
+            payApi.getfirst_purchase_renewed_discount(), // 首次购买和首次续费的折扣api
+            payApi.redeemList({ type: 2, status: 1, page: 1, pagesize: 100 }), // 优惠券列表
+          ]
+        );
 
-        if (payTypeRes?.error === 0 && firstPurchaseRes?.error === 0) {
+        if (
+          payTypeRes?.error === 0 &&
+          firstPurchaseRes?.error === 0 &&
+          makeCouponRes?.error === 0
+        ) {
           payType = payTypeRes?.data || {};
           firstPurchase = firstPurchaseRes?.data || {};
-
+          makeCoupon = makeCouponRes?.data?.list || [];
+          
           setPayTypes(payType);
+          setCouponData(makeCoupon);
 
           // 首次充值 首充续购
           const { first_purchase, first_renewed } = firstAuth?.firstAuth;
@@ -237,15 +246,33 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           }
         }
       }
+      
+      let couponObj: any = {}; 
+      console.log(couponValue, activeCoupon, makeCoupon);
+      
+      // 优惠券列表数据 第一次打开页面也就是初始化使用接口直接返回优惠券列表 makeCoupon，
+      // 手动刷新触发使用已经存储好的优惠券列表，过滤出最合适的优惠券
+      if (
+        !(Object.keys(couponValue)?.length > 0) &&
+        makeCoupon?.length > 0 &&
+        !activeCoupon?.id
+      ) {
+        console.log(makeCoupon);
+        
+        // 过滤合适的优惠券
+        couponObj = findMinIndex(makeCoupon);
+        setActiveCoupon(couponObj);
+      }
+      // 有优惠券，商品列表传优惠券rid，，没有不传
+      const params = couponObj?.rid
+        ? {
+            rid: couponObj?.rid,
+          }
+        : {};
+      const commodityRes = await payApi.getCommodityList(params);
 
-      const [commodityRes, makeCouponRes] = await Promise.all([
-        payApi.getCommodityList({ rid: activeCoupon?.rid }),
-        payApi.redeemList({ type: 2, status: 1, page: 1, pagesize: 100 }),
-      ]);
-
-      if (commodityRes?.error === 0 && makeCouponRes?.error === 0) {
+      if (commodityRes?.error === 0) {
         setCommodities(commodityRes?.data?.list || []);
-        setCouponData(makeCouponRes?.data?.list || []);
       }
 
       return commodityRes?.data?.list || [];
@@ -312,20 +339,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     }
   };
 
-  useEffect(() => {
-    // 初始化在没有别的页面点击立即使用优惠卡进入到支付页面的时候，默认选中折扣最小的，索引值靠前的数据进行默认选中折扣卡
-    // 优惠券列表不为空
-    if (
-      !(Object.keys(couponValue)?.length > 0) &&
-      couponData?.length > 0 &&
-      !activeCoupon?.id
-    ) {
-      // 找出优惠券中折扣最小的，同时索引是数据里边最靠前的
-      const data = findMinIndex(couponData);
-      setActiveCoupon(data);
-    }
-  }, [couponData]);
-
   // 在初始化，token改变，进行刷新refresh，别的页面携带优惠券activeCoupon进入时触发逻辑刷新逻辑
   useEffect(() => {
     const inilteFun = async () => {
@@ -342,7 +355,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     if (userToken && refresh >= 0) {
       inilteFun();
     }
-  }, [userToken, refresh, activeCoupon]);
+  }, [userToken, refresh]);
 
   useEffect(() => {
     if (pollingKey) {
