@@ -48,8 +48,12 @@ const GameDetail: React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
   const historyContext: any = useHistoryContext();
-  const { identifyAccelerationData, removeGameList, forceStopAcceleration } =
-    useGamesInitialize();
+  const {
+    identifyAccelerationData,
+    removeGameList,
+    forceStopAcceleration,
+    checkShelves,
+  } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // 启动游戏平台弹窗
@@ -89,7 +93,9 @@ const GameDetail: React.FC = () => {
     setIsOpen(true);
   };
 
-  const showModal = () => {
+  const showModal = async () => {
+    if (await checkShelves(detailData)) return; // 判断是否当前游戏下架
+
     setIsModalVisible(true);
   };
 

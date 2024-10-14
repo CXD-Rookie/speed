@@ -9,6 +9,7 @@
  */
 import { useHandleUserInfo } from "./useHandleUserInfo";
 import gameApi from "@/api/gamelist";
+import eventBus from "@/api/eventBus";
 
 export const useGamesInitialize = () => {
   const { handleUserInfo } = useHandleUserInfo();
@@ -220,6 +221,28 @@ export const useGamesInitialize = () => {
       console.error("Error fetching games:", error);
     }
   }
+  
+  // 调用游戏列表接口，通过中文名称，查询是否有返回值作为当前游戏是否下架的依据
+  const checkShelves = async (option, customFun) => {
+    try {
+      const res = await gameApi.gameList({ s: option?.name });
+      
+      if (res?.error === 0 && !res?.data?.list) {
+        eventBus.emit("showModal", {
+          show: true,
+          type: "takenShelves",
+          value: option,
+          onOk: customFun
+        });
+
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return {
     getGameList,
@@ -229,6 +252,7 @@ export const useGamesInitialize = () => {
     accelerateGameToList,
     chooseDefaultNode,
     forceStopAcceleration,
-    checkGameisFree
+    checkGameisFree,
+    checkShelves
   };
 };

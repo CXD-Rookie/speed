@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Select, Button, Table, Dropdown } from "antd";
+import { Select, Button, Table } from "antd";
 import type { TableProps } from "antd";
 
 import "./index.scss";
