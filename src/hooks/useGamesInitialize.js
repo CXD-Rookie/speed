@@ -228,11 +228,15 @@ export const useGamesInitialize = () => {
       const res = await gameApi.gameList({ s: option?.name });
       
       if (res?.error === 0 && !res?.data?.list) {
+        if (customFun) {
+          customFun?.onTrigger();
+        }
+
         eventBus.emit("showModal", {
           show: true,
           type: "takenShelves",
           value: option,
-          onOk: customFun
+          onOk: customFun?.onTrigger,
         });
 
         return true;
