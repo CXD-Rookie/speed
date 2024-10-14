@@ -581,7 +581,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
     const iniliteFun = async (option: any) => {
-      if (await checkShelves(option)) return;
+      if (await checkShelves(option)) {
+        localStorage.removeItem("isAccelLoading");
+        return;
+      };
 
       setSelectAccelerateOption(option);
       accelerateDataHandling(option);

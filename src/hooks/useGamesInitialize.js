@@ -226,8 +226,9 @@ export const useGamesInitialize = () => {
   const checkShelves = async (option, customFun) => {
     try {
       const res = await gameApi.gameList({ s: option?.name });
+      console.log(res);
       
-      if (res?.error === 0 && !res?.data?.list) {
+      if ((res?.error === 0 && !res?.data?.list) || res?.error === 1) {
         if (customFun) {
           customFun?.onTrigger();
         }
