@@ -304,14 +304,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
-
+      
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
-        domain_whitelist: [], // Assuming empty for now
-        ip_whitelist: [], // Assuming empty for now
+        domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now
+        ip_whitelist: WhiteBlackList.whitelist.ipv4, // Assuming empty for now
         acceleration_nodes: server.map((s: any) => ({
           server_address: `${addr}:${s.port}`,
           inbound_protocol: s.protocol.to,
