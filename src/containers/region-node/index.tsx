@@ -204,8 +204,11 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const startAcceleration = async (node: any = selectNode) => {
       const isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
       const isShelves = await checkShelves(
-        { ...presentGameData, name: "1111" },
-        onCancel,
+        { ...presentGameData},
+        {
+          onOk: onCancel,
+          onTrigger: onCancel,
+        }
       );
       
       if (isShelves) {
