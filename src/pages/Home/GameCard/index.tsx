@@ -400,7 +400,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     
     option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
     option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
-
+    
     let isPre: boolean;
 
     // 校验是否合法文件
