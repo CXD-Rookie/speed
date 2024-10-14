@@ -26,7 +26,6 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
     setSelectNode = () => {},
     selectNode,
     selectRegion,
-    setSelectRegion = () => {},
     generateRSuit = () => {},
   } = props;
 

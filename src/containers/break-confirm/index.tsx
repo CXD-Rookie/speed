@@ -14,7 +14,6 @@ import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useNavigate } from "react-router-dom";
 import tracking from "@/common/tracking";
 import eventBus from "@/api/eventBus";
-import useCefQuery from "@/hooks/useCefQuery";
 
 import "./index.scss";
 import SettingsModal from "../setting";
@@ -39,13 +38,14 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const { isNetworkError, setIsNetworkError, accelerateTime }: any =
     useHistoryContext();
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
-  const sendMessageToBackend = useCefQuery();
 
   const [noticeType, setNoticeType] = useState<any>(""); // 通过eventBus 传递的通知消息类型
   const [settingOpen, setSettingOpen] = useState(false);
 
   const [version, setVersion] = useState(""); // 立即升级版本
   const [feedbackClose, setfeedbackClose] = useState<any>(); // 问题反馈回调函数
+
+  const [eventBusValue, setEventBusValue] = useState<any>({}); // eventBus调用携带的信息
 
   // 内容文案
   const textContentObj: any = {
@@ -71,7 +71,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     connectionPay:
       "当前有一笔订单正在支付处理中。如需切换支付方式或会员套餐，请等待该订单自动关闭（约20分钟）后再尝试提交新订单.",
     switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
-    gamesAccelerating: "其他游戏正在加速！"
+    gamesAccelerating: "其他游戏正在加速！",
+    takenShelves: "当前游戏已被下架，无法加速。",
   };
 
   // footer 确认按钮的文案
@@ -87,6 +88,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     issueFeedback: "好的",
     connectionPay: "继续支付",
     gamesAccelerating: "好的",
+    takenShelves: "好的",
   };
 
   // footer 只显示一个按钮的类型
@@ -101,6 +103,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "issueFeedback", // 问题反馈
     "connectionPay", //继续支付，订单未支付
     "gamesAccelerating",
+    "takenShelves", // 游戏下架提示
   ];
 
   // 不显示右上角关闭的类型
@@ -110,6 +113,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "issueFeedback",
     "netorkError",
     "connectionPay",
+    "takenShelves",
   ];
 
   // 修改样式类型
@@ -124,7 +128,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const jsKey = localStorage.getItem("StartKey");
 
   // 停止加速
-  const stopAcceleration = () => {
+  const stopAcceleration = (option: any = "initialize") => {
     if (jsKey) {
       jsonString = JSON.stringify({
         params: {
@@ -143,7 +147,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         }
         console.log("Success response from 停止加速:", response);
         tracking.trackBoostDisconnectManual("手动停止加速");
-        removeGameList("initialize"); // 更新我的游戏
+        removeGameList(option); // 更新我的游戏
         accelerateTime?.stopTimer();
 
         if ((window as any).stopDelayTimer) {
@@ -195,6 +199,14 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       case "accelerate":
         localStorage.removeItem("isAccelLoading");
         break;
+      case "takenShelves":
+        if (eventBusValue?.onOk) {
+          eventBusValue?.onOk();
+        }
+        
+        stopAcceleration(eventBusValue?.value);
+        navigate("/home")
+        break;
       default:
         break;
     }
@@ -209,6 +221,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       setVersion(option?.version);
     } else if (option?.type === "issueFeedback") {
       setfeedbackClose({ onClose: option?.onClose });
+    } else if (option?.type === "takenShelves") {
+      setEventBusValue(option);
     }
   };
 
