@@ -8,7 +8,6 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./style.scss";
 
-import gameApi from "@/api/gamelist";
 import IssueModal from "@/containers/IssueModal/index";
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
@@ -50,7 +49,6 @@ const GameLibrary: React.FC = () => {
   const historyContext: any = useHistoryContext();
 
   const { appendGameToList } = useGamesInitialize();
-  const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
   const enterSign = useSelector((state: any) => state.searchEnter);
@@ -64,19 +62,6 @@ const GameLibrary: React.FC = () => {
   const clickAddGame = (option: Game) => {
     appendGameToList(option);
     navigate("/home");
-  };
-
-  const fetchGames = async () => {
-    try {
-      const res = await gameApi.gameList({ params: {} });
-      const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
-        ...game,
-        cover_img: `https://cdn.accessorx.com/${game.cover_img || game.background_img}`,
-      }));
-      setGames(gamesWithFullImgUrl);
-    } catch (error) {
-      console.error("Error fetching games:", error);
-    }
   };
 
   const handleGoBack = () => {
