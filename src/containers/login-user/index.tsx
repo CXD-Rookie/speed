@@ -58,7 +58,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [makePagination, setMakePagination] = useState(inilitePagination); // 可使用优惠券请求分页
 
   const [isFirst, setIsFirst] = useState(1);
-
+  
+  const [isShowUserT, setIsShowUserT] = useState(false); // 是否展示用户信息在是否优惠券到期文案
   const hide = () => {
     setOpen(false);
   };
@@ -141,7 +142,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       if (isHave && timestamp > Number(couponTimeLock)) {
         localStorage.setItem("isCouponExpiry", "1"); // 是否距离优惠券过期小于5天
         setCouponTooltip(true);
-      } 
+        setIsShowUserT(true)
+      } else {
+        setIsShowUserT(false);
+      }
       
       if (!isHave) {
         localStorage.removeItem("isCouponExpiry");
@@ -213,7 +217,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       <div className="login-suer-coupon">
         <span className="text">
           我的优惠券
-          {localStorage.getItem("isCouponExpiry") === "1" && (
+          {isShowUserT && (
             <span className="coupon">优惠劵即将到期</span>
           )}
         </span>
@@ -292,21 +296,19 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           type={minorType}
         />
       ) : null}
-      {couponOpen ? (
-        <CustonCoupon
-          open={couponOpen}
-          setOpen={(event: boolean) => setCouponOpen(event)}
-          value={currencyTable}
-          fetchRecords={fetchRecords}
-          makeParams={{
-            makeSearch,
-            makePagination,
-            makeTotal: tableTotal,
-            makeData: currencyTable,
-            setMakePagination,
-          }}
-        />
-      ) : null}
+      <CustonCoupon
+        open={couponOpen}
+        setOpen={(event: boolean) => setCouponOpen(event)}
+        value={currencyTable}
+        fetchRecords={fetchRecords}
+        makeParams={{
+          makeSearch,
+          makePagination,
+          makeTotal: tableTotal,
+          makeData: currencyTable,
+          setMakePagination,
+        }}
+      />
     </div>
   );
 };
