@@ -291,7 +291,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
-      // console.log(option.serverNode.selectNode, addr);
 
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
@@ -299,7 +298,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         nid: id,
       }); // 游戏加速信息
       const js_key = startInfo?.data?.js_key;
-      // const proxy_speed_limit = startInfo?.data?.proxy_speed_limit;
 
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", addr);
@@ -381,7 +379,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速实际操作
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
-
+    
     const selectRegion = option?.serverNode?.selectRegion;
     
     localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
@@ -594,7 +592,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       iniliteFun(customAccelerationData);
     }
   }, [customAccelerationData]);
-
+  
   return (
     <div
       className={`game-card-module ${
@@ -617,7 +615,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 onClick={async () => {
                   if (await checkShelves(option)) return;
                   setIsClicking(true);
-
+                  
                   if (!isClicking) {
                     await accelerateDataHandling({ ...option, router: "home" });
                   }
