@@ -358,15 +358,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   }
                 } catch (error) {
                   console.error("请求失败:", error);
-                  reject(error); // 请求失败，返回错误信息
+                  resolve({ state: false }); // 请求失败，返回错误信息
                 }
               } else {
                 console.error("端口信息缺失");
-                reject("端口信息缺失");
+                resolve({ state: false });;
               }
             } else {
               console.error("响应数据缺失");
-              reject("响应数据缺失");
+              resolve({ state: false });
+              // reject("响应数据缺失");
             }
           }
         );
