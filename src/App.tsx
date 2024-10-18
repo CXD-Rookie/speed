@@ -252,6 +252,10 @@ const App: React.FC = (props: any) => {
   const handleExitProcess = () => {
     let jsonString = "";
 
+    if (localStorage.getItem("isAccelLoading") === "1") {
+      return
+    }
+    
     const userToken = localStorage.getItem("token");
     const jsKey = localStorage.getItem("StartKey");
 
@@ -1029,7 +1033,10 @@ const App: React.FC = (props: any) => {
                   } else {
                     if (action === 0) {
                       (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
-                    } else if (action === 1) {
+                    } else if (
+                      action === 1 &&
+                      localStorage.getItem("isAccelLoading") !== "1" // 加速中点击无效
+                    ) {
                       (window as any).NativeApi_ExitProcess(); //关闭主程序
                     }
                   }
@@ -1121,7 +1128,7 @@ const App: React.FC = (props: any) => {
           type={"remoteLogin"}
           setIsMinorOpen={() => {
             setRemoteLoginOpen(false);
-            loginOutStop(1);
+            loginOutStop();;
           }}
         />
       ) : null}
@@ -1131,7 +1138,6 @@ const App: React.FC = (props: any) => {
           open={isAppCloseOpen}
           close={setIsAppCloseOpen}
           onConfirm={(state) => {
-            console.log(state, "------------");
             let is_acc = identifyAccelerationData()?.[0];
 
             if (state === 0) {

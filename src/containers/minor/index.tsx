@@ -39,9 +39,9 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
   const sign_expires = useSelector((state: any) => state.auth.sign_expires);
 
   const handleClose = () => {
-    setIsMinorOpen(false);
     dispatch(closeRealNameModal());
-
+    setIsMinorOpen(false);
+    
     if ([10, 11].includes(realType)) {
       navigate("/home");
       // 3个参数 用户信息 是否登录 是否显示登录

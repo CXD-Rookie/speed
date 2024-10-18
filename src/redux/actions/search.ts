@@ -11,7 +11,7 @@ interface SearchResult {
   name_en: string;
 }
 
-export const fetchSearchResults = (query: string, tag?: string, page: number = 1, pageSize: number = 10) => {
+export const fetchSearchResults = (query: string, tag?: string, page: number = 1, pageSize: number = 5000) => {
   return async (dispatch: Dispatch, getState: any) => {
     dispatch({ type: SET_SEARCH_QUERY, payload: query });
     

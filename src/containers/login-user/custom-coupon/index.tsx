@@ -35,12 +35,12 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   const [mouseoverState, setMouseoverState] = useState(false);
 
   const [payOpen, setPayOpen] = useState(false); // 购买开关
-  const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
+  const [payCoupon, setPayCoupon] = useState({}); // 立即使用的优惠券
 
   const [loseSearch] = useState({ type: 2, status: "2,3" }); // 已失效类型参数
   const [losePagination, setLosePagination] = useState(inilitePagination); // 已失效分页参数
   const [loseTotal, setLoseTotal] = useState(0); // 已失效数量总数
-
+  
   const onClose = () => {
     setOpen(false);
     setActiveTab("make");
@@ -156,9 +156,9 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                                   type="default"
                                   onMouseOver={() => setMouseoverState(true)}
                                   onMouseLeave={() => setMouseoverState(false)}
-                                  onClick={() => {
-                                    setpayCoupon(mask);
+                                  onClick={(e) => {
                                     setPayOpen(true);
+                                    setPayCoupon(mask);
                                     setOpen(false);
                                   }}
                                 >

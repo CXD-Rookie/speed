@@ -40,7 +40,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
   const togglePanel = (option: any, type = "default") => {
     // 如果当前游戏服具有不同的区，进行更新节点操作
     let result: any = { ...option };
-
+    
     setSelectNode({});
 
     if (option?.fu) {
@@ -56,7 +56,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
         expandedPanels?.qu === option?.qu;
       setExpandedPanels(isTrue ? {} : result);
     }
-
+    
     // 如果区服结构是单层结构时如 steam
     if (type === "default") {
       generateRSuit(value, option, currentGameServer);
