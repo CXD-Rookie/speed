@@ -90,7 +90,8 @@ const GameLibrary: React.FC = () => {
         ...game,
         cover_img: `${game.cover_img}`,
       }));
-
+      console.log(gamesWithFullImgUrl);
+      
       result_game = gamesWithFullImgUrl;
       setGames(gamesWithFullImgUrl);
     }
