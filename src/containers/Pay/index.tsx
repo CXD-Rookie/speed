@@ -96,6 +96,8 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   const [loading, setLoading] = useState(false); // 初始化数据加载中
 
+  const [isFirstCoupon, setIsFirstCoupon] = useState(0);
+
   const env_url = process.env.REACT_APP_API_URL;
 
   const isInteger = (num: number) => {
@@ -160,8 +162,17 @@ const PayModal: React.FC<PayModalProps> = (props) => {
 
   useEffect(() => {
     // 初始化在没有别的页面点击立即使用优惠卡进入到支付页面的时候，默认选中折扣最小的，索引值靠前的数据进行默认选中折扣卡
-    if (!(Object.keys(couponValue)?.length > 0) && couponData?.length > 0 && !activeCoupon?.id) {
+    if (
+      !(
+        firstAuth.firstAuth.first_purchase || firstAuth.firstAuth.first_renewed
+      ) &&
+      !(Object.keys(couponValue)?.length > 0) &&
+      couponData?.length > 0 &&
+      !activeCoupon?.id &&
+      isFirstCoupon === 0
+    ) {
       const data = findMinContentItemWithLowestIndex(couponData);
+      setIsFirstCoupon(isFirstCoupon + 1);
       setActiveCoupon(data);
     }
   }, [couponData]);
