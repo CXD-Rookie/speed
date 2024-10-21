@@ -5,8 +5,10 @@ import { store } from "@/redux/store";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setAccountInfo } from "@/redux/actions/account-info";
+import { nodeDebounce } from "@/common/utils";
 
 import "./style.scss";
+import gameApi from "@/api/gamelist";
 
 import IssueModal from "@/containers/IssueModal/index";
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
@@ -59,6 +61,10 @@ const GameLibrary: React.FC = () => {
   const [oldSearchBarValue, setOldSearchBarValue] = useState();
   const [games, setGames] = useState<any>([]);
 
+  const [page, setPage] = useState(1);
+  const [pagesize,] = useState(30);
+  const [total, setTotal] = useState(0);
+
   const clickAddGame = (option: Game) => {
     appendGameToList(option);
     navigate("/home");
@@ -75,25 +81,54 @@ const GameLibrary: React.FC = () => {
     if (previousPath) {
       navigate(previousPath);
     } else {
-      console.log("No previous path found.");
       navigate("/home");
     }
   };
+
+  // 请求游戏列表
+  const fetchGameList = async (page: number = 1) => {
+    try {
+      const res = await gameApi.gameList({ page, pagesize, s: searchBarValue });
+      const data = (res?.data?.list || []).map((game: Game) => ({
+        ...game,
+        cover_img: `https://cdn.accessorx.com/${
+          game.cover_img || game.background_img
+        }`,
+      }));
+
+      setPage(page)
+      setTotal(res?.data?.total || 0);
+      setGames(page > 1 ? [...games, ...data] : data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 表格滚动
+  function handleScroll(e: any) {
+    if (e.target.getAttribute("class") === "game-list") {
+      let scrollTop = e.target.scrollTop;
+      let clientHeight = e.target.clientHeight;
+      let scrollHeight = e.target.scrollHeight;
+
+      if (
+        Math.ceil(scrollTop) + Math.ceil(clientHeight) + 1 >= scrollHeight &&
+        total > games?.length
+      ) {
+        fetchGameList(page + 1)
+      }
+    }
+  }
 
   useEffect(() => {
     let result_game: Game[] = [];
 
     if (searchResults.length === 0) {
+      setPage(1);
+      setTotal(0);
       setGames([]); // 清空游戏列表
     } else {
-      const gamesWithFullImgUrl = searchResults.map((game: Game) => ({
-        ...game,
-        cover_img: `${game.cover_img}`,
-      }));
-      console.log(gamesWithFullImgUrl);
-      
-      result_game = gamesWithFullImgUrl;
-      setGames(gamesWithFullImgUrl);
+      fetchGameList();
     }
 
     if (result_game?.length === 0) {
@@ -110,10 +145,10 @@ const GameLibrary: React.FC = () => {
           className="back-button"
           onClick={handleGoBack}
         />
-        <span className="num-search">共{games?.length}个搜索结果</span>
+        <span className="num-search">共{total}个搜索结果</span>
       </div>
       {games.length > 0 ? (
-        <div className="game-list">
+        <div className="game-list" onScroll={nodeDebounce(handleScroll, 200)}>
           {games.map((game: any) => (
             <div key={game.id} className="game-card">
               <div className="content-box" onClick={() => clickAddGame(game)}>
