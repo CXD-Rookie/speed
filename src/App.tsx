@@ -123,7 +123,11 @@ const App: React.FC = (props: any) => {
     },
   ];
 
-  const loginOutStopWidow = async () => {
+  // 如果type === out代表退出登录操作
+  const loginOutStopWidow = async (type = "") => {
+    if (type === "out") {
+      loginOutStop()
+    }
     //登录过期和异地登录使用的
     setRemoteLoginOpen(true);
   };
@@ -1128,7 +1132,7 @@ const App: React.FC = (props: any) => {
           type={"remoteLogin"}
           setIsMinorOpen={() => {
             setRemoteLoginOpen(false);
-            loginOutStop();;
+            // loginOutStop();
           }}
         />
       ) : null}
