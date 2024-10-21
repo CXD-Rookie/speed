@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Button, Modal, Tabs } from "antd";
 import { validityPeriod } from "@/containers/currency-exchange/utils";
 import { nodeDebounce } from "@/common/utils";
@@ -26,6 +26,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
     fetchRecords = () => {},
     makeParams = {},
   } = props;
+  const scrollRef: any = useRef<HTMLDivElement>(null);
 
   const [activeTab, setActiveTab] = useState("make");
 
@@ -87,14 +88,21 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   useEffect(() => {
     const iniliteFun = async () => {
       const res: any = await fetchRecords(loseSearch, losePagination);
+
       setLoseTotal(res?.total);
       setCouponLoseData(
         losePagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
       );
     }
-
+    
     iniliteFun()
   }, [losePagination]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [open]);
 
   return (
     <Fragment>
@@ -121,6 +129,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                     <div
                       className="content-box"
                       onScrollCapture={nodeDebounce(handleScroll, 200)}
+                      ref={scrollRef}
                     >
                       {couponMaskData.map((mask: any) => {
                         const redeem_code = mask?.redeem_code;
@@ -188,6 +197,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                     <div
                       className="content-box"
                       onScrollCapture={nodeDebounce(handleScroll, 200)}
+                      // ref={scrollRef}
                     >
                       {couponLoseData.map((lose: any) => {
                         const redeem_code = lose?.redeem_code;
