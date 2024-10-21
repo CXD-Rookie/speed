@@ -60,6 +60,7 @@ const GameLibrary: React.FC = () => {
 
   const [oldSearchBarValue, setOldSearchBarValue] = useState();
   const [games, setGames] = useState<any>([]);
+  const [enterQuery, setEnterQuery] = useState("");
 
   const [page, setPage] = useState(1);
   const [pagesize,] = useState(30);
@@ -88,7 +89,7 @@ const GameLibrary: React.FC = () => {
   // 请求游戏列表
   const fetchGameList = async (page: number = 1) => {
     try {
-      const res = await gameApi.gameList({ page, pagesize, s: searchBarValue });
+      const res = await gameApi.gameList({ page, pagesize, s: enterQuery || searchBarValue });
       const data = (res?.data?.list || []).map((game: Game) => ({
         ...game,
         cover_img: `https://cdn.accessorx.com/${
@@ -96,6 +97,7 @@ const GameLibrary: React.FC = () => {
         }`,
       }));
 
+      setEnterQuery(searchBarValue);
       setPage(page)
       setTotal(res?.data?.total || 0);
       setGames(page > 1 ? [...games, ...data] : data);
@@ -110,7 +112,7 @@ const GameLibrary: React.FC = () => {
       let scrollTop = e.target.scrollTop;
       let clientHeight = e.target.clientHeight;
       let scrollHeight = e.target.scrollHeight;
-
+      
       if (
         Math.ceil(scrollTop) + Math.ceil(clientHeight) + 1 >= scrollHeight &&
         total > games?.length
