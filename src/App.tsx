@@ -445,10 +445,12 @@ const App: React.FC = (props: any) => {
     setModalVisible(false);
   };
 
-  const handleCloseModalNew = () => {
+  const handleCloseModalNew = (e: any) => {
     setIsModalVisibleNew(false);
     setTimeout(() => {
-      dispatch(setAccountInfo(undefined, undefined, true));
+      if (e !== "no") {
+        dispatch(setAccountInfo(undefined, undefined, true));
+      }
       localStorage.setItem("isActiveNew", "1");
     }, 500);
   };
@@ -1164,7 +1166,12 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
-      <ActiveNew isVisible={isModalVisibleNew} onClose={handleCloseModalNew} />
+
+      <ActiveNew
+        isVisible={isModalVisibleNew}
+        setOpen={setIsAppCloseOpen}
+        onClose={(e) => handleCloseModalNew(e)}
+      />
       {!!isModalOpenNew ? (
         <PayModalNew
           isModalOpen={isModalOpenNew}
