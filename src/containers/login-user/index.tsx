@@ -87,6 +87,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       const res = await payApi.redeemList({
         ...search,
         ...default_pagination,
+        sort: "redeem_code.goods_expire_time:1",
       });
       const data = res?.data?.list || [];
       const total = res?.data?.total || 0;
