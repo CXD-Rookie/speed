@@ -95,10 +95,13 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
       );
     }
     
-    iniliteFun()
-  }, [losePagination]);
+    if (open) {
+      iniliteFun();
+    }
+  }, [losePagination, open]);
 
   useEffect(() => {
+    // 打开优惠券弹窗滚动条回到顶部
     if (scrollRef.current) {
       scrollRef.current.scrollTop = 0;
     }

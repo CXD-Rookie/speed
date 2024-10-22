@@ -164,7 +164,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
       localStorage.setItem("couponTimeLock", tiem_lock);
     };
-
+    
     iniliteFun();
   }, [isCouponRefresh]);
 
