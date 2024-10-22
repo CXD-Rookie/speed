@@ -1165,6 +1165,7 @@ const App: React.FC = (props: any) => {
           type={"remoteLogin"}
           setIsMinorOpen={() => {
             setRemoteLoginOpen(false);
+            dispatch(setAccountInfo(undefined, undefined, true));
             // loginOutStop();
           }}
         />

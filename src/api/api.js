@@ -52,9 +52,6 @@ instance.interceptors.response.use(
 
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
-        if (window.loginOutStopWidow) {
-          window.loginOutStopWidow()
-        }
         // window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {
         //   console.log("Success response from 停止加速:", response);
         //   localStorage.removeItem("token");
