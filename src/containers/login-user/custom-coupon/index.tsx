@@ -197,7 +197,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                     <div
                       className="content-box"
                       onScrollCapture={nodeDebounce(handleScroll, 200)}
-                      // ref={scrollRef}
+                      ref={scrollRef}
                     >
                       {couponLoseData.map((lose: any) => {
                         const redeem_code = lose?.redeem_code;
