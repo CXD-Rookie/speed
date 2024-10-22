@@ -102,7 +102,7 @@ const SearchBar: React.FC = () => {
       {showDropdown && results.length > 0 && (
         <div className="search-dropdown-box">
           <div className="search-dropdown">
-            {results.slice(0, 10).map((result, index) => (
+            {results.slice(0, 4).map((result, index) => (
               <div
                 key={index}
                 className="search-item"
