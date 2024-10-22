@@ -151,6 +151,10 @@ const GameLibrary: React.FC = () => {
     } else {
       filterGamesByCategory(t || "限时免费");
     }
+
+    return () => {
+      localStorage.removeItem("cachedGames");
+    }
   }, []);
 
   useEffect(() => {
