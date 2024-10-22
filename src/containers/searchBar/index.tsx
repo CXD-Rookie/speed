@@ -46,7 +46,7 @@ const SearchBar: React.FC = () => {
     setShowDropdown(searchQuery.trim().length > 0);
     
     if (searchQuery?.length <= 50) {
-      dispatch(fetchSearchResults(searchQuery, undefined, 1, 5000));
+      dispatch(fetchSearchResults(searchQuery, undefined, 1, 10));
     }
   };
 

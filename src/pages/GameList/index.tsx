@@ -86,10 +86,13 @@ const GameLibrary: React.FC = () => {
     }
   };
 
-  // 请求游戏列表
-  const fetchGameList = async (page: number = 1) => {
+  // 请求游戏列表 query = {page,s}
+  const fetchGameList = async (query: any) => {
     try {
-      const res = await gameApi.gameList({ page, pagesize, s: enterQuery || searchBarValue });
+      const res = await gameApi.gameList({
+        ...query,
+        pagesize,
+      });
       const data = (res?.data?.list || []).map((game: Game) => ({
         ...game,
         cover_img: `https://cdn.accessorx.com/${
@@ -97,15 +100,14 @@ const GameLibrary: React.FC = () => {
         }`,
       }));
 
-      setEnterQuery(searchBarValue);
-      setPage(page)
+      setPage(query?.page);
       setTotal(res?.data?.total || 0);
-      setGames(page > 1 ? [...games, ...data] : data);
+      setGames(query?.page > 1 ? [...games, ...data] : data);
     } catch (error) {
       console.log(error);
     }
   };
-
+  
   // 表格滚动
   function handleScroll(e: any) {
     if (e.target.getAttribute("class") === "game-list") {
@@ -117,7 +119,7 @@ const GameLibrary: React.FC = () => {
         Math.ceil(scrollTop) + Math.ceil(clientHeight) + 1 >= scrollHeight &&
         total > games?.length
       ) {
-        fetchGameList(page + 1)
+        fetchGameList({ page: page + 1, s: enterQuery });
       }
     }
   }
@@ -130,7 +132,8 @@ const GameLibrary: React.FC = () => {
       setTotal(0);
       setGames([]); // 清空游戏列表
     } else {
-      fetchGameList();
+      setEnterQuery(searchBarValue);
+      fetchGameList({page, s: searchBarValue});
     }
 
     if (result_game?.length === 0) {
