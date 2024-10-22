@@ -124,13 +124,44 @@ const App: React.FC = (props: any) => {
   ];
 
   // 如果type === out代表退出登录操作
-  const loginOutStopWidow = async (type = "") => {
-    if (type === "out") {
-      loginOutStop()
-    }
-    //登录过期和异地登录使用的
-    setRemoteLoginOpen(true);
+  const loginOutStopWidow = async () => {
+    const jsonString = JSON.stringify({
+      params: {
+        user_token: localStorage.getItem("token"),
+        js_key: localStorage.getItem("StartKey"),
+      },
+    });
+
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      jsonString || "",
+      function (response: any) {
+        console.log("Success response from 停止加速:", response);
+        tracking.trackBoostDisconnectManual("手动停止加速");
+        historyContext?.accelerateTime?.stopTimer();
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        removeGameList("initialize"); // 更新我的游戏
+
+        loginApi.loginOut().then((res) => {
+          if (res.error === 0) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("isRealName");
+            eventBus.emit("clearTimer");
+            // 3个参数 用户信息 是否登录 是否显示登录
+            dispatch(setAccountInfo({}, false, false));
+            navigate("/home");
+          }
+        })
+
+        setRemoteLoginOpen(true);
+      }
+    );
   };
+
   (window as any).loginOutStopWidow = loginOutStopWidow;
 
   const loginOutStop = async (t: any = null) => {
@@ -187,11 +218,11 @@ const App: React.FC = (props: any) => {
     if (res.error === 0) {
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
-      // localStorage.removeItem("is_new_user");
       eventBus.emit("clearTimer");
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
+
       if (type === 1) {
         setReopenLogin(true);
       }
@@ -1134,6 +1165,7 @@ const App: React.FC = (props: any) => {
           type={"remoteLogin"}
           setIsMinorOpen={() => {
             setRemoteLoginOpen(false);
+            dispatch(setAccountInfo(undefined, undefined, true));
             // loginOutStop();
           }}
         />

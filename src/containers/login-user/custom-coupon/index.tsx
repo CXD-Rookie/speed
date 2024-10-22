@@ -95,10 +95,13 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
       );
     }
     
-    iniliteFun()
-  }, [losePagination]);
+    if (open) {
+      iniliteFun();
+    }
+  }, [losePagination, open]);
 
   useEffect(() => {
+    // 打开优惠券弹窗滚动条回到顶部
     if (scrollRef.current) {
       scrollRef.current.scrollTop = 0;
     }
@@ -197,7 +200,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                     <div
                       className="content-box"
                       onScrollCapture={nodeDebounce(handleScroll, 200)}
-                      // ref={scrollRef}
+                      ref={scrollRef}
                     >
                       {couponLoseData.map((lose: any) => {
                         const redeem_code = lose?.redeem_code;

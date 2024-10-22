@@ -65,7 +65,7 @@ class WebSocketService {
           const isRemote = JSON.parse(localStorage.getItem("isRemote") || "0") // 标记11001是绑定手机时出现的
           
           if (!Number(isRemote)) {
-            (window as any).loginOutStopWidow("out");
+            (window as any).loginOutStopWidow();
           } else {
             localStorage.removeItem("token");
             localStorage.removeItem("isRealName");

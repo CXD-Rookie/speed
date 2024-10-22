@@ -11,7 +11,6 @@ import { message } from 'antd';
 import { setAccountInfo } from '@/redux/actions/account-info';
 import axios from 'axios';
 import tracking from "@/common/tracking";
-import playSuitApi from './speed';
 import eventBus from './eventBus';
 
 const instance = axios.create({
@@ -53,32 +52,23 @@ instance.interceptors.response.use(
 
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
-        window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {
-          console.log("Success response from 停止加速:", response);
-          localStorage.removeItem("token");
-          localStorage.removeItem("isRealName");
-          // localStorage.removeItem("is_new_user");
-          eventBus.emit('clearTimer');
-          default_hooks.removeGameList("initialize");
-          default_hooks.historyContext?.accelerateTime?.stopTimer();
+        // window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {
+        //   console.log("Success response from 停止加速:", response);
+        //   localStorage.removeItem("token");
+        //   localStorage.removeItem("isRealName");
 
-          if (window.stopDelayTimer) {
-            window.stopDelayTimer();
-          }
+        //   eventBus.emit('clearTimer');
+        //   default_hooks.removeGameList("initialize");
+        //   default_hooks.historyContext?.accelerateTime?.stopTimer();
 
-          // 3个参数 用户信息 是否登录 是否显示登录
-          store.dispatch(setAccountInfo({}, false, true));
-          // const url = new URL(window.location.origin + "/home");
-          // const isHttp = window.location.href.indexOf("http") !== -1
-          // const url = new URL(
-          //   process.env.REACT_APP_ENV === "development" ? 
-          //     (isHttp ? window.location.origin + "/home" : "https://cdn.accessorx.com/web_test/index.html") :
-          //     "https://cdn.accessorx.com/web/index.html"
-          // )
-          // window.location.href = url.toString();
+        //   if (window.stopDelayTimer) {
+        //     window.stopDelayTimer();
+        //   }
 
-          window.location.href = process.env.REACT_APP_CDN_URL
-        })
+        //   // 3个参数 用户信息 是否登录 是否显示登录
+        //   store.dispatch(setAccountInfo({}, false, true));
+        //   window.location.href = process.env.REACT_APP_CDN_URL
+        // })
       }
     }
     return response.data;
