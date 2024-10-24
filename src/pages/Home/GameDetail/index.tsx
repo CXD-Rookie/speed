@@ -248,6 +248,10 @@ const GameDetail: React.FC = () => {
 
   // 每隔 10 秒增加计数器的值
   useEffect(() => {
+    if ((window as any).stopDelayTimer) {
+      (window as any).stopDelayTimer()
+    }
+    
     const interval = setInterval(() => {
       let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
       const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip

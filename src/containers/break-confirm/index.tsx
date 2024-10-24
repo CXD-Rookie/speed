@@ -129,6 +129,12 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   // 停止加速
   const stopAcceleration = (option: any = "initialize") => {
+    if (!option?.is_accelerate && option !== "initialize") {
+      removeGameList(option); // 更新我的游戏
+      navigate("/home");
+      return;
+    }
+
     if (jsKey) {
       jsonString = JSON.stringify({
         params: {
@@ -205,7 +211,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         }
         
         stopAcceleration(eventBusValue?.value);
-        navigate("/home")
         break;
       default:
         break;

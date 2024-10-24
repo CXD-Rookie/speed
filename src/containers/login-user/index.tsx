@@ -58,7 +58,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [makePagination, setMakePagination] = useState(inilitePagination); // 可使用优惠券请求分页
 
   const [isFirst, setIsFirst] = useState(1);
-
+  
+  const [isShowUserT, setIsShowUserT] = useState(false); // 是否展示用户信息在是否优惠券到期文案
   const hide = () => {
     setOpen(false);
   };
@@ -86,6 +87,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       const res = await payApi.redeemList({
         ...search,
         ...default_pagination,
+        sort: "redeem_code.goods_expire_time:1",
       });
       const data = res?.data?.list || [];
       const total = res?.data?.total || 0;
@@ -118,11 +120,24 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   }
 
   useEffect(() => {
+    const iniliteFun = async () => {
+      const record: any = (await fetchRecords())?.data; // 优惠券列表
+      const timestamp = Number(localStorage.getItem("timestamp")); // 服务端返回的当前时间
+      const isHave = record.some(
+        (item: any) =>
+          item?.redeem_code?.goods_expire_time - timestamp <= 432000
+      ); // 判断优惠券中是否包含到期时间在5天以内的
+      
+      if (isHave) {
+        setIsShowUserT(true);
+      }
+    }
+
     if (isFirst === 1 || open) {
       setIsFirst(isFirst + 1);
-
+      
       if (open) {
-        fetchRecords();
+        iniliteFun()
       }
     }
   }, [open]);
@@ -140,8 +155,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
       if (isHave && timestamp > Number(couponTimeLock)) {
         localStorage.setItem("isCouponExpiry", "1"); // 是否距离优惠券过期小于5天
-        setCouponTooltip(true);
-      } 
+        setCouponTooltip(true); // 判断是否到期提醒弹窗
+      }
       
       if (!isHave) {
         localStorage.removeItem("isCouponExpiry");
@@ -149,7 +164,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
       localStorage.setItem("couponTimeLock", tiem_lock);
     };
-
+    
     iniliteFun();
   }, [isCouponRefresh]);
 
@@ -213,7 +228,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       <div className="login-suer-coupon">
         <span className="text">
           我的优惠券
-          {localStorage.getItem("isCouponExpiry") === "1" && (
+          {isShowUserT && (
             <span className="coupon">优惠劵即将到期</span>
           )}
         </span>
@@ -292,21 +307,19 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           type={minorType}
         />
       ) : null}
-      {couponOpen ? (
-        <CustonCoupon
-          open={couponOpen}
-          setOpen={(event: boolean) => setCouponOpen(event)}
-          value={currencyTable}
-          fetchRecords={fetchRecords}
-          makeParams={{
-            makeSearch,
-            makePagination,
-            makeTotal: tableTotal,
-            makeData: currencyTable,
-            setMakePagination,
-          }}
-        />
-      ) : null}
+      <CustonCoupon
+        open={couponOpen}
+        setOpen={(event: boolean) => setCouponOpen(event)}
+        value={currencyTable}
+        fetchRecords={fetchRecords}
+        makeParams={{
+          makeSearch,
+          makePagination,
+          makeTotal: tableTotal,
+          makeData: currencyTable,
+          setMakePagination,
+        }}
+      />
     </div>
   );
 };

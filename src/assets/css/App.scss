@@ -120,6 +120,10 @@
   }
 }
 
+.ant-modal-root .ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
 .ant-dropdown, :where(.css-dev-only-do-not-override-usln0u) .ant-dropdown {
   top: 9vh !important;
 }

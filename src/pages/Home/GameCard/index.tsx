@@ -291,7 +291,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
-      // console.log(option.serverNode.selectNode, addr);
 
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
@@ -299,19 +298,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         nid: id,
       }); // 游戏加速信息
       const js_key = startInfo?.data?.js_key;
-      // const proxy_speed_limit = startInfo?.data?.proxy_speed_limit;
 
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
-
+      
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
-        domain_whitelist: [], // Assuming empty for now
-        ip_whitelist: [], // Assuming empty for now
+        domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now
+        ip_whitelist: WhiteBlackList.whitelist.ipv4, // Assuming empty for now
         acceleration_nodes: server.map((s: any) => ({
           server_address: `${addr}:${s.port}`,
           inbound_protocol: s.protocol.to,
@@ -360,15 +358,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   }
                 } catch (error) {
                   console.error("请求失败:", error);
-                  reject(error); // 请求失败，返回错误信息
+                  resolve({ state: false }); // 请求失败，返回错误信息
                 }
               } else {
                 console.error("端口信息缺失");
-                reject("端口信息缺失");
+                resolve({ state: false });;
               }
             } else {
               console.error("响应数据缺失");
-              reject("响应数据缺失");
+              resolve({ state: false });
+              // reject("响应数据缺失");
             }
           }
         );
@@ -381,7 +380,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速实际操作
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
-
+    
     const selectRegion = option?.serverNode?.selectRegion;
     
     localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
@@ -400,7 +399,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     
     option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
     option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
-
+    
     let isPre: boolean;
 
     // 校验是否合法文件
@@ -581,7 +580,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
     const iniliteFun = async (option: any) => {
-      if (await checkShelves(option)) return;
+      if (await checkShelves(option)) {
+        localStorage.removeItem("isAccelLoading");
+        return;
+      };
 
       setSelectAccelerateOption(option);
       accelerateDataHandling(option);
@@ -591,7 +593,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       iniliteFun(customAccelerationData);
     }
   }, [customAccelerationData]);
-
+  
   return (
     <div
       className={`game-card-module ${
@@ -614,7 +616,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 onClick={async () => {
                   if (await checkShelves(option)) return;
                   setIsClicking(true);
-
+                  
                   if (!isClicking) {
                     await accelerateDataHandling({ ...option, router: "home" });
                   }

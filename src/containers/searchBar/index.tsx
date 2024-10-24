@@ -44,9 +44,9 @@ const SearchBar: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
     setShowDropdown(searchQuery.trim().length > 0);
-
+    
     if (searchQuery?.length <= 50) {
-      dispatch(fetchSearchResults(searchQuery));
+      dispatch(fetchSearchResults(searchQuery, undefined, 1, 10));
     }
   };
 
@@ -102,7 +102,7 @@ const SearchBar: React.FC = () => {
       {showDropdown && results.length > 0 && (
         <div className="search-dropdown-box">
           <div className="search-dropdown">
-            {results.map((result, index) => (
+            {results.slice(0, 4).map((result, index) => (
               <div
                 key={index}
                 className="search-item"

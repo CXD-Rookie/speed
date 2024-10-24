@@ -123,10 +123,42 @@ const App: React.FC = (props: any) => {
     },
   ];
 
+  // 如果type === out代表退出登录操作
   const loginOutStopWidow = async () => {
-    //登录过期和异地登录使用的
-    setRemoteLoginOpen(true);
+    const jsonString = JSON.stringify({
+      params: {
+        user_token: localStorage.getItem("token"),
+        js_key: localStorage.getItem("StartKey"),
+      },
+    });
+
+    (window as any).NativeApi_AsynchronousRequest(
+      "NativeApi_StopProxy",
+      jsonString || "",
+      function (response: any) {
+        console.log("Success response from 停止加速:", response);
+        tracking.trackBoostDisconnectManual("手动停止加速");
+        historyContext?.accelerateTime?.stopTimer();
+
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
+
+        removeGameList("initialize"); // 更新我的游戏
+
+        loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
+        localStorage.removeItem("token");
+        localStorage.removeItem("isRealName");
+        eventBus.emit("clearTimer");
+        // 3个参数 用户信息 是否登录 是否显示登录
+        dispatch(setAccountInfo({}, false, false));
+        navigate("/home");
+
+        setRemoteLoginOpen(true);
+      }
+    );
   };
+
   (window as any).loginOutStopWidow = loginOutStopWidow;
 
   const loginOutStop = async (t: any = null) => {
@@ -183,11 +215,11 @@ const App: React.FC = (props: any) => {
     if (res.error === 0) {
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName");
-      // localStorage.removeItem("is_new_user");
       eventBus.emit("clearTimer");
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo({}, false, false));
       navigate("/home");
+
       if (type === 1) {
         setReopenLogin(true);
       }
@@ -252,6 +284,10 @@ const App: React.FC = (props: any) => {
   const handleExitProcess = () => {
     let jsonString = "";
 
+    if (localStorage.getItem("isAccelLoading") === "1") {
+      return
+    }
+    
     const userToken = localStorage.getItem("token");
     const jsKey = localStorage.getItem("StartKey");
 
@@ -437,10 +473,12 @@ const App: React.FC = (props: any) => {
     setModalVisible(false);
   };
 
-  const handleCloseModalNew = () => {
+  const handleCloseModalNew = (e: any) => {
     setIsModalVisibleNew(false);
     setTimeout(() => {
-      dispatch(setAccountInfo(undefined, undefined, true));
+      if (e !== "no") {
+        dispatch(setAccountInfo(undefined, undefined, true));
+      }
       localStorage.setItem("isActiveNew", "1");
     }, 500);
   };
@@ -1029,7 +1067,10 @@ const App: React.FC = (props: any) => {
                   } else {
                     if (action === 0) {
                       (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
-                    } else if (action === 1) {
+                    } else if (
+                      action === 1 &&
+                      localStorage.getItem("isAccelLoading") !== "1" // 加速中点击无效
+                    ) {
                       (window as any).NativeApi_ExitProcess(); //关闭主程序
                     }
                   }
@@ -1121,7 +1162,7 @@ const App: React.FC = (props: any) => {
           type={"remoteLogin"}
           setIsMinorOpen={() => {
             setRemoteLoginOpen(false);
-            loginOutStop(1);
+            dispatch(setAccountInfo(undefined, undefined, true));
           }}
         />
       ) : null}
@@ -1131,7 +1172,6 @@ const App: React.FC = (props: any) => {
           open={isAppCloseOpen}
           close={setIsAppCloseOpen}
           onConfirm={(state) => {
-            console.log(state, "------------");
             let is_acc = identifyAccelerationData()?.[0];
 
             if (state === 0) {
@@ -1154,7 +1194,12 @@ const App: React.FC = (props: any) => {
         />
       ) : null}
       <Active isVisible={isModalVisible} onClose={handleCloseModal} />
-      <ActiveNew isVisible={isModalVisibleNew} onClose={handleCloseModalNew} />
+
+      <ActiveNew
+        isVisible={isModalVisibleNew}
+        setOpen={setIsAppCloseOpen}
+        onClose={(e) => handleCloseModalNew(e)}
+      />
       {!!isModalOpenNew ? (
         <PayModalNew
           isModalOpen={isModalOpenNew}

@@ -332,7 +332,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
       let suit = await fetchPlaysuit(option?.suit, data);
       let all: any = (await fetchAllSpeedList(suit)) || []; // 获取节点列表
-      console.log(suit);
       
       all.unshift({
         ...all?.[0],
@@ -398,8 +397,11 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           suit:
             data?.playsuit === 2 // 当前游戏是否是国服游戏
               ? "国服"
-              : current?.qu === "智能匹配" ? "全部" 
-              : current?.qu,
+              : regionList?.length <= 1 
+                ? "国际服" 
+                : current?.qu === "智能匹配" 
+                ? "全部" 
+                : current?.qu,
         };
       } else {
         // 如果没有存储历史区服

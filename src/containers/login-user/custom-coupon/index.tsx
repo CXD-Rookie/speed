@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Button, Modal, Tabs } from "antd";
 import { validityPeriod } from "@/containers/currency-exchange/utils";
 import { nodeDebounce } from "@/common/utils";
@@ -26,6 +26,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
     fetchRecords = () => {},
     makeParams = {},
   } = props;
+  const scrollRef: any = useRef<HTMLDivElement>(null);
 
   const [activeTab, setActiveTab] = useState("make");
 
@@ -35,12 +36,12 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   const [mouseoverState, setMouseoverState] = useState(false);
 
   const [payOpen, setPayOpen] = useState(false); // 购买开关
-  const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
+  const [payCoupon, setPayCoupon] = useState({}); // 立即使用的优惠券
 
   const [loseSearch] = useState({ type: 2, status: "2,3" }); // 已失效类型参数
   const [losePagination, setLosePagination] = useState(inilitePagination); // 已失效分页参数
   const [loseTotal, setLoseTotal] = useState(0); // 已失效数量总数
-
+  
   const onClose = () => {
     setOpen(false);
     setActiveTab("make");
@@ -87,14 +88,24 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   useEffect(() => {
     const iniliteFun = async () => {
       const res: any = await fetchRecords(loseSearch, losePagination);
+
       setLoseTotal(res?.total);
       setCouponLoseData(
         losePagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
       );
     }
+    
+    if (open) {
+      iniliteFun();
+    }
+  }, [losePagination, open]);
 
-    iniliteFun()
-  }, [losePagination]);
+  useEffect(() => {
+    // 打开优惠券弹窗滚动条回到顶部
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [open]);
 
   return (
     <Fragment>
@@ -121,6 +132,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                     <div
                       className="content-box"
                       onScrollCapture={nodeDebounce(handleScroll, 200)}
+                      ref={scrollRef}
                     >
                       {couponMaskData.map((mask: any) => {
                         const redeem_code = mask?.redeem_code;
@@ -156,9 +168,9 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                                   type="default"
                                   onMouseOver={() => setMouseoverState(true)}
                                   onMouseLeave={() => setMouseoverState(false)}
-                                  onClick={() => {
-                                    setpayCoupon(mask);
+                                  onClick={(e) => {
                                     setPayOpen(true);
+                                    setPayCoupon(mask);
                                     setOpen(false);
                                   }}
                                 >
@@ -188,6 +200,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                     <div
                       className="content-box"
                       onScrollCapture={nodeDebounce(handleScroll, 200)}
+                      ref={scrollRef}
                     >
                       {couponLoseData.map((lose: any) => {
                         const redeem_code = lose?.redeem_code;

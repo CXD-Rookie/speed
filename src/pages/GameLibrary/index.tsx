@@ -81,7 +81,7 @@ const GameLibrary: React.FC = () => {
   const [gameActiveType, setGameActiveType] = useState<string>("1");
   const [t, setT] = useState<string | null>("限时免费"); // 默认选中限时免费
 
-  const gameListRef = useRef<HTMLDivElement>(null);
+  const gameListRef: any = useRef<HTMLDivElement>(null);
 
   // 初始化时请求数据并缓存到 localStorage
   const fetchAndCacheGames = async () => {
@@ -120,6 +120,7 @@ const GameLibrary: React.FC = () => {
 
   // 点击分类时不再请求数据，而是本地过滤
   const handleTitleClick = (item: GamesTitleProps) => {
+    gameListRef.current.scrollTop = 0
     setGameActiveType(item.key);
     setT(item.t);
     filterGamesByCategory(item.t);
@@ -149,6 +150,10 @@ const GameLibrary: React.FC = () => {
       fetchAndCacheGames();
     } else {
       filterGamesByCategory(t || "限时免费");
+    }
+
+    return () => {
+      localStorage.removeItem("cachedGames");
     }
   }, []);
 

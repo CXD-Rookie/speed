@@ -24,7 +24,7 @@
     position: relative;
 }
 
-:where(.css-dev-only-do-not-override-usln0u).ant-modal-root .ant-modal-mask {
+.ant-modal-root .ant-modal-mask {
     background-color: rgba(0, 0, 0, 0.8) !important;
 }
 
@@ -34,10 +34,6 @@
     background-color: transparent !important;
     box-shadow: none;
     padding-top: 9vh;
-
-    &:where(.css-dev-only-do-not-override-usln0u).ant-modal-root .ant-modal-mask {
-        background-color: rgba(0, 0, 0, 0.8) !important;
-    }
 
     .close-icon {
         position: absolute;

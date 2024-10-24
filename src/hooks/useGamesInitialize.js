@@ -227,7 +227,7 @@ export const useGamesInitialize = () => {
     try {
       const res = await gameApi.gameList({ s: option?.name });
       
-      if (res?.error === 0 && !res?.data?.list) {
+      if ((res?.error === 0 && !res?.data?.list) || res?.data?.list?.[0]?.id !== option?.id) {
         if (customFun) {
           customFun?.onTrigger();
         }
