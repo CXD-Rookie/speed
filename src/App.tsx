@@ -146,16 +146,13 @@ const App: React.FC = (props: any) => {
 
         removeGameList("initialize"); // 更新我的游戏
 
-        loginApi.loginOut().then((res) => {
-          if (res.error === 0) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("isRealName");
-            eventBus.emit("clearTimer");
-            // 3个参数 用户信息 是否登录 是否显示登录
-            dispatch(setAccountInfo({}, false, false));
-            navigate("/home");
-          }
-        })
+        loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
+        localStorage.removeItem("token");
+        localStorage.removeItem("isRealName");
+        eventBus.emit("clearTimer");
+        // 3个参数 用户信息 是否登录 是否显示登录
+        dispatch(setAccountInfo({}, false, false));
+        navigate("/home");
 
         setRemoteLoginOpen(true);
       }
@@ -1166,7 +1163,6 @@ const App: React.FC = (props: any) => {
           setIsMinorOpen={() => {
             setRemoteLoginOpen(false);
             dispatch(setAccountInfo(undefined, undefined, true));
-            // loginOutStop();
           }}
         />
       ) : null}
