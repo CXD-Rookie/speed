@@ -88,6 +88,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
   const [refresh, setRefresh] = useState(0); // 控制页面是否重新请求
   const [activeTabIndex, setActiveTabIndex] = useState(0); // 选中商品索引
 
+  // 当前选中的商品是否是连续续费的
+  const activePayId = ["5", "6", "7", "8"].includes(Object.keys(payTypes as any)?.[activeTabIndex]);
+  
   // 计算折扣
   const isInteger = (value: number | string) => {
     const num = Number(value);
@@ -247,8 +250,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         }
       }
       
-      let couponObj: any = {}; 
-      console.log(couponValue, activeCoupon, makeCoupon);
+      let couponObj: any = {};
       
       // 优惠券列表数据 第一次打开页面也就是初始化使用接口直接返回优惠券列表 makeCoupon，
       // 手动刷新触发使用已经存储好的优惠券列表，过滤出最合适的优惠券
@@ -553,16 +555,19 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                       >
                         用户协议
                       </span>
-                      》及《
-                      <span
-                        className="txt"
-                        ref={divRef}
-                        onClick={handleClick}
-                        data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
-                      >
-                        自动续费协议
-                      </span>
-                      》到期按每月29元自动续费，可随时取消 <TooltipCom />
+                      》{activePayId && "及《"}
+                      {activePayId && (
+                        <span
+                          className="txt"
+                          ref={divRef}
+                          onClick={handleClick}
+                          data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
+                        >
+                          自动续费协议
+                        </span>
+                      )}
+                      {activePayId && "》"}
+                      到期按每月29元自动续费，可随时取消 <TooltipCom />
                     </div>
                   </div>
                 ) : null}
@@ -611,7 +616,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                                 setActiveCoupon(
                                   activeCoupon?.id === item?.id ? {} : item
                                 );
-                                iniliteReset()
+                                iniliteReset();
                               }, 100)}
                             >
                               <div className="icon-box">
