@@ -11,10 +11,12 @@ import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDelay } from "@/redux/actions/auth";
+import { setStartPathOpen } from "@/redux/actions/modal-open";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
-import tracking from "@/common/tracking";
+
 import "./style.scss";
+import tracking from "@/common/tracking";
 import BarChart from "@/containers/BarChart/index";
 import RegionNodeSelector from "@/containers/region-node";
 import ActivationModal from "@/containers/activation-mode";
@@ -45,6 +47,10 @@ const GameDetail: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // 控制启动路径弹窗的开关
+  const startPathOpen = useSelector(
+    (state: any) => state?.modalOpen?.startPathOpen
+  );
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
 
   const historyContext: any = useHistoryContext();
@@ -56,7 +62,6 @@ const GameDetail: React.FC = () => {
   } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // 启动游戏平台弹窗
 
   const [stopModalOpen, setStopModalOpen] = useState(false);
   const [delayOpen, setDelayOpen] = useState(false); // 延迟弹窗
@@ -81,16 +86,14 @@ const GameDetail: React.FC = () => {
   const selectServerNode = (serverNode: any) => {
     const region = serverNode?.selectRegion;
     const node =
-      (serverNode?.nodeHistory || []).filter((item: any) => item?.is_select)?.[0] || {};
+      (serverNode?.nodeHistory || []).filter(
+        (item: any) => item?.is_select
+      )?.[0] || {};
 
     return {
       region,
       node,
     };
-  };
-
-  const showModalActive = () => {
-    setIsOpen(true);
   };
 
   const showModal = async () => {
@@ -209,7 +212,7 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     const find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
     const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
-    
+
     const jsonString = JSON.stringify({
       // params: { ip: node?.addr },
       params: { addr: node?.addr, server: node?.server },
@@ -249,12 +252,12 @@ const GameDetail: React.FC = () => {
   // 每隔 10 秒增加计数器的值
   useEffect(() => {
     if ((window as any).stopDelayTimer) {
-      (window as any).stopDelayTimer()
+      (window as any).stopDelayTimer();
     }
-    
+
     const interval = setInterval(() => {
       let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-      const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
+      const { node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
 
       const jsonString = JSON.stringify({
         // params: { ip: node?.addr },
@@ -330,16 +333,16 @@ const GameDetail: React.FC = () => {
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>
             {detailData?.pc_platform?.length > 0 && (
-                <div className="platfrom">
-                  <div className="text">已同步加速</div>
-                  <div className="icon-box">
-                    {findMappingIcon(detailData)?.length > 0 &&
-                      findMappingIcon(detailData)?.map((item: any) => {
-                        return <img key={item?.id} src={item?.icon} alt="" />;
-                      })}
-                  </div>
+              <div className="platfrom">
+                <div className="text">已同步加速</div>
+                <div className="icon-box">
+                  {findMappingIcon(detailData)?.length > 0 &&
+                    findMappingIcon(detailData)?.map((item: any) => {
+                      return <img key={item?.id} src={item?.icon} alt="" />;
+                    })}
                 </div>
-              )}
+              </div>
+            )}
             <div className="game-btn">
               <Button
                 className="Launching on-game"
@@ -366,7 +369,7 @@ const GameDetail: React.FC = () => {
                       );
                     });
                   } else {
-                    showModalActive();
+                    dispatch(setStartPathOpen(true)); // 打开启动路径弹窗
                   }
                 }}
               >
@@ -374,7 +377,11 @@ const GameDetail: React.FC = () => {
                 <span>启动游戏</span>
               </Button>
 
-              <Button className="path" type="default" onClick={showModalActive}>
+              <Button
+                className="path"
+                type="default"
+                onClick={() => dispatch(setStartPathOpen(true))}
+              >
                 <div className="line" />
                 <img src={detailsCustomIcon} width={18} height={18} alt="" />
               </Button>
@@ -457,14 +464,7 @@ const GameDetail: React.FC = () => {
           stopSpeed={stopSpeed}
         />
       ) : null}
-      {isOpen && (
-        <ActivationModal
-          open={isOpen}
-          options={detailData}
-          notice={(e) => setDetailData(e)}
-          onClose={() => setIsOpen(false)}
-        />
-      )}
+      <ActivationModal options={detailData} notice={(e) => setDetailData(e)} />
       {stopModalOpen ? (
         <BreakConfirmModal
           type={"stopAccelerate"}

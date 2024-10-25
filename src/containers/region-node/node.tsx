@@ -116,7 +116,7 @@ const CustomNode: React.FC<NodeProps> = ({
               )?.[0];
               // 查询当前历史节点是否在当前节点列表中
               const hitIndex = nodeTableList.findIndex(
-                (item: any) => select?.id + 6 === item?.id
+                (item: any) => select?.id === item?.id
               );
 
               // 如果历史节点不存在，删除此节点

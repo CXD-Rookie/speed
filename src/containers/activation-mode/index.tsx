@@ -4,37 +4,55 @@
  * @LastEditors: zhangda
  * @LastEditTime: 2024-07-10 16:50:58
  * @important: 重要提醒
- * @Description: 备注内容
+ * @Description: 启动路径弹窗页面
  * @FilePath: \speed\src\containers\activation-mode\index.tsx
  */
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Select, Input } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { useSelector, useDispatch } from "react-redux";
+import { setStartPathOpen } from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
 
+import humanStartOIcon from "@/assets/images/common/human-start-o.png";
+import autoStartOIcon from "@/assets/images/common/auto-start-o.png";
+import humanStartWIcon from "@/assets/images/common/human-start-w.png";
+import autoStartWIcon from "@/assets/images/common/auto-start-w.png";
+import tickIcon from "@/assets/images/common/tick.png";
+
 const { Option } = Select;
 
 interface ActivationModalProps {
-  open: boolean;
   options: any;
   notice?: (option: any) => void;
-  onClose: () => void;
 }
 
 const ActivationModal: React.FC<ActivationModalProps> = ({
-  open = false,
-  options,
   notice = () => {},
-  onClose,
+  options,
 }) => {
-  const { getGameList } = useGamesInitialize();
+  const { getGameList } = useGamesInitialize(); // 获取游戏列表
+  // 控制弹窗的开关
+  const open = useSelector((state: any) => state?.modalOpen?.startPathOpen);
+  const dispatch: any = useDispatch();
 
   const [filePath, setFilePath] = useState(); // 启动路径
+  const [quickStartType, setQuickStartType] = useState("human"); // 快捷启动类型 auto 自动 human 手动
   const [selectPlatform, setSelectPlatform] = useState<string>(); // 选择的游戏平台
 
   const [platforms, setPlatforms] = useState<any>([]); // 所有的运营平台
+
+  // 取消函数
+  const onCancel = () => {
+    dispatch(setStartPathOpen(false));
+  };
+
+  // 点击快捷启动方式
+  const onClickQuickStart = (value: string) => {
+    setQuickStartType(value);
+  };
 
   const handleInputChange = () => {
     new Promise((resolve, reject) => {
@@ -76,7 +94,7 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(games_list));
 
     notice(games_option);
-    onClose(); // 关闭弹窗
+    onCancel(); // 关闭弹窗
   };
 
   // 处理请求 游戏平台信息
@@ -120,10 +138,11 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
       });
 
       const data: any = await Promise.all(api_list); // 请求等待统一请求完毕
+
       // 聚合所以的api 数据中的 游戏平台
       let result_excutable = data.reduce((acc: any = [], item: any) => {
         let data = item?.data;
-        
+
         if (
           Number(data?.pc_platform) === Number(data?.option?.pid) &&
           data?.start_path
@@ -150,7 +169,9 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
                 name: "-",
               },
             ];
-      const isHasCustom = result_excutable.filter((item: any) => item?.pid === "0")?.[0];
+      const isHasCustom = result_excutable.filter(
+        (item: any) => item?.pid === "0"
+      )?.[0];
 
       if (!isHasCustom) {
         result_excutable.unshift({
@@ -190,8 +211,8 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
           let arr = default_info.filter((item: any) => item?.pid !== "0"); // 查找不是自定义的平台
           let is_true = arr?.length > 0; // 是否找到不是自定义的平台
 
-          pid = is_true ? arr?.[1]?.pid : default_info?.[0]?.pid;
-          path = is_true ? arr?.[1]?.path : default_info?.[0]?.path;
+          pid = is_true ? arr?.[0]?.pid : default_info?.[0]?.pid;
+          path = is_true ? arr?.[0]?.path : default_info?.[0]?.path;
         }
 
         setSelectPlatform(pid);
@@ -208,15 +229,50 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     <Modal
       className="activation-modal"
       open={open}
-      onCancel={onClose}
       title="启动方式"
       width={"40vw"}
       centered
       destroyOnClose
       maskClosable={false}
       footer={null}
+      onCancel={onCancel}
     >
       <div className="activation-modal-content">
+        <div className="quick-start">快捷启动</div>
+        <div className="quick-tabs">
+          <div
+            className={`tab ${
+              quickStartType === "auto" ? "active-tab" : "default-tab"
+            }`}
+            onClick={() => onClickQuickStart("auto")}
+          >
+            <img
+              src={quickStartType === "auto" ? autoStartOIcon : autoStartWIcon}
+              alt=""
+            />
+            {quickStartType === "auto" && (
+              <img className="tick" src={tickIcon} alt="" />
+            )}
+            自动启动
+          </div>
+          <div
+            className={`tab ${
+              quickStartType === "human" ? "active-tab" : "default-tab"
+            }`}
+            onClick={() => onClickQuickStart("human")}
+          >
+            <img
+              src={
+                quickStartType === "human" ? humanStartOIcon : humanStartWIcon
+              }
+              alt=""
+            />
+            {quickStartType === "human" && (
+              <img className="tick" src={tickIcon} alt="" />
+            )}
+            手动启动
+          </div>
+        </div>
         <div className="content-title">启动平台：</div>
         <Select
           className="content-select"
