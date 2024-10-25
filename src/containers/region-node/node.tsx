@@ -3,6 +3,7 @@ import { Select, Button, Table } from "antd";
 import type { TableProps } from "antd";
 
 import "./index.scss";
+import loadingGif from "@/assets/images/common/jiazai.gif";
 import refreshIcon from "@/assets/images/common/refresh.png";
 
 const { Option } = Select;
@@ -137,20 +138,26 @@ const CustomNode: React.FC<NodeProps> = ({
           </Button>
         </div>
       </div>
-      <Table
-        rowKey="key"
-        dataSource={nodeTableList}
-        columns={columms}
-        scroll={{ y: "35vh" }} // 设置表格的最大高度为240px，超过部分滚动
-        pagination={false}
-        loading={tableLoading}
-        rowClassName={(record: any) =>
-          record?.key === selectNode?.key ? "selected-node" : ""
-        }
-        onRow={(record) => ({
-          onClick: () => setSelectNode(record),
-        })}
-      />
+      {tableLoading ? (
+        <div className="loading-spin">
+          <img src={loadingGif} alt="" />
+        </div>
+      ) : (
+        <Table
+          rowKey="key"
+          dataSource={nodeTableList}
+          columns={columms}
+          scroll={{ y: "35vh" }} // 设置表格的最大高度为240px，超过部分滚动
+          pagination={false}
+          rowClassName={(record: any) =>
+            record?.key === selectNode?.key ? "selected-node" : ""
+          }
+          onRow={(record) => ({
+            onClick: () => setSelectNode(record),
+          })}
+        />
+      )}
+
       <Button
         type="primary"
         className="start-button"
