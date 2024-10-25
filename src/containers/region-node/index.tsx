@@ -479,6 +479,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             setSelectNode={setSelectNode}
             startAcceleration={startAcceleration}
             buildNodeList={buildNodeList}
+            refreshAndShowCurrentServer={refreshAndShowCurrentServer}
           />
         ),
       },

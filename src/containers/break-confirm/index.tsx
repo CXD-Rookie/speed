@@ -73,6 +73,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
     gamesAccelerating: "其他游戏正在加速！",
     takenShelves: "当前游戏已被下架，无法加速。",
+    nodeDelete: "该节点已被删除，请选择其他节点",
   };
 
   // footer 确认按钮的文案
@@ -89,6 +90,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     connectionPay: "继续支付",
     gamesAccelerating: "好的",
     takenShelves: "好的",
+    nodeDelete: "好的",
   };
 
   // footer 只显示一个按钮的类型
@@ -104,6 +106,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "connectionPay", //继续支付，订单未支付
     "gamesAccelerating",
     "takenShelves", // 游戏下架提示
+    "nodeDelete", // 在节点历史记录中，当用户选择一个已被删除的节点
   ];
 
   // 不显示右上角关闭的类型

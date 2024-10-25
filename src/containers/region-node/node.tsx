@@ -5,6 +5,7 @@ import type { TableProps } from "antd";
 import "./index.scss";
 import loadingGif from "@/assets/images/common/jiazai.gif";
 import refreshIcon from "@/assets/images/common/refresh.png";
+import eventBus from "@/api/eventBus";
 
 const { Option } = Select;
 
@@ -19,6 +20,7 @@ interface NodeProps {
   buildNodeList?: (node: any) => void;
   selectRegion?: any;
   setSelectRegion?: (node: any) => void;
+  refreshAndShowCurrentServer: Function;
 }
 
 interface DataType {
@@ -40,6 +42,7 @@ const CustomNode: React.FC<NodeProps> = ({
   buildNodeList = () => {},
   selectRegion,
   setSelectRegion = () => {},
+  refreshAndShowCurrentServer,
 }) => {
   const [nodeHistory, setNodeHistory] = useState<any>([]); // 节点历史列表
 
@@ -107,9 +110,34 @@ const CustomNode: React.FC<NodeProps> = ({
             popupMatchSelectWidth={false}
             suffixIcon={<div className="triangle" />}
             onChange={(key) => {
+              // 查询当前选中节点
               const select = nodeHistory?.filter(
                 (item: any) => item?.key === key
               )?.[0];
+              // 查询当前历史节点是否在当前节点列表中
+              const hitIndex = nodeTableList.findIndex(
+                (item: any) => select?.id + 6 === item?.id
+              );
+
+              // 如果历史节点不存在，删除此节点
+              if (hitIndex === -1) {
+                const nodeList = [...nodeHistory]?.filter((item: any) => item?.key !== key);
+                const info = {
+                  ...value,
+                  serverNode: {
+                    ...value?.serverNode,
+                    nodeHistory: nodeList,
+                  },
+                };
+                
+                eventBus.emit("showModal", {
+                  show: true,
+                  type: "nodeDelete",
+                });
+                // 将历史节点更新缓存信息
+                refreshAndShowCurrentServer(info);
+                return;
+              }
 
               startAcceleration(select);
             }}
