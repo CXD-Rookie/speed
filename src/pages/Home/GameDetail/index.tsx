@@ -296,7 +296,7 @@ const GameDetail: React.FC = () => {
       setDetailData(accel); // 更新游戏详情信息
       historyContext?.accelerateTime?.startTimer(); // 调用详情加速计时器
 
-      if (accDelay) {
+      if (!accDelay) {
         // 启动定时器，并返回一个可以用来停止定时器的函数
         const stopTimer = startDelayTmer(fetchAddrDelay, server?.node);
 
