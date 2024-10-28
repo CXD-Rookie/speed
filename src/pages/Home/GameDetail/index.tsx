@@ -52,6 +52,7 @@ const GameDetail: React.FC = () => {
     (state: any) => state?.modalOpen?.startPathOpen
   );
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  const accDelay = useSelector((state: any) => state.auth.delay); // 全局延迟毫秒数
 
   const historyContext: any = useHistoryContext();
   const {
@@ -83,22 +84,18 @@ const GameDetail: React.FC = () => {
   };
 
   // 当前选择的区服，节点
-  const selectServerNode = (serverNode: any) => {
-    const region = serverNode?.selectRegion;
-    const node =
-      (serverNode?.nodeHistory || []).filter(
-        (item: any) => item?.is_select
-      )?.[0] || {};
+  const handleSelectServer = (serverNode: any) => {
+    const { selectRegion = {}, nodeHistory = [] } = serverNode; // 解构选中区服 节点列表
+    const node = nodeHistory.filter((item: any) => item?.is_select)?.[0] || {}; // 选中节点
 
     return {
-      region,
+      region: selectRegion,
       node,
     };
   };
 
   const showModal = async () => {
     if (await checkShelves(detailData)) return; // 判断是否当前游戏下架
-
     setIsModalVisible(true);
   };
 
@@ -140,13 +137,11 @@ const GameDetail: React.FC = () => {
     );
   };
 
-  function formatTime(seconds: any) {
-    // 计算小时数
-    const hours = Math.floor(seconds / 3600);
-    // 计算剩余的分钟数
-    const minutes = Math.floor((seconds % 3600) / 60);
-    // 计算剩余的秒数
-    const remainingSeconds = seconds % 60;
+  // 处理时间格式函数
+  const formatTime = (seconds: any) => {
+    const hours = Math.floor(seconds / 3600); // 计算小时数
+    const minutes = Math.floor((seconds % 3600) / 60); // 计算剩余的分钟数
+    const remainingSeconds = seconds % 60; // 计算剩余的秒数
 
     // 将小时、分钟和秒数格式化为两位数
     const formattedHours = String(hours).padStart(2, "0");
@@ -155,27 +150,57 @@ const GameDetail: React.FC = () => {
 
     // 拼接成 HH:MM:SS 格式
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
-  }
+  };
 
-  function generateDataEvery10Seconds(value: any) {
-    const result = [];
+  // 生成图表数据函数
+  const generateChart = (value: any, packet: any) => {
+    const chartList = []; // 图表数据
     const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
-    const startTime = currentTime - 3 * 60 * 1000; // 获取 3 分钟前的时间戳
 
-    // 以 10 秒为间隔生成数据对象
-    for (let time = startTime; time <= currentTime; time += 10 * 1000) {
-      const data = {
-        timestamp: time, // 时间戳
-        value: 2, // 示例数据，可以根据需要修改
-      };
-      result.push(data);
+    // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
+    if (chartData?.length === 0) {
+      const startTime = currentTime - 180005; // 获取 3分05秒 前的时间戳
+
+      // 以 5 秒为间隔生成数据对象 生成3分钟随机数据
+      for (let time = startTime; time <= currentTime - 5; time += 5 * 1000) {
+        const randomNum = Math.floor(Math.random() * (100 - 3)) + 2; // 生成一个随机数，在2-100之间
+        const data: any = {
+          timestamp: time, // 时间戳
+          value: randomNum, // 示例数据，可以根据需要修改
+        };
+        chartList.push(data);
+      }
     }
 
-    result[result.length - 1].value = value;
+    chartList.shift(); // 删除第一个数据
+    chartList.push({
+      // 添加当前数据
+      timestamp: currentTime,
+      value,
+      packet,
+    });
 
-    return result;
-  }
+    return chartList;
+  };
 
+  // 生成丢包率函数 data = 数组
+  const generatePacket = (data: any) => {
+    let sum = 0; // 丢包率和
+    let count = 0; // 几个丢包率
+
+    data.forEach((item: any) => {
+      if (item.hasOwnProperty("packet")) {
+        sum += item.packet;
+        count++;
+      }
+    });
+
+    const averagePacket = Math.floor(sum / count); // 评价丢包率
+
+    return averagePacket || 0;
+  };
+
+  // 生成游戏可执行平台icon
   const findMappingIcon = (data: any) => {
     let platform = data?.pc_platform || []; // 同步加速的游戏，平台
 
@@ -203,111 +228,85 @@ const GameDetail: React.FC = () => {
             icon: iconMap?.[child],
           };
         }
+
+        return child;
       });
     }
 
     return resultData;
   };
 
-  useEffect(() => {
-    const find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-    const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
+  const startDelayTmer = (callback: any, value: any) => {
+    // 定义一个内部变量来存储定时器的标识符
+    let timerId: any = null;
 
-    const jsonString = JSON.stringify({
-      // params: { ip: node?.addr },
-      params: { addr: node?.addr, server: node?.server },
-    });
+    // 启动定时器
+    timerId = setInterval(() => {
+      // 执行回调函数
+      callback(value);
+    }, 5000);
 
-    historyContext?.accelerateTime?.startTimer();
-    setRegionNode(domName({ region, node }));
-
-    (window as any).NativeApi_AsynchronousRequest(
-      "NativeApi_GetAddrDelay",
-      jsonString,
-      function (response: any) {
-        if (!response) {
-          console.error("Failure response from 详情丢包信息:");
-          setDelayOpen(true);
-        }
-        console.log("Success response from 详情丢包信息:", response);
-
-        //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-        const delay = JSON.parse(response)?.delay;
-        const lost_bag = delay < 2 ? 2 : delay;
-        const chart_list = generateDataEvery10Seconds(lost_bag);
-
-        if (delay === 9999) {
-          setDelayOpen(true);
-        }
-
-        setChartData(chart_list); // 更新图表
-        setLostBag(lost_bag); // 更新延迟数
-        setPacketLoss(delay === 9999 ? 100 : 0); // 更新丢包率
-        setDetailData(find_accel);
-        dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
-      }
-    );
-  }, []);
-
-  // 每隔 10 秒增加计数器的值
-  useEffect(() => {
-    if ((window as any).stopDelayTimer) {
-      (window as any).stopDelayTimer();
-    }
-
-    const interval = setInterval(() => {
-      let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-      const { node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
-
-      const jsonString = JSON.stringify({
-        // params: { ip: node?.addr },
-        params: { addr: node?.addr, server: node?.server },
-      });
-
-      (window as any).NativeApi_AsynchronousRequest(
-        "NativeApi_GetAddrDelay",
-        jsonString,
-        function (response: any) {
-          console.log("Success response from 详情丢包信息:", response);
-
-          //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-          const delay = JSON.parse(response)?.delay;
-          const lost_bag = delay < 2 ? 2 : delay;
-          // 10秒比较一次是否到期，到期后停止加速
-
-          if (accountInfo?.userInfo?.is_vip)
-            forceStopAcceleration(accountInfo, stopSpeed);
-
-          setChartData((chart: any) => {
-            let chart_list = [...chart];
-
-            chart_list.shift();
-
-            let lastElement = chart_list[chart_list.length - 1];
-
-            let time = lastElement?.timestamp
-              ? lastElement?.timestamp + 10000
-              : new Date().getTime();
-            let newData = {
-              timestamp: time,
-              value: lost_bag,
-            };
-
-            chart_list.push(newData);
-
-            return chart_list;
-          }); // 更新图表
-          setLostBag(lost_bag); // 更新延迟数
-          setPacketLoss(delay === 9999 ? 100 : 0); // 更新丢包率
-
-          dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
-        }
-      );
-    }, 10000);
-
-    (window as any).stopDelayTimer = () => {
-      clearInterval(interval);
+    // 返回一个函数，该函数用于停止定时器
+    return () => {
+      clearInterval(timerId);
     };
+  };
+
+  // 获取客户端延迟
+  const fetchAddrDelay = (node: any) => {
+    try {
+      new Promise<void>((resolve, reject) => {
+        (window as any).NativeApi_AsynchronousRequest(
+          "NativeApi_GetAddrDelay",
+          JSON.stringify({
+            params: { addr: node?.addr, server: node?.server },
+          }),
+          (response: any) => {
+            console.log("详情丢包信息：", response);
+            let delay = JSON.parse(response)?.delay; // 返回信息 delay 毫秒,9999代表超时与丢包
+
+            if (!response || delay >= 9999) {
+              setDelayOpen(true); // 延迟过高提示
+            }
+
+            delay = delay < 2 ? 2 : delay; // 对延迟小于2进行处理，避免展示问题
+
+            const chart = generateChart(delay, delay === 9999 ? 100 : 0); // 图表展示数据
+            const packetLoss = generatePacket(chart); // 丢包率
+
+            setChartData(chart);
+            setLostBag(delay);
+            setPacketLoss(packetLoss);
+            dispatch(updateDelay(delay));
+          }
+        );
+      });
+    } catch (error) {
+      console.log("游戏详情获取客户端延迟方法错误：", error);
+      setDelayOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    const iniliteFun = () => {
+      const accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
+      const server = handleSelectServer(accel?.serverNode); // 存储的区服节点信息
+
+      fetchAddrDelay(server?.node); // 调用客户端获取延迟方法
+      setDetailData(accel); // 更新游戏详情信息
+      historyContext?.accelerateTime?.startTimer(); // 调用详情加速计时器
+
+      if (accDelay) {
+        // 启动定时器，并返回一个可以用来停止定时器的函数
+        const stopTimer = startDelayTmer(fetchAddrDelay, server?.node);
+
+        (window as any).stopDelayTimer = () => {
+          stopTimer(); // 在 window 挂载停止计时器方法
+        };
+      }
+    };
+
+    iniliteFun();
   }, []);
 
   return (
@@ -464,7 +463,7 @@ const GameDetail: React.FC = () => {
           stopSpeed={stopSpeed}
         />
       ) : null}
-      <ActivationModal options={detailData} notice={(e) => setDetailData(e)} />
+      <ActivationModal options={detailData} />
       {stopModalOpen ? (
         <BreakConfirmModal
           type={"stopAccelerate"}

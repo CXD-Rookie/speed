@@ -30,7 +30,7 @@ const initialState = {
   isLogin:false,
   isRealOpen: false,
   isPayOpen:false,
-  delay: 2,
+  delay: 0,
   isStop: true,
   accelerateTime: 0,
   isBindPhone: false,

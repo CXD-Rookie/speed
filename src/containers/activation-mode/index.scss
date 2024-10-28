@@ -1,4 +1,17 @@
 .activation-modal {
+  position: relative;
+
+  .mask {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    background-color: transparent;
+  }
+
+
   .ant-modal-content {
     height: 52vh;
     background-color: #3e3e4a;
@@ -123,6 +136,15 @@
     .content-path-box {
       display: flex;
       justify-content: space-between;
+      position: relative;
+
+      .path-error {
+        position: absolute;
+        top: 5vh;
+        left: 0.6vh;
+        font-size: 1vw;
+        color: #FF0000;
+      }
 
       .content-input {
         width: 31vw;
@@ -152,13 +174,27 @@
       width: 9.6vw;
       height: 4.8vh;
       color: #fff;
-      background: #f86c34;
+      background: #FF7741;
       border-radius: 2.4vh;
       border: none;
       outline: none;
       margin-left: 13.6vw;
       margin-top: 4.8vh;
       font-size: 1.4vw;
+
+      &:hover {
+        color: #fff;
+        background-color: #FF7741;
+      }
+
+      &:active {
+        color: #fff;
+        background: #f86c34;
+      }
+
+      &:enabled {
+        background: #f86c34;
+      }
     }
   }
 }

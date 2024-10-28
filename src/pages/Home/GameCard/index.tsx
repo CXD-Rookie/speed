@@ -290,8 +290,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       );
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { addr = "", server, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
-
+      const { addr = "", server_v2, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
+      
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -310,10 +310,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
         domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now
         ip_whitelist: WhiteBlackList.whitelist.ipv4, // Assuming empty for now
-        acceleration_nodes: server.map((s: any) => ({
+        acceleration_nodes: server_v2.map((s: any) => ({
           server_address: `${addr}:${s.port}`,
-          inbound_protocol: s.protocol.to,
-          outbound_protocol: s.protocol.from,
+          protocol: s.protocol,
           acc_key: js_key,
         })),
       });

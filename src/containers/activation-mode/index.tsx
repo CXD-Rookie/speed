@@ -9,7 +9,6 @@
  */
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Select, Input } from "antd";
-import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useSelector, useDispatch } from "react-redux";
 import { setStartPathOpen } from "@/redux/actions/modal-open";
 
@@ -29,11 +28,9 @@ interface ActivationModalProps {
   notice?: (option: any) => void;
 }
 
-const ActivationModal: React.FC<ActivationModalProps> = ({
-  notice = () => {},
-  options,
-}) => {
-  const { getGameList } = useGamesInitialize(); // 获取游戏列表
+const ActivationModal: React.FC<ActivationModalProps> = (props) => {
+  const { options } = props;
+  
   // 控制弹窗的开关
   const open = useSelector((state: any) => state?.modalOpen?.startPathOpen);
   const dispatch: any = useDispatch();
@@ -43,17 +40,46 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
   const [selectPlatform, setSelectPlatform] = useState<string>(); // 选择的游戏平台
 
   const [platforms, setPlatforms] = useState<any>([]); // 所有的运营平台
+  const [startPathError, setStartPathError] = useState("0"); // 启动路径错误类型 0 正常 1 无路径
 
   // 取消函数
   const onCancel = () => {
+    setStartPathError("0")
     dispatch(setStartPathOpen(false));
+  };
+  
+  // 点击保存启动路径
+  const handleSave = () => {
+    const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
+    const startAssemble = startStorage ? JSON.parse(startStorage) : [];
+    const findIndex = startAssemble.findIndex(
+      (item: any) => item?.id === options?.id
+    ); // 查找当前游戏的索引
+
+    // 如果找到，先删除已存在的游戏启动信息
+    if (findIndex !== -1) {
+      startAssemble.splice(findIndex, 1, 1);
+    }
+
+    // 当前保存的启动信息存
+    startAssemble.unshift({
+      id: options?.id,
+      path: filePath,
+      pid: selectPlatform,
+      start: quickStartType,
+    });
+
+    localStorage.setItem("startAssemble", JSON.stringify(startAssemble)); // 更新localStorage
+    onCancel(); // 关闭弹窗
   };
 
   // 点击快捷启动方式
   const onClickQuickStart = (value: string) => {
+    if (value === "auto" && !filePath) setStartPathError("1");
     setQuickStartType(value);
   };
 
+  // 调用触发读取文件的函数
   const handleInputChange = () => {
     new Promise((resolve, reject) => {
       (window as any).NativeApi_AsynchronousRequest(
@@ -63,42 +89,16 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
           const isCheck = JSON.parse(response);
 
           if (isCheck?.path) {
-            console.log("获取返回路径:", response);
-            setFilePath(isCheck.path);
-          } else {
-            console.error("Query failed:", response);
+            setFilePath(isCheck?.path); // 更新启动路径
+            setStartPathError("0") // 去除启动路径错误
           }
         }
       );
     });
   };
 
-  const handleSave = () => {
-    // 这个逻辑需要在打开文件之后回调处理，这是保存的逻辑
-    let games_list = getGameList();
-    let games_option = { ...options }; // 当前游戏数据
-
-    games_option.activation_method = {
-      select_platforms_id: selectPlatform,
-      filePath,
-    }; // 添加 start_path 属性
-
-    let find_index = games_list.findIndex(
-      (item: any) => games_option?.id === item?.id
-    );
-
-    if (find_index !== -1) {
-      games_list[find_index] = games_option;
-    }
-
-    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(games_list));
-
-    notice(games_option);
-    onCancel(); // 关闭弹窗
-  };
-
   // 处理请求 游戏平台信息
-  const fetchGamePlatformDetails = (option: any) => {
+  const fetchPDetails = (option: any) => {
     return new Promise(async (resolve, reject) => {
       try {
         let res = await playSuitApi.speedInfo({
@@ -106,7 +106,7 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
           gid: options?.id,
           pid: option?.pid,
         });
-        // 成功回调
+
         resolve({
           state: true,
           data: {
@@ -115,75 +115,58 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
           },
         });
       } catch (error) {
-        // 失败回调
-        reject({
-          state: false,
-          // response: { errorCode, errorMessage },
-        });
+        reject({ state: false });
       }
     });
   };
 
+  // 组合启动平台
   const handleMethod = async () => {
     try {
-      let res = await playSuitApi.pcPlatform(); // 请求运营平台接口
-      let platform_list = Object?.keys(res?.data) || []; // 运营平台数据
-      let api_list: any = []; // 需要请求的api 数量
+      const res = await playSuitApi.pcPlatform(); // 请求运营平台接口
+      const list = res?.data || {}; // 运营平台类型
+      const platformList = Object?.keys(list); // 运营平台数据转换key数组
+      const apiList: any = []; // 待循环请求是否有路径接口
 
-      // 对api数量进行处理
-      platform_list.forEach((key: string) => {
-        api_list.push(
-          fetchGamePlatformDetails({ pid: key, name: res?.data?.[key] })
-        );
+      // 对循环请求api数量进行整合
+      platformList.forEach((key: string) => {
+        apiList.push(fetchPDetails({ pid: key, name: res?.data?.[key] }));
       });
 
-      const data: any = await Promise.all(api_list); // 请求等待统一请求完毕
+      const data: any = await Promise.all(apiList); // 请求等待统一请求完毕
 
       // 聚合所以的api 数据中的 游戏平台
-      let result_excutable = data.reduce((acc: any = [], item: any) => {
-        let data = item?.data;
+      let excutable = data.reduce((acc: any = [], item: any) => {
+        const data = item?.data || {}; // 每个请求的返回数据
+        const { pc_platform = -1, option = {}, start_path = "" } = data; // 解构 pc_platform， option
 
-        if (
-          Number(data?.pc_platform) === Number(data?.option?.pid) &&
-          data?.start_path
-        ) {
+        // 平台类型和pid相同，并且启动路径存在
+        if (Number(pc_platform) === Number(option?.pid) && start_path) {
           return acc.concat([
             {
-              pc_platform: data?.pc_platform,
-              path: data?.start_path,
-              ...data?.option,
+              ...option,
+              pc_platform,
+              path: start_path,
             },
           ]);
         }
+
         return acc;
       }, []);
 
-      result_excutable =
-        result_excutable?.length > 0
-          ? result_excutable
-          : [
-              {
-                pc_platform: 0,
-                path: "",
-                pid: "0",
-                name: "-",
-              },
-            ];
-      const isHasCustom = result_excutable.filter(
-        (item: any) => item?.pid === "0"
-      )?.[0];
+      const customObj = {
+        // 自定义类型数据
+        pc_platform: 0,
+        path: "",
+        pid: "0",
+        name: "自定义",
+      };
 
-      if (!isHasCustom) {
-        result_excutable.unshift({
-          pc_platform: 0,
-          path: "",
-          pid: "0",
-          name: "自定义",
-        });
-      }
+      // 添加自定义类型数据
+      excutable.push(customObj);
 
-      setPlatforms(result_excutable);
-      return result_excutable;
+      setPlatforms(excutable);
+      return excutable;
     } catch (error) {
       console.log(error);
     }
@@ -196,28 +179,19 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
     setFilePath(path?.path || "");
   };
 
+  // 初始化
   useEffect(() => {
     const initialFetch = async () => {
-      let default_info = await handleMethod();
+      const method = await handleMethod(); // 组合好的所有存在启动平台信息
+      const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
+      const startAssemble = startStorage
+        ? JSON.parse(startStorage)?.filter((item: any) => item?.id === options?.id)?.[0] || {}
+        : { ...method?.[0], start: "human" }; // 启动信息
+      const { path = "", pid = "0", start = "human" } = startAssemble; // 解构启动信息
 
-      if (default_info) {
-        let info = options?.activation_method;
-        let pid, path;
-
-        if (info) {
-          pid = info?.select_platforms_id;
-          path = info?.filePath;
-        } else {
-          let arr = default_info.filter((item: any) => item?.pid !== "0"); // 查找不是自定义的平台
-          let is_true = arr?.length > 0; // 是否找到不是自定义的平台
-
-          pid = is_true ? arr?.[0]?.pid : default_info?.[0]?.pid;
-          path = is_true ? arr?.[0]?.path : default_info?.[0]?.path;
-        }
-
-        setSelectPlatform(pid);
-        setFilePath(path);
-      }
+      setFilePath(path); // 更新文件路径
+      setSelectPlatform(pid); // 更新启动平台
+      setQuickStartType(start); // 更新启动类型
     };
 
     if (open) {
@@ -237,6 +211,8 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
       footer={null}
       onCancel={onCancel}
     >
+      {/* 用于遮挡启动方式弹窗，防止操作的模罩层 */}
+      {/* <div className="mask" /> */}
       <div className="activation-modal-content">
         <div className="quick-start">快捷启动</div>
         <div className="quick-tabs">
@@ -300,6 +276,9 @@ const ActivationModal: React.FC<ActivationModalProps> = ({
             <Button className="content-btn" onClick={handleInputChange}>
               浏览
             </Button>
+          )}
+          {startPathError === "1" && (
+            <div className="path-error">请先添加启动路径</div>
           )}
         </div>
         <Button
