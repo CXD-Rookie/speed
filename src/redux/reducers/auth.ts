@@ -22,6 +22,7 @@ import {
   ACCELERATE_TIME,
   BIND_PHONE,
   SIGN_EXPIRES,
+  ACCELERATE_CHART,
 } from '../actions/auth';
 
 const initialState = {
@@ -35,10 +36,16 @@ const initialState = {
   accelerateTime: 0,
   isBindPhone: false,
   sign_expires: false,
+  accelerateChart: [],
 };
 
 const authReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case ACCELERATE_CHART:
+      return {
+        ...state,
+        accelerateChart: action.payload,
+      };
     case SIGN_EXPIRES:
       return {
         ...state,

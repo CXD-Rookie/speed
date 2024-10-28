@@ -10,7 +10,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateDelay } from "@/redux/actions/auth";
+import { updateDelay, setAccelerateChart } from "@/redux/actions/auth";
 import { setStartPathOpen } from "@/redux/actions/modal-open";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
@@ -42,6 +42,7 @@ import oculusIcon from "@/assets/images/common/Oculus@2x.png";
 import garenaIcon from "@/assets/images/common/Garena@2x.png";
 import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
 import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
+import { store } from "@/redux/store";
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const GameDetail: React.FC = () => {
     (state: any) => state?.modalOpen?.startPathOpen
   );
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-  const accDelay = useSelector((state: any) => state.auth.delay); // 全局延迟毫秒数
+  const iniliteChart = useSelector((state: any) => state.auth.accelerateChart); // 存储的游戏详情图表数据
 
   const historyContext: any = useHistoryContext();
   const {
@@ -76,11 +77,11 @@ const GameDetail: React.FC = () => {
   // 使用 useMemo 确保只有 data 变化时才会重新计算
   const memoizedData = useMemo(() => chartData, [chartData]);
 
-  const domName = (data: any = {}) => {
-    let fu = data?.region?.fu ? data?.region?.fu + "-" : "";
-    let dom = data?.node?.name || "";
+  const iniliteDomName = (data: any = {}) => {
+    const { region = {}, node = {}} = data;
+    const fu = region?.fu;
 
-    return fu + data?.region?.qu + "-" + dom;
+    return (fu ? fu + "-" : "") + region?.qu + "-" + (node?.name ?? "");
   };
 
   // 当前选择的区服，节点
@@ -154,33 +155,33 @@ const GameDetail: React.FC = () => {
 
   // 生成图表数据函数
   const generateChart = (value: any, packet: any) => {
-    const chartList = []; // 图表数据
+    const chartList = iniliteChart; // 图表数据
     const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
-
+    
     // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
-    if (chartData?.length === 0) {
+    if (iniliteChart?.length === 0) {
       const startTime = currentTime - 180005; // 获取 3分05秒 前的时间戳
 
       // 以 5 秒为间隔生成数据对象 生成3分钟随机数据
       for (let time = startTime; time <= currentTime - 5; time += 5 * 1000) {
-        const randomNum = Math.floor(Math.random() * (100 - 3)) + 2; // 生成一个随机数，在2-100之间
         const data: any = {
           timestamp: time, // 时间戳
-          value: randomNum, // 示例数据，可以根据需要修改
+          value: 0, // 示例数据，可以根据需要修改
         };
-        chartList.push(data);
+        iniliteChart.push(data);
       }
     }
 
-    chartList.shift(); // 删除第一个数据
-    chartList.push({
+    iniliteChart.shift(); // 删除第一个数据
+    iniliteChart.push({
       // 添加当前数据
       timestamp: currentTime,
       value,
       packet,
     });
-
-    return chartList;
+    
+    dispatch(setAccelerateChart(iniliteChart));
+    return iniliteChart;
   };
 
   // 生成丢包率函数 data = 数组
@@ -249,6 +250,7 @@ const GameDetail: React.FC = () => {
     // 返回一个函数，该函数用于停止定时器
     return () => {
       clearInterval(timerId);
+      localStorage.removeItem("isStartTimer"); // 删除存储是否开启5秒计时器
     };
   };
 
@@ -269,12 +271,17 @@ const GameDetail: React.FC = () => {
               setDelayOpen(true); // 延迟过高提示
             }
 
+            // 如果用户是vip，会进行vip到期判断处理
+            if (accountInfo?.userInfo?.is_vip) {
+              forceStopAcceleration(accountInfo, stopSpeed);
+            }
+
             delay = delay < 2 ? 2 : delay; // 对延迟小于2进行处理，避免展示问题
 
             const chart = generateChart(delay, delay === 9999 ? 100 : 0); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率
-
-            setChartData(chart);
+            
+            setChartData([...chart]);
             setLostBag(delay);
             setPacketLoss(packetLoss);
             dispatch(updateDelay(delay));
@@ -292,18 +299,21 @@ const GameDetail: React.FC = () => {
       const accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
       const server = handleSelectServer(accel?.serverNode); // 存储的区服节点信息
 
+      if ((window as any).stopDelayTimer) {
+        (window as any).stopDelayTimer(); // 进入游戏先进行清除旧的计时器
+      }
+
       fetchAddrDelay(server?.node); // 调用客户端获取延迟方法
       setDetailData(accel); // 更新游戏详情信息
       historyContext?.accelerateTime?.startTimer(); // 调用详情加速计时器
+      setRegionNode(iniliteDomName(server));
 
-      if (!accDelay) {
-        // 启动定时器，并返回一个可以用来停止定时器的函数
-        const stopTimer = startDelayTmer(fetchAddrDelay, server?.node);
+      // 启动定时器，并返回一个可以用来停止定时器的函数
+      const stopTimer = startDelayTmer(fetchAddrDelay, server?.node);
 
-        (window as any).stopDelayTimer = () => {
-          stopTimer(); // 在 window 挂载停止计时器方法
-        };
-      }
+      (window as any).stopDelayTimer = () => {
+        stopTimer(); // 在 window 挂载停止计时器方法
+      };
     };
 
     iniliteFun();

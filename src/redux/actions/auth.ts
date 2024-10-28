@@ -19,6 +19,13 @@ export const STOP_ACCELERATE = 'STOP_ACCELERATE';
 export const ACCELERATE_TIME = 'ACCELERATE_TIME';
 export const BIND_PHONE = 'BIND_PHONE';
 export const SIGN_EXPIRES = 'SIGN_EXPIRES';
+export const ACCELERATE_CHART = "ACCELERATE_CHART";
+
+// 更新加速详情图表数据
+export const setAccelerateChart = (accelerateChart: any) => ({
+    type: ACCELERATE_CHART,
+    payload: accelerateChart,
+});
 
 // 标记提示加速服务并且没有实名认证的记号
 export const signExpiresState = (sign_expires: any) => ({
