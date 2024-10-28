@@ -291,7 +291,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server_v2, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
-      
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
