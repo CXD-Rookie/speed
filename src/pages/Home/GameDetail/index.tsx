@@ -197,7 +197,7 @@ const GameDetail: React.FC = () => {
     });
 
     const averagePacket = Math.floor(sum / count); // 评价丢包率
-
+    
     return averagePacket || 0;
   };
 
