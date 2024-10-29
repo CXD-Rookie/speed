@@ -155,7 +155,6 @@ const GameDetail: React.FC = () => {
 
   // 生成图表数据函数
   const generateChart = (value: any, packet: any) => {
-    const chartList = iniliteChart; // 图表数据
     const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
     
     // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
@@ -250,7 +249,7 @@ const GameDetail: React.FC = () => {
     // 返回一个函数，该函数用于停止定时器
     return () => {
       clearInterval(timerId);
-      localStorage.removeItem("isStartTimer"); // 删除存储是否开启5秒计时器
+      dispatch(setAccelerateChart([]));; // 还原加速图表存储的图表数据
     };
   };
 
