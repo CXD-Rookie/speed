@@ -20,6 +20,13 @@ export const ACCELERATE_TIME = 'ACCELERATE_TIME';
 export const BIND_PHONE = 'BIND_PHONE';
 export const SIGN_EXPIRES = 'SIGN_EXPIRES';
 export const ACCELERATE_CHART = "ACCELERATE_CHART";
+export const STARTPROGRESS = "STARTPROGRESS";
+
+// 更新是否已经启动游戏状态
+export const setStartProgress = (isStartProgress: any) => ({
+    type: STARTPROGRESS,
+    payload: isStartProgress,
+});
 
 // 更新加速详情图表数据
 export const setAccelerateChart = (accelerateChart: any) => ({

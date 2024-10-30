@@ -23,6 +23,7 @@ import {
   BIND_PHONE,
   SIGN_EXPIRES,
   ACCELERATE_CHART,
+  STARTPROGRESS,
 } from '../actions/auth';
 
 const initialState = {
@@ -31,16 +32,22 @@ const initialState = {
   isLogin:false,
   isRealOpen: false,
   isPayOpen:false,
-  delay: 0,
+  delay: 0, // 加速延迟
   isStop: true,
   accelerateTime: 0,
   isBindPhone: false,
   sign_expires: false,
-  accelerateChart: [],
+  accelerateChart: [], // 加速图表信息
+  isStartProgress: false, // 是否已经启动游戏
 };
 
 const authReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case STARTPROGRESS:
+      return {
+        ...state,
+        isStartProgress: action.payload,
+      };
     case ACCELERATE_CHART:
       return {
         ...state,

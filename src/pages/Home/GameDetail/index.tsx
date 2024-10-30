@@ -8,7 +8,7 @@
  */
 import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDelay, setAccelerateChart } from "@/redux/actions/auth";
 import { setStartPathOpen } from "@/redux/actions/modal-open";
@@ -42,19 +42,15 @@ import oculusIcon from "@/assets/images/common/Oculus@2x.png";
 import garenaIcon from "@/assets/images/common/Garena@2x.png";
 import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
 import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
-import { store } from "@/redux/store";
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
-  // 控制启动路径弹窗的开关
-  const startPathOpen = useSelector(
-    (state: any) => state?.modalOpen?.startPathOpen
-  );
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const iniliteChart = useSelector((state: any) => state.auth.accelerateChart); // 存储的游戏详情图表数据
-
+  
   const historyContext: any = useHistoryContext();
   const {
     identifyAccelerationData,
@@ -64,9 +60,9 @@ const GameDetail: React.FC = () => {
   } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   const [stopModalOpen, setStopModalOpen] = useState(false);
   const [delayOpen, setDelayOpen] = useState(false); // 延迟弹窗
+  
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(1); // 实时延迟
   const [packetLoss, setPacketLoss] = useState<any>(0); // 丢包率
@@ -74,11 +70,14 @@ const GameDetail: React.FC = () => {
   const [regionNode, setRegionNode] = useState("智能匹配-智能节点");
   const [chartData, setChartData] = useState<any>([]); // 柱形图数据示例
 
+  const [startLoading, setStartLoading] = useState(false); // 是否加载启动游戏中
+
   // 使用 useMemo 确保只有 data 变化时才会重新计算
   const memoizedData = useMemo(() => chartData, [chartData]);
 
+  // 初始化展示区服节点函数
   const iniliteDomName = (data: any = {}) => {
-    const { region = {}, node = {}} = data;
+    const { region = {}, node = {} } = data;
     const fu = region?.fu;
 
     return (fu ? fu + "-" : "") + region?.qu + "-" + (node?.name ?? "");
@@ -95,13 +94,10 @@ const GameDetail: React.FC = () => {
     };
   };
 
+  // 打开区服节点弹窗
   const showModal = async () => {
     if (await checkShelves(detailData)) return; // 判断是否当前游戏下架
     setIsModalVisible(true);
-  };
-
-  const hideModal = () => {
-    setIsModalVisible(false);
   };
 
   // 停止加速
@@ -156,7 +152,7 @@ const GameDetail: React.FC = () => {
   // 生成图表数据函数
   const generateChart = (value: any, packet: any) => {
     const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
-    
+
     // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
     if (iniliteChart?.length === 0) {
       const startTime = currentTime - 180005; // 获取 3分05秒 前的时间戳
@@ -178,7 +174,7 @@ const GameDetail: React.FC = () => {
       value,
       packet,
     });
-    
+
     dispatch(setAccelerateChart(iniliteChart));
     return iniliteChart;
   };
@@ -196,7 +192,7 @@ const GameDetail: React.FC = () => {
     });
 
     const averagePacket = Math.floor(sum / count); // 评价丢包率
-    
+
     return averagePacket || 0;
   };
 
@@ -236,6 +232,7 @@ const GameDetail: React.FC = () => {
     return resultData;
   };
 
+  // 定义计时器 并且返回清除计时器
   const startDelayTmer = (callback: any, value: any) => {
     // 定义一个内部变量来存储定时器的标识符
     let timerId: any = null;
@@ -249,8 +246,50 @@ const GameDetail: React.FC = () => {
     // 返回一个函数，该函数用于停止定时器
     return () => {
       clearInterval(timerId);
-      dispatch(setAccelerateChart([]));; // 还原加速图表存储的图表数据
+      dispatch(setAccelerateChart([])); // 还原加速图表存储的图表数据
     };
+  };
+
+  // 启动游戏或者打开启动游戏路径
+  const startProgress = (data: any, start: any, event?: any) => {
+    const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
+    const startAssemble = startStorage ? JSON.parse(startStorage) : []; // 解析存储数据
+    const hitGame = startAssemble.filter((item: any) => item?.id === data?.id); // 当前游戏的启动信息
+
+    // 如果是手动点击启动，防止捕获
+    if (event) {
+      event.stopPropagation();
+    }
+
+    // 当前游戏是存储过游戏路径，且启动方式为自动启动
+    // 游戏为初始自动启动 或者 手动触发
+    if (
+      hitGame?.[0]?.start === start ||
+      (hitGame?.length > 0 && start === "human")
+    ) {
+      new Promise((resolve, reject) => {
+        (window as any).NativeApi_AsynchronousRequest(
+          "NativeApi_StartProcess",
+          JSON.stringify({
+            params: { path: hitGame?.[0]?.path },
+          }),
+          (response: string) => {
+            const res = JSON.parse(response)
+            
+            if (res?.success === 1) {
+              setStartLoading(true);
+              setTimeout(() => {
+                setStartLoading(false);
+              }, 5000);
+            }
+          }
+        );
+      });
+
+      return;
+    }
+
+    dispatch(setStartPathOpen(true)); // 打开启动路径弹窗
   };
 
   // 获取客户端延迟
@@ -279,7 +318,7 @@ const GameDetail: React.FC = () => {
 
             const chart = generateChart(delay, delay === 9999 ? 100 : 0); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率
-            
+
             setChartData([...chart]);
             setLostBag(delay);
             setPacketLoss(packetLoss);
@@ -298,14 +337,21 @@ const GameDetail: React.FC = () => {
       const accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
       const server = handleSelectServer(accel?.serverNode); // 存储的区服节点信息
 
+      // 如果计时器已经存在，则代表已经加速游戏
       if ((window as any).stopDelayTimer) {
         (window as any).stopDelayTimer(); // 进入游戏先进行清除旧的计时器
+      }
+
+      // 在未加速游戏时进行初始化是否启动游戏
+      // 通过标记 fromRefresh 来判断是否是刷新当前页面，避免刷新导致自动启动游戏触发
+      if (location?.state?.fromRefresh) {
+        startProgress(accel, "auto");
       }
 
       fetchAddrDelay(server?.node); // 调用客户端获取延迟方法
       setDetailData(accel); // 更新游戏详情信息
       historyContext?.accelerateTime?.startTimer(); // 调用详情加速计时器
-      setRegionNode(iniliteDomName(server));
+      setRegionNode(iniliteDomName(server)); // 更新区服节点展示
 
       // 启动定时器，并返回一个可以用来停止定时器的函数
       const stopTimer = startDelayTmer(fetchAddrDelay, server?.node);
@@ -315,8 +361,13 @@ const GameDetail: React.FC = () => {
       };
     };
 
-    iniliteFun();
-  }, []);
+    // 清除状态信息，路由跳转到游戏详情必须携带标记 fromRefresh: true
+    if (location.state) {
+      // 在组件挂载时清除状态
+      navigate("/gameDetail", { replace: true, state: null });
+      iniliteFun();
+    }
+  }, [location, navigate]);
 
   return (
     <div className="home-module-detail">
@@ -351,50 +402,40 @@ const GameDetail: React.FC = () => {
                 </div>
               </div>
             )}
-            <div className="game-btn">
+            <div
+              className="game-btn"
+              style={{
+                opacity: startLoading ? 0.5 : 1,
+                cursor: startLoading ? "no-drop" : "pointer",
+              }}
+            >
               <Button
                 className="Launching on-game"
+                style={{ cursor: startLoading ? "no-drop" : "pointer" }}
                 type="default"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const method = detailData?.activation_method;
-
-                  if (method) {
-                    new Promise((resolve, reject) => {
-                      (window as any).NativeApi_AsynchronousRequest(
-                        "NativeApi_StartProcess",
-                        JSON.stringify({
-                          params: { path: method?.filePath },
-                        }),
-                        (response: string) => {
-                          const parsedResponse = JSON.parse(response);
-                          if (parsedResponse.success === 1) {
-                            resolve(parsedResponse);
-                          } else {
-                            reject(parsedResponse);
-                          }
-                        }
-                      );
-                    });
-                  } else {
-                    dispatch(setStartPathOpen(true)); // 打开启动路径弹窗
+                onClick={(event) => {
+                  if (!startLoading) {
+                    startProgress(detailData, "human", event);
                   }
                 }}
               >
                 <img src={activateIcon} width={18} height={18} alt="" />
-                <span>启动游戏</span>
+                <span>{startLoading ? "启动中" : "启动游戏"}</span>
               </Button>
-
               <Button
                 className="path"
+                style={{ cursor: startLoading ? "no-drop" : "pointer" }}
                 type="default"
-                onClick={() => dispatch(setStartPathOpen(true))}
+                onClick={() => {
+                  if (!startLoading) {
+                    dispatch(setStartPathOpen(true));
+                  }
+                }}
               >
                 <div className="line" />
                 <img src={detailsCustomIcon} width={18} height={18} alt="" />
               </Button>
             </div>
-
             <Button
               className="down-game game-btn"
               type="default"
@@ -468,7 +509,7 @@ const GameDetail: React.FC = () => {
         <RegionNodeSelector
           open={isModalVisible}
           options={detailData}
-          onCancel={hideModal}
+          onCancel={() => setIsModalVisible(false)}
           stopSpeed={stopSpeed}
         />
       ) : null}

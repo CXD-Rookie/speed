@@ -453,7 +453,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsStartAnimate(false); // 结束加速动画
 
           if (isPre) {
-            navigate("/gameDetail");
+            navigate("/gameDetail", { state: { fromRefresh: true } });
           }
         }, 1000);
       }
@@ -681,7 +681,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isAllowShowAccelerating && option?.is_accelerate ? (
               <div
                 className="accelerating-card"
-                onClick={() => navigate("/gameDetail")}
+                onClick={() => navigate("/gameDetail", { state: { fromRefresh: true } })}
               >
                 <img
                   className="accelerating-content-img"
