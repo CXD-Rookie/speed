@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout } from "antd";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 
 import "./index.scss";
-import LayoutHeader from "./layout-header";
 import routes from "@/routes";
-import SearchBar from "@/containers/searchBar";
+import LayoutHeader from "./layout-header";
+import RenderSrea from "./render-area";
 
 const { Header, Content } = Layout;
 
 const Layouts: React.FC = () => {
   const routeView = useRoutes(routes); // 获得路由表
+
+  const [couponRefreshNum, setCouponRefreshNum] = useState(0); // 是否刷新优惠券过期判断
 
   const handleMouseDown = () => {
     (window as any).NativeApi_OnDragZoneMouseDown();
@@ -55,12 +57,13 @@ const Layouts: React.FC = () => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       >
-        <SearchBar />
-        {/* <LayoutHeader /> */}
+        <LayoutHeader {...{ couponRefreshNum }} />
       </Header>
       <Layout>
         <Content className="content">{routeView}</Content>
       </Layout>
+      {/* 弹窗放置 */}
+      <RenderSrea />
     </Layout>
   );
 };

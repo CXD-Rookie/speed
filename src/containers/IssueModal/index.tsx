@@ -8,28 +8,23 @@
  * @FilePath: \speed\src\containers\IssueModal\index.tsx
  */
 /* eslint-disable react/jsx-no-comment-textnodes */
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "antd";
+import { setFeedbackPopup } from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import FeedbackForm from "./issue";
 import BreakConfirmModal from "../break-confirm";
 
-interface FeedbackPopupProps {
-  showIssueModal?: boolean;
-  defaultInfo?: string | null;
-  onClose?: () => void;
-}
+const FeedbackPopup: React.FC = () => {
+  const dispatch = useDispatch();
 
-const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
-  showIssueModal = false,
-  defaultInfo,
-  onClose = () => {},
-}) => {
-  const [issueOpen, setIssueOpen] = useState(false);
-
-  const closeFeedbackForm = () => {
-    onClose();
+  const { open = false, defaultInfo = ""} = useSelector((state: any) => state?.modalOpen?.feedbackPopup);
+  console.log(open);
+  
+  const closeFeedbackForm = (open: any = false) => {
+    dispatch(setFeedbackPopup({ open }));
   };
 
   useEffect(() => {
@@ -42,7 +37,7 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
       const message = event.data;
 
       if (message.type === "GREETING") {
-        onClose();
+        closeFeedbackForm();
       }
     });
   }, []);
@@ -51,8 +46,8 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
     <Fragment>
       <Modal
         className="overlay"
-        open={showIssueModal}
-        onCancel={onClose}
+        open={open}
+        onCancel={closeFeedbackForm}
         title="问题反馈"
         width={"67.6vw"}
         centered
@@ -62,17 +57,14 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
         <FeedbackForm
           onClose={closeFeedbackForm}
           defaultInfo={defaultInfo}
-          setIssueOpen={setIssueOpen}
+          setIssueOpen={closeFeedbackForm}
         />
       </Modal>
       <BreakConfirmModal
         type={"issueFeedback"}
-        accelOpen={issueOpen}
-        setAccelOpen={setIssueOpen}
-        onConfirm={() => {
-          setIssueOpen(false);
-          closeFeedbackForm();
-        }}
+        accelOpen={open}
+        setAccelOpen={closeFeedbackForm}
+        onConfirm={closeFeedbackForm}
       />
     </Fragment>
   );

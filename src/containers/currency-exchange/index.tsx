@@ -1,6 +1,9 @@
+// 口令兑换
 import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Modal, Table } from "antd";
 import type { TableProps } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { setCurrencyOpen } from "@/redux/actions/modal-open";
 import { nodeDebounce } from "@/common/utils";
 import { validityPeriod } from "./utils";
 
@@ -9,11 +12,6 @@ import payApi from "@/api/pay";
 import PayModal from "../Pay";
 import currencyBanner from "@/assets/images/common/currency-banner.svg";
 import Active from "../active";
-
-interface CurrencyProps {
-  open: boolean;
-  setOpen: (event: boolean) => void;
-}
 
 interface DataType {
   key: string;
@@ -30,9 +28,11 @@ const iniliteStatusObj: any = {
   3: "已过期",
 }
 
-const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
-  const { open, setOpen } = props;
+const CurrencyExchange: React.FC = (props) => {
+  const dispatch: any = useDispatch();
 
+  const open = useSelector((state: any) => state?.modalOpen?.currencyOpen);
+  
   const [currencyCode, setCurrencyCode] = useState(""); // 输入的兑换码
   const [currencyState, setCurrencyState] = useState(""); // 兑换错误提示
   const [currencyTable, setCurrencyTable] = useState<any>([]); // 兑换的表格数据
@@ -98,7 +98,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
             if (record?.status === 1) {
               setpayCoupon(record);
               setPayOpen(true);
-              setOpen(false);
+              dispatch(setCurrencyOpen(false));
             }
           }}
         >
@@ -115,7 +115,7 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
     setpayCoupon({})
     setPromptInfo({})
     setPayOpen(false)
-    setOpen(false);
+    dispatch(setCurrencyOpen(false));
     setPromptOpen(false)
     setPagination(inilitePagination);
     setTableTotal(0)

@@ -9,18 +9,20 @@
  */
 import React, { Fragment, useEffect, useState } from "react";
 import { Modal } from "antd";
+import { useDispatch } from "react-redux";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useNavigate } from "react-router-dom";
+import { setSetting } from "@/redux/actions/modal-open";
+
 import tracking from "@/common/tracking";
 import eventBus from "@/api/eventBus";
 
 import "./index.scss";
-import SettingsModal from "../setting";
 
 interface SettingsModalProps {
   accelOpen?: boolean;
-  type: string;
+  type?: string;
   setAccelOpen?: (e: boolean) => void;
   onConfirm?: () => void;
 }
@@ -34,13 +36,13 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   } = props;
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { isNetworkError, setIsNetworkError, accelerateTime }: any =
     useHistoryContext();
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
   const [noticeType, setNoticeType] = useState<any>(""); // 通过eventBus 传递的通知消息类型
-  const [settingOpen, setSettingOpen] = useState(false);
 
   const [version, setVersion] = useState(""); // 立即升级版本
   const [feedbackClose, setfeedbackClose] = useState<any>(); // 问题反馈回调函数
@@ -193,7 +195,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         stopAcceleration();
         break;
       case "infectedOrHijacked":
-        setSettingOpen(true);
+        // 打开设置
+        dispatch(setSetting({ settingOpen: true, type: "fix" }));
         stopAcceleration();
         break;
       case "accelerationServiceNotStarting":
@@ -296,13 +299,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           </div>
         </div>
       </Modal>
-      {settingOpen ? (
-        <SettingsModal
-          type="fix"
-          isOpen={settingOpen}
-          onClose={() => setSettingOpen(false)}
-        />
-      ) : null}
     </Fragment>
   );
 };

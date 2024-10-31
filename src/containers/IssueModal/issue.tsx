@@ -30,8 +30,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const [contact, setContact] = useState<string>(""); // 联系方式
   const [images, setImages] = useState<any[]>([]); // 上传的图片文件列表
 
-  const [feedbackOpen, setFeedbackOpen] = useState(false);
-
   useEffect(() => {
     fetchFeedbackTypes(); // 组件加载时获取反馈类型
   }, []);

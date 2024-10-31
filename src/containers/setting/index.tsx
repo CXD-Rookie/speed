@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import { setSetting } from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import tracking from "@/common/tracking";
@@ -27,19 +28,14 @@ import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
 import fix_failure from "@/assets/images/fixUtils/fix_failure@2x.png";
 import BindPhoneMode from "../bind-phone-mode";
 import loginApi from "@/api/login";
+
 const { TabPane } = Tabs;
 
-interface SettingsModalProps {
-  isOpen: boolean;
-  type?: string;
-  onClose: () => void;
-}
-
-const SettingsModal: React.FC<SettingsModalProps> = (props) => {
-  const { isOpen, onClose, type = "default" } = props;
-
+const SettingsModal: React.FC = (props) => {
+  const { settingOpen = false, type = "default" } = useSelector((state: any) => state?.modalOpen?.setting);
   const accountInfo = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
 
@@ -78,6 +74,10 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  const onClose = () => {
+    dispatch(setSetting({ settingOpen: false }));
+  }
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
@@ -356,15 +356,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     setStartAutoLaunch(!!sign?.auto_run);
     setDesktopQuickStart(!!sign?.auto_create_shortcut);
     setRealNameTag(isRealName);
-  }, [isOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
-
-  // useEffect(() => {
-  //   const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
-  //   const closeButtonAction = sign?.close_button_action;
-
-  //   console.log("初始化设置值:", closeButtonAction);
-  //   setCloseWindow(String(closeButtonAction !== undefined ? closeButtonAction === 1 ? 1 : 2 : 2));
-  // }, [isOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
+  }, [settingOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
 
   useEffect(() => {
     if (type === "edit") {
@@ -389,14 +381,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   useEffect(() => {
     native_version();
-    console.log(versionNow, "----------------");
   }, [versionNow]);
 
   return (
     <Fragment>
       <Modal
         className="system-setting"
-        open={isOpen}
+        open={settingOpen}
         onCancel={onClose}
         destroyOnClose
         title="系统设置"
