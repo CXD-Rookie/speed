@@ -2,7 +2,8 @@ import {
   START_PATH,
   CURRENCY_EXCHANGE,
   SETTING,
-  FEEDBACKPOPUP
+  FEEDBACKPOPUP,
+  NEWUSER
 } from "../actions/modal-open";
 
 const initialState = {
@@ -15,11 +16,17 @@ const initialState = {
   feedbackPopup: { // 问题反馈
     open: false,
     defaultInfo: "",
-  } 
+  },
+  newUserOpen: false, // 新用户弹窗
 };
 
 const modalOpenReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case NEWUSER:
+      return {
+        ...state,
+        newUserOpen: action.payload,
+      };
     case FEEDBACKPOPUP:
       return {
         ...state,

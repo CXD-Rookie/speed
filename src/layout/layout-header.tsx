@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from "react";
+import React, { Fragment } from "react";
 import { Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { useSelector, useDispatch } from "react-redux";
@@ -139,10 +139,6 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
         ] as any)
       : []),
   ];
-
-  useEffect(() => {
-    navigate(menuState);
-  }, []);
 
   return (
     <Fragment>

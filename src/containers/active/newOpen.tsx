@@ -8,29 +8,34 @@
  */
 // index.tsx 
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setNewUserOpen } from "@/redux/actions/modal-open";
+import { setAccountInfo } from "@/redux/actions/account-info";
 
 import './newOpen.scss';
 import closeIcon from "@/assets/images/common/cloture.svg";
 
-interface ActiveModalNewProps {
-  isVisible: boolean;
-  setOpen?: (e: boolean) => void;
-  onClose: (e?: any) => void;
-}
+const ActiveNew: React.FC = () => {
+  const dispatch: any = useDispatch();
 
-const ActiveNew: React.FC<ActiveModalNewProps> = ({
-  isVisible,
-  setOpen = () => {},
-  onClose,
-}) => {
+  const open = useSelector((state: any) => state?.modalOpen?.newUserOpen);
+
+  const onCancel = (e?: any) => {
+    dispatch(setNewUserOpen(false))
+    setTimeout(() => {
+      if (e !== "no") {
+        dispatch(setAccountInfo(undefined, undefined, true));
+      }
+      localStorage.setItem("isActiveNew", "1");
+    }, 500);
+  }
+
   return (
-    <div
-      className={`modal-wrapper-new ${isVisible ? "visible" : "visibleNone"}`}
-    >
-      <div className="close-icon-box" onClick={() => onClose("no")}>
+    <div className={`modal-wrapper-new ${open ? "visible" : "visibleNone"}`}>
+      <div className="close-icon-box" onClick={() => onCancel("no")}>
         <img className="close-icon" src={closeIcon} alt="" />
       </div>
-      <div className="modal-content" onClick={onClose}></div>
+      <div className="modal-content" onClick={onCancel}></div>
     </div>
   );
 };

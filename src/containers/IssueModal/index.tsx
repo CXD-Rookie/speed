@@ -20,8 +20,9 @@ import BreakConfirmModal from "../break-confirm";
 const FeedbackPopup: React.FC = () => {
   const dispatch = useDispatch();
 
-  const { open = false, defaultInfo = ""} = useSelector((state: any) => state?.modalOpen?.feedbackPopup);
-  console.log(open);
+  const { open = false, defaultInfo = ""} = useSelector(
+    (state: any) => state?.modalOpen?.feedbackPopup
+  );
   
   const closeFeedbackForm = (open: any = false) => {
     dispatch(setFeedbackPopup({ open }));
