@@ -72,6 +72,20 @@ const Layouts: React.FC = () => {
     );
   };
 
+  // 定义退出程序的处理函数
+  const handleExitProcess = () => {
+    try {
+      if (localStorage.getItem("isAccelLoading") === "1") {
+        return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
+      }
+
+      const userToken = localStorage.getItem("token");
+      const jsKey = localStorage.getItem("StartKey");
+    } catch (error) {
+      
+    }
+  }
+
   // webSocket 定时请求
   useEffect(() => {
     const handleWebSocket = (event: MessageEvent) => {
@@ -250,6 +264,18 @@ const Layouts: React.FC = () => {
     // 清理函数，在组件卸载前清除定时器
     return () => {
       clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+    // 在应用启动时挂载方法到 window 对象上
+    // window.myGlobalFunction = myGlobalFunction;
+    // window.fetchBanner = fetchBanner;
+
+    // 清理函数，在组件卸载时移除挂载
+    return () => {
+      // delete window.myGlobalFunction;
+      // delete window.fetchBanner;
     };
   }, []);
 

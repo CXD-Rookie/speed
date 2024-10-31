@@ -3,6 +3,13 @@ export const CURRENCY_EXCHANGE = 'CURRENCY_EXCHANGE' // 口令兑换开关
 export const SETTING = 'SETTING' // 设置开关 
 export const FEEDBACKPOPUP = 'FEEDBACKPOPUP' // 问题反馈
 export const NEWUSER = 'NEWUSER' // 新用户弹窗
+export const APPCLOSE = 'APPCLOSE' // app关闭窗口设置提醒
+
+// app关闭窗口设置提醒
+export const setAppCloseOpen = (open: any) => ({
+  type: APPCLOSE,
+  payload: open,
+});
 
 // 新用户弹窗
 export const setNewUserOpen = (open: any) => ({

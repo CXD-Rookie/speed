@@ -5,10 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setActiveMenu } from "@/redux/actions/menu";
 import { setAccountInfo } from "@/redux/actions/account-info";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import {
   setCurrencyOpen,
   setSetting,
   setFeedbackPopup,
+  setAppCloseOpen,
 } from "@/redux/actions/modal-open";
 
 import "./index.scss";
@@ -56,6 +58,8 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
   const menuState = useSelector((state: any) => state?.menu?.active_menu); // 头部tab状态
+  
+  const { identifyAccelerationData } = useGamesInitialize();
 
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -67,7 +71,34 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
 
   // 点击右上角关闭主程序按钮触发逻辑
   const onClickOff = () => {
-
+    let close = localStorage.getItem("client_settings");
+    let action = close ? JSON.parse(close)?.close_button_action : 2;
+    let noMorePrompts = localStorage.getItem("noMorePrompts");
+    
+    // 0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
+    // 如果当前游戏是加速中并且是关闭主程序
+    if (
+      action === 1 &&
+      identifyAccelerationData()?.[0] &&
+      String(noMorePrompts) === "true"
+    ) {
+      //确定要退出加速器弹窗
+      eventBus.emit("showModal", { show: true, type: "exit" });
+    } else {
+      // 提示存在
+      if (!(String(noMorePrompts) === "true")) {
+        dispatch(setAppCloseOpen(true))
+      } else {
+        if (action === 0) {
+          (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+        } else if (
+          action === 1 &&
+          localStorage.getItem("isAccelLoading") !== "1" // 加速中点击无效
+        ) {
+          (window as any).NativeApi_ExitProcess(); //关闭主程序
+        }
+      }
+    }
   }
 
   // 切换tab选中路由更新redux值

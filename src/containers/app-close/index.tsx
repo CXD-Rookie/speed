@@ -9,18 +9,20 @@
  */
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Radio, Checkbox } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { setAppCloseOpen } from "@/redux/actions/modal-open";
+import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
+import eventBus from "@/api/eventBus";
 
 import "./index.scss";
 
-interface AppCloseModalProps {
-  open: boolean;
-  close: (e: any) => void;
-  onConfirm?: (e: any) => void;
-}
+const AppCloseModal: React.FC = (props) => {
+  const dispatch = useDispatch();
 
-const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
-  const { open, close, onConfirm = () => {} } = props;
+  const open = useSelector((state: any) => state?.modalOpen?.appCloseOpen);
+
+  const { identifyAccelerationData } = useGamesInitialize();
 
   const [eventType, setEventType] = useState("1");
   const [noMorePrompts, setNoMorePrompts] = useState(() => {
@@ -28,11 +30,25 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
     return storedValue === "true"; // 如果 storedValue 为 null，则默认返回 false
   });
 
+  // 点击确定
+  const onConfirm = (state: any) => {
+    let is_acc = identifyAccelerationData()?.[0];
+
+    if (state === 0) {
+      (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+    } else {
+      if (is_acc) {
+        eventBus.emit("showModal", { show: is_acc, type: "exit" });
+      } else {
+        // handleExitProcess(); // 直接关闭
+      }
+    }
+  };
+
   const onChange = (e: CheckboxChangeEvent) => {
     let checked = e.target.checked;
 
     setNoMorePrompts(checked);
-    // localStorage.setItem("noMorePrompts", String(checked));
   };
 
   // 在点击确认按钮时，如果 noMorePrompts 为 true，则更新配置
@@ -50,7 +66,7 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
     localStorage.setItem("client_settings", JSON.stringify(sign));
     (window as any).NativeApi_UpdateConfig("close_button_action", action_value);
 
-    close(false);
+    dispatch(setAppCloseOpen(false));
     onConfirm(Number(eventType));
   };
 
@@ -84,7 +100,7 @@ const AppCloseModal: React.FC<AppCloseModalProps> = (props) => {
       centered
       destroyOnClose
       maskClosable={false}
-      onCancel={() => close(false)}
+      onCancel={() => dispatch(setAppCloseOpen(false))}
       footer={null}
     >
       <div className="app-close-module-content">

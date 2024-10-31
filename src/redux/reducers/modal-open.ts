@@ -3,7 +3,8 @@ import {
   CURRENCY_EXCHANGE,
   SETTING,
   FEEDBACKPOPUP,
-  NEWUSER
+  NEWUSER,
+  APPCLOSE
 } from "../actions/modal-open";
 
 const initialState = {
@@ -18,10 +19,16 @@ const initialState = {
     defaultInfo: "",
   },
   newUserOpen: false, // 新用户弹窗
+  appCloseOpen: false, // app关闭窗口设置提醒
 };
 
 const modalOpenReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case APPCLOSE:
+      return {
+        ...state,
+        appCloseOpen: action.payload,
+      };
     case NEWUSER:
       return {
         ...state,
