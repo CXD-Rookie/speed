@@ -230,7 +230,7 @@ const Layouts: React.FC = () => {
       handleWebSocket,
       dispatch
     );
-    
+
     return () => {
       webSocketService.close();
     };
@@ -308,8 +308,8 @@ const Layouts: React.FC = () => {
     };
   }, [navigate, location.pathname]);
 
+  // 检查当前文档是否已经加载完毕
   useEffect(() => {
-    // 检查当前文档是否已经加载完毕
     if (
       document.readyState === "complete" ||
       document.readyState === "interactive"

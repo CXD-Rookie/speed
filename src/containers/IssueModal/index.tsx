@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\containers\IssueModal\index.tsx
  */
 /* eslint-disable react/jsx-no-comment-textnodes */
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "antd";
 import { setFeedbackPopup } from "@/redux/actions/modal-open";
@@ -23,7 +23,8 @@ const FeedbackPopup: React.FC = () => {
   const { open = false, defaultInfo = ""} = useSelector(
     (state: any) => state?.modalOpen?.feedbackPopup
   );
-  
+
+  const [issueOpen, setIssueOpen] = useState(false);
   const closeFeedbackForm = (open: any = false) => {
     dispatch(setFeedbackPopup({ open }));
   };
@@ -48,7 +49,7 @@ const FeedbackPopup: React.FC = () => {
       <Modal
         className="overlay"
         open={open}
-        onCancel={closeFeedbackForm}
+        onCancel={() => closeFeedbackForm(false)}
         title="问题反馈"
         width={"67.6vw"}
         centered
@@ -58,14 +59,17 @@ const FeedbackPopup: React.FC = () => {
         <FeedbackForm
           onClose={closeFeedbackForm}
           defaultInfo={defaultInfo}
-          setIssueOpen={closeFeedbackForm}
+          setIssueOpen={setIssueOpen}
         />
       </Modal>
       <BreakConfirmModal
         type={"issueFeedback"}
-        accelOpen={open}
+        accelOpen={issueOpen}
         setAccelOpen={closeFeedbackForm}
-        onConfirm={closeFeedbackForm}
+        onConfirm={() => {
+          setIssueOpen(false);
+          closeFeedbackForm();
+        }}
       />
     </Fragment>
   );
