@@ -4,6 +4,34 @@ export const SETTING = 'SETTING' // 设置开关
 export const FEEDBACKPOPUP = 'FEEDBACKPOPUP' // 问题反馈
 export const NEWUSER = 'NEWUSER' // 新用户弹窗
 export const APPCLOSE = 'APPCLOSE' // app关闭窗口设置提醒
+export const DRAWVIPACTIVE = 'DRAWVIPACTIVE' // 领取会员有效期弹窗
+export const FIRSTPAYRP = 'FIRSTPAYRP' // 首次购买，续费弹窗
+export const PAY = 'PAY' // 支付弹窗
+export const MINORTYPE = 'MINORTYPE' // 三方登录 实名认证等UI确定弹窗
+
+// 三方登录 实名认证等UI确定弹窗
+export const setMinorState = (open: any) => ({
+  type: MINORTYPE,
+  payload: open,
+});
+
+// 支付弹窗
+export const setPayState = (open: any) => ({
+  type: PAY,
+  payload: open,
+});
+
+// 首次购买，续费弹窗
+export const setFirstPayRP = (open: any) => ({
+  type: FIRSTPAYRP,
+  payload: open,
+});
+
+// 领取会员有效期弹窗
+export const setDrawVipActive = (open: any) => ({
+  type: DRAWVIPACTIVE,
+  payload: open,
+});
 
 // app关闭窗口设置提醒
 export const setAppCloseOpen = (open: any) => ({

@@ -2,9 +2,10 @@ import { useState, useEffect, Fragment } from "react";
 import { Input, Modal } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import webSocketService from "@/common/webSocketService";
+import { setMinorState } from "@/redux/actions/modal-open";
+
 import "./index.scss";
-import MinorModal from "@/containers/minor";
+import webSocketService from "@/common/webSocketService";
 import loginApi from "@/api/login";
 
 interface BindPhoneProps {
@@ -42,6 +43,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
 
   const dispatch: any = useDispatch();
   const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
+  const minorType = useSelector((state: any) => state?.modalOpen?.minorState?.type);
 
   const [bindType, setBindType] = useState(""); // third oldPhone newPhone
   const [countdown, setCountdown] = useState(0);
@@ -51,9 +53,6 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
 
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
-
-  const [isMinorOpen, setIsMinorOpen] = useState(false); // 绑定手机号成功弹窗
-  const [minorType, setMinorType] = useState("");
 
   const modalTitle = typeObj?.[bindType]?.title;
   const modalText = typeObj?.[bindType]?.text;
@@ -201,8 +200,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
 
         if (res?.error === 0) {
           close();
-          setIsMinorOpen(true);
-          setMinorType("unbind");
+          dispatch(setMinorState({ open: true, type: "unbind" }));
         }
       } else if (bindType === "oldPhone") {
         let res = await verifyPhone();
@@ -222,8 +220,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
 
         if (res?.error === 0) {
           close();
-          setIsMinorOpen(true);
-          setMinorType("updatePhone");
+          dispatch(setMinorState({ open: true, type: "updatePhone" }));
 
           localStorage.setItem("token", JSON.stringify(res.data.token));
           localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
@@ -251,6 +248,12 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   useEffect(() => {
     setBindType(type);
   }, [type]);
+
+  // useEffect(() => {
+  //   if (["updatePhone", "unbind"].includes(minorType)) {
+  //     notifyFc(false);
+  //   }
+  // }, [minorType]);
 
   return (
     <Fragment>
@@ -320,18 +323,6 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
           </div>
         </div>
       </Modal>
-      {isMinorOpen ? (
-        <MinorModal
-          type={minorType}
-          isMinorOpen={isMinorOpen}
-          setIsMinorOpen={() => {
-            if (["updatePhone", "unbind"].includes(minorType)) {
-              notifyFc(false);
-            }
-            setIsMinorOpen(false);
-          }}
-        />
-      ) : null}
     </Fragment>
   );
 };

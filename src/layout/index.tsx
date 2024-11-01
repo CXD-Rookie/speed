@@ -4,7 +4,14 @@ import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import { updateBindPhoneState, openRealNameModal } from "@/redux/actions/auth";
+import {
+  setNewUserOpen,
+  setFirstPayRP,
+  setMinorState,
+  setAppCloseOpen,
+  setSetting,
+} from "@/redux/actions/modal-open";
+import { updateBindPhoneState } from "@/redux/actions/auth";
 import { setFirstAuth } from "@/redux/actions/firstAuth";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -13,6 +20,7 @@ import { compareVersions, stopProxy } from "./utils";
 
 import "./index.scss";
 import routes from "@/routes";
+import loginApi from "@/api/login";
 import LayoutHeader from "./layout-header";
 import RenderSrea from "./render-area";
 import tracking from "@/common/tracking";
@@ -57,6 +65,8 @@ const Layouts: React.FC = () => {
       time - renewTime > 86400 &&
       user?.vip_expiration_time - time <= 432000
     ) {
+      localStorage.setItem("renewalTime", String(time));
+      eventBus.emit("showModal", { show: true, type: "renewalReminder" });
     }
   };
 
@@ -72,8 +82,26 @@ const Layouts: React.FC = () => {
     );
   };
 
+  // 初始设置
+  const initialSetup = () => {
+    try {
+      let clientSetup = localStorage.getItem("client_settings");
+      let setup = clientSetup ? JSON.parse(clientSetup) : {}; // 尝试解析 client_settings
+
+      // 设置 close_button_action 的值，如果不存在则添加
+      if (!setup?.close_button_action) {
+        setup.close_button_action = 0; // 1 表示关闭程序，0 表示隐藏到托盘
+      }
+
+      // 更新或者设置 client_settings
+      localStorage.setItem("client_settings", JSON.stringify(setup));
+    } catch (error) {
+      console.log("初始化设置", error);
+    }
+  };
+
   // 定义停止加速应该做的操作
-  // 可接收 value 做关闭，退出操作 exit 
+  // 可接收 value 做关闭，退出操作 exit
   const stopProcessReset = async (value: string = "") => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -81,25 +109,127 @@ const Layouts: React.FC = () => {
           return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
         }
 
-        // 调用停止加速
-        const state = await stopProxy();
+        await stopProxy(); // 调用停止加速
+        await removeGameList("initialize"); // 更新我的游戏
 
-        if (state) {
-          await removeGameList("initialize"); // 更新我的游戏
-          historyContext?.accelerateTime?.stopTimer();
+        historyContext?.accelerateTime?.stopTimer();
 
-          if ((window as any).stopDelayTimer) {
-            (window as any).stopDelayTimer();
-          }
-
-          if (value === "exit") {
-            (window as any).NativeApi_ExitProcess();
-          }
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
         }
+
+        if (value === "exit") {
+          (window as any).NativeApi_ExitProcess();
+        }
+
+        navigate("/home");
+        resolve(true);
       } catch (error) {
         reject(false); // 失败
       }
     });
+  };
+
+  // 全局只给客户端调用，业务不处理,是到托盘之后邮件 弹出的关闭按钮的方法
+  const stopSpeed = () => {
+    if (identifyAccelerationData()?.[0]) {
+      (window as any).NativeApi_ShowWindow(); // 唤醒主程序客户端方法
+      eventBus.emit("showModal", { show: true, type: "exit" }); // 弹出关闭确认框
+    } else {
+      if (localStorage.getItem("isAccelLoading") !== "1") {
+        stopProcessReset("exit"); // 关闭主程序
+        (window as any).NativeApi_ExitProcess();
+      }
+    }
+  };
+
+  // 客户端调用托盘区
+  const trayAreaControls = () => {
+    let close = localStorage.getItem("client_settings");
+    let action = close ? JSON.parse(close)?.close_button_action : 2;
+
+    //0 最小化托盘 1 关闭主程序 2 或没值弹窗提示框
+    if (action === 0) {
+      (window as any).NativeApi_MinimizeToTray(); // 最小化托盘
+    } else if (action === 1 && identifyAccelerationData()?.[0]) {
+      eventBus.emit("showModal", { show: true, type: "exit" }); // 弹出关闭确认框
+    } else {
+      dispatch(setAppCloseOpen(true)); // app 关闭窗口
+    }
+  };
+
+  // 退出登录
+  const loginOut = async (event: any = "") => {
+    try {
+      await stopProcessReset(); // 停止加速操作
+      await loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
+
+      if ((window as any).bannerTimer) {
+        (window as any).bannerTimer(); //
+      }
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("isRealName"); // 去掉实名认证
+      dispatch(setAccountInfo({}, false, false)); // 修改登录状态
+
+      if (event === "remoteLogin") {
+        dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
+      }
+
+      // if (event === 1) {
+      //   setReopenLogin(true); 暂时未发现什么地方调用，先做注释
+      // }
+    } catch (error) {
+      console.log("退出登录", error);
+    }
+  };
+
+  //控制24小时展示一次的活动充值页面
+  // 控制活动充值页面在当天23:59:59后再次展示
+  const payNewActive = async (first_renewed: any, first_purchase: any) => {
+    const lastPopupTime1: any = localStorage.getItem("lastPopupTime1");
+    const isNewUser = localStorage.getItem("is_new_user") === "true";
+    const now = new Date();
+
+    // 获取当前时间
+    const currentDayEnd = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59,
+      59,
+      999
+    );
+
+    // 判断是否为新用户且弹窗需要展示
+    if (!lastPopupTime1 && !isNewUser) {
+      // 如果从未展示过弹窗，则直接展示
+      setTimeout(() => {
+        // 标记弹窗已展示
+        if (!first_renewed && first_purchase) {
+          dispatch(setFirstPayRP({ open: true, type: 2 }));
+        } else if (!first_purchase && first_renewed) {
+          dispatch(setFirstPayRP({ open: true, type: 3 }));
+        }
+        localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
+      }, 2000);
+    } else {
+      const lastPopupDate = new Date(lastPopupTime1);
+
+      // 如果上次展示时间不是当天23:59:59，并且当前时间已经过了这个时间点，则展示弹窗
+      if (now >= lastPopupDate) {
+        setTimeout(() => {
+          // 更新弹窗展示时间到今天的23:59:59
+          if (!first_renewed && first_purchase) {
+            dispatch(setFirstPayRP({ open: true, type: 2 }));
+          } else if (!first_purchase && first_renewed) {
+            dispatch(setFirstPayRP({ open: true, type: 3 }));
+          }
+          localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
+        }, 2000);
+      }
+    }
   };
 
   // webSocket 定时请求
@@ -132,13 +262,14 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.min_version
           );
+
           if (isTrue) {
-            // stopProxy();
             eventBus.emit("showModal", {
               show: true,
               type: "newVersionFound",
               version: version?.now_version,
             });
+
             return;
           }
         }
@@ -178,12 +309,12 @@ const Layouts: React.FC = () => {
             if (isNewUser && !isModalDisplayed) {
               // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
               setTimeout(() => {
-                // setModalVisible(true); // 新用户弹出
+                dispatch(setNewUserOpen(true)); // 新用户弹出
               }, 500);
             }
 
             if (isModalDisplayed) {
-              // payNewActive(renewal, purchase);
+              payNewActive(renewal, purchase);
             }
           }
 
@@ -210,7 +341,6 @@ const Layouts: React.FC = () => {
 
             // 加速中并且会员到期 停止加速
             if (isTrue && !isFree && !user_info?.is_vip) {
-              // stopProxy();
               eventBus.emit("showModal", {
                 show: true,
                 type: "accelMemEnd",
@@ -227,14 +357,18 @@ const Layouts: React.FC = () => {
 
             if (bind_type >= 0) {
               dispatch(setAccountInfo(user_info, true, false));
+
               if (isNewUser) {
-                // setThirdBindType("bind"); // 定义成功类型
+                dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
                 tracking.trackLoginSuccess("0");
-                // setBindOpen(true); // 触发成功弹窗
               } else if ([2, 3].includes(Number(bind_type))) {
-                // setThirdBindType(type_obj?.[String(bind_type)]); // 定义成功类型
                 tracking.trackLoginSuccess("0");
-                // setBindOpen(true); // 触发成功弹窗
+                dispatch(
+                  setMinorState({
+                    open: true,
+                    type: type_obj?.[String(bind_type)],
+                  })
+                ); // 三方绑定提示
               }
 
               localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
@@ -248,7 +382,10 @@ const Layouts: React.FC = () => {
             if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
               localStorage.removeItem("thirdBind");
               dispatch(updateBindPhoneState(true));
-              eventBus.emit("clearTimer");
+
+              if ((window as any).bannerTimer) {
+                (window as any).bannerTimer();
+              }
             }
           }
         }
@@ -268,18 +405,24 @@ const Layouts: React.FC = () => {
 
   // 初始化重置状态逻辑
   useEffect(() => {
-    // stopProxy(); // 初始化调用停止加速
     const intervalId = setInterval(() => {
       fetchBanner(); // 获取 banner 图逻辑
     }, 3 * 60 * 60 * 1000);
 
+    stopProcessReset(); // 初始化调用停止加速
     remindWhetherRenew(); // 判断是否续费提醒
     nativeVersion(); // 读取客户端版本
+    initialSetup() // 初始设置
     navigate("/home");
 
+    (window as any).bannerTimer = () => clearInterval(intervalId);
     // 清理函数，在组件卸载前清除定时器
     return () => {
       clearInterval(intervalId);
+
+      if ((window as any).bannerTimer) {
+        (window as any).bannerTimer();
+      }
     };
   }, []);
 
@@ -287,10 +430,20 @@ const Layouts: React.FC = () => {
   useEffect(() => {
     (window as any).speedError = stopProxy; // 客户端使用，业务不处理，用于判断加速异常的提示使用
     (window as any).stopProcessReset = stopProcessReset; // 停止加速后应该更新的数据
+    (window as any).stopSpeed = stopSpeed; // 客户端调用，业务不处理,托盘弹出的关闭按钮的方法
+    (window as any).loginOutStopWidow = loginOut; // 退出登录操作函数
+    (window as any).closeTypeNew = trayAreaControls; // 客户端调用托盘区
+    (window as any).showSettingsForm = () =>
+      dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
+
     // 清理函数，在组件卸载时移除挂载
     return () => {
       delete (window as any).speedError;
       delete (window as any).stopProcessReset;
+      delete (window as any).stopSpeed;
+      delete (window as any).loginOutStopWidow;
+      delete (window as any).closeTypeNew;
+      delete (window as any).showSettingsForm;
     };
   }, []);
 

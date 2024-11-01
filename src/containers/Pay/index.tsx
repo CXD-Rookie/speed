@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { validityPeriod } from "../currency-exchange/utils";
 import { nodeDebounce } from "@/common/utils";
+import { setPayState } from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import tracking from "@/common/tracking";
@@ -13,12 +14,6 @@ import payApi from "@/api/pay";
 import PaymentModal from "../payment";
 
 import loadingGif from '@/assets/images/common/jiazai.gif';
-
-interface PayModalProps {
-  isModalOpen?: boolean;
-  setIsModalOpen?: (e: any) => void;
-  couponValue?: any;
-}
 
 interface Commodity {
   id: string;
@@ -49,9 +44,13 @@ interface ImageItem {
   params: any;
 }
 
-const PayModal: React.FC<PayModalProps> = (props) => {
-  const { isModalOpen, setIsModalOpen = () => {}, couponValue = {} } = props;
+const PayModal: React.FC = (props) => {
+  const dispatch = useDispatch();
 
+  const { open = false, couponValue = {} } = useSelector(
+    (state: any) => state?.modalOpen?.payState
+  );
+  
   const divRef = useRef<HTMLDivElement>(null); // 协议地址绑定引用ref
   const intervalIdRef: any = useRef(null); // 用于存储轮询计时器interval的引用
 
@@ -178,7 +177,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     setRefresh(0); // 重置控制页面是否重新请求次数
     clearInterval(intervalIdRef?.current); // 清除轮询计时器
     setActiveTabIndex(0); // 还原选中选中商品索引
-    setIsModalOpen(false); // 关闭会员充值页面
+    dispatch(setPayState({ open: false, couponValue: {} })); // 关闭会员充值页面
   };
 
   // 切换选中商品时
@@ -259,8 +258,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         makeCoupon?.length > 0 &&
         !activeCoupon?.id
       ) {
-        console.log(makeCoupon);
-        
         // 过滤合适的优惠券
         couponObj = findMinIndex(makeCoupon);
         setActiveCoupon(couponObj);
@@ -408,7 +405,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         className="pay-module"
         title={"会员充值"}
         width={"67.6vw"}
-        open={isModalOpen}
+        open={open}
         onCancel={onCancel}
         destroyOnClose
         centered

@@ -4,7 +4,11 @@ import {
   SETTING,
   FEEDBACKPOPUP,
   NEWUSER,
-  APPCLOSE
+  APPCLOSE,
+  DRAWVIPACTIVE,
+  FIRSTPAYRP,
+  PAY,
+  MINORTYPE,
 } from "../actions/modal-open";
 
 const initialState = {
@@ -20,10 +24,58 @@ const initialState = {
   },
   newUserOpen: false, // 新用户弹窗
   appCloseOpen: false, // app关闭窗口设置提醒
+  drawVipActive: { // 领取会员有效期弹窗
+    open: false,
+    value: {},
+  },
+  firstPayRP: { // 首次支付弹窗
+    open: false,
+    type: ""
+  },
+  payState: { // 支付弹窗
+    open: false,
+    couponValue: {},
+  },
+  minorState: { // 三方登录 实名认证等UI确定弹窗
+    open: false,
+    type: {},
+  }
 };
 
 const modalOpenReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case MINORTYPE:
+      return {
+        ...state,
+        minorState: {
+          ...state?.minorState,
+          ...action.payload,
+        },
+      };
+    case PAY:
+      return {
+        ...state,
+        payState: {
+          ...state?.payState,
+          ...action.payload,
+        },
+      };
+    case FIRSTPAYRP:
+      return {
+        ...state,
+        firstPayRP: {
+          ...state?.firstPayRP,
+          ...action.payload,
+        },
+      };
+    case DRAWVIPACTIVE:
+      return {
+        ...state,
+        drawVipActive: {
+          ...state?.drawVipActive,
+          ...action.payload,
+        },
+      };
     case APPCLOSE:
       return {
         ...state,
@@ -38,7 +90,7 @@ const modalOpenReducer = (state = initialState, action:any) => {
       return {
         ...state,
         feedbackPopup: {
-          ...state?.setting,
+          ...state?.feedbackPopup,
           ...action.payload,
         },
       };

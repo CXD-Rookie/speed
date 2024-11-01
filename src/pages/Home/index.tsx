@@ -13,16 +13,13 @@ import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { setAccountInfo } from "@/redux/actions/account-info";
-// import { setFirstAuth,setImages } from "@/redux/actions/firstAuth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
+import { setDrawVipActive, setFirstPayRP } from "@/redux/actions/modal-open";
+import { setPayState, setMinorState } from "@/redux/actions/modal-open";
 
-import MinorModal from "@/containers/minor";
 import RealNameModal from "@/containers/real-name";
-import PayModal from "../../containers/Pay/index";
-import PayModalNew from "../../containers/Pay/new";
 import Swiper from "../../containers/swiper/index";
-import Active from "../../containers/active/index";
 import GameCardCopy from "./GameCard";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
@@ -42,25 +39,13 @@ const Home: React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
-  // const [images, setImages] = useState<{ image_url: string; params: any }[]>([]);
-  // const firstAuth = useSelector((state: any) => state.firstAuth);  
-  // const imagesRef = useRef<ImageItem[]>([]); // 使用 useRef 存储数据
-
   const [images, setImages] = useState<ImageItem[]>([]);
 
   const [isImagesLoaded, setIsImagesLoaded] = useState(false);
-  //@ts-ignore
-  // const [userToken, setUserToken] = useState(accountInfo.userInfo.id);
-  const [isModalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<number | null>(null);
   const [status, setStatus] = useState<number>(0); // 触发首页展示数据更新的状态
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalOpenNew, setIsModalOpenNew] = useState(false);
   const [homeList, setHomeList] = useState([]);
   const [accelTag, setAccelTag] = useState({});
-
-  const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
-  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const dispatch: any = useDispatch();
   const isRealNamel = localStorage.getItem("isRealName");
@@ -73,11 +58,10 @@ const Home: React.FC = () => {
         dispatch(openRealNameModal());
         return;
       } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
-        setIsMinorOpen(true);
-        setMinorType("recharge");
+        dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
         return;
       } else {
-        setIsModalOpen(true);
+        dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
       }
     } else {
       // 3个参数 用户信息 是否登录 是否显示登录
@@ -85,54 +69,21 @@ const Home: React.FC = () => {
     }
   };
 
-  const throttle = (func: (...args: any[]) => void, limit: number) => {
-    let lastFunc: number;
-    let lastRan: number;
-    return function (...args: any[]) {
-      if (!lastRan) {
-        func.apply(null, args);
-        lastRan = Date.now();
-      } else {
-        clearTimeout(lastFunc);
-        lastFunc = window.setTimeout(function () {
-          if (Date.now() - lastRan >= limit) {
-            func.apply(null, args);
-            lastRan = Date.now();
-          }
-        }, limit - (Date.now() - lastRan));
-      }
-    };
-  };
-
   const handleShowModal = (type: any) => {
     console.log(type, "图片的type值---------------------");
 
     setModalType(Number(type));
-    // setIsModalOpenNew(true) first_renewed
+    
     if (accountInfo?.isLogin) {
       if (type === "1") {
-        setModalVisible(true); //新用户三天vip
+        dispatch(setDrawVipActive({ open: true })); // 领取兑换码弹窗
       } else {
-        setIsModalOpenNew(true); //非新用户充值
+        dispatch(setFirstPayRP({ open: true }));
       }
     } else {
       dispatch(setAccountInfo(undefined, undefined, true));
     }
   };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
-
-  // const handleImageClick = (type: number) => {
-  //   setModalType(type);
-  //   setIsVisible(true);
-  // };
-
-  // const handleCloseModal = () => {
-  //   setIsVisible(false);
-  //   setModalType(null);
-  // };
 
   useEffect(() => {
     setHomeList(getGameList()?.slice(0, 4));
@@ -159,26 +110,6 @@ const Home: React.FC = () => {
     return () => clearTimeout(timer);
   }, [accountInfo]);
 
-  // useEffect(() => {
-  //   const handleWheel = throttle((event: WheelEvent) => {
-  //     if (event.deltaY > 0) {
-  //       // 滑轮向下滑动，跳转到 A 页面
-
-  //       navigate("/myGames");
-  //     } else if (event.deltaY < 0) {
-  //       // 滑轮向上滑动，返回上一页
-
-  //       navigate("/home");
-  //     }
-  //   }, 500); // 设置节流间隔时间为500ms
-
-  //   window.addEventListener("wheel", handleWheel);
-
-  //   return () => {
-  //     window.removeEventListener("wheel", handleWheel);
-  //   };
-  // }, [navigate]);
-
   return (
     <div className="home-module">
       <GameCardCopy
@@ -201,7 +132,6 @@ const Home: React.FC = () => {
           </Button>
         </div>
       )}
-      <Active isVisible={isModalVisible} onClose={handleCloseModal} />
       {isImagesLoaded && (
         <div className="functional-areas">
           {images?.length > 0 && (
@@ -229,27 +159,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       )}
-      {!!isModalOpen && (
-        <PayModal
-          isModalOpen={isModalOpen}
-          setIsModalOpen={(e) => setIsModalOpen(e)}
-        />
-      )}
-      {!!isModalOpenNew && (
-        <PayModalNew
-          isModalOpen={isModalOpenNew}
-          setIsModalOpen={(e) => setIsModalOpenNew(e)}
-          type={modalType}
-        />
-      )}
       {isRealOpen ? <RealNameModal /> : null}
-      {isMinorOpen ? (
-        <MinorModal
-          isMinorOpen={isMinorOpen}
-          setIsMinorOpen={setIsMinorOpen}
-          type={minorType}
-        />
-      ) : null}
     </div>
   );
 };

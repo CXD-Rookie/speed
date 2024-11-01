@@ -2,9 +2,10 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Button, Modal, Tabs } from "antd";
 import { validityPeriod } from "@/containers/currency-exchange/utils";
 import { nodeDebounce } from "@/common/utils";
+import { useDispatch } from "react-redux";
+import { setPayState } from "@/redux/actions/modal-open";
 
 import "./index.scss";
-import PayModal from "@/containers/Pay";
 import noIcon from "@/assets/images/common/no-data.svg";
 import loseIcon from "@/assets/images/common/yishiyong.svg";
 import expiresIcon from "@/assets/images/common/yiguoqi.svg";
@@ -26,6 +27,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
     fetchRecords = () => {},
     makeParams = {},
   } = props;
+  const dispatch = useDispatch();
   const scrollRef: any = useRef<HTMLDivElement>(null);
 
   const [activeTab, setActiveTab] = useState("make");
@@ -34,9 +36,6 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   const [couponLoseData, setCouponLoseData] = useState<any>([]); // 已失效数据
 
   const [mouseoverState, setMouseoverState] = useState(false);
-
-  const [payOpen, setPayOpen] = useState(false); // 购买开关
-  const [payCoupon, setPayCoupon] = useState({}); // 立即使用的优惠券
 
   const [loseSearch] = useState({ type: 2, status: "2,3" }); // 已失效类型参数
   const [losePagination, setLosePagination] = useState(inilitePagination); // 已失效分页参数
@@ -169,8 +168,12 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                                   onMouseOver={() => setMouseoverState(true)}
                                   onMouseLeave={() => setMouseoverState(false)}
                                   onClick={(e) => {
-                                    setPayOpen(true);
-                                    setPayCoupon(mask);
+                                    dispatch(
+                                      setPayState({
+                                        open: true,
+                                        couponValue: mask ?? {},
+                                      })
+                                    ); // 会员充值页面
                                     setOpen(false);
                                   }}
                                 >
@@ -247,13 +250,6 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
           ]}
         />
       </Modal>
-      {payOpen ? (
-        <PayModal
-          isModalOpen={payOpen}
-          setIsModalOpen={setPayOpen}
-          couponValue={payCoupon}
-        />
-      ) : null}
     </Fragment>
   );
 };

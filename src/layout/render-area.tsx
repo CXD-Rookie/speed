@@ -9,10 +9,17 @@ import IssueModal from "@/containers/IssueModal";
 import BreakConfirmModal from "@/containers/break-confirm";
 import ActiveNew from "@/containers/active/newOpen";
 import AppCloseModal from "@/containers/app-close";
+import Active from "@/containers/active";
+import PayModalNew from "@/containers/Pay/new";
+import PayModal from "@/containers/Pay";
+import MinorModal from "@/containers/minor";
 
 const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-
+  const state = useSelector((state: any) => state?.modalOpen);
+  
+  const { payState = {}, firstPayRP = {} } = state;
+  
   return (
     <Fragment>
       {/* 登录弹窗 */}
@@ -38,6 +45,14 @@ const RenderSrea:React.FC = () => {
       <ActiveNew />
       {/* 提示修改关闭窗口设置 */}
       <AppCloseModal />
+      {/* 领取会员有效期弹窗 */}
+      <Active />
+      {/* 首续，首充支付弹窗 */}
+      {firstPayRP?.open && <PayModalNew />}
+      {/* 正常支付页面 */}
+      {payState?.open && <PayModal />}
+      {/* 三方登录 实名认证等UI确定弹窗 */}
+      <MinorModal />
     </Fragment>
   );
 }

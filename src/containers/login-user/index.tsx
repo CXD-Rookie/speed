@@ -10,13 +10,15 @@ import React, { useEffect, useState } from "react";
 import { Popover, Tooltip } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
-import { setSetting } from "@/redux/actions/modal-open";
+import {
+  setSetting,
+  setPayState,
+  setMinorState,
+} from "@/redux/actions/modal-open";
 
 import payApi from "@/api/pay";
-import MinorModal from "../minor";
 import RealNameModal from "../real-name";
 import UserAvatarCom from "./user-avatar";
-import PayModal from "../Pay";
 import CustonCoupon from "./custom-coupon";
 import "./index.scss";
 
@@ -39,11 +41,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
   const [open, setOpen] = useState(false);
-
-  const [isModalOpenVip, setIsModalOpenVip] = useState(false);
-
-  const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
-  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const [couponOpen, setCouponOpen] = useState(false); // 优惠券 modal
   const [couponTooltip, setCouponTooltip] = useState(
@@ -217,11 +214,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
             dispatch(openRealNameModal());
             return;
           } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-            setIsMinorOpen(true);
-            setMinorType("recharge");
+            dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
             return;
           } else {
-            setIsModalOpenVip(true);
+            dispatch(setPayState({ open: false, couponValue: {} })); // 关闭会员充值页面
           }
         }}
       />
@@ -286,20 +282,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           <span className="user-text"></span>
         </Tooltip>
       )}
-      {!!isModalOpenVip && (
-        <PayModal
-          isModalOpen={isModalOpenVip}
-          setIsModalOpen={(e) => setIsModalOpenVip(e)}
-        />
-      )}
       {isRealOpen ? <RealNameModal /> : null}
-      {isMinorOpen ? (
-        <MinorModal
-          isMinorOpen={isMinorOpen}
-          setIsMinorOpen={setIsMinorOpen}
-          type={minorType}
-        />
-      ) : null}
       <CustonCoupon
         open={couponOpen}
         setOpen={(event: boolean) => setCouponOpen(event)}

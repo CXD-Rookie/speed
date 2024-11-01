@@ -19,7 +19,7 @@ const ActiveNew: React.FC = () => {
   const dispatch: any = useDispatch();
 
   const open = useSelector((state: any) => state?.modalOpen?.newUserOpen);
-
+  
   const onCancel = (e?: any) => {
     dispatch(setNewUserOpen(false))
     setTimeout(() => {

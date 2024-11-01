@@ -12,10 +12,10 @@ import { Modal } from "antd";
 import { useDispatch } from "react-redux";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { openRealNameModal } from "@/redux/actions/auth";
 import { useNavigate } from "react-router-dom";
-import { setSetting } from "@/redux/actions/modal-open";
+import { setSetting, setPayState } from "@/redux/actions/modal-open";
 
-import tracking from "@/common/tracking";
 import eventBus from "@/api/eventBus";
 
 import "./index.scss";
@@ -38,7 +38,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isNetworkError, setIsNetworkError, accelerateTime }: any =
+  const { isNetworkError, setIsNetworkError }: any =
     useHistoryContext();
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
@@ -127,11 +127,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     connectionPay: { marginTop: "1vh" },
   };
 
-  let jsonString = "";
-
-  const userToken = localStorage.getItem("token");
-  const jsKey = localStorage.getItem("StartKey");
-
   // 停止加速
   const stopAcceleration = (option: any = "initialize") => {
     if (!option?.is_accelerate && option !== "initialize") {
@@ -140,34 +135,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       return;
     }
 
-    if (jsKey) {
-      jsonString = JSON.stringify({
-        params: {
-          user_token: userToken ? JSON.parse(userToken) : "",
-          js_key: jsKey,
-        },
-      });
-    }
-    (window as any).NativeApi_AsynchronousRequest(
-      "NativeApi_StopProxy",
-      jsonString,
-      function (response: any) {
-        if (!response) {
-          console.warn("No response received from 停止加速没有成功");
-          return;
-        }
-        console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速");
-        removeGameList(option); // 更新我的游戏
-        accelerateTime?.stopTimer();
-
-        if ((window as any).stopDelayTimer) {
-          (window as any).stopDelayTimer();
-        }
-
-        navigate("/home");
-      }
-    );
+    (window as any).stopProcessReset();
   };
 
   const cancel = () => {
@@ -186,18 +154,34 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
+      case "exit":
+        (window as any).loginOutStopWidow();
+        break
+      case "renewalReminder":
+        const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
+
+        if (isRealNamel === "1") {
+          dispatch(openRealNameModal());
+          return;
+        }
+
+        dispatch(setPayState({ open: true })); // 关闭会员充值页面
+        break;
+      case "accelMemEnd":
+        stopAcceleration();
+        break;
       case "netorkError":
         stopAcceleration();
         (window as any).native_restart();
         break;
       case "newVersionFound":
-        (window as any).native_update();
         stopAcceleration();
+        (window as any).native_update();
         break;
       case "infectedOrHijacked":
         // 打开设置
-        dispatch(setSetting({ settingOpen: true, type: "fix" }));
         stopAcceleration();
+        dispatch(setSetting({ settingOpen: true, type: "fix" }));
         break;
       case "accelerationServiceNotStarting":
         stopAcceleration();
@@ -215,7 +199,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         if (eventBusValue?.onOk) {
           eventBusValue?.onOk();
         }
-        
+
         stopAcceleration(eventBusValue?.value);
         break;
       default:
