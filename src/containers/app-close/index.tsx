@@ -40,7 +40,7 @@ const AppCloseModal: React.FC = (props) => {
       if (is_acc) {
         eventBus.emit("showModal", { show: is_acc, type: "exit" });
       } else {
-        // handleExitProcess(); // 直接关闭
+        (window as any)?.stopProcessReset("exit"); // 关闭主程序
       }
     }
   };

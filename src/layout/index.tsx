@@ -9,7 +9,7 @@ import { setFirstAuth } from "@/redux/actions/firstAuth";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { setupInterceptors } from "@/api/api";
-import { compareVersions } from "./utils";
+import { compareVersions, stopProxy } from "./utils";
 
 import "./index.scss";
 import routes from "@/routes";
@@ -72,19 +72,35 @@ const Layouts: React.FC = () => {
     );
   };
 
-  // 定义退出程序的处理函数
-  const handleExitProcess = () => {
-    try {
-      if (localStorage.getItem("isAccelLoading") === "1") {
-        return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
-      }
+  // 定义停止加速应该做的操作
+  // 可接收 value 做关闭，退出操作 exit 
+  const stopProcessReset = async (value: string = "") => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (localStorage.getItem("isAccelLoading") === "1") {
+          return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
+        }
 
-      const userToken = localStorage.getItem("token");
-      const jsKey = localStorage.getItem("StartKey");
-    } catch (error) {
-      
-    }
-  }
+        // 调用停止加速
+        const state = await stopProxy();
+
+        if (state) {
+          await removeGameList("initialize"); // 更新我的游戏
+          historyContext?.accelerateTime?.stopTimer();
+
+          if ((window as any).stopDelayTimer) {
+            (window as any).stopDelayTimer();
+          }
+
+          if (value === "exit") {
+            (window as any).NativeApi_ExitProcess();
+          }
+        }
+      } catch (error) {
+        reject(false); // 失败
+      }
+    });
+  };
 
   // webSocket 定时请求
   useEffect(() => {
@@ -267,15 +283,14 @@ const Layouts: React.FC = () => {
     };
   }, []);
 
+  // 在应用启动时挂载方法到 window 对象上
   useEffect(() => {
-    // 在应用启动时挂载方法到 window 对象上
-    // window.myGlobalFunction = myGlobalFunction;
-    // window.fetchBanner = fetchBanner;
-
+    (window as any).speedError = stopProxy; // 客户端使用，业务不处理，用于判断加速异常的提示使用
+    (window as any).stopProcessReset = stopProcessReset; // 停止加速后应该更新的数据
     // 清理函数，在组件卸载时移除挂载
     return () => {
-      // delete window.myGlobalFunction;
-      // delete window.fetchBanner;
+      delete (window as any).speedError;
+      delete (window as any).stopProcessReset;
     };
   }, []);
 
