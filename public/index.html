@@ -38,7 +38,7 @@
     const currentUrl = window.location.href;
 
     // 获取时间戳
-    const timestamp = 1730390400; // 示例时间戳，可替换为 `new Date().getTime()`
+    const timestamp = new Date().getTime(); // 示例时间戳，可替换为 `new Date().getTime()`
 
     // 拆分 base URL 和哈希路由部分
     let [baseUrl, hashRoute] = currentUrl.split('#');
