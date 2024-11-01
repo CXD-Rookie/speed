@@ -57,7 +57,11 @@ class PlaySuit {
     return get(`${this.url}/black_white_list`, params);
   }
 
-  
+  // 进程黑名单
+  playProcessblacklist (params) {
+    // const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/game/process/blacklist`, params);
+  }
 }
 
 const playSuitApi = new PlaySuit();
