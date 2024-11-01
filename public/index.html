@@ -2,7 +2,7 @@
  * @Author: steven libo@rongma.com
  * @Date: 2024-05-21 20:47:13
  * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-11-01 16:16:15
+ * @LastEditTime: 2024-11-01 16:56:28
  * @FilePath: \speed\public\index.html
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -35,28 +35,28 @@
     <div id="root"></div>
     <script>
     // 获取当前 URL
-    const currentUrl = window.location.href;
+    // const currentUrl = window.location.href;
 
-    // 获取时间戳
-    const timestamp = new Date().getTime(); // 示例时间戳，可替换为 `new Date().getTime()`
+    // // 获取时间戳
+    // const timestamp = new Date().getTime(); // 示例时间戳，可替换为 `new Date().getTime()`
 
-    // 拆分 base URL 和哈希路由部分
-    let [baseUrl, hashRoute] = currentUrl.split('#');
+    // // 拆分 base URL 和哈希路由部分
+    // let [baseUrl, hashRoute] = currentUrl.split('#');
 
-    // 确保哈希路由部分以 `/` 开头
-    hashRoute = hashRoute ? hashRoute.split('?')[0] : '';
-    if (hashRoute && !hashRoute.startsWith('/')) {
-        hashRoute = `/${hashRoute}`;
-    }
+    // // 确保哈希路由部分以 `/` 开头
+    // hashRoute = hashRoute ? hashRoute.split('?')[0] : '';
+    // if (hashRoute && !hashRoute.startsWith('/')) {
+    //     hashRoute = `/${hashRoute}`;
+    // }
 
-    // 构建新的 URL，将时间戳拼接在哈希部分
-    const newUrl = `${baseUrl}#${hashRoute}?v=${timestamp}`;
+    // // 构建新的 URL，将时间戳拼接在哈希部分
+    // const newUrl = `${baseUrl}#${hashRoute}?v=${timestamp}`;
 
-    // 更新页面地址，不会重新加载页面
-    window.history.replaceState(null, '', newUrl);
+    // // 更新页面地址，不会重新加载页面
+    // window.history.replaceState(null, '', newUrl);
 
-    // 输出最终带有版本号的 URL
-    console.log("=============新111url==============", newUrl);
+    // // 输出最终带有版本号的 URL
+    // console.log("=============新111url==============", newUrl);
 
     </script>
     <script>
