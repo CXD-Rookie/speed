@@ -283,6 +283,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
       );
 
+      const processBlack = JSON.parse(localStorage.getItem("processBlack") ?? "[]"); // 进程黑名单
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server_v2, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
@@ -298,7 +299,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       
       const jsonResult = JSON.stringify({
         running_status: true,
-        accelerated_apps: [...uniqueExecutable],
+        accelerated_apps: [...uniqueExecutable, ...processBlack],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
         domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now

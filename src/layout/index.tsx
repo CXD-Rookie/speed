@@ -21,6 +21,7 @@ import { compareVersions, stopProxy } from "./utils";
 import "./index.scss";
 import routes from "@/routes";
 import loginApi from "@/api/login";
+import playSuitApi from "@/api/speed";
 import LayoutHeader from "./layout-header";
 import RenderSrea from "./render-area";
 import tracking from "@/common/tracking";
@@ -97,6 +98,23 @@ const Layouts: React.FC = () => {
       localStorage.setItem("client_settings", JSON.stringify(setup));
     } catch (error) {
       console.log("初始化设置", error);
+    }
+  };
+
+  // 进程黑名单
+  const initialProcessBlack = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        const res = await playSuitApi.playProcessblacklist();
+        const data = (res?.data || []).flatMap((item: any) => item.process);
+        
+        localStorage.setItem("processBlack", JSON.stringify(data));
+      }
+      // console.log(res);
+    } catch (error) {
+      console.log("进程黑名单", error);
     }
   };
 
@@ -409,10 +427,11 @@ const Layouts: React.FC = () => {
       fetchBanner(); // 获取 banner 图逻辑
     }, 3 * 60 * 60 * 1000);
 
+    initialProcessBlack(); // 初始进程黑名单
     stopProcessReset(); // 初始化调用停止加速
     remindWhetherRenew(); // 判断是否续费提醒
     nativeVersion(); // 读取客户端版本
-    initialSetup() // 初始设置
+    initialSetup(); // 初始设置
     navigate("/home");
 
     (window as any).bannerTimer = () => clearInterval(intervalId);
