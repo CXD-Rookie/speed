@@ -9,6 +9,7 @@ import {
   FIRSTPAYRP,
   PAY,
   MINORTYPE,
+  BINDPHONE,
 } from "../actions/modal-open";
 
 const initialState = {
@@ -38,12 +39,24 @@ const initialState = {
   },
   minorState: { // 三方登录 实名认证等UI确定弹窗
     open: false,
-    type: {},
-  }
+    type: "",
+  },
+  bindState: { // 第三方手机绑定类型弹窗
+    open: false,
+    type: "",
+  },
 };
 
 const modalOpenReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case BINDPHONE:
+      return {
+        ...state,
+        bindState: {
+          ...state?.bindState,
+          ...action.payload,
+        },
+      };
     case MINORTYPE:
       return {
         ...state,

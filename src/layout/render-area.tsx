@@ -13,11 +13,12 @@ import Active from "@/containers/active";
 import PayModalNew from "@/containers/Pay/new";
 import PayModal from "@/containers/Pay";
 import MinorModal from "@/containers/minor";
+import BindPhoneMode from "@/containers/bind-phone-mode";
 
 const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const state = useSelector((state: any) => state?.modalOpen);
-  
+
   const { payState = {}, firstPayRP = {} } = state;
   
   return (
@@ -53,6 +54,8 @@ const RenderSrea:React.FC = () => {
       {payState?.open && <PayModal />}
       {/* 三方登录 实名认证等UI确定弹窗 */}
       <MinorModal />
+      {/* 第三方手机绑定类型弹窗 */}
+      <BindPhoneMode />
     </Fragment>
   );
 }

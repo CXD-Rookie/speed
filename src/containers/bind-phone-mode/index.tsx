@@ -2,18 +2,15 @@ import { useState, useEffect, Fragment } from "react";
 import { Input, Modal } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import { setMinorState } from "@/redux/actions/modal-open";
+import {
+  setMinorState,
+  setBindState,
+  setSetting,
+} from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import webSocketService from "@/common/webSocketService";
 import loginApi from "@/api/login";
-
-interface BindPhoneProps {
-  open: boolean;
-  type: string;
-  setOpen: (value: boolean) => void;
-  notifyFc?: (value: boolean) => void;
-}
 
 const typeObj: any = {
   unbind: {
@@ -36,14 +33,12 @@ const typeObj: any = {
 const submitObj: any = ["unbind", "newPhone"];
 const lockPhoneObj: any = ["unbind", "third", "oldPhone"];
 
-const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
-  const { open, type, setOpen, notifyFc = () => {} } = props;
-
+const BindPhoneMode: React.FC = (props) => {
   const token = localStorage.getItem("token") || "{}";
 
   const dispatch: any = useDispatch();
   const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
-  const minorType = useSelector((state: any) => state?.modalOpen?.minorState?.type);
+  const { open = false, type = ""} = useSelector((state: any) => state?.modalOpen?.bindState);
 
   const [bindType, setBindType] = useState(""); // third oldPhone newPhone
   const [countdown, setCountdown] = useState(0);
@@ -58,7 +53,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   const modalText = typeObj?.[bindType]?.text;
 
   const close = () => {
-    setOpen(false);
+    dispatch(setBindState({open: false, type: ""}));
   };
 
   // 获取短信验证码
@@ -188,7 +183,7 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
 
         if (res?.error === 0) {
           close();
-          notifyFc(false);
+          dispatch(setSetting({ settingOpen: false, type: "default" }));
           const target = document.querySelector(".last-login-text") as any;
           const dataTitle = target?.dataset?.title;
           (window as any).NativeApi_YouXiaAuth(dataTitle);
@@ -248,12 +243,6 @@ const BindPhoneMode: React.FC<BindPhoneProps> = (props) => {
   useEffect(() => {
     setBindType(type);
   }, [type]);
-
-  // useEffect(() => {
-  //   if (["updatePhone", "unbind"].includes(minorType)) {
-  //     notifyFc(false);
-  //   }
-  // }, [minorType]);
 
   return (
     <Fragment>

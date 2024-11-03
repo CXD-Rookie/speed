@@ -13,7 +13,11 @@ import { Button, Modal } from "antd";
 import { closeRealNameModal } from "@/redux/actions/auth";
 import { useNavigate } from "react-router-dom";
 import { setAccountInfo } from "../../redux/actions/account-info";
-import { setPayState, setMinorState } from "@/redux/actions/modal-open";
+import {
+  setPayState,
+  setMinorState,
+  setBindState,
+} from "@/redux/actions/modal-open";
 import "./index.scss";
 
 import realErrorIcon from "@/assets/images/common/real_error_quan.svg";
@@ -39,6 +43,10 @@ const MinorModal: React.FC = () => {
   const handleClose = () => {
     dispatch(closeRealNameModal()); // 关闭实名认证
     dispatch(setMinorState({ open: false, type: "" })); // 关闭实名认证提示
+
+    if (["updatePhone", "unbind"].includes(type)) {
+      dispatch(setBindState({ open: false, type: "" })); // 关闭绑定类型弹窗
+    }
 
     if (realType === 9) {
       dispatch(setAccountInfo(undefined, undefined, true));

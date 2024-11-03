@@ -8,6 +8,13 @@ export const DRAWVIPACTIVE = 'DRAWVIPACTIVE' // 领取会员有效期弹窗
 export const FIRSTPAYRP = 'FIRSTPAYRP' // 首次购买，续费弹窗
 export const PAY = 'PAY' // 支付弹窗
 export const MINORTYPE = 'MINORTYPE' // 三方登录 实名认证等UI确定弹窗
+export const BINDPHONE = 'BINDPHONE' // 第三方手机绑定类型弹窗
+
+// 第三方手机绑定类型弹窗
+export const setBindState = (open: any) => ({
+  type: MINORTYPE,
+  payload: open,
+});
 
 // 三方登录 实名认证等UI确定弹窗
 export const setMinorState = (open: any) => ({

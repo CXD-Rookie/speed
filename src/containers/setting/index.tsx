@@ -13,7 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
-import { setSetting, setPayState, setMinorState } from "@/redux/actions/modal-open";
+import {
+  setSetting,
+  setPayState,
+  setMinorState,
+  setBindState,
+} from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import tracking from "@/common/tracking";
@@ -24,7 +29,6 @@ import fixImg_3 from "@/assets/images/fixUtils/fix3@2x.png";
 import fixImg_6 from "@/assets/images/fixUtils/fix6@2x.png";
 import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
 import fix_failure from "@/assets/images/fixUtils/fix_failure@2x.png";
-import BindPhoneMode from "../bind-phone-mode";
 import loginApi from "@/api/login";
 
 const { TabPane } = Tabs;
@@ -39,8 +43,6 @@ const SettingsModal: React.FC = (props) => {
 
   const [loading, setLoading] = React.useState<boolean>(true);
 
-  const [isBindThirdOpen, setIsBindThirdOpen] = useState(false); // 手机号绑定第三方，切换手机号
-  const [bindType, setBindType] = useState(""); // 绑定弹窗类型
   const [versionNow, setVersionNow] = useState(""); //
   const [activeTab, setActiveTab] = useState("system");
 
@@ -71,7 +73,7 @@ const SettingsModal: React.FC = (props) => {
   };
 
   const onClose = () => {
-    dispatch(setSetting({ settingOpen: false }));
+    dispatch(setSetting({ settingOpen: false, type: "default" }));
   }
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -351,7 +353,7 @@ const SettingsModal: React.FC = (props) => {
     setStartAutoLaunch(!!sign?.auto_run);
     setDesktopQuickStart(!!sign?.auto_create_shortcut);
     setRealNameTag(isRealName);
-  }, [settingOpen, payOpen, isRealOpen, isBindThirdOpen]);
+  }, [settingOpen, payOpen, isRealOpen]);
 
   useEffect(() => {
     if (type === "edit") {
@@ -543,10 +545,9 @@ const SettingsModal: React.FC = (props) => {
                     <div
                       className="real-name-btn"
                       onClick={() => {
-                        console.log(accountInfo);
-
-                        setBindType("oldPhone");
-                        setIsBindThirdOpen(true);
+                        dispatch(
+                          setBindState({ open: true, type: "oldPhone" })
+                        );
                       }}
                     >
                       修改
@@ -565,8 +566,7 @@ const SettingsModal: React.FC = (props) => {
                       <div
                         className="real-name-btn"
                         onClick={() => {
-                          setBindType("third");
-                          setIsBindThirdOpen(true);
+                          dispatch(setBindState({ open: true, type: "third" }));
                         }}
                       >
                         绑定
@@ -575,8 +575,9 @@ const SettingsModal: React.FC = (props) => {
                       <div
                         className="real-name-btn"
                         onClick={() => {
-                          setBindType("unbind");
-                          setIsBindThirdOpen(true);
+                          dispatch(
+                            setBindState({ open: true, type: "unbind" })
+                          );
                         }}
                       >
                         解绑
@@ -728,12 +729,6 @@ const SettingsModal: React.FC = (props) => {
         </Tabs>
       </Modal>
       {isRealOpen ? <RealNameModal /> : null}
-      <BindPhoneMode
-        open={isBindThirdOpen}
-        setOpen={setIsBindThirdOpen}
-        notifyFc={onClose}
-        type={bindType}
-      />
     </Fragment>
   );
 };
