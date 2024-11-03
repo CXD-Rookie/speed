@@ -19,7 +19,7 @@ const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const state = useSelector((state: any) => state?.modalOpen);
 
-  const { payState = {}, firstPayRP = {} } = state;
+  const { payState = {}, firstPayRP = {}, setting = {} } = state;
   
   return (
     <Fragment>
@@ -37,7 +37,7 @@ const RenderSrea:React.FC = () => {
       {/* 口令兑换弹窗 */}
       <CurrencyExchange />
       {/* 设置弹窗 */}
-      <SettingsModal />
+      {setting?.settingOpen && <SettingsModal />}
       {/* 问题反馈弹窗 */}
       <IssueModal />
       {/* 各种提示信息弹窗 */}

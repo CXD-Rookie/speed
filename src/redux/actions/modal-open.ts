@@ -12,7 +12,7 @@ export const BINDPHONE = 'BINDPHONE' // 第三方手机绑定类型弹窗
 
 // 第三方手机绑定类型弹窗
 export const setBindState = (open: any) => ({
-  type: MINORTYPE,
+  type: BINDPHONE,
   payload: open,
 });
 

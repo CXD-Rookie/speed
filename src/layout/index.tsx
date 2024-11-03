@@ -109,10 +109,9 @@ const Layouts: React.FC = () => {
       if (token) {
         const res = await playSuitApi.playProcessblacklist();
         const data = (res?.data || []).flatMap((item: any) => item.process);
-        
+
         localStorage.setItem("processBlack", JSON.stringify(data));
       }
-      // console.log(res);
     } catch (error) {
       console.log("进程黑名单", error);
     }
@@ -280,7 +279,7 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.min_version
           );
-
+          
           if (isTrue) {
             eventBus.emit("showModal", {
               show: true,
@@ -304,7 +303,7 @@ const Layouts: React.FC = () => {
               (newItem: any) => newItem.image_url === item.image_url
             );
           }); // 去除新用户数据
-
+          
           localStorage.removeItem("isClosed"); // 删除标记
           localStorage.setItem("timestamp", timestamp); // 存储服务端时间
           dispatch(setFirstAuth(first_purchase_renewed)); // 更新首充首续信息
@@ -322,7 +321,7 @@ const Layouts: React.FC = () => {
           localStorage.setItem("all_data", JSON.stringify(firstPAndR));
           // 通过 eventBus 通知更新
           eventBus.emit("dataUpdated", firstPAndR);
-
+          
           if (banner?.length > 0 && store?.getState()?.accountInfo?.isLogin) {
             if (isNewUser && !isModalDisplayed) {
               // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
@@ -330,12 +329,12 @@ const Layouts: React.FC = () => {
                 dispatch(setNewUserOpen(true)); // 新用户弹出
               }, 500);
             }
-
+            
             if (isModalDisplayed) {
               payNewActive(renewal, purchase);
             }
           }
-
+          
           // 如果当前时间大于索时间触发优惠券弹窗
           if (timestamp > Number(couponTimeLock)) {
             setCouponRefreshNum(couponRefreshNum + 1);

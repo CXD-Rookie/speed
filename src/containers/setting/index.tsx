@@ -344,7 +344,7 @@ const SettingsModal: React.FC = (props) => {
     let isRealName = localStorage.getItem("isRealName");
     isRealName = isRealName ? isRealName : "";
     const closeButtonAction = sign?.close_button_action;
-    console.log("初始化设置值:", closeButtonAction);
+    
     setCloseWindow(
       String(
         closeButtonAction !== undefined ? (closeButtonAction === 1 ? 2 : 1) : 2

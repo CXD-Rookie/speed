@@ -208,6 +208,9 @@ const PayModal: React.FC = (props) => {
       let firstPurchase: any = {}; // 首次购买和首次续费的折扣
       let makeCoupon: any = []; // 优惠券列表
 
+      // 首次充值 首充续购
+      const { first_purchase, first_renewed } = firstAuth?.firstAuth;
+
       // 如果是第一次初始化请求, 执行只需要第一次执行的api
       if (refresh === 0) {
         const [payTypeRes, firstPurchaseRes, makeCouponRes] = await Promise.all(
@@ -226,12 +229,9 @@ const PayModal: React.FC = (props) => {
           payType = payTypeRes?.data || {};
           firstPurchase = firstPurchaseRes?.data || {};
           makeCoupon = makeCouponRes?.data?.list || [];
-          
+
           setPayTypes(payType);
           setCouponData(makeCoupon);
-
-          // 首次充值 首充续购
-          const { first_purchase, first_renewed } = firstAuth?.firstAuth;
 
           // 没有首充首续
           // 只有首续
@@ -248,15 +248,17 @@ const PayModal: React.FC = (props) => {
           }
         }
       }
-      
+
       let couponObj: any = {};
-      
+
       // 优惠券列表数据 第一次打开页面也就是初始化使用接口直接返回优惠券列表 makeCoupon，
       // 手动刷新触发使用已经存储好的优惠券列表，过滤出最合适的优惠券
       if (
         !(Object.keys(couponValue)?.length > 0) &&
         makeCoupon?.length > 0 &&
-        !activeCoupon?.id
+        !activeCoupon?.id &&
+        !first_purchase &&
+        !first_renewed
       ) {
         // 过滤合适的优惠券
         couponObj = findMinIndex(makeCoupon);
@@ -389,7 +391,7 @@ const PayModal: React.FC = (props) => {
     };
     // 初始化时从 localStorage 读取banner数据
     const storedData = JSON.parse(localStorage.getItem("all_data") || "[]");
-
+    
     setImages(storedData);
     eventBus.on("dataUpdated", handleDataUpdated);
 
@@ -452,7 +454,7 @@ const PayModal: React.FC = (props) => {
                   const isPurchase =
                     images?.length > 0 &&
                     ["purchase", "renewed"].includes(purchaseState);
-
+                  
                   return (
                     <div
                       key={index}

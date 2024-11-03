@@ -126,39 +126,24 @@ const GameLibrary: React.FC = () => {
     filterGamesByCategory(item.t);
   };
 
-  // useActivate(() => {
-  //   // 每次激活组件时重新请求数据并更新缓存
-  //   fetchAndCacheGames(); 
-  //   // 强制切换回 "限时免费" 标签并设置选中状态
-  //   const freeTitle = gamesTitle.find(title => title.t === "限时免费");
-  //   if (freeTitle) {
-  //     setGameActiveType(freeTitle.key);
-  //     setT(freeTitle.t);
+  // useEffect(() => {
+  //   // 首次加载时请求数据并缓存
+  //   if (!localStorage.getItem("cachedGames")) {
+  //     fetchAndCacheGames();
+  //   } else {
+  //     filterGamesByCategory(t || "限时免费");
   //   }
+
+  //   return () => {
+  //     localStorage.removeItem("cachedGames");
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    console.log(111);
     
-  //   filterGamesByCategory("限时免费");
-  // });
-
-  // useUnactivate(() => {
-  //   console.log("组件已缓存");
-  // });
-
-  useEffect(() => {
-    // 首次加载时请求数据并缓存
-    if (!localStorage.getItem("cachedGames")) {
-      fetchAndCacheGames();
-    } else {
-      filterGamesByCategory(t || "限时免费");
-    }
-
-    return () => {
-      localStorage.removeItem("cachedGames");
-    }
-  }, []);
-
-  useEffect(() => {
     // 每次激活组件时重新请求数据并更新缓存
-    fetchAndCacheGames(); 
+    fetchAndCacheGames();
     // 强制切换回 "限时免费" 标签并设置选中状态
     const freeTitle = gamesTitle.find(title => title.t === "限时免费");
     if (freeTitle) {
