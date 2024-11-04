@@ -102,7 +102,7 @@ export const useGamesInitialize = () => {
     let sort_list = [...sortGameList()]
     let find_index = sort_list.findIndex((item) => item?.id === option?.id);
     let is_accelerate = sort_list.some((item) => item?.is_accelerate);
-
+    
     if (find_index !== -1) {
       if (find_index > 4) {
         // sort_list.splice(is_accelerate ? 1 : 0, 0, option)
@@ -226,8 +226,9 @@ export const useGamesInitialize = () => {
   const checkShelves = async (option, customFun) => {
     try {
       const res = await gameApi.gameList({ s: option?.name });
+      const data = res?.data?.list;
       
-      if ((res?.error === 0 && !res?.data?.list) || res?.data?.list?.[0]?.id !== option?.id) {
+      if ((res?.error === 0 && !data) || data?.[0]?.id !== option?.id) {
         if (customFun) {
           customFun?.onTrigger();
         }
@@ -239,10 +240,29 @@ export const useGamesInitialize = () => {
           onOk: customFun?.onTrigger,
         });
 
-        return true;
+        return { state: true }
+      } else if (
+        data?.[0]?.id === option?.id 
+        && data?.[0].update_time !== option?.update_time + 2
+      ) {
+        const meGame = getGameList(); // 我的游戏
+        const index = meGame.findIndex(item => item?.id === data?.[0]?.id);
+        const obj = {
+          ...data?.[0],
+          cover_img:
+            `https://cdn.accessorx.com/${data?.[0]?.cover_img ?? data?.[0].background_img}`
+        }
+
+        meGame[index] = obj;
+        localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(meGame));
+        
+        return {
+          state: false,
+          data: obj,
+        }
       }
 
-      return false;
+      return { state: false }
     } catch (error) {
       console.log(error);
     }

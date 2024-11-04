@@ -21,6 +21,7 @@ import { compareVersions, stopProxy } from "./utils";
 import "./index.scss";
 import routes from "@/routes";
 import loginApi from "@/api/login";
+import gameApi from "@/api/gamelist"
 import playSuitApi from "@/api/speed";
 import LayoutHeader from "./layout-header";
 import RenderSrea from "./render-area";
@@ -117,6 +118,40 @@ const Layouts: React.FC = () => {
     }
   };
 
+  // 初始化更新游戏
+  const iniliteRenewal = async () => {
+    try {
+      const [list, data]: any = await Promise.all([
+        await stopProcessReset(), // 初始化调用停止加速
+        await gameApi.gameList({ page: 1, pagesize: 5000 }), // 所有游戏
+      ]);
+      const meGame: any = list?.data ?? [];
+      const allGame = data?.data?.list ?? [];
+      const result = meGame.map((item: any) => {
+        // 如果找到此游戏
+        const target = allGame?.find((child: any) => child?.id === item?.id);
+        
+        // 如果找到此游戏并且更新时间发生改变
+        if (target && target?.update_time !== item?.update_time) {
+          return {
+            ...item,
+            ...target,
+            cover_img: `https://cdn.accessorx.com/${
+              target?.cover_img ?? target.background_img
+            }`,
+          };
+        } else if (target) {
+          return item;
+        }
+      })
+      
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(result));
+      return result;
+    } catch (error) {
+      console.log("初始化更新游戏", error);
+    }
+  };
+
   // 定义停止加速应该做的操作
   // 可接收 value 做关闭，退出操作 exit
   const stopProcessReset = async (value: any = "") => {
@@ -127,7 +162,7 @@ const Layouts: React.FC = () => {
         }
 
         await stopProxy(value); // 调用停止加速
-        await removeGameList("initialize"); // 更新我的游戏
+        const game = await removeGameList("initialize"); // 更新我的游戏
 
         historyContext?.accelerateTime?.stopTimer();
 
@@ -140,9 +175,9 @@ const Layouts: React.FC = () => {
         }
 
         navigate("/home");
-        resolve(true);
+        resolve({ state: true, data: game });
       } catch (error) {
-        reject(false); // 失败
+        reject({state: false}); // 失败
       }
     });
   };
@@ -279,7 +314,7 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.min_version
           );
-          
+
           if (isTrue) {
             eventBus.emit("showModal", {
               show: true,
@@ -303,7 +338,7 @@ const Layouts: React.FC = () => {
               (newItem: any) => newItem.image_url === item.image_url
             );
           }); // 去除新用户数据
-          
+
           localStorage.removeItem("isClosed"); // 删除标记
           localStorage.setItem("timestamp", timestamp); // 存储服务端时间
           dispatch(setFirstAuth(first_purchase_renewed)); // 更新首充首续信息
@@ -321,7 +356,7 @@ const Layouts: React.FC = () => {
           localStorage.setItem("all_data", JSON.stringify(firstPAndR));
           // 通过 eventBus 通知更新
           eventBus.emit("dataUpdated", firstPAndR);
-          
+
           if (banner?.length > 0 && store?.getState()?.accountInfo?.isLogin) {
             if (isNewUser && !isModalDisplayed) {
               // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
@@ -329,12 +364,12 @@ const Layouts: React.FC = () => {
                 dispatch(setNewUserOpen(true)); // 新用户弹出
               }, 500);
             }
-            
+
             if (isModalDisplayed) {
               payNewActive(renewal, purchase);
             }
           }
-          
+
           // 如果当前时间大于索时间触发优惠券弹窗
           if (timestamp > Number(couponTimeLock)) {
             setCouponRefreshNum(couponRefreshNum + 1);
@@ -427,13 +462,14 @@ const Layouts: React.FC = () => {
     }, 3 * 60 * 60 * 1000);
 
     initialProcessBlack(); // 初始进程黑名单
-    stopProcessReset(); // 初始化调用停止加速
+    iniliteRenewal(); // 初始化更新游戏;
     remindWhetherRenew(); // 判断是否续费提醒
     nativeVersion(); // 读取客户端版本
     initialSetup(); // 初始设置
     navigate("/home");
 
     (window as any).bannerTimer = () => clearInterval(intervalId);
+
     // 清理函数，在组件卸载前清除定时器
     return () => {
       clearInterval(intervalId);

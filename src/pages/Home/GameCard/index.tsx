@@ -549,7 +549,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     event.stopPropagation();
 
-    if (await checkShelves(option)) return;
+    let shelves = await checkShelves(option);
+    let data = { ...option };
+
+    if (shelves?.state) return;
+    if (shelves?.data) data = shelves?.data;
 
     if (accountInfo?.isLogin) {
       if (isRealNamel === "1") {
@@ -561,7 +565,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       } else {
         event.stopPropagation();
         setIsOpenRegion(true);
-        setSelectAccelerateOption(option);
+        setSelectAccelerateOption(data);
       }
     } else {
       // 3个参数 用户信息 是否登录 是否显示登录
@@ -572,13 +576,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
     const iniliteFun = async (option: any) => {
-      if (await checkShelves(option)) {
+      let shelves = await checkShelves(option);
+      let data = { ...option };
+
+      // 判断是否当前游戏下架
+      if (shelves?.state) {
         localStorage.removeItem("isAccelLoading");
         return;
       };
+      if (shelves?.data) data = shelves?.data;
 
-      setSelectAccelerateOption(option);
-      accelerateDataHandling(option);
+      setSelectAccelerateOption(data);
+      accelerateDataHandling(data);
     }
 
     if (Object.keys(customAccelerationData)?.length > 0) {
@@ -606,11 +615,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               <div
                 className="accelerate-immediately-card"
                 onClick={async () => {
-                  if (await checkShelves(option)) return;
+                  let shelves = await checkShelves(option);
+                  let data = { ...option };
+
+                  // 判断是否当前游戏下架
+                  if (shelves?.state) return;
+                  if (shelves?.data) data = shelves?.data;
+
                   setIsClicking(true);
                   
                   if (!isClicking) {
-                    await accelerateDataHandling({ ...option, router: "home" });
+                    await accelerateDataHandling({ ...data, router: "home" });
                   }
 
                   setIsClicking(false)
@@ -636,14 +651,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   className="accelerate-immediately-button"
                   onClick={async (event) => {
                     event.stopPropagation();
+
+                    let shelves = await checkShelves(option);
+                    let data = { ...option };
+                    
                     // 判断是否当前游戏下架
-                    if (await checkShelves(option)) return;
+                    if (shelves?.state) return;
+                    if (shelves?.data) data = shelves?.data;
 
                     setIsClicking(true);
 
                     if (!isClicking) {
                       await accelerateDataHandling({
-                        ...option,
+                        ...data,
                         router: "home",
                       });
                     }
