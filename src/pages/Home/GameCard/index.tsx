@@ -15,14 +15,13 @@ import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
+import { setPayState, setMinorState } from "@/redux/actions/modal-open";
 
 import axios from 'axios'
 import tracking from "@/common/tracking";
 import "./style.scss";
 import RegionNodeSelector from "@/containers/region-node";
 import RealNameModal from "@/containers/real-name";
-import MinorModal from "@/containers/minor";
-import PayModal from "@/containers/Pay";
 import BreakConfirmModal from "@/containers/break-confirm";
 import eventBus from "@/api/eventBus";
 import playSuitApi from "@/api/speed";
@@ -69,11 +68,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     checkGameisFree,
     checkShelves,
   } = useGamesInitialize();
-
-  const [minorType, setMinorType] = useState<string>("acceleration"); // 是否成年 类型充值还是加速
-  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
-
-  const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
   const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [isOpenRegion, setIsOpenRegion] = useState(false); // 是否是打开选择区服节点
 
@@ -289,9 +283,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
       );
 
+      const processBlack = JSON.parse(localStorage.getItem("processBlack") ?? "[]"); // 进程黑名单
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const { addr = "", server_v2, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
-
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -305,7 +299,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       
       const jsonResult = JSON.stringify({
         running_status: true,
-        accelerated_apps: [...uniqueExecutable],
+        accelerated_apps: [...uniqueExecutable, ...processBlack],
+        process_blacklist: [...processBlack],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
         domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now
@@ -454,7 +449,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsStartAnimate(false); // 结束加速动画
 
           if (isPre) {
-            navigate("/gameDetail");
+            navigate("/gameDetail", { state: { fromRefresh: true } });
           }
         }, 1000);
       }
@@ -510,15 +505,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           return;
         } else if (!userInfo?.user_ext?.is_adult) {
           localStorage.removeItem("isAccelLoading");
-          setIsMinorOpen(true);
-          setMinorType("acceleration");
+          dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
           return;
         } else if (
           !(option?.free_time && option?.tags.includes("限时免费")) &&
           !userInfo?.is_vip
         ) {
           localStorage.removeItem("isAccelLoading");
-          setIsModalOpenVip(true);
+          dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
           return;
         } else if (find_accel?.[0] && option?.router !== "details") {
           // && option?.router !== "details"
@@ -562,8 +556,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         dispatch(openRealNameModal());
         return;
       } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
-        setIsMinorOpen(true);
-        setMinorType("recharge");
+        dispatch(setMinorState({ open: true, type: "recharge" })); // 实名认证提示
         return;
       } else {
         event.stopPropagation();
@@ -682,7 +675,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isAllowShowAccelerating && option?.is_accelerate ? (
               <div
                 className="accelerating-card"
-                onClick={() => navigate("/gameDetail")}
+                onClick={() => navigate("/gameDetail", { state: { fromRefresh: true } })}
               >
                 <img
                   className="accelerating-content-img"
@@ -734,21 +727,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       )}
       {/* 实名认证弹窗 */}
       {isRealOpen ? <RealNameModal /> : null}
-      {/* 未成年成年弹窗 */}
-      {isMinorOpen ? (
-        <MinorModal
-          isMinorOpen={isMinorOpen}
-          setIsMinorOpen={setIsMinorOpen}
-          type={minorType}
-        />
-      ) : null}
-      {/* vip 充值弹窗 */}
-      {!!isModalOpenVip && (
-        <PayModal
-          isModalOpen={isModalOpenVip}
-          setIsModalOpen={(e) => setIsModalOpenVip(e)}
-        />
-      )}
       {/* 确认加速弹窗 */}
       {accelOpen ? (
         <BreakConfirmModal
@@ -787,7 +765,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setAccelOpen={setRenewalOpen}
           onConfirm={() => {
             setRenewalOpen(false);
-            setIsModalOpenVip(true);
+            dispatch(setPayState({ open: false, couponValue: {} })); // 关闭会员充值页面
           }}
         />
       ) : null}

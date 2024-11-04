@@ -2,20 +2,21 @@ import "./index.scss";
 import loginApi from "@/api/login";
 
 export interface CaptchaProps {
-  onSend?: (value: any) => void;
   isPhoneNumberValid?: boolean;
   phoneNumber?: string;
+  onSend?: (value: any) => void;
+  onResetErrors?: (value?: any) => void; // 取消手机号错误提示展示
+  // 发送触发错误类型 type = code | phone 验证 | 手机号 错误 state = 错误状态 1 | 2
+  onSendErrors?: (type: string, state?: string) => void;
   setCountdown?: React.Dispatch<React.SetStateAction<number>>;
-  setPhoneValue?: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsPhone?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const TencentCatcha: React.FC<CaptchaProps> = (props) => {
   const {
     phoneNumber,
     setCountdown = () => {},
-    setPhoneValue = () => {},
-    setIsPhone = () => {},
+    onResetErrors = () => {},
+    onSendErrors = () => {}, 
   } = props;
 
   const codeCallback = async (captcha_verify_param: any) => {
@@ -32,6 +33,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
 
       if (res?.error === 0) {
         setCountdown(60);
+        onSendErrors("code", "0"); // 验证码获取成功将错误去掉
 
         const interval = setInterval(() => {
           setCountdown((prevCountdown) => prevCountdown - 1);
@@ -40,6 +42,8 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
         setTimeout(() => {
           clearInterval(interval);
         }, 121000); // 120秒后清除定时器
+      } else if (res?.error === 210005) {
+        onSendErrors("code", "3");
       }
     } catch (error) {
       console.log("验证码错误", error);
@@ -71,8 +75,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
         }
       );
 
-      setIsPhone(false)
-      setPhoneValue(false)
+      onResetErrors();
       captcha.show();
     } catch (error) {
       loadErrorCallback();

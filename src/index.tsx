@@ -9,7 +9,7 @@
  */
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import App from "./layout";
 
 import { HistoryProvider } from "./hooks/usePreviousRoute";
 import { ConfigProvider } from "antd";
@@ -25,7 +25,7 @@ import { store } from "./redux/store";
 
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
-import {AliveScope} from "react-activation";
+
 dayjs.locale("zh-cn");
 
 const root = ReactDOM.createRoot(
@@ -37,7 +37,7 @@ root.render(
     <HistoryProvider>
       <ConfigProvider locale={zhCN}>
         <Provider store={store}>
-            <App />
+          <App />
         </Provider>
       </ConfigProvider>
     </HistoryProvider>

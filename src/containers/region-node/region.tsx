@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "antd";
+import { useDispatch } from "react-redux";
+import { setFeedbackPopup } from "@/redux/actions/modal-open";
 
 import "./index.scss";
-import IssueModal from "@/containers/IssueModal/index";
 
 interface RegionProps {
   value: any;
@@ -29,11 +30,9 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
     generateRSuit = () => {},
   } = props;
 
+  const dispatch = useDispatch();
+
   const [expandedPanels, setExpandedPanels] = useState<any>({}); // 点击区服是否选择的信息
-
-  const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
-  const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
-
   const [isClicking, setIsClicking] = useState(false); // 如果点击了加速立即禁用第二次点击，避免多次点击
 
   // 选择的服
@@ -128,10 +127,11 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
       </div>
       <div
         className="not-have-region"
-        onClick={() => {
-          setShowIssueModal(true);
-          setIssueDescription(`没有找到区服`);
-        }}
+        onClick={() =>
+          dispatch(
+            setFeedbackPopup({ open: true, defaultInfo: "没有找到区服" })
+          )
+        }
       >
         没有找到区服？
       </div>
@@ -150,13 +150,6 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
       >
         {type === "details" ? "重新加速" : "开始加速"}
       </Button>
-      {showIssueModal ? (
-        <IssueModal
-          showIssueModal={showIssueModal}
-          onClose={() => setShowIssueModal(false)}
-          defaultInfo={issueDescription} // 传递默认描述
-        />
-      ) : null}
     </div>
   );
 };

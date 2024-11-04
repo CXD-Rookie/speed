@@ -1,8 +1,6 @@
-export const menuActive = (data: any) => ({ type: 'menuActive', data })
+export const ACTIVE_MENU = 'ACTIVE_MENU';
 
-// 更新选择菜单
-export const setMenuActive = (data: any) => {
-  return (dispatch: (arg0: { type: string; data: any }) => void) => {
-    dispatch(menuActive(data))
-  }
-}
+export const setActiveMenu = (active_menu: any) => ({
+  type: ACTIVE_MENU,
+  payload: active_menu,
+});

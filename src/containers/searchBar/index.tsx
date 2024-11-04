@@ -34,10 +34,11 @@ const SearchBar: React.FC = () => {
 
   const { appendGameToList } = useGamesInitialize();
   const [placeholder, setPlaceholder] = useState('搜索游戏');
+  
   const enterSign = useSelector((state: any) => state.searchEnter);
   const query = useSelector((state: RootState) => state.search.query);
   const results = useSelector((state: RootState) => state.search.results) || [];
-
+  
   const [showDropdown, setShowDropdown] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
 

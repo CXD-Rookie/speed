@@ -10,13 +10,15 @@ import React, { useEffect, useState } from "react";
 import { Popover, Tooltip } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
+import {
+  setSetting,
+  setPayState,
+  setMinorState,
+} from "@/redux/actions/modal-open";
 
 import payApi from "@/api/pay";
-import MinorModal from "../minor";
 import RealNameModal from "../real-name";
 import UserAvatarCom from "./user-avatar";
-import SettingsModal from "../setting";
-import PayModal from "../Pay";
 import CustonCoupon from "./custom-coupon";
 import "./index.scss";
 
@@ -40,12 +42,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   const [open, setOpen] = useState(false);
 
-  const [editOpen, setEditOpen] = useState(false);
-  const [isModalOpenVip, setIsModalOpenVip] = useState(false);
-
-  const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
-  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
-
   const [couponOpen, setCouponOpen] = useState(false); // 优惠券 modal
   const [couponTooltip, setCouponTooltip] = useState(
     localStorage.getItem("isCouponExpiry") === "1"
@@ -60,6 +56,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [isFirst, setIsFirst] = useState(1);
   
   const [isShowUserT, setIsShowUserT] = useState(false); // 是否展示用户信息在是否优惠券到期文案
+  
   const hide = () => {
     setOpen(false);
   };
@@ -197,7 +194,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           className={isVip ? "vips" : "novips"}
           onClick={() => {
             hide();
-            setEditOpen(true);
+            // 打开设置
+            dispatch(setSetting({ settingOpen: true, type: "edit" }));
           }}
         >
           编辑
@@ -216,11 +214,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
             dispatch(openRealNameModal());
             return;
           } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-            setIsMinorOpen(true);
-            setMinorType("recharge");
+            dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
             return;
           } else {
-            setIsModalOpenVip(true);
+            dispatch(setPayState({ open: false, couponValue: {} })); // 关闭会员充值页面
           }
         }}
       />
@@ -285,28 +282,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           <span className="user-text"></span>
         </Tooltip>
       )}
-
-      {editOpen ? (
-        <SettingsModal
-          type="edit"
-          isOpen={editOpen}
-          onClose={() => setEditOpen(false)}
-        />
-      ) : null}
-      {!!isModalOpenVip && (
-        <PayModal
-          isModalOpen={isModalOpenVip}
-          setIsModalOpen={(e) => setIsModalOpenVip(e)}
-        />
-      )}
       {isRealOpen ? <RealNameModal /> : null}
-      {isMinorOpen ? (
-        <MinorModal
-          isMinorOpen={isMinorOpen}
-          setIsMinorOpen={setIsMinorOpen}
-          type={minorType}
-        />
-      ) : null}
       <CustonCoupon
         open={couponOpen}
         setOpen={(event: boolean) => setCouponOpen(event)}

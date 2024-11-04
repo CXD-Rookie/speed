@@ -8,6 +8,7 @@ interface PayModalProps {
   open?: boolean;
   setOpen?: (e: any) => void;
   info?: any;
+  payTypes?: any;
   closeModal?: () => void;
 }
 
@@ -30,10 +31,10 @@ const payStatusMap: { [key: number]: string } = {
 };
 
 const PaymentModal: React.FC<PayModalProps> = (props) => {
-  const { open, info, setOpen = () => {} } = props;
+  const { open, info, payTypes, setOpen = () => {} } = props;
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-
+  
   return (
     <Modal
       className="payment-module"
@@ -56,7 +57,7 @@ const PaymentModal: React.FC<PayModalProps> = (props) => {
               充值账号<span>{accountInfo?.userInfo?.phone}</span>
             </p>
             <p>
-              支付类型<span>{payTypeMap?.[info?.type] || "其他"}</span>
+              支付类型<span>{payTypes?.[info?.type] || payTypeMap?.[info?.type] || "其他"}</span>
             </p>
             <p>
               支付金额<span>{info?.price / 100}</span>

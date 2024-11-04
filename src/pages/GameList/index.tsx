@@ -6,11 +6,11 @@ import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import { nodeDebounce } from "@/common/utils";
+import { setFeedbackPopup } from "@/redux/actions/modal-open";
 
 import "./style.scss";
 import gameApi from "@/api/gamelist";
 
-import IssueModal from "@/containers/IssueModal/index";
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 import emptyIcon from "@/assets/images/home/empty.svg";
@@ -48,15 +48,13 @@ const GameLibrary: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch: any = useDispatch();
-  const historyContext: any = useHistoryContext();
 
+  const historyContext: any = useHistoryContext();
   const { appendGameToList } = useGamesInitialize();
+
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
   const enterSign = useSelector((state: any) => state.searchEnter);
-
-  const [showIssueModal, setShowIssueModal] = useState(false); // 添加状态控制 SettingsModal 显示
-  const [issueDescription, setIssueDescription] = useState<string | null>(null); // 添加状态控制 IssueModal 的默认描述
 
   const [oldSearchBarValue, setOldSearchBarValue] = useState();
   const [games, setGames] = useState<any>([]);
@@ -191,8 +189,12 @@ const GameLibrary: React.FC = () => {
               className="empty-text"
               onClick={() => {
                 if (store.getState().accountInfo?.isLogin) {
-                  setShowIssueModal(true);
-                  setIssueDescription(`未找到“${oldSearchBarValue}”的相关游戏`);
+                  dispatch(
+                    setFeedbackPopup({
+                      open: true,
+                      defaultInfo: `未找到“${oldSearchBarValue}”的相关游戏`,
+                    })
+                  );
                 } else {
                   dispatch(setAccountInfo(undefined, undefined, true));
                 }
@@ -209,13 +211,6 @@ const GameLibrary: React.FC = () => {
           </div>
         </div>
       )}
-      {showIssueModal ? (
-        <IssueModal
-          showIssueModal={showIssueModal}
-          onClose={() => setShowIssueModal(false)}
-          defaultInfo={issueDescription} // 传递默认描述
-        />
-      ) : null}
     </div>
   );
 };

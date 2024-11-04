@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./index.scss";
 import "./new.scss";
@@ -10,15 +9,9 @@ import PayErrorModal from "../pay-error";
 import PaymentModal from "../payment";
 import payApi from "@/api/pay";
 import eventBus from "@/api/eventBus";
-import loginApi from "@/api/login";
 import tracking from "@/common/tracking";
 import closeIcon from "@/assets/images/common/cloture.svg";
-
-interface PayModalProps {
-  isModalOpen?: boolean;
-  setIsModalOpen?: (e: any) => void;
-  type?: any;
-}
+import { setFirstPayRP } from "@/redux/actions/modal-open";
 
 interface Commodity {
   id: string;
@@ -44,15 +37,17 @@ interface OrderInfo {
   update_time: number;
 }
 
-const PayModal: React.FC<PayModalProps> = (props) => {
-  const { isModalOpen, type, setIsModalOpen = () => {} } = props;
-
+const PayModal: React.FC = (props) => {
   const dispatch: any = useDispatch();
   const divRef = useRef<HTMLDivElement>(null);
   const intervalIdRef: any = useRef(null); // 用于存储interval的引用
-  //@ts-ignore
+
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const firstAuth = useSelector((state: any) => state.firstAuth);
+  const { open = false, type = "" } = useSelector(
+    (state: any) => state?.modalOpen?.firstPayRP
+  );
+
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [, setPayTypes] = useState<{ [key: string]: string }>({});
   const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
@@ -311,11 +306,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       <Modal
         wrapClassName="pay-wrap-module"
         className="pay-module pay-module-new"
-        open={isModalOpen}
+        open={open}
         onCancel={() => {
-          // clearInterval(intervalIdRef?.current);
           iniliteReset();
-          setIsModalOpen(false);
+          dispatch(setFirstPayRP({ open: false, type: "" }));
         }}
         title=""
         destroyOnClose
@@ -330,8 +324,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             className="close-icon"
             onClick={() => {
               iniliteReset();
-              setIsModalOpen(false);
-              // clearInterval(intervalIdRef?.current);
+              dispatch(setFirstPayRP({ open: false, type: "" }));
             }}
           >
             <img src={closeIcon} alt="" />
@@ -394,41 +387,28 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                 )}
               </div>
             )}
-            <div className="carousel">
-              {commodities.map((item, index) => (
-                <div
-                  key={index}
-                  className="carousel-item"
-                  style={{
-                    display: index === activeTabIndex ? "block" : "none",
-                  }}
-                >
-                  <div className="priceAll" data-price={item.price}>
-                    <ul>
-                      <li>
-                        <span className="txt">支付宝或微信扫码支付</span>
-                      </li>
-                      <li>
-                        <span className="priceBig">{item.price}</span>
-                      </li>
-                      <li>
-                        我已同意《
-                        <div
-                          style={{ cursor: "pointer" }}
-                          className="txt"
-                          onClick={handleClick}
-                          ref={divRef}
-                          data-title="https://cdn.accessorx.com/web/terms_of_service.html"
-                        >
-                          用户协议
-                        </div>
-                        》
-                      </li>
-                    </ul>
-                  </div>
+            {commodities?.[activeTabIndex] ? (
+              <div className="carousel new-carousel">
+                <div className="carousel-title">支付宝或微信扫码支付</div>
+                <div className="carousel-price">
+                  {commodities?.[activeTabIndex]?.price}
+                  <span>元</span>
                 </div>
-              ))}
-            </div>
+                <div className="carousel-agreement">
+                  我已同意《
+                  <span
+                    style={{ cursor: "pointer" }}
+                    className="txt"
+                    onClick={handleClick}
+                    ref={divRef}
+                    data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  >
+                    用户协议
+                  </span>
+                  》
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </Modal>
@@ -437,7 +417,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         info={orderInfo}
         setOpen={(e) => {
           iniliteReset();
-          setIsModalOpen(false);
+          dispatch(setFirstPayRP({ open: false, type: "" }));
           setShowPopup(e);
         }}
       />
@@ -445,13 +425,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         <PayErrorModal
           accelOpen={payErrorModalOpen}
           setAccelOpen={(e) => {
-            // updateQrCode();
             setQRCodeState("normal");
             iniliteReset();
             setPayErrorModalOpen(e);
           }}
           onConfirm={() => {
-            // updateQrCode();
             setQRCodeState("normal");
             iniliteReset();
             setPayErrorModalOpen(false);

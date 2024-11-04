@@ -9,18 +9,20 @@
  */
 import React, { Fragment, useEffect, useState } from "react";
 import { Modal } from "antd";
+import { useDispatch } from "react-redux";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+import { openRealNameModal } from "@/redux/actions/auth";
 import { useNavigate } from "react-router-dom";
-import tracking from "@/common/tracking";
+import { setSetting, setPayState } from "@/redux/actions/modal-open";
+
 import eventBus from "@/api/eventBus";
 
 import "./index.scss";
-import SettingsModal from "../setting";
 
 interface SettingsModalProps {
   accelOpen?: boolean;
-  type: string;
+  type?: string;
   setAccelOpen?: (e: boolean) => void;
   onConfirm?: () => void;
 }
@@ -34,13 +36,13 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   } = props;
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { isNetworkError, setIsNetworkError, accelerateTime }: any =
+  const { isNetworkError, setIsNetworkError }: any =
     useHistoryContext();
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
   const [noticeType, setNoticeType] = useState<any>(""); // 通过eventBus 传递的通知消息类型
-  const [settingOpen, setSettingOpen] = useState(false);
 
   const [version, setVersion] = useState(""); // 立即升级版本
   const [feedbackClose, setfeedbackClose] = useState<any>(); // 问题反馈回调函数
@@ -56,7 +58,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       : "确定退出当前账号登录吗？",
     netorkError: "网络连接异常，请检查网络设置。",
     newVersionFound: "发现新版本",
-    infectedOrHijacked: "检测到加速器安全问题，请立即进行安全自我修复",
+    infectedOrHijacked: `配置项信息已损坏，点击"确定"尝试更新修复。`,
     accelerationServiceNotStarting:
       "无法启动加速服务，请重启客户端或使用问题反馈技术支持。",
     delayTooHigh:
@@ -73,13 +75,14 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
     gamesAccelerating: "其他游戏正在加速！",
     takenShelves: "当前游戏已被下架，无法加速。",
+    nodeDelete: "该节点已被删除，请选择其他节点",
   };
 
   // footer 确认按钮的文案
   const confirmObj: any = {
     netorkError: "重启加速器",
     newVersionFound: "立即升级",
-    infectedOrHijacked: "修复",
+    infectedOrHijacked: "确定",
     accelerationServiceNotStarting: "好的",
     delayTooHigh: "更换节点",
     renewalReminder: "立即充值",
@@ -89,6 +92,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     connectionPay: "继续支付",
     gamesAccelerating: "好的",
     takenShelves: "好的",
+    nodeDelete: "好的",
   };
 
   // footer 只显示一个按钮的类型
@@ -104,6 +108,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "connectionPay", //继续支付，订单未支付
     "gamesAccelerating",
     "takenShelves", // 游戏下架提示
+    "nodeDelete", // 在节点历史记录中，当用户选择一个已被删除的节点
   ];
 
   // 不显示右上角关闭的类型
@@ -122,11 +127,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     connectionPay: { marginTop: "1vh" },
   };
 
-  let jsonString = "";
-
-  const userToken = localStorage.getItem("token");
-  const jsKey = localStorage.getItem("StartKey");
-
   // 停止加速
   const stopAcceleration = (option: any = "initialize") => {
     if (!option?.is_accelerate && option !== "initialize") {
@@ -135,34 +135,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       return;
     }
 
-    if (jsKey) {
-      jsonString = JSON.stringify({
-        params: {
-          user_token: userToken ? JSON.parse(userToken) : "",
-          js_key: jsKey,
-        },
-      });
-    }
-    (window as any).NativeApi_AsynchronousRequest(
-      "NativeApi_StopProxy",
-      jsonString,
-      function (response: any) {
-        if (!response) {
-          console.warn("No response received from 停止加速没有成功");
-          return;
-        }
-        console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速");
-        removeGameList(option); // 更新我的游戏
-        accelerateTime?.stopTimer();
-
-        if ((window as any).stopDelayTimer) {
-          (window as any).stopDelayTimer();
-        }
-
-        navigate("/home");
-      }
-    );
+    (window as any).stopProcessReset();
   };
 
   const cancel = () => {
@@ -181,17 +154,34 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
+      case "exit":
+        (window as any).loginOutStopWidow();
+        break
+      case "renewalReminder":
+        const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
+
+        if (isRealNamel === "1") {
+          dispatch(openRealNameModal());
+          return;
+        }
+
+        dispatch(setPayState({ open: true })); // 关闭会员充值页面
+        break;
+      case "accelMemEnd":
+        stopAcceleration();
+        break;
       case "netorkError":
         stopAcceleration();
         (window as any).native_restart();
         break;
       case "newVersionFound":
-        (window as any).native_update();
         stopAcceleration();
+        (window as any).native_update();
         break;
       case "infectedOrHijacked":
-        setSettingOpen(true);
+        // 打开设置
         stopAcceleration();
+        dispatch(setSetting({ settingOpen: true, type: "fix" }));
         break;
       case "accelerationServiceNotStarting":
         stopAcceleration();
@@ -209,7 +199,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         if (eventBusValue?.onOk) {
           eventBusValue?.onOk();
         }
-        
+
         stopAcceleration(eventBusValue?.value);
         break;
       default:
@@ -293,13 +283,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           </div>
         </div>
       </Modal>
-      {settingOpen ? (
-        <SettingsModal
-          type="fix"
-          isOpen={settingOpen}
-          onClose={() => setSettingOpen(false)}
-        />
-      ) : null}
     </Fragment>
   );
 };

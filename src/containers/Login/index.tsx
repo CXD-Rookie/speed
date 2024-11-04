@@ -23,22 +23,30 @@ import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
 import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
 
-declare const CefWebInstance: any;
+// 手机号对应错误码文案
+const phoneErrorText: any = {
+  1: "请输入手机号",
+  2: "手机号无效，请重新输入",
+};
+
+// 验证码对应错误码文案
+const codeErrorText: any = {
+  1: "请先获取验证码",
+  2: "验证码错误，请重新输入",
+  3: "您的操作频率太快，请稍后再试",
+};
 
 const Login: React.FC = () => {
   const dispatch: any = useDispatch();
 
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(""); // 手机号
+  const [verificationCode, setVerificationCode] = useState(""); // 验证码
+  const [countdown, setCountdown] = useState(0); // 验证码时间
 
-  const [countdown, setCountdown] = useState(0);
+  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false); // 是否输入了正确的手机号
 
-  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
-  const [isPhone, setIsPhone] = useState(false);
-  const [phoneValue, setPhoneValue] = useState(false); // 点击获取验证码进行验证手机号是否输入
-
-  const [isVeryCode, setVeryCode] = useState(false);
-  const [isVeryCodeErr, setVeryCodeErr] = useState(false);
+  const [phoneError, setPhoneError] = useState<string>("0"); // 手机号错误状态码 "0" 正常状态
+  const [codeError, setCodeError] = useState("0"); // 手机号验证码状态码 "0" 正常状态
 
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
@@ -71,17 +79,10 @@ const Login: React.FC = () => {
   };
 
   const handleLogin = async () => {
-    if (!isPhoneNumberValid) {
-      setPhoneValue(false);
-      setIsPhone(true);
-      return;
-    } else {
-      setIsPhone(false);
-    }
-
-    if (!verificationCode) {
-      setVeryCodeErr(false);
-      setVeryCode(true);
+    // 如果手机号校验不通过，验证码错误，进行错误提示
+    if (!isPhoneNumberValid || !verificationCode) {
+      !isPhoneNumberValid && setPhoneError("1");
+      !verificationCode && setCodeError("1");
       return;
     }
 
@@ -96,9 +97,15 @@ const Login: React.FC = () => {
         tracking.trackSignUpSuccess("1");
         tracking.trackLoginSuccess("1");
         localStorage.setItem("token", JSON.stringify(res.data.token));
-        localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
-        localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
-        localStorage.removeItem('isClosed')
+        localStorage.setItem(
+          "is_new_user",
+          JSON.stringify(res.data.is_new_user)
+        );
+        localStorage.setItem(
+          "vip_experience_time",
+          JSON.stringify(res.data.vip_experience_time)
+        );
+        localStorage.removeItem("isClosed");
 
         if (
           res.data.user_info.user_ext === null ||
@@ -121,21 +128,19 @@ const Login: React.FC = () => {
         dispatch(setAccountInfo(res.data.user_info, true, false));
         webSocketService.loginReconnect();
       } else {
-        setVeryCode(false);
-        setVeryCodeErr(true);
+        setCodeError("2")
       }
     } catch (error) {
-      tracking.trackSignUpFailure("注册失败")
-      tracking.trackLoginFailure("登录失败")
+      tracking.trackSignUpFailure("注册失败");
+      tracking.trackLoginFailure("登录失败");
       console.log(error);
     }
   };
 
   const close = async () => {
     dispatch(setAccountInfo(undefined, undefined, false));
-    console.log("关闭跳转");
   };
-  
+
   return (
     <div className="login-modal">
       <div className="login-close" onClick={close}>
@@ -158,10 +163,7 @@ const Login: React.FC = () => {
             value={phoneNumber}
             onChange={handlePhoneNumberChange}
           />
-          {phoneValue ? <div className="ercode">请输入手机号</div> : null}
-          {isPhone ? (
-            <div className="ercode">手机号无效，请重新输入</div>
-          ) : null}
+          <div className="ercode">{phoneErrorText?.[phoneError || "0"]}</div>
         </div>
         <div className="computing-input-group public-input-group">
           <CustomInput
@@ -183,17 +185,7 @@ const Login: React.FC = () => {
                 {countdown > 0 ? (
                   `${countdown}s后重新获取`
                 ) : !isPhoneNumberValid ? (
-                  <div
-                    onClick={() => {
-                      if (phoneNumber && !isPhoneNumberValid) {
-                        setPhoneValue(false);
-                        setIsPhone(true);
-                      } else {
-                        setIsPhone(false);
-                        setPhoneValue(true);
-                      }
-                    }}
-                  >
+                  <div onClick={() => setPhoneError(phoneNumber ? "2" : "1")}>
                     获取验证码
                   </div>
                 ) : (
@@ -201,8 +193,12 @@ const Login: React.FC = () => {
                     phoneNumber={phoneNumber}
                     isPhoneNumberValid={isPhoneNumberValid}
                     setCountdown={setCountdown}
-                    setPhoneValue={setPhoneValue}
-                    setIsPhone={setIsPhone}
+                    onResetErrors={() => setPhoneError("0")}
+                    onSendErrors={(type, state) =>
+                      type === "code"
+                        ? setCodeError(state as string)
+                        : setPhoneError(state as string)
+                    }
                   />
                 )}
               </div>
@@ -210,10 +206,7 @@ const Login: React.FC = () => {
             value={verificationCode}
             onChange={handleVerificationCodeChange}
           />
-          {isVeryCode && <div className="ercode">请先获取验证码</div>}
-          {isVeryCodeErr && (
-            <div className="ercode">验证码错误，请重新输入</div>
-          )}
+          {<div className="ercode">{codeErrorText?.[codeError || "0"]}</div>}
         </div>
         <div className="login-btn-box">
           <button onClick={handleLogin}>登录</button>

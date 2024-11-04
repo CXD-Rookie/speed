@@ -13,42 +13,36 @@ import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import {
+  setSetting,
+  setPayState,
+  setMinorState,
+  setBindState,
+} from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import tracking from "@/common/tracking";
-import MinorModal from "../minor";
 import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
-import PayModal from "../Pay";
 import fixImg from "@/assets/images/fixUtils/fix@2x.png";
 import fixImg_3 from "@/assets/images/fixUtils/fix3@2x.png";
 import fixImg_6 from "@/assets/images/fixUtils/fix6@2x.png";
 import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
 import fix_failure from "@/assets/images/fixUtils/fix_failure@2x.png";
-import BindPhoneMode from "../bind-phone-mode";
 import loginApi from "@/api/login";
+
 const { TabPane } = Tabs;
 
-interface SettingsModalProps {
-  isOpen: boolean;
-  type?: string;
-  onClose: () => void;
-}
-
-const SettingsModal: React.FC<SettingsModalProps> = (props) => {
-  const { isOpen, onClose, type = "default" } = props;
-
+const SettingsModal: React.FC = (props) => {
+  const { settingOpen = false, type = "default" } = useSelector((state: any) => state?.modalOpen?.setting);
   const accountInfo = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  const payOpen = useSelector((state: any) => state?.modalOpen?.payState?.open);
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
 
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [minorType, setMinorType] = useState<string>("recharge"); // 是否成年 类型充值还是加速
-  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
-  const [isBindThirdOpen, setIsBindThirdOpen] = useState(false); // 手机号绑定第三方，切换手机号
-  const [bindType, setBindType] = useState(""); // 绑定弹窗类型
   const [versionNow, setVersionNow] = useState(""); //
   const [activeTab, setActiveTab] = useState("system");
 
@@ -62,7 +56,6 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
   const [closeWindow, setCloseWindow] = useState<string>(initialCloseWindow);
 
   const [isRealNameTag, setRealNameTag] = useState<any>("");
-  const [isModalOpenVip, setIsModalOpenVip] = useState(false);
 
   const [thirdInfo, setThirdInfo] = useState([]);
 
@@ -78,6 +71,10 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  const onClose = () => {
+    dispatch(setSetting({ settingOpen: false, type: "default" }));
+  }
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
@@ -347,7 +344,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     let isRealName = localStorage.getItem("isRealName");
     isRealName = isRealName ? isRealName : "";
     const closeButtonAction = sign?.close_button_action;
-    console.log("初始化设置值:", closeButtonAction);
+    
     setCloseWindow(
       String(
         closeButtonAction !== undefined ? (closeButtonAction === 1 ? 2 : 1) : 2
@@ -356,15 +353,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     setStartAutoLaunch(!!sign?.auto_run);
     setDesktopQuickStart(!!sign?.auto_create_shortcut);
     setRealNameTag(isRealName);
-  }, [isOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
-
-  // useEffect(() => {
-  //   const sign = JSON.parse(localStorage.getItem("client_settings") || "{}");
-  //   const closeButtonAction = sign?.close_button_action;
-
-  //   console.log("初始化设置值:", closeButtonAction);
-  //   setCloseWindow(String(closeButtonAction !== undefined ? closeButtonAction === 1 ? 1 : 2 : 2));
-  // }, [isOpen, isModalOpenVip, isRealOpen, isBindThirdOpen]);
+  }, [settingOpen, payOpen, isRealOpen]);
 
   useEffect(() => {
     if (type === "edit") {
@@ -389,14 +378,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
   useEffect(() => {
     native_version();
-    console.log(versionNow, "----------------");
   }, [versionNow]);
 
   return (
     <Fragment>
       <Modal
         className="system-setting"
-        open={isOpen}
+        open={settingOpen}
         onCancel={onClose}
         destroyOnClose
         title="系统设置"
@@ -557,10 +545,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                     <div
                       className="real-name-btn"
                       onClick={() => {
-                        console.log(accountInfo);
-
-                        setBindType("oldPhone");
-                        setIsBindThirdOpen(true);
+                        dispatch(
+                          setBindState({ open: true, type: "oldPhone" })
+                        );
                       }}
                     >
                       修改
@@ -579,8 +566,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                       <div
                         className="real-name-btn"
                         onClick={() => {
-                          setBindType("third");
-                          setIsBindThirdOpen(true);
+                          dispatch(setBindState({ open: true, type: "third" }));
                         }}
                       >
                         绑定
@@ -589,8 +575,9 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                       <div
                         className="real-name-btn"
                         onClick={() => {
-                          setBindType("unbind");
-                          setIsBindThirdOpen(true);
+                          dispatch(
+                            setBindState({ open: true, type: "unbind" })
+                          );
                         }}
                       >
                         解绑
@@ -641,11 +628,14 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                           } else if (
                             !accountInfo?.userInfo?.user_ext?.is_adult
                           ) {
-                            setIsMinorOpen(true);
-                            setMinorType("recharge");
+                            dispatch(
+                              setMinorState({ open: true, type: "recharge" })
+                            ); // 认证提示
                             return;
                           } else {
-                            setIsModalOpenVip(true);
+                            dispatch(
+                              setPayState({ open: true, couponValue: {} })
+                            ); // 会员充值页面
                           }
                         }}
                         className="real-name-btn"
@@ -664,11 +654,14 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                           } else if (
                             !accountInfo?.userInfo?.user_ext?.is_adult
                           ) {
-                            setIsMinorOpen(true);
-                            setMinorType("recharge");
+                            dispatch(
+                              setMinorState({ open: true, type: "recharge" })
+                            ); // 认证提示
                             return;
                           } else {
-                            setIsModalOpenVip(true);
+                            dispatch(
+                              setPayState({ open: true, couponValue: {} })
+                            ); // 会员充值页面
                           }
                         }}
                         className="real-name-btn"
@@ -735,26 +728,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
           </TabPane>
         </Tabs>
       </Modal>
-      {!!isModalOpenVip && (
-        <PayModal
-          isModalOpen={isModalOpenVip}
-          setIsModalOpen={(e) => setIsModalOpenVip(e)}
-        />
-      )}
       {isRealOpen ? <RealNameModal /> : null}
-      {isMinorOpen ? (
-        <MinorModal
-          isMinorOpen={isMinorOpen}
-          setIsMinorOpen={setIsMinorOpen}
-          type={minorType}
-        />
-      ) : null}
-      <BindPhoneMode
-        open={isBindThirdOpen}
-        setOpen={setIsBindThirdOpen}
-        notifyFc={onClose}
-        type={bindType}
-      />
     </Fragment>
   );
 };
