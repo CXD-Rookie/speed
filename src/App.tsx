@@ -49,17 +49,7 @@ interface CustomMenuProps {
   is_active?: boolean;
 }
 
-// global.d.ts
-interface Window {
-  NativeApi_ExitProcess: () => void; //退出程序
-  NativeApi_OnDragZoneMouseDown: () => void; //鼠标点击事件,放在拖拽区域里面
-  NativeApi_OnDragZoneMouseUp: () => void; //鼠标松开事件,放在拖拽区域里面
-  NativeApi_MinimumWindow: () => void; //最小化
-  cefQuery: () => void; //不用管
-}
-
 const mapStateToProps = (state: any) => ({
-  // Map state to props if needed
   state,
 });
 
@@ -73,10 +63,8 @@ const App: React.FC = (props: any) => {
   const dispatch: any = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  // const isFirstRender = useRef(true);
 
   const historyContext: any = useHistoryContext();
-  // const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
   const routeView = useRoutes(routes); // 获得路由表
@@ -325,16 +313,13 @@ const App: React.FC = (props: any) => {
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     (window as any).NativeApi_OnDragZoneMouseDown();
-    console.log("--111111111111111111111");
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     (window as any).NativeApi_OnDragZoneMouseUp();
-    console.log("--wwwwwwwwwwwww");
   };
 
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log("--eeeeeeeee");
     e.stopPropagation();
   };
 

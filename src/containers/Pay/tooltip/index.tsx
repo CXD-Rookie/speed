@@ -2,6 +2,7 @@ import React from "react";
 import { Tooltip } from "antd";
 
 import "./index.scss";
+import helpIcon from "@/assets/images/common/help.png";
 
 const TooltipCom: React.FC = () => {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -34,7 +35,8 @@ const TooltipCom: React.FC = () => {
           </div>
         }
       >
-        <span className="tips">?</span>
+        {/* <span className="tips">?</span> */}
+        <img className="tips" src={helpIcon} alt="" />
       </Tooltip>
     </div>
   );

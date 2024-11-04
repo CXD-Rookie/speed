@@ -56,7 +56,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       : "确定退出当前账号登录吗？",
     netorkError: "网络连接异常，请检查网络设置。",
     newVersionFound: "发现新版本",
-    infectedOrHijacked: "检测到加速器安全问题，请立即进行安全自我修复",
+    infectedOrHijacked: `配置项信息已损坏，点击"确定"尝试更新修复。`,
     accelerationServiceNotStarting:
       "无法启动加速服务，请重启客户端或使用问题反馈技术支持。",
     delayTooHigh:
@@ -73,13 +73,14 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
     gamesAccelerating: "其他游戏正在加速！",
     takenShelves: "当前游戏已被下架，无法加速。",
+    nodeDelete: "该节点已被删除，请选择其他节点",
   };
 
   // footer 确认按钮的文案
   const confirmObj: any = {
     netorkError: "重启加速器",
     newVersionFound: "立即升级",
-    infectedOrHijacked: "修复",
+    infectedOrHijacked: "确定",
     accelerationServiceNotStarting: "好的",
     delayTooHigh: "更换节点",
     renewalReminder: "立即充值",
@@ -89,6 +90,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     connectionPay: "继续支付",
     gamesAccelerating: "好的",
     takenShelves: "好的",
+    nodeDelete: "好的",
   };
 
   // footer 只显示一个按钮的类型
@@ -104,6 +106,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "connectionPay", //继续支付，订单未支付
     "gamesAccelerating",
     "takenShelves", // 游戏下架提示
+    "nodeDelete", // 在节点历史记录中，当用户选择一个已被删除的节点
   ];
 
   // 不显示右上角关闭的类型

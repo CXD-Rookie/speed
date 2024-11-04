@@ -1,6 +1,19 @@
 .activation-modal {
+  position: relative;
+
+  .mask {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    background-color: transparent;
+  }
+
+
   .ant-modal-content {
-    height: 42vh;
+    height: 52vh;
     background-color: #3e3e4a;
     padding: 1.8vh 1.6vw;
   }
@@ -26,24 +39,87 @@
   }
 
   .activation-modal-content {
-    margin-top: 3vh;
     position: relative;
 
+    .quick-start {
+      height: 3vh;
+      font-size: 1.4vw;
+      color: #999999;
+      line-height: 3vh;
+      margin: 3vh 0 0 0.4vw;
+    }
+
+    .quick-tabs {
+      display: flex;
+      column-gap: 0.8vw;
+
+      .tab {
+        width: 17.6vw;
+        height: 4.8vh;
+        font-size: 1.2vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 0.5vw;
+        margin-top: 0.4vh;
+        cursor: pointer;
+
+        img {
+          width: 2vw;
+          height: 2vw;
+        }
+      }
+
+      .default-tab {
+        color: #fff;
+        background: rgba(255,255,255,0.10);
+        border-radius: 0.75vh;
+      }
+
+      .active-tab {
+        color: #F86C34;
+        border: 0.1vw solid #f86c34;
+        border-radius: 0.75vh;
+        position: relative;
+
+        & .tick {
+          width: 1vw;
+          height: 0.7vw;
+          position: absolute;
+          top: 0.4vw;
+          right: 0.2vw;
+          color: #fff;
+          text-align: center;
+          z-index: 2;
+        }
+
+        &::after {
+          content: "";
+          display: inline-block;
+          position: absolute;
+          top: 0px;
+          right: 0px;
+          border-left: 1.2vw solid transparent;
+          border-bottom: 1.2vw solid transparent;
+          border-right: 1.2vw solid #F86C34;
+          border-top: 1.2vw solid #F86C34;
+          border-top-right-radius: 10px;
+        }
+      }
+    }
+    
     .content-title {
       height: 3vh;
       font-size: 1.4vw;
-      font-weight: Regular;
       text-align: left;
       color: #999999;
       line-height: 3vh;
-      margin-bottom: 0.6vh;
-      margin-left: 0.6vh;
+      margin: 2.4vh 0 0.6vh 0.6vh;
     }
 
     .content-select, .content-input {
       width: 36.8vw;
       height: 4.8vh;
-      margin-bottom: 2.4vh;
 
       .ant-select-selection-item {
         font-size: 1.4vw;
@@ -60,6 +136,15 @@
     .content-path-box {
       display: flex;
       justify-content: space-between;
+      position: relative;
+
+      .path-error {
+        position: absolute;
+        top: 5vh;
+        left: 0.6vh;
+        font-size: 1vw;
+        color: #FF0000;
+      }
 
       .content-input {
         width: 31vw;
@@ -67,6 +152,10 @@
         white-space: nowrap;    /* 禁止换行 */
         overflow: hidden;       /* 隐藏溢出内容 */
         text-overflow: ellipsis;/* 使用省略号表示溢出 */
+      }
+
+      .ant-input-disabled {
+        cursor: default !important;
       }
 
       .content-btn {
@@ -85,13 +174,27 @@
       width: 9.6vw;
       height: 4.8vh;
       color: #fff;
-      background: #f86c34;
+      background: #FF7741;
       border-radius: 2.4vh;
       border: none;
       outline: none;
       margin-left: 13.6vw;
       margin-top: 4.8vh;
       font-size: 1.4vw;
+
+      &:hover {
+        color: #fff;
+        background-color: #FF7741;
+      }
+
+      &:active {
+        color: #fff;
+        background: #f86c34;
+      }
+
+      &:enabled {
+        background: #f86c34;
+      }
     }
   }
 }

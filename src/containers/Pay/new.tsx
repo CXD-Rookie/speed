@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./index.scss";
 import "./new.scss";
@@ -10,7 +9,6 @@ import PayErrorModal from "../pay-error";
 import PaymentModal from "../payment";
 import payApi from "@/api/pay";
 import eventBus from "@/api/eventBus";
-import loginApi from "@/api/login";
 import tracking from "@/common/tracking";
 import closeIcon from "@/assets/images/common/cloture.svg";
 
@@ -313,7 +311,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         className="pay-module pay-module-new"
         open={isModalOpen}
         onCancel={() => {
-          // clearInterval(intervalIdRef?.current);
           iniliteReset();
           setIsModalOpen(false);
         }}
@@ -331,7 +328,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             onClick={() => {
               iniliteReset();
               setIsModalOpen(false);
-              // clearInterval(intervalIdRef?.current);
             }}
           >
             <img src={closeIcon} alt="" />
@@ -394,41 +390,28 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                 )}
               </div>
             )}
-            <div className="carousel">
-              {commodities.map((item, index) => (
-                <div
-                  key={index}
-                  className="carousel-item"
-                  style={{
-                    display: index === activeTabIndex ? "block" : "none",
-                  }}
-                >
-                  <div className="priceAll" data-price={item.price}>
-                    <ul>
-                      <li>
-                        <span className="txt">支付宝或微信扫码支付</span>
-                      </li>
-                      <li>
-                        <span className="priceBig">{item.price}</span>
-                      </li>
-                      <li>
-                        我已同意《
-                        <div
-                          style={{ cursor: "pointer" }}
-                          className="txt"
-                          onClick={handleClick}
-                          ref={divRef}
-                          data-title="https://cdn.accessorx.com/web/terms_of_service.html"
-                        >
-                          用户协议
-                        </div>
-                        》
-                      </li>
-                    </ul>
-                  </div>
+            {commodities?.[activeTabIndex] ? (
+              <div className="carousel new-carousel">
+                <div className="carousel-title">支付宝或微信扫码支付</div>
+                <div className="carousel-price">
+                  {commodities?.[activeTabIndex]?.price}
+                  <span>元</span>
                 </div>
-              ))}
-            </div>
+                <div className="carousel-agreement">
+                  我已同意《
+                  <span
+                    style={{ cursor: "pointer" }}
+                    className="txt"
+                    onClick={handleClick}
+                    ref={divRef}
+                    data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  >
+                    用户协议
+                  </span>
+                  》
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </Modal>

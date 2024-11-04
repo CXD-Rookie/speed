@@ -8,13 +8,15 @@
  */
 import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateDelay } from "@/redux/actions/auth";
+import { updateDelay, setAccelerateChart } from "@/redux/actions/auth";
+import { setStartPathOpen } from "@/redux/actions/modal-open";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
-import tracking from "@/common/tracking";
+
 import "./style.scss";
+import tracking from "@/common/tracking";
 import BarChart from "@/containers/BarChart/index";
 import RegionNodeSelector from "@/containers/region-node";
 import ActivationModal from "@/containers/activation-mode";
@@ -44,9 +46,11 @@ import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
-
+  const iniliteChart = useSelector((state: any) => state.auth.accelerateChart); // 存储的游戏详情图表数据
+  
   const historyContext: any = useHistoryContext();
   const {
     identifyAccelerationData,
@@ -56,10 +60,9 @@ const GameDetail: React.FC = () => {
   } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // 启动游戏平台弹窗
-
   const [stopModalOpen, setStopModalOpen] = useState(false);
   const [delayOpen, setDelayOpen] = useState(false); // 延迟弹窗
+  
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(1); // 实时延迟
   const [packetLoss, setPacketLoss] = useState<any>(0); // 丢包率
@@ -67,40 +70,34 @@ const GameDetail: React.FC = () => {
   const [regionNode, setRegionNode] = useState("智能匹配-智能节点");
   const [chartData, setChartData] = useState<any>([]); // 柱形图数据示例
 
+  const [startLoading, setStartLoading] = useState(false); // 是否加载启动游戏中
+
   // 使用 useMemo 确保只有 data 变化时才会重新计算
   const memoizedData = useMemo(() => chartData, [chartData]);
 
-  const domName = (data: any = {}) => {
-    let fu = data?.region?.fu ? data?.region?.fu + "-" : "";
-    let dom = data?.node?.name || "";
+  // 初始化展示区服节点函数
+  const iniliteDomName = (data: any = {}) => {
+    const { region = {}, node = {} } = data;
+    const fu = region?.fu;
 
-    return fu + data?.region?.qu + "-" + dom;
+    return (fu ? fu + "-" : "") + region?.qu + "-" + (node?.name ?? "");
   };
 
   // 当前选择的区服，节点
-  const selectServerNode = (serverNode: any) => {
-    const region = serverNode?.selectRegion;
-    const node =
-      (serverNode?.nodeHistory || []).filter((item: any) => item?.is_select)?.[0] || {};
+  const handleSelectServer = (serverNode: any) => {
+    const { selectRegion = {}, nodeHistory = [] } = serverNode; // 解构选中区服 节点列表
+    const node = nodeHistory.filter((item: any) => item?.is_select)?.[0] || {}; // 选中节点
 
     return {
-      region,
+      region: selectRegion,
       node,
     };
   };
 
-  const showModalActive = () => {
-    setIsOpen(true);
-  };
-
+  // 打开区服节点弹窗
   const showModal = async () => {
     if (await checkShelves(detailData)) return; // 判断是否当前游戏下架
-
     setIsModalVisible(true);
-  };
-
-  const hideModal = () => {
-    setIsModalVisible(false);
   };
 
   // 停止加速
@@ -137,13 +134,11 @@ const GameDetail: React.FC = () => {
     );
   };
 
-  function formatTime(seconds: any) {
-    // 计算小时数
-    const hours = Math.floor(seconds / 3600);
-    // 计算剩余的分钟数
-    const minutes = Math.floor((seconds % 3600) / 60);
-    // 计算剩余的秒数
-    const remainingSeconds = seconds % 60;
+  // 处理时间格式函数
+  const formatTime = (seconds: any) => {
+    const hours = Math.floor(seconds / 3600); // 计算小时数
+    const minutes = Math.floor((seconds % 3600) / 60); // 计算剩余的分钟数
+    const remainingSeconds = seconds % 60; // 计算剩余的秒数
 
     // 将小时、分钟和秒数格式化为两位数
     const formattedHours = String(hours).padStart(2, "0");
@@ -152,27 +147,56 @@ const GameDetail: React.FC = () => {
 
     // 拼接成 HH:MM:SS 格式
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
-  }
+  };
 
-  function generateDataEvery10Seconds(value: any) {
-    const result = [];
+  // 生成图表数据函数
+  const generateChart = (value: any, packet: any) => {
     const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
-    const startTime = currentTime - 3 * 60 * 1000; // 获取 3 分钟前的时间戳
 
-    // 以 10 秒为间隔生成数据对象
-    for (let time = startTime; time <= currentTime; time += 10 * 1000) {
-      const data = {
-        timestamp: time, // 时间戳
-        value: 2, // 示例数据，可以根据需要修改
-      };
-      result.push(data);
+    // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
+    if (iniliteChart?.length === 0) {
+      const startTime = currentTime - 180005; // 获取 3分05秒 前的时间戳
+
+      // 以 5 秒为间隔生成数据对象 生成3分钟随机数据
+      for (let time = startTime; time <= currentTime - 5; time += 5 * 1000) {
+        const data: any = {
+          timestamp: time, // 时间戳
+          value: 0, // 示例数据，可以根据需要修改
+        };
+        iniliteChart.push(data);
+      }
     }
 
-    result[result.length - 1].value = value;
+    iniliteChart.shift(); // 删除第一个数据
+    iniliteChart.push({
+      // 添加当前数据
+      timestamp: currentTime,
+      value,
+      packet,
+    });
 
-    return result;
-  }
+    dispatch(setAccelerateChart(iniliteChart));
+    return iniliteChart;
+  };
 
+  // 生成丢包率函数 data = 数组
+  const generatePacket = (data: any) => {
+    let sum = 0; // 丢包率和
+    let count = 0; // 几个丢包率
+
+    data.forEach((item: any) => {
+      if (item.hasOwnProperty("packet")) {
+        sum += item.packet;
+        count++;
+      }
+    });
+
+    const averagePacket = Math.floor(sum / count); // 评价丢包率
+
+    return averagePacket || 0;
+  };
+
+  // 生成游戏可执行平台icon
   const findMappingIcon = (data: any) => {
     let platform = data?.pc_platform || []; // 同步加速的游戏，平台
 
@@ -200,112 +224,150 @@ const GameDetail: React.FC = () => {
             icon: iconMap?.[child],
           };
         }
+
+        return child;
       });
     }
 
     return resultData;
   };
 
-  useEffect(() => {
-    const find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-    const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
-    
-    const jsonString = JSON.stringify({
-      // params: { ip: node?.addr },
-      params: { addr: node?.addr, server: node?.server },
-    });
+  // 定义计时器 并且返回清除计时器
+  const startDelayTmer = (callback: any, value: any) => {
+    // 定义一个内部变量来存储定时器的标识符
+    let timerId: any = null;
 
-    historyContext?.accelerateTime?.startTimer();
-    setRegionNode(domName({ region, node }));
+    // 启动定时器
+    timerId = setInterval(() => {
+      // 执行回调函数
+      callback(value);
+    }, 5000);
 
-    (window as any).NativeApi_AsynchronousRequest(
-      "NativeApi_GetAddrDelay",
-      jsonString,
-      function (response: any) {
-        if (!response) {
-          console.error("Failure response from 详情丢包信息:");
-          setDelayOpen(true);
-        }
-        console.log("Success response from 详情丢包信息:", response);
+    // 返回一个函数，该函数用于停止定时器
+    return () => {
+      clearInterval(timerId);
+      dispatch(setAccelerateChart([])); // 还原加速图表存储的图表数据
+    };
+  };
 
-        //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-        const delay = JSON.parse(response)?.delay;
-        const lost_bag = delay < 2 ? 2 : delay;
-        const chart_list = generateDataEvery10Seconds(lost_bag);
+  // 启动游戏或者打开启动游戏路径
+  const startProgress = (data: any, start: any, event?: any) => {
+    const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
+    const startAssemble = startStorage ? JSON.parse(startStorage) : []; // 解析存储数据
+    const hitGame = startAssemble.filter((item: any) => item?.id === data?.id); // 当前游戏的启动信息
 
-        if (delay === 9999) {
-          setDelayOpen(true);
-        }
-
-        setChartData(chart_list); // 更新图表
-        setLostBag(lost_bag); // 更新延迟数
-        setPacketLoss(delay === 9999 ? 100 : 0); // 更新丢包率
-        setDetailData(find_accel);
-        dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
-      }
-    );
-  }, []);
-
-  // 每隔 10 秒增加计数器的值
-  useEffect(() => {
-    if ((window as any).stopDelayTimer) {
-      (window as any).stopDelayTimer()
+    // 如果是手动点击启动，防止捕获
+    if (event) {
+      event.stopPropagation();
     }
-    
-    const interval = setInterval(() => {
-      let find_accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-      const { region, node } = selectServerNode(find_accel?.serverNode); // 存储的区服 ip
 
-      const jsonString = JSON.stringify({
-        // params: { ip: node?.addr },
-        params: { addr: node?.addr, server: node?.server },
+    // 当前游戏是存储过游戏路径，且启动方式为自动启动
+    // 游戏为初始自动启动 或者 手动触发
+    if (
+      hitGame?.[0]?.start === start ||
+      (hitGame?.length > 0 && start === "human")
+    ) {
+      new Promise((resolve, reject) => {
+        (window as any).NativeApi_AsynchronousRequest(
+          "NativeApi_StartProcess",
+          JSON.stringify({
+            params: { path: hitGame?.[0]?.path },
+          }),
+          (response: string) => {
+            const res = JSON.parse(response)
+            
+            if (res?.success === 1) {
+              setStartLoading(true);
+              setTimeout(() => {
+                setStartLoading(false);
+              }, 5000);
+            }
+          }
+        );
       });
 
-      (window as any).NativeApi_AsynchronousRequest(
-        "NativeApi_GetAddrDelay",
-        jsonString,
-        function (response: any) {
-          console.log("Success response from 详情丢包信息:", response);
+      return;
+    }
 
-          //{"delay":32(这个是毫秒,9999代表超时与丢包)}
-          const delay = JSON.parse(response)?.delay;
-          const lost_bag = delay < 2 ? 2 : delay;
-          // 10秒比较一次是否到期，到期后停止加速
+    dispatch(setStartPathOpen(true)); // 打开启动路径弹窗
+  };
 
-          if (accountInfo?.userInfo?.is_vip)
-            forceStopAcceleration(accountInfo, stopSpeed);
+  // 获取客户端延迟
+  const fetchAddrDelay = (node: any) => {
+    try {
+      new Promise<void>((resolve, reject) => {
+        (window as any).NativeApi_AsynchronousRequest(
+          "NativeApi_GetAddrDelay",
+          JSON.stringify({
+            params: { addr: node?.addr, server: node?.server },
+          }),
+          (response: any) => {
+            console.log("详情丢包信息：", response);
+            let delay = JSON.parse(response)?.delay; // 返回信息 delay 毫秒,9999代表超时与丢包
 
-          setChartData((chart: any) => {
-            let chart_list = [...chart];
+            if (!response || delay >= 9999) {
+              setDelayOpen(true); // 延迟过高提示
+            }
 
-            chart_list.shift();
+            // 如果用户是vip，会进行vip到期判断处理
+            if (accountInfo?.userInfo?.is_vip) {
+              forceStopAcceleration(accountInfo, stopSpeed);
+            }
 
-            let lastElement = chart_list[chart_list.length - 1];
+            delay = delay < 2 ? 2 : delay; // 对延迟小于2进行处理，避免展示问题
 
-            let time = lastElement?.timestamp
-              ? lastElement?.timestamp + 10000
-              : new Date().getTime();
-            let newData = {
-              timestamp: time,
-              value: lost_bag,
-            };
+            const chart = generateChart(delay, delay === 9999 ? 100 : 0); // 图表展示数据
+            const packetLoss = generatePacket(chart); // 丢包率
 
-            chart_list.push(newData);
+            setChartData([...chart]);
+            setLostBag(delay);
+            setPacketLoss(packetLoss);
+            dispatch(updateDelay(delay));
+          }
+        );
+      });
+    } catch (error) {
+      console.log("游戏详情获取客户端延迟方法错误：", error);
+      setDelayOpen(true);
+    }
+  };
 
-            return chart_list;
-          }); // 更新图表
-          setLostBag(lost_bag); // 更新延迟数
-          setPacketLoss(delay === 9999 ? 100 : 0); // 更新丢包率
+  useEffect(() => {
+    const iniliteFun = () => {
+      const accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
+      const server = handleSelectServer(accel?.serverNode); // 存储的区服节点信息
 
-          dispatch(updateDelay(lost_bag)); // 更新 redux 延迟数
-        }
-      );
-    }, 10000);
+      // 如果计时器已经存在，则代表已经加速游戏
+      if ((window as any).stopDelayTimer) {
+        (window as any).stopDelayTimer(); // 进入游戏先进行清除旧的计时器
+      }
 
-    (window as any).stopDelayTimer = () => {
-      clearInterval(interval);
+      // 在未加速游戏时进行初始化是否启动游戏
+      // 通过标记 fromRefresh 来判断是否是刷新当前页面，避免刷新导致自动启动游戏触发
+      if (location?.state?.fromRefresh) {
+        startProgress(accel, "auto");
+      }
+
+      fetchAddrDelay(server?.node); // 调用客户端获取延迟方法
+      setDetailData(accel); // 更新游戏详情信息
+      historyContext?.accelerateTime?.startTimer(); // 调用详情加速计时器
+      setRegionNode(iniliteDomName(server)); // 更新区服节点展示
+
+      // 启动定时器，并返回一个可以用来停止定时器的函数
+      const stopTimer = startDelayTmer(fetchAddrDelay, server?.node);
+
+      (window as any).stopDelayTimer = () => {
+        stopTimer(); // 在 window 挂载停止计时器方法
+      };
     };
-  }, []);
+
+    // 清除状态信息，路由跳转到游戏详情必须携带标记 fromRefresh: true
+    if (location.state) {
+      // 在组件挂载时清除状态
+      navigate("/gameDetail", { replace: true, state: null });
+      iniliteFun();
+    }
+  }, [location, navigate]);
 
   return (
     <div className="home-module-detail">
@@ -330,56 +392,50 @@ const GameDetail: React.FC = () => {
           <div className="game-left">
             <div className="game-text">{detailData?.name}</div>
             {detailData?.pc_platform?.length > 0 && (
-                <div className="platfrom">
-                  <div className="text">已同步加速</div>
-                  <div className="icon-box">
-                    {findMappingIcon(detailData)?.length > 0 &&
-                      findMappingIcon(detailData)?.map((item: any) => {
-                        return <img key={item?.id} src={item?.icon} alt="" />;
-                      })}
-                  </div>
+              <div className="platfrom">
+                <div className="text">已同步加速</div>
+                <div className="icon-box">
+                  {findMappingIcon(detailData)?.length > 0 &&
+                    findMappingIcon(detailData)?.map((item: any) => {
+                      return <img key={item?.id} src={item?.icon} alt="" />;
+                    })}
                 </div>
-              )}
-            <div className="game-btn">
+              </div>
+            )}
+            <div
+              className="game-btn"
+              style={{
+                opacity: startLoading ? 0.5 : 1,
+                cursor: startLoading ? "no-drop" : "pointer",
+              }}
+            >
               <Button
                 className="Launching on-game"
+                style={{ cursor: startLoading ? "no-drop" : "pointer" }}
                 type="default"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const method = detailData?.activation_method;
-
-                  if (method) {
-                    new Promise((resolve, reject) => {
-                      (window as any).NativeApi_AsynchronousRequest(
-                        "NativeApi_StartProcess",
-                        JSON.stringify({
-                          params: { path: method?.filePath },
-                        }),
-                        (response: string) => {
-                          const parsedResponse = JSON.parse(response);
-                          if (parsedResponse.success === 1) {
-                            resolve(parsedResponse);
-                          } else {
-                            reject(parsedResponse);
-                          }
-                        }
-                      );
-                    });
-                  } else {
-                    showModalActive();
+                onClick={(event) => {
+                  if (!startLoading) {
+                    startProgress(detailData, "human", event);
                   }
                 }}
               >
                 <img src={activateIcon} width={18} height={18} alt="" />
-                <span>启动游戏</span>
+                <span>{startLoading ? "启动中" : "启动游戏"}</span>
               </Button>
-
-              <Button className="path" type="default" onClick={showModalActive}>
+              <Button
+                className="path"
+                style={{ cursor: startLoading ? "no-drop" : "pointer" }}
+                type="default"
+                onClick={() => {
+                  if (!startLoading) {
+                    dispatch(setStartPathOpen(true));
+                  }
+                }}
+              >
                 <div className="line" />
                 <img src={detailsCustomIcon} width={18} height={18} alt="" />
               </Button>
             </div>
-
             <Button
               className="down-game game-btn"
               type="default"
@@ -453,18 +509,11 @@ const GameDetail: React.FC = () => {
         <RegionNodeSelector
           open={isModalVisible}
           options={detailData}
-          onCancel={hideModal}
+          onCancel={() => setIsModalVisible(false)}
           stopSpeed={stopSpeed}
         />
       ) : null}
-      {isOpen && (
-        <ActivationModal
-          open={isOpen}
-          options={detailData}
-          notice={(e) => setDetailData(e)}
-          onClose={() => setIsOpen(false)}
-        />
-      )}
+      <ActivationModal options={detailData} />
       {stopModalOpen ? (
         <BreakConfirmModal
           type={"stopAccelerate"}

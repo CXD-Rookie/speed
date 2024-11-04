@@ -1,6 +1,6 @@
 import { useState, useEffect, Fragment, forwardRef, useImperativeHandle } from "react";
 import { useNavigate } from "react-router-dom";
-import { Modal, Tabs, Spin } from "antd";
+import { Modal, Tabs } from "antd";
 import type { TabsProps } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
@@ -11,6 +11,7 @@ import tracking from "@/common/tracking";
 import CustomRegion from "./region";
 import CustomNode from "./node";
 import BreakConfirmModal from "../break-confirm";
+import loadingGif from "@/assets/images/common/jiazai.gif";
 
 interface RegionNodeSelectorProps {
   open: boolean;
@@ -50,7 +51,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState("region"); // tab栏值
-    const [loading] = useState(false); // 初始化loading
+    const [loading, setLoading] = useState(false); // 初始化loading
     const [tableLoading, setTableLoading] = useState(false); // 刷新节点loading
     const [accelOpen, setAccelOpen] = useState(false); // 加速确认
     const [accelOpenType, setAccelOpenType] = useState("accelerate"); // 详情加速游戏类型
@@ -416,6 +417,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     // 获取每个区服的子区服列表
     const handleSubRegions = async (event: any = options) => {
       try {
+        setLoading(true);
+
         let res = await playSuitApi.playSuitInfo({
           system_id: 3,
           gid: event?.id,
@@ -430,12 +433,11 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         });
 
         setCurrentGameServer(data);
-        if (data) {
-          return data;
-        }
         return data;
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -444,7 +446,9 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         key: "region",
         label: "区服",
         children: loading ? (
-          <Spin className={"loading-spin"} size="large" />
+          <div className="loading-spin">
+            <img src={loadingGif} alt="" />
+          </div>
         ) : (
           <CustomRegion
             value={presentGameData}
@@ -475,6 +479,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             setSelectNode={setSelectNode}
             startAcceleration={startAcceleration}
             buildNodeList={buildNodeList}
+            refreshAndShowCurrentServer={refreshAndShowCurrentServer}
           />
         ),
       },
