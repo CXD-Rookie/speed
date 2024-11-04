@@ -269,6 +269,7 @@
 }
 
 .repair-tool-title {
+  font-size: 1.2vw;
   font-weight: bold;
   margin-top: 8px;
   margin-bottom: 4px;
@@ -277,9 +278,9 @@
 
   &::after {
     content: '>';
-    font-size: 16px; 
+    font-size: 1.6vw; 
     position: absolute;
-    line-height: 18px;
+    line-height: 1.6vw;
     right: -20px;
     top: 0;
   }
@@ -287,7 +288,7 @@
 
 
 .repair-tool-description {
-  font-size: 12px;
+  font-size: 1vw;
   color: #cccccc;
 }
 

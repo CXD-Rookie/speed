@@ -243,11 +243,12 @@ export const useGamesInitialize = () => {
         return { state: true }
       } else if (
         data?.[0]?.id === option?.id 
-        && data?.[0].update_time !== option?.update_time + 2
+        && data?.[0].update_time !== option?.update_time
       ) {
         const meGame = getGameList(); // 我的游戏
         const index = meGame.findIndex(item => item?.id === data?.[0]?.id);
         const obj = {
+          ...option,
           ...data?.[0],
           cover_img:
             `https://cdn.accessorx.com/${data?.[0]?.cover_img ?? data?.[0].background_img}`
