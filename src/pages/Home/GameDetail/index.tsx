@@ -274,8 +274,8 @@ const GameDetail: React.FC = () => {
             params: { path: hitGame?.[0]?.path },
           }),
           (response: string) => {
-            const res = JSON.parse(response)
-            
+            const res = JSON.parse(response);
+
             if (res?.success === 1) {
               setStartLoading(true);
               setTimeout(() => {
@@ -287,9 +287,9 @@ const GameDetail: React.FC = () => {
       });
 
       return;
+    }else if (event) {
+      dispatch(setStartPathOpen(true)); // 打开启动路径弹窗
     }
-
-    dispatch(setStartPathOpen(true)); // 打开启动路径弹窗
   };
 
   // 获取客户端延迟

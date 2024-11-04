@@ -1,3 +1,4 @@
+import eventBus from "@/api/eventBus";
 import tracking from "@/common/tracking";
 
 // 比较版本大小
@@ -29,18 +30,22 @@ const compareVersions = (version1 = "", version2 = "") => {
 const stopProxy = async (t = null) => {
   return new Promise((resolve, reject) => {
     try {
-      const jsonString = JSON.stringify({
-        params: {
-          user_token: localStorage.getItem("token"),
-          js_key: localStorage.getItem("StartKey"),
-        },
-      });
-
       window.NativeApi_AsynchronousRequest(
         "NativeApi_StopProxy",
-        jsonString || "",
+        JSON.stringify({
+          params: {
+            user_token: localStorage.getItem("token"),
+            js_key: localStorage.getItem("StartKey"),
+          },
+        }),
         (respose) => {
           tracking.trackBoostDisconnectPassive(0);
+
+          // 加速时服务端返回703异常弹窗
+          if (t === 703) {
+            eventBus.emit("showModal", { show: true, type: "serverFailure" });
+          }
+
           resolve(true); // 成功
         }
       );

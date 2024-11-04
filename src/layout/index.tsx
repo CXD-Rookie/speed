@@ -119,14 +119,14 @@ const Layouts: React.FC = () => {
 
   // 定义停止加速应该做的操作
   // 可接收 value 做关闭，退出操作 exit
-  const stopProcessReset = async (value: string = "") => {
+  const stopProcessReset = async (value: any = "") => {
     return new Promise(async (resolve, reject) => {
       try {
         if (localStorage.getItem("isAccelLoading") === "1") {
           return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
         }
 
-        await stopProxy(); // 调用停止加速
+        await stopProxy(value); // 调用停止加速
         await removeGameList("initialize"); // 更新我的游戏
 
         historyContext?.accelerateTime?.stopTimer();
@@ -446,7 +446,7 @@ const Layouts: React.FC = () => {
 
   // 在应用启动时挂载方法到 window 对象上
   useEffect(() => {
-    (window as any).speedError = stopProxy; // 客户端使用，业务不处理，用于判断加速异常的提示使用
+    (window as any).speedError = stopProcessReset; // 客户端使用，业务不处理，用于判断加速异常的提示使用
     (window as any).stopProcessReset = stopProcessReset; // 停止加速后应该更新的数据
     (window as any).stopSpeed = stopSpeed; // 客户端调用，业务不处理,托盘弹出的关闭按钮的方法
     (window as any).loginOutStopWidow = loginOut; // 退出登录操作函数
