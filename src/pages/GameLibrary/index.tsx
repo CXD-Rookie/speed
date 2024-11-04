@@ -140,8 +140,6 @@ const GameLibrary: React.FC = () => {
   // }, []);
 
   useEffect(() => {
-    console.log(111);
-    
     // 每次激活组件时重新请求数据并更新缓存
     fetchAndCacheGames();
     // 强制切换回 "限时免费" 标签并设置选中状态

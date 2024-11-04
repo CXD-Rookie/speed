@@ -96,7 +96,14 @@ const GameDetail: React.FC = () => {
 
   // 打开区服节点弹窗
   const showModal = async () => {
-    if (await checkShelves(detailData)) return; // 判断是否当前游戏下架
+    let shelves = await checkShelves(detailData);
+    let data = { ...detailData };
+
+    // 判断是否当前游戏下架
+    if (shelves?.state) return;
+    if (shelves?.data) data = shelves?.data;
+    
+    setDetailData(data);
     setIsModalVisible(true);
   };
 

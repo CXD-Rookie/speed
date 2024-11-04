@@ -204,18 +204,21 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     // 开始加速
     const startAcceleration = async (node: any = selectNode) => {
       const isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
-      const isShelves = await checkShelves(
-        { ...presentGameData},
+
+      let data = { ...presentGameData };
+      let shelves = await checkShelves(
+        { ...presentGameData },
         {
           onOk: onCancel,
           onTrigger: onCancel,
         }
       );
+
+      if (shelves?.state) return; // 判断是否当前游戏下架
+      if (shelves?.data) data = shelves?.data;
+
+      setPresentGameInfo(data);
       
-      if (isShelves) {
-        return; // 判断是否当前游戏下架
-      }
-        
       if (isFind) {
         // 在游戏详情中进行区服节点切换进行提示窗类型
         if (window.location.hash === "#/gameDetail") {

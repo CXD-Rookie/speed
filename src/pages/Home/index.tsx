@@ -78,7 +78,7 @@ const Home: React.FC = () => {
       if (type === "1") {
         dispatch(setDrawVipActive({ open: true })); // 领取兑换码弹窗
       } else {
-        dispatch(setFirstPayRP({ open: true }));
+        dispatch(setFirstPayRP({ open: true, type: Number(type) }));
       }
     } else {
       dispatch(setAccountInfo(undefined, undefined, true));

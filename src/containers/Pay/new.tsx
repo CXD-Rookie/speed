@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { setFirstPayRP } from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import "./new.scss";
@@ -11,7 +12,6 @@ import payApi from "@/api/pay";
 import eventBus from "@/api/eventBus";
 import tracking from "@/common/tracking";
 import closeIcon from "@/assets/images/common/cloture.svg";
-import { setFirstPayRP } from "@/redux/actions/modal-open";
 
 interface Commodity {
   id: string;
@@ -388,24 +388,22 @@ const PayModal: React.FC = (props) => {
               </div>
             )}
             {commodities?.[activeTabIndex] ? (
-              <div className="carousel new-carousel">
-                <div className="carousel-title">支付宝或微信扫码支付</div>
+              <div className="first-carousel">
                 <div className="carousel-price">
-                  {commodities?.[activeTabIndex]?.price}
-                  <span>元</span>
-                </div>
-                <div className="carousel-agreement">
-                  我已同意《
-                  <span
-                    style={{ cursor: "pointer" }}
-                    className="txt"
-                    onClick={handleClick}
-                    ref={divRef}
-                    data-title="https://cdn.accessorx.com/web/terms_of_service.html"
-                  >
-                    用户协议
+                  <span className="text">扫码支付：</span>
+                  <span className="icon">¥</span>
+                  <span className="price">
+                    {commodities?.[activeTabIndex]?.price}
                   </span>
-                  》
+                </div>
+                <div className="carousel-text">请使用[微信/支付宝]扫码</div>
+                <div
+                  className="user-text"
+                  onClick={handleClick}
+                  ref={divRef}
+                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                >
+                  用户协议
                 </div>
               </div>
             ) : null}

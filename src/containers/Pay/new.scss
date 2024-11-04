@@ -109,8 +109,47 @@
         width: fit-content;
         margin: 0 auto;
 
-        .new-carousel {
+        .first-carousel {
             width: fit-content;
+            margin-left: 1.6vw;
+
+            .carousel-price {
+                font-family: Roboto, Roboto-Bold;
+                margin-top: 0.8vw;
+                
+                .text {
+                    font-size: 1.6vw;
+                    color: #fff;
+                }
+
+                .icon {
+                    font-size: 1.6vw;
+                    color: #f86c34;
+                }
+
+                .price {
+                    font-size: 2.6vw;
+                    color: #f86c34;
+                    font-weight: Bold;
+                    margin-left: 0.4vw;
+                }
+            }
+
+            .carousel-text {
+                font-size: 1.2vw;
+                color: #ffffff;
+                opacity: 0.5;
+                margin-top: 1.2vw;
+            }
+
+            .user-text {
+                font-size: 1.2vw;
+                color: #ffffff;
+                opacity: 0.5;
+                margin-top: 1.2vw;
+                cursor: pointer;
+                text-decoration: underline;
+            }
         }
     }
 }
