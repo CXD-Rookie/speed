@@ -24,12 +24,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
     <script type="text/javascript" src="https://o.alicdn.com/captcha-frontend/aliyunCaptcha/AliyunCaptcha.js"></script>
     <script src="https://turing.captcha.qcloud.com/TCaptcha.js"></script>
+    <script>
+      window.VERSION = ''; // 添加版本号
+    </script>
   </head>
   <body>
     
     <!-- 浏览器不支持js脚本则展示标签中的内容 -->
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script>
+      // 获取当前 URL
+      const currentUrl = window.location.href;
+
+      // 获取时间戳
+      const timestamp = 1730390400 // new Date().getTime();
+
+      // 创建一个新的 URL 对象
+      const url = new URL(currentUrl);
+
+      // 添加或更新查询参数 v=时间戳
+      url.searchParams.set('v', timestamp);
+
+      // 更新页面地址，不会重新加载页面
+      window.history.replaceState(null, '', url);
+
+      // 输出最终带有版本号的 URL
+      console.log(url.toString());
+    </script>
     <script>
       var _czc = _czc || [];
       // 三方埋点
@@ -39,6 +61,7 @@
         var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(um, s);
       })();
+
       </script>
   </body>
 </html>
