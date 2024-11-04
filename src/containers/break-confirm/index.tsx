@@ -51,6 +51,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   // 内容文案
   const textContentObj: any = {
+    serverFailure: "服务器访问失败，请重新加速",
     accelerate: "启动加速将断开现有游戏加速，是否确认？",
     stopAccelerate: "停止加速可能导致游戏重连，是否要继续？",
     loginOut: identifyAccelerationData()?.[0]
