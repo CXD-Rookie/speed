@@ -29,6 +29,7 @@ import fixImg_3 from "@/assets/images/fixUtils/fix3@2x.png";
 import fixImg_6 from "@/assets/images/fixUtils/fix6@2x.png";
 import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
 import fix_failure from "@/assets/images/fixUtils/fix_failure@2x.png";
+import rightIcon from "@/assets/images/common/right-arrow.svg";
 import loginApi from "@/api/login";
 
 const { TabPane } = Tabs;
@@ -458,7 +459,7 @@ const SettingsModal: React.FC = (props) => {
               <div className="setting-item">
                 <div className="item-title">关闭窗口时</div>
                 <div className="off-item-content">
-                  <Radio.Group onChange={handleRadioChange} value={closeWindow}>
+                  <Radio.Group onChange={handleRadioChange} value={closeWindow} size="large">
                     <Radio value={"1"}>
                       <span style={{ color: "#fff", fontSize: "1.4vw" }}>
                         隐藏任务到托盘
