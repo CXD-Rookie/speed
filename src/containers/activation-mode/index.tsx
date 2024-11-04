@@ -41,7 +41,7 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
 
   const [platforms, setPlatforms] = useState<any>([]); // 所有的运营平台
   const [startPathError, setStartPathError] = useState("0"); // 启动路径错误类型 0 正常 1 无路径
-
+  
   // 取消函数
   const onCancel = () => {
     setStartPathError("0")
