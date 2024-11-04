@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { validityPeriod } from "../currency-exchange/utils";
 import { nodeDebounce } from "@/common/utils";
+import { setPayState } from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import tracking from "@/common/tracking";
@@ -13,12 +14,6 @@ import payApi from "@/api/pay";
 import PaymentModal from "../payment";
 
 import loadingGif from '@/assets/images/common/jiazai.gif';
-
-interface PayModalProps {
-  isModalOpen?: boolean;
-  setIsModalOpen?: (e: any) => void;
-  couponValue?: any;
-}
 
 interface Commodity {
   id: string;
@@ -49,9 +44,13 @@ interface ImageItem {
   params: any;
 }
 
-const PayModal: React.FC<PayModalProps> = (props) => {
-  const { isModalOpen, setIsModalOpen = () => {}, couponValue = {} } = props;
+const PayModal: React.FC = (props) => {
+  const dispatch = useDispatch();
 
+  const { open = false, couponValue = {} } = useSelector(
+    (state: any) => state?.modalOpen?.payState
+  );
+  
   const divRef = useRef<HTMLDivElement>(null); // 协议地址绑定引用ref
   const intervalIdRef: any = useRef(null); // 用于存储轮询计时器interval的引用
 
@@ -178,7 +177,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     setRefresh(0); // 重置控制页面是否重新请求次数
     clearInterval(intervalIdRef?.current); // 清除轮询计时器
     setActiveTabIndex(0); // 还原选中选中商品索引
-    setIsModalOpen(false); // 关闭会员充值页面
+    dispatch(setPayState({ open: false, couponValue: {} })); // 关闭会员充值页面
   };
 
   // 切换选中商品时
@@ -209,6 +208,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       let firstPurchase: any = {}; // 首次购买和首次续费的折扣
       let makeCoupon: any = []; // 优惠券列表
 
+      // 首次充值 首充续购
+      const { first_purchase, first_renewed } = firstAuth?.firstAuth;
+
       // 如果是第一次初始化请求, 执行只需要第一次执行的api
       if (refresh === 0) {
         const [payTypeRes, firstPurchaseRes, makeCouponRes] = await Promise.all(
@@ -227,12 +229,9 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           payType = payTypeRes?.data || {};
           firstPurchase = firstPurchaseRes?.data || {};
           makeCoupon = makeCouponRes?.data?.list || [];
-          
+
           setPayTypes(payType);
           setCouponData(makeCoupon);
-
-          // 首次充值 首充续购
-          const { first_purchase, first_renewed } = firstAuth?.firstAuth;
 
           // 没有首充首续
           // 只有首续
@@ -249,18 +248,18 @@ const PayModal: React.FC<PayModalProps> = (props) => {
           }
         }
       }
-      
+
       let couponObj: any = {};
-      
+
       // 优惠券列表数据 第一次打开页面也就是初始化使用接口直接返回优惠券列表 makeCoupon，
       // 手动刷新触发使用已经存储好的优惠券列表，过滤出最合适的优惠券
       if (
         !(Object.keys(couponValue)?.length > 0) &&
         makeCoupon?.length > 0 &&
-        !activeCoupon?.id
+        !activeCoupon?.id &&
+        !first_purchase &&
+        !first_renewed
       ) {
-        console.log(makeCoupon);
-        
         // 过滤合适的优惠券
         couponObj = findMinIndex(makeCoupon);
         setActiveCoupon(couponObj);
@@ -392,7 +391,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
     };
     // 初始化时从 localStorage 读取banner数据
     const storedData = JSON.parse(localStorage.getItem("all_data") || "[]");
-
+    
     setImages(storedData);
     eventBus.on("dataUpdated", handleDataUpdated);
 
@@ -408,7 +407,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         className="pay-module"
         title={"会员充值"}
         width={"67.6vw"}
-        open={isModalOpen}
+        open={open}
         onCancel={onCancel}
         destroyOnClose
         centered
@@ -455,7 +454,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
                   const isPurchase =
                     images?.length > 0 &&
                     ["purchase", "renewed"].includes(purchaseState);
-
+                  
                   return (
                     <div
                       key={index}

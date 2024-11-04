@@ -60,7 +60,10 @@ class PlaySuit {
   // 进程黑名单
   playProcessblacklist (params) {
     // const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/game/process/blacklist`, params);
+    return get(`${this.url}/game/process/blacklist`, {
+      platform: 3,
+      ...params,
+    });
   }
 }
 

@@ -11,12 +11,7 @@ import payApi from "@/api/pay";
 import eventBus from "@/api/eventBus";
 import tracking from "@/common/tracking";
 import closeIcon from "@/assets/images/common/cloture.svg";
-
-interface PayModalProps {
-  isModalOpen?: boolean;
-  setIsModalOpen?: (e: any) => void;
-  type?: any;
-}
+import { setFirstPayRP } from "@/redux/actions/modal-open";
 
 interface Commodity {
   id: string;
@@ -42,15 +37,17 @@ interface OrderInfo {
   update_time: number;
 }
 
-const PayModal: React.FC<PayModalProps> = (props) => {
-  const { isModalOpen, type, setIsModalOpen = () => {} } = props;
-
+const PayModal: React.FC = (props) => {
   const dispatch: any = useDispatch();
   const divRef = useRef<HTMLDivElement>(null);
   const intervalIdRef: any = useRef(null); // 用于存储interval的引用
-  //@ts-ignore
+
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const firstAuth = useSelector((state: any) => state.firstAuth);
+  const { open = false, type = "" } = useSelector(
+    (state: any) => state?.modalOpen?.firstPayRP
+  );
+
   const [commodities, setCommodities] = useState<Commodity[]>([]);
   const [, setPayTypes] = useState<{ [key: string]: string }>({});
   const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
@@ -309,10 +306,10 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       <Modal
         wrapClassName="pay-wrap-module"
         className="pay-module pay-module-new"
-        open={isModalOpen}
+        open={open}
         onCancel={() => {
           iniliteReset();
-          setIsModalOpen(false);
+          dispatch(setFirstPayRP({ open: false, type: "" }));
         }}
         title=""
         destroyOnClose
@@ -327,7 +324,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
             className="close-icon"
             onClick={() => {
               iniliteReset();
-              setIsModalOpen(false);
+              dispatch(setFirstPayRP({ open: false, type: "" }));
             }}
           >
             <img src={closeIcon} alt="" />
@@ -420,7 +417,7 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         info={orderInfo}
         setOpen={(e) => {
           iniliteReset();
-          setIsModalOpen(false);
+          dispatch(setFirstPayRP({ open: false, type: "" }));
           setShowPopup(e);
         }}
       />
@@ -428,13 +425,11 @@ const PayModal: React.FC<PayModalProps> = (props) => {
         <PayErrorModal
           accelOpen={payErrorModalOpen}
           setAccelOpen={(e) => {
-            // updateQrCode();
             setQRCodeState("normal");
             iniliteReset();
             setPayErrorModalOpen(e);
           }}
           onConfirm={() => {
-            // updateQrCode();
             setQRCodeState("normal");
             iniliteReset();
             setPayErrorModalOpen(false);

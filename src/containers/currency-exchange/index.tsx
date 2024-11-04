@@ -1,19 +1,19 @@
+// 口令兑换
 import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Modal, Table } from "antd";
 import type { TableProps } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setCurrencyOpen,
+  setDrawVipActive,
+  setPayState,
+} from "@/redux/actions/modal-open";
 import { nodeDebounce } from "@/common/utils";
 import { validityPeriod } from "./utils";
 
 import "./index.scss";
 import payApi from "@/api/pay";
-import PayModal from "../Pay";
 import currencyBanner from "@/assets/images/common/currency-banner.svg";
-import Active from "../active";
-
-interface CurrencyProps {
-  open: boolean;
-  setOpen: (event: boolean) => void;
-}
 
 interface DataType {
   key: string;
@@ -30,21 +30,17 @@ const iniliteStatusObj: any = {
   3: "已过期",
 }
 
-const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
-  const { open, setOpen } = props;
+const CurrencyExchange: React.FC = (props) => {
+  const dispatch: any = useDispatch();
 
+  const open = useSelector((state: any) => state?.modalOpen?.currencyOpen);
+  
   const [currencyCode, setCurrencyCode] = useState(""); // 输入的兑换码
   const [currencyState, setCurrencyState] = useState(""); // 兑换错误提示
   const [currencyTable, setCurrencyTable] = useState<any>([]); // 兑换的表格数据
 
-  const [promptOpen, setPromptOpen] = useState(false); // 是否触发领取成功提示
-  const [promptInfo, setPromptInfo] = useState({}); // 领取成功优惠信息
-
   const [pagination, setPagination] = useState(inilitePagination); // 兑换记录分页
   const [tableTotal, setTableTotal] = useState(0);
-
-  const [payOpen, setPayOpen] = useState(false); // 购买开关
-  const [payCoupon, setpayCoupon] = useState({}); // 立即使用的优惠券
 
   const [isHoverStatus, setIsHoverStatus] = useState("");
 
@@ -96,9 +92,8 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           onMouseLeave={() => setIsHoverStatus("")}
           onClick={() => {
             if (record?.status === 1) {
-              setpayCoupon(record);
-              setPayOpen(true);
-              setOpen(false);
+              dispatch(setPayState({ open: true, couponValue: record ?? {} })); // 会员充值页面
+              dispatch(setCurrencyOpen(false));
             }
           }}
         >
@@ -109,16 +104,15 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
   ];
 
   const onClose = () => {
-    setCurrencyCode("")
+    setCurrencyCode("");
     setCurrencyState("");
     setCurrencyTable([]);
-    setpayCoupon({})
-    setPromptInfo({})
-    setPayOpen(false)
-    setOpen(false);
-    setPromptOpen(false)
+    dispatch(setDrawVipActive({ value: {} }));
+    dispatch(setPayState({ open: false, couponValue: {} })); // 会员充值页面
+    dispatch(setCurrencyOpen(false));
+    dispatch(setDrawVipActive({ open: false }));
     setPagination(inilitePagination);
-    setTableTotal(0)
+    setTableTotal(0);
   };
 
   // 图形码验证通过回调兑换口令
@@ -136,8 +130,8 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
 
       if (res?.error === 0) {
         setCurrencyState("");
-        setPromptOpen(true);
-        setPromptInfo(res?.data ?? {});
+        dispatch(setDrawVipActive({ open: true })); // 领取兑换码弹窗
+        dispatch(setDrawVipActive({ value: res?.data ?? {} })); // 领取兑换码弹窗内容值
       } else {
         setCurrencyState(res?.message);
       }
@@ -270,23 +264,6 @@ const CurrencyExchange: React.FC<CurrencyProps> = (props) => {
           />
         </div>
       </Modal>
-      {promptOpen ? (
-        <Active
-          isVisible={promptOpen}
-          value={promptInfo}
-          onClose={() => {
-            setPromptOpen(false);
-            fetchRecords();
-          }}
-        />
-      ) : null}
-      {payOpen ? (
-        <PayModal
-          isModalOpen={payOpen}
-          setIsModalOpen={setPayOpen}
-          couponValue={payCoupon}
-        />
-      ) : null}
     </Fragment>
   );
 };

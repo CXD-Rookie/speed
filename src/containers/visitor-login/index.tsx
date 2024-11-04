@@ -4,10 +4,10 @@ import { Modal } from "antd";
 import { setAccountInfo } from "../../redux/actions/account-info";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { debounce } from "@/common/utils";
+import { setMinorState } from "@/redux/actions/modal-open";
 
 import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
-import MinorModal from "@/containers/minor";
 import loginApi from "@/api/login";
 import webSocketService from "@/common/webSocketService";
 
@@ -34,9 +34,6 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
-
-  const [isMinorOpen, setIsMinorOpen] = useState(false); // 绑定手机号成功弹窗
-  const [minorType, setMinorType] = useState("");
 
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
@@ -103,9 +100,13 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
           String(res?.data?.target_phone_status || 1),
           types?.[String(res?.data?.target_phone_status || 1)]
         );
-        
-        setMinorType(types?.[String(res?.data?.target_phone_status || 1)]);
-        setIsMinorOpen(true);
+
+        dispatch(
+          setMinorState({
+            open: true,
+            type: types?.[String(res?.data?.target_phone_status || 1)],
+          })
+        ); // 认证提示
         // 3个参数 用户信息 是否登录 是否显示登录
         dispatch(setAccountInfo(res.data.user_info, true, false));
         dispatch(updateBindPhoneState(false));
@@ -200,13 +201,6 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
           </div>
         </div>
       </Modal>
-      {isMinorOpen ? (
-        <MinorModal
-          type={minorType}
-          isMinorOpen={isMinorOpen}
-          setIsMinorOpen={setIsMinorOpen}
-        />
-      ) : null}
     </Fragment>
   );
 };

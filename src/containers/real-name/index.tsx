@@ -11,11 +11,10 @@ import React, { Fragment, useState } from "react";
 import { Button, Input, Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { closeRealNameModal } from "@/redux/actions/auth";
+import { setMinorState } from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import loginApi from "@/api/login";
-import MinorModal from "@/containers/minor";
-
 interface SettingsModalProps {
   isAdult?: { is_adult: boolean; type: string };
 }
@@ -31,8 +30,6 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
     name: "",
     id: "",
   }); // 身份认证信息
-
-  const [isMinorOpen, setIsMinorOpen] = useState(false); // 未成年是否充值，加速认证框
 
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const dispatch = useDispatch();
@@ -126,8 +123,7 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           name: true,
           id: true,
         });
-        // handleClose();
-        setIsMinorOpen(true);
+        dispatch(setMinorState({ open: true, type: "success" })); // 实名认证提示
         localStorage.setItem("isRealName", "0"); //已经实名
       } else if (res?.error === 1) {
         // 认证失败
@@ -135,7 +131,7 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           name: false,
           id: false,
         });
-        setIsMinorOpen(false);
+        dispatch(setMinorState({ open: false, type: "success" })); // 实名认证提示
         localStorage.setItem("isRealName", "1"); //没有实名
       }
     } catch (error) {
@@ -143,7 +139,7 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
     }
   };
 
-  return isRealOpen || isMinorOpen ? (
+  return isRealOpen ? (
     <Fragment>
       <Modal
         className="real-name-modal"
@@ -189,11 +185,6 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           </Button>
         </div>
       </Modal>
-      <MinorModal
-        type="success"
-        isMinorOpen={isMinorOpen}
-        setIsMinorOpen={setIsMinorOpen}
-      />
     </Fragment>
   ) : null;
 };

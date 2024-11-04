@@ -13,35 +13,45 @@ import { Button, Modal } from "antd";
 import { closeRealNameModal } from "@/redux/actions/auth";
 import { useNavigate } from "react-router-dom";
 import { setAccountInfo } from "../../redux/actions/account-info";
-import PayModal from "../Pay";
+import {
+  setPayState,
+  setMinorState,
+  setBindState,
+} from "@/redux/actions/modal-open";
 import "./index.scss";
 
 import realErrorIcon from "@/assets/images/common/real_error_quan.svg";
 import realSucessIcon from "@/assets/images/common/real-sucess.svg";
 import exclErrorIcon from "@/assets/images/common/excl.svg";
 
-interface MinorModalProps {
-  type: string;
-  isMinorOpen: boolean;
-  setIsMinorOpen: (open: boolean) => void;
-}
 const sucessStateMap = [1, 4, 5, 6, 7, 8];
 const errorStateMap = [2, 3, 9, 10, 11];
 
-const MinorModal: React.FC<MinorModalProps> = (props) => {
-  const { type, isMinorOpen, setIsMinorOpen } = props;
+const MinorModal: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch: any = useDispatch();
+
+  const { open = false, type = "" } = useSelector(
+    (state: any) => state?.modalOpen?.minorState
+  );
+  
   // 认证类型 2 - 加速时未成年 3 - 充值时未成年 1 - 认证成功
   const [realType, setRealType] = useState<any>();
-  const [isModalOpenVip, setIsModalOpenVip] = useState(false); // 是否是vip
 
-  const dispatch: any = useDispatch();
   const sign_expires = useSelector((state: any) => state.auth.sign_expires);
 
   const handleClose = () => {
-    dispatch(closeRealNameModal());
-    setIsMinorOpen(false);
-    
+    dispatch(closeRealNameModal()); // 关闭实名认证
+    dispatch(setMinorState({ open: false, type: "" })); // 关闭实名认证提示
+
+    if (["updatePhone", "unbind"].includes(type)) {
+      dispatch(setBindState({ open: false, type: "" })); // 关闭绑定类型弹窗
+    }
+
+    if (realType === 9) {
+      dispatch(setAccountInfo(undefined, undefined, true));
+    }
+
     if ([10, 11].includes(realType)) {
       navigate("/home");
       // 3个参数 用户信息 是否登录 是否显示登录
@@ -50,7 +60,7 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
 
     // 标记实名认证操作，当提醒加速服务即将到期，并且实名后使用此标记做判断
     if (sign_expires) {
-      setIsModalOpenVip(true);
+      dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
     }
   };
 
@@ -74,11 +84,11 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
     }
   }, [type]);
 
-  return isMinorOpen ? (
+  return open ? (
     <Fragment>
       <Modal
         className="real-name-minor-modal"
-        open={isMinorOpen}
+        open={open}
         destroyOnClose
         title="提示"
         width={"32vw"}
@@ -132,13 +142,6 @@ const MinorModal: React.FC<MinorModalProps> = (props) => {
           </div>
         )}
       </Modal>
-      {/* vip 充值弹窗 */}
-      {!!isModalOpenVip && (
-        <PayModal
-          isModalOpen={isModalOpenVip}
-          setIsModalOpen={(e) => setIsModalOpenVip(e)}
-        />
-      )}
     </Fragment>
   ) : null;
 };
