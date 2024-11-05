@@ -586,7 +586,7 @@ const PayModal: React.FC = (props) => {
                       }}
                     >
                       {couponData?.length < 1 ? (
-                        <span>暂无可用优惠券</span>
+                        <span className="no-data">暂无可用优惠券</span>
                       ) : activeCoupon?.id ? (
                         <span
                           className={`${
