@@ -134,11 +134,13 @@ const CustomNode: React.FC<NodeProps> = ({
                   show: true,
                   type: "nodeDelete",
                 });
+
                 // 将历史节点更新缓存信息
                 refreshAndShowCurrentServer(info);
                 return;
               }
 
+              setSelectNode(select);
               startAcceleration(select);
             }}
           >

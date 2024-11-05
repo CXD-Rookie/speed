@@ -96,9 +96,11 @@
         }
 
         .minType, .closeType {
+          width: 1.2vw;
+          height: 1.2vw;
           filter: brightness(100%);
         }
-
+        
         .minType:hover, .closeType:hover {
           filter: brightness(150%);
         }
@@ -118,106 +120,4 @@
     height: 91vh;
     background-color: var(--speed-dominant-background-color);
   }
-}
-
-.ant-tabs-ink-bar {
-  width: 2vw !important;
-  height: 0.3vh !important;
-  background: #f86c34 !important;
-  border-radius: 0.2vw !important;
-}
-
-.ant-tabs-nav::before {
-  border: none !important;
-}
-
-.ant-tabs-nav-wrap {
-  height: 6vh !important;
-}
-
-.ant-tabs-nav-list {
-  margin: 0 auto !important;
-  column-gap: 10vw !important;
-}
-
-.ant-tabs .ant-tabs-tab .ant-tabs-tab-active {
-  color: #fff !important;
-}
-
-.ant-tabs-tab,
-.ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible),
-.ant-tabs .ant-tabs-tab-remove:focus:not(:focus-visible),
-.ant-tabs .ant-tabs-tab-btn:active, 
-.ant-tabs .ant-tabs-tab-remove:active {
-  font-size: 1.6vw !important;
-  color: #999 !important;
-}
-
-.ant-tabs-tab:hover,
-.ant-tabs-tab:active,
-.ant-tabs-tab-btn:hover,
-.ant-tabs-tab-btn:active {
-  color: #fff !important;
-}
-
-.ant-modal-root .ant-modal-mask {
-  background-color: rgba(0, 0, 0, 0.8) !important;
-}
-
-.ant-dropdown, :where(.css-dev-only-do-not-override-usln0u) .ant-dropdown {
-  top: 9vh !important;
-}
-
-.ant-dropdown .ant-dropdown-menu {
-  background: #3E3E4A !important;
-  border-radius: var(--speed-dominant-border-radius) !important;
-}
-
-.ant-dropdown-menu-item {
-  width: 12.8vw;
-  height: 4.8vh;
-  border-radius: var(--speed-dominant-border-radius) !important;
-  padding: 0 !important;
-  align-items: normal !important;
-}
-
-.ant-dropdown-menu-item:hover {
-  background: rgba(255,255,255,0.10) !important;
-}
-
-.ant-dropdown-menu-item .public-style {
-  width: 100%;
-  height: 100%;
-  font-size: 1.4vw;
-  color: #fff !important;
-  border-radius: var(--speed-dominant-border-radius) !important;
-  line-height: 4.8vh;
-  padding-left: 1vw;
-}
-
-.ant-dropdown-menu-item-divider {
-  width: 10.8vw !important;
-  border-top: 0.075vh solid rgba(255,255,255,0.10) !important; /* 你想要的横线颜色 */
-  margin: 3vh 0 2.1vh 1vw !important; /* 调整横线的上下间距 */
-}
-
-/* 隐藏浏览器自带滚动条 */
-::-webkit-scrollbar {
-  width: 1.2vw; /* 设置滚动条宽度 */
-}
-
-/* 滚动条轨道 */
-::-webkit-scrollbar-track {
-  background: transparent; /* 设置滚动条轨道背景色 */
-}
-
-/* 滚动条滑块 */
-::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.5); /* 设置滚动条滑块背景色，这里设置为半透明的黑色 */
-  border-radius: 0.6vw; /* 设置滑块圆角 */
-}
-
-/* 滚动条滑块悬停状态 */
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.7); /* 设置滚动条滑块悬停状态下的背景色 */
 }

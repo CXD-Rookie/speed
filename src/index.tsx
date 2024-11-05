@@ -18,7 +18,7 @@ import { ConfigProvider } from "antd";
 import zhCN from "antd/locale/zh_CN";
 import dayjs from "dayjs";
 
-import "./assets/css/index.css";
+import "./index.css";
 import "dayjs/locale/zh-cn";
 
 import { store } from "./redux/store";

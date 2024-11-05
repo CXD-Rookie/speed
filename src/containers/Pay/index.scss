@@ -14,15 +14,18 @@
   .ant-modal-close {
     width: 1.2vw;
     height: 1.2vw;
-    right: 1.2vw;
-    top: 1.8vh;
-  }
-
-  .ant-modal-title,
-  .ant-modal-close-x {
     opacity: 0.5;
     font-size: 1.2vw;
-    font-weight: Regular;
+    color: #ffffff;
+    position: absolute;
+    top: 1.2vw;
+    right: 1.6vw;
+  }
+
+  .ant-modal-title {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: 500 !important;
     color: #ffffff;
   }
   
@@ -336,6 +339,10 @@
           cursor: pointer;
           margin-top: 1.2vh;
 
+          .no-data {
+            color: #999;
+          }
+          
           .triangles-bottom {
             width: 0;
             height: 0;

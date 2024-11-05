@@ -149,7 +149,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           tracking.trackBoostDisconnectManual("手动停止加速");
           historyContext?.accelerateTime?.stopTimer();
           removeGameList("initialize"); // 更新我的游戏
-
+          
           const game = {
             ...presentGameData,
             serverNode: {
@@ -291,14 +291,19 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             }
           })
         );
-
+        
         const sortedData = updatedNodes.sort((a, b) => {
-          if (a.health !== b.health) {
+          if (
+            a.health !== b.health &&
+            a.delay < 9999 &&
+            a.delay < 9999
+          ) {
             return a.health - b.health; // 首先比较 health 字段
           } else {
             return a.delay - b.delay; // 如果 health 相同，再比较 delay 字段
           }
         });
+        
         return sortedData;
       } catch (error) {
         console.log("初始化获取所有的加速服务器列表:", error);
@@ -444,6 +449,20 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       }
     };
 
+    const fastestNode = async (value: any, option: any) => {
+      let nodes: any = [];
+
+      if (option?.isNode || (!option?.isNode && !option?.isAuto)) {
+        const allNodes = await buildNodeList(value, option);
+        const node = allNodes?.[0];
+
+        nodes = await updateGamesDom(node, option);
+        option.serverNode.nodeHistory = nodes;
+      }
+
+      return option;
+    };
+
     const items: TabsProps["items"] = [
       {
         key: "region",
@@ -489,19 +508,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     ];
 
     useImperativeHandle(ref, () => ({
-      getFastestNode: async (value: any, option: any) => {
-        let nodes: any = [];
-
-        if (option?.isNode || (!option?.isNode && !option?.isAuto)) {
-          const allNodes = await buildNodeList(value, option);
-          const node = allNodes?.[0];
-
-          nodes = await updateGamesDom(node, option);
-          option.serverNode.nodeHistory = nodes;
-        }
-
-        return option;
-      },
+      getFastestNode: fastestNode,
     }));
 
     useEffect(() => {
@@ -515,6 +522,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
       if (open) {
         iniliteFun();
+      }
+
+      (window as any).fastestNode = fastestNode
+
+      return () => {
+        delete (window as any).fastestNode;
       }
     }, [open]);
 

@@ -3,7 +3,7 @@
     width: 67.6vw;
     height: 75vh;
     background-color: #3e3e4a;
-    padding: 2.4vh 1.2vw;
+    padding: 1.2vw 2.4vh;
   }
 
   & .loading-spin {
@@ -17,19 +17,25 @@
     height: 2.4vh;
     color: #fff;
     background-color: #3e3e4a;
+    font-weight: Regular !important;
     margin-bottom: 0;
   }
 
   .ant-modal-close {
     width: 1.2vw;
     height: 1.2vw;
-  }
-
-  .ant-modal-title,
-  .ant-modal-close-x {
     opacity: 0.5;
     font-size: 1.2vw;
-    font-weight: Regular;
+    color: #ffffff;
+    position: absolute;
+    top: 1.2vw;
+    right: 1.6vw;
+  }
+
+  .ant-modal-title {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: 500 !important;
     color: #ffffff;
   }
 
@@ -183,7 +189,7 @@
       text-align: left;
       color: #ffffff;
       line-height: 2.4vh;
-      bottom: 7.2vh;
+      bottom: 8.4vh;
       left: calc(50% - 3.5vw);
       cursor: pointer;
     }
@@ -276,7 +282,7 @@
       }
 
       .ant-table-tbody > tr > td {
-        font-size: 1.1vw;
+        font-size: 1.4vw;
         color: #fff;
         padding: 1.42vh 1.2vw;
         background-color: #3e3e4a;

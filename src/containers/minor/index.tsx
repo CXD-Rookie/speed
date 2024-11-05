@@ -26,6 +26,12 @@ import exclErrorIcon from "@/assets/images/common/excl.svg";
 
 const sucessStateMap = [1, 4, 5, 6, 7, 8];
 const errorStateMap = [2, 3, 9, 10, 11];
+const largeMap = [
+  "acceleration",
+  "recharge",
+  "remoteUpdateBind",
+  "remotethirdBind",
+];
 
 const MinorModal: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +40,7 @@ const MinorModal: React.FC = () => {
   const { open = false, type = "" } = useSelector(
     (state: any) => state?.modalOpen?.minorState
   );
-  
+
   // 认证类型 2 - 加速时未成年 3 - 充值时未成年 1 - 认证成功
   const [realType, setRealType] = useState<any>();
 
@@ -83,11 +89,15 @@ const MinorModal: React.FC = () => {
       setRealType(typeObj?.[type]);
     }
   }, [type]);
-
+  
   return open ? (
     <Fragment>
       <Modal
-        className="real-name-minor-modal"
+        className={`real-name-minor-modal ${
+          largeMap.includes(type)
+            ? "real-name-minor-modal-first"
+            : "real-name-minor-modal-second"
+        }`}
         open={open}
         destroyOnClose
         title="提示"
@@ -98,7 +108,7 @@ const MinorModal: React.FC = () => {
         onCancel={() => handleClose()}
       >
         {errorStateMap.includes(realType) && (
-          <div className="real-sueccess-modal-content real-error-modal-content">
+          <div className="real-error-modal-content">
             <img
               src={realType === 9 ? exclErrorIcon : realErrorIcon}
               width={69}

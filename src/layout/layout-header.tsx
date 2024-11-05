@@ -160,7 +160,10 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
               <div
                 className="public-style"
                 onClick={() =>
-                  eventBus.emit("showModal", { show: true, type: "exit" })
+                  eventBus.emit("showModal", {
+                    show: true,
+                    type: "loginOut",
+                  })
                 }
               >
                 退出登录

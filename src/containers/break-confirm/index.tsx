@@ -156,8 +156,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
     switch (noticeType) {
       case "exit":
-        (window as any).loginOutStopWidow();
-        break
+        (window as any)?.stopProcessReset("exit"); // 关闭主程序
+        break;
       case "renewalReminder":
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 

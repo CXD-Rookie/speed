@@ -13,7 +13,8 @@ import { validityPeriod } from "./utils";
 
 import "./index.scss";
 import payApi from "@/api/pay";
-import currencyBanner from "@/assets/images/common/currency-banner.svg";
+import currencyBanner from "@/assets/images/common/currency-banner.png";
+import noDataIcon from "@/assets/images/common/no-data.svg";
 
 interface DataType {
   key: string;
@@ -48,12 +49,16 @@ const CurrencyExchange: React.FC = (props) => {
     {
       title: "兑换内容",
       dataIndex: "redeem_code",
+      width: 100,
+      ellipsis: true,
       render: (redeem_code) => (
         <span className="code-columns-render">{redeem_code?.name}</span>
       ),
     },
     {
       title: "兑换码",
+      width: 70,
+      ellipsis: true,
       dataIndex: "redeem_code",
       render: (redeem_code) => (
         <span className="code-columns-render">{redeem_code?.redeem_code}</span>
@@ -61,6 +66,8 @@ const CurrencyExchange: React.FC = (props) => {
     },
     {
       title: "有效期",
+      width: 100,
+      ellipsis: true,
       render: (record) => (
         <span
           className="record-columns-render"
@@ -76,6 +83,8 @@ const CurrencyExchange: React.FC = (props) => {
     },
     {
       title: "状态",
+      width: 70,
+      ellipsis: true,
       align: "right",
       render: (record) => (
         <span
@@ -224,7 +233,7 @@ const CurrencyExchange: React.FC = (props) => {
         open={open}
         onCancel={onClose}
         title="我的优惠券"
-        width={"67.6vw"}
+        width={"45vw"}
         centered
         maskClosable={false}
         footer={null}
@@ -251,17 +260,24 @@ const CurrencyExchange: React.FC = (props) => {
               立即兑换
             </Button>
           </div>
-          <Table
-            className="table"
-            dataSource={currencyTable}
-            columns={currencyTable?.length > 0 ? columns : []}
-            rowKey={"id"}
-            pagination={false}
-            onScroll={nodeDebounce(handleScroll, 200)}
-            scroll={{
-              y: `30vh`,
-            }}
-          />
+          {currencyTable?.length > 0 ? (
+            <Table
+              className="table"
+              dataSource={currencyTable}
+              columns={currencyTable?.length > 0 ? columns : []}
+              rowKey={"id"}
+              pagination={false}
+              onScroll={nodeDebounce(handleScroll, 200)}
+              scroll={{
+                y: `26vh`,
+              }}
+            />
+          ) : (
+            <div className="no-data-box">
+              <img src={noDataIcon} alt="" />
+              <div>暂无数据</div>
+            </div>
+          )}
         </div>
       </Modal>
     </Fragment>

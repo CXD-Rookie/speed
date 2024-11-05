@@ -264,7 +264,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
         // 游戏本身的pc_platform为空时 执行文件运行平台默认为空
       let { executable, pc_platform } = gameFiles;
-
+      
       // 同步加速商店的进程
       if (option?.pc_platform?.length > 0) {
         const gameResult = await queryGameIdByPlatform(
@@ -284,8 +284,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       );
 
       const processBlack = JSON.parse(localStorage.getItem("processBlack") ?? "[]"); // 进程黑名单
+      
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { addr = "", server_v2, id } = option.serverNode.selectNode; //目前只有一个服务器，后期增多要遍历
+      const { addr = "", server_v2, id } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -299,7 +300,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       
       const jsonResult = JSON.stringify({
         running_status: true,
-        accelerated_apps: [...uniqueExecutable, ...processBlack],
+        accelerated_apps: [...uniqueExecutable],
         process_blacklist: [...processBlack],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
@@ -367,6 +368,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         );
       });
     } catch (error) {
+      console.log("实际加速函数错误", error);
       return false;
     }
   };
@@ -384,10 +386,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     stopAcceleration(); // 停止加速
     
     // 进行重新ping节点
-    if (childRef?.current) {
-      option = await childRef?.current?.getFastestNode(selectRegion, option);
+    if ((window as any).fastestNode) {
+      option = await (window as any).fastestNode(selectRegion, option);
+      // option = await childRef?.current?.getFastestNode(selectRegion, option);
     }
-
+    
     const nodeHistory = option?.serverNode?.nodeHistory || [];
     const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
     
@@ -413,10 +416,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         }
         
-        // 暂时注释 实际生产打开
         if (isCheck?.pre_check_status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
-
+          
           if (state?.state) {
             accelerateGameToList(option, {
               acc_platform: state?.platform,
@@ -705,7 +707,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 <div className="accelerating-content">
                   {locationType === "home" && (
                     <>
-                      <div className="instant-delay">即时延迟</div>
+                      <div className="instant-delay">实时延迟</div>
                       <div className="speed">
                         {accDelay || 2}
                         <span>ms</span>
