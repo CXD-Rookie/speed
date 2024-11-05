@@ -1,7 +1,6 @@
 .real-name-minor-modal {
   .ant-modal-content {
     width: 32vw !important;
-    height: 36vh !important;
     background-color: #3e3e4a;
     padding: 1.2vw 2.4vh;
   }
@@ -26,21 +25,25 @@
     color: #ffffff;
   }
 
-  .real-sueccess-modal-content {
+  .real-sueccess-modal-content,
+  .real-error-modal-content {
     width: 100%;
     text-align: center;
     padding-top: 3vh;
 
     & p {
       width: 28vw;
-      // opacity: 0.5;
       font-size: 1.4vw;
-      font-weight: Regular;
       text-align: center;
       color: #fff;
       line-height: 3vh;
       margin-top: 3vh;
       word-break: break-all;
+    }
+
+    img {
+      width: 4vw;
+      height: 4vw;
     }
 
     .real-sueccess-btn {
@@ -52,7 +55,6 @@
       background: #f86c34;
       border-radius: 3.3vh;
       border: none;
-      margin-top: 4.2vh;
 
       &:hover, &:active {
         color: #ffffff;
@@ -60,11 +62,30 @@
       }
     }
   }
+}
 
+.real-name-minor-modal-second {
+  .ant-modal-content {
+    height: 33vh !important;
+  }
+
+  .real-sueccess-modal-content,
   .real-error-modal-content {
-    & p {
-      text-align: center;
-      margin: 0 auto;
+    & .real-sueccess-btn {
+      margin-top: 3.3vh !important;
+    }
+  }
+}
+
+.real-name-minor-modal-first {
+  .ant-modal-content {
+    height: 36vh !important;
+  }
+
+  .real-sueccess-modal-content,
+  .real-error-modal-content {
+    & .real-sueccess-btn {
+      margin-top: 3.6vh !important;
     }
   }
 }

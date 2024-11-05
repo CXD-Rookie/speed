@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Upload, Button, Input, message } from "antd";
-import { UploadOutlined, CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 
 import axios from "axios";
 import feedbackApi from "../../api/issue";
 import "./FeedbackForm.scss"; // 自定义的样式文件
+import tickIcon from "@/assets/images/common/tick.png";
 
 interface FeedbackFormProps {
   onClose: () => void; // 用于关闭表单的回调函数
@@ -85,25 +86,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       setContact(value);
     }
   };
-
-  // 处理文件上传成功
-  const handleUploadSuccess = (info: any) => {
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} 上传成功`);
-      const imageUrl = info.file.response.data.url; // 获取服务器返回的图片 URL
-      setImages([...images, { url: imageUrl, uid: info.file.uid }]); // 更新图片列表
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} 上传失败`);
-    }
-  };
-
-  // 上传组件中的上传按钮渲染
-  const uploadButton = (
-    <div>
-      <UploadOutlined />
-      <div style={{ marginTop: 8 }}>上传</div>
-    </div>
-  );
 
   // 移除上传的图片
   const handleImageRemove = (file: any) => {
@@ -269,6 +251,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
               onClick={() => handleTypeSelect(type.id)}
             >
               {type.value}
+              {selectedType === type.id && <img className="tick" src={tickIcon} alt="" />}
             </button>
           ))}
         </div>

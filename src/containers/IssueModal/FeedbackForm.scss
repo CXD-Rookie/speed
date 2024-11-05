@@ -46,7 +46,7 @@
     text-align: center;
     line-height: 5.3vh;
     border-radius: 1vh;
-    border: 1px solid transparent;
+    border: 0.1vw solid transparent;
     // margin: 1.6vh 1.5vw 0 0;
     cursor: pointer;
     position: relative;
@@ -55,24 +55,20 @@
 
 .feedback-popup .type-btn.selected {
     border-color: #F86C34;
-    /* 选中状态下边框颜色 */
     color: #F86C34;
-    /* 选中状态下文字颜色 */
-}
 
-.feedback-popup .type-btn.selected::before {
-    content: "\2713";
-    /* 对号的 Unicode */
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    right: 0.1vw;
-    width: 1vw;
-    height: 1.5vh;
-    color: #fff;
-    line-height: 3vh;
-    text-align: center;
-    z-index: 2;
+    img {
+        display: inline-block;
+        position: absolute;
+        top: 0.3vw;
+        right: 0.3vw;
+        width: 1vw;
+        height: 1vw;
+        color: #fff;
+        line-height: 3vh;
+        text-align: center;
+        z-index: 2;
+    }
 }
 
 .feedback-popup .type-btn.selected::after {
@@ -171,7 +167,7 @@
     top: -1.2vw;
     right: -1.2vw;
     text-align: center;
-    line-height: 2.4vw;
+    line-height: 7.5vw;
     background-color: #F86C34;
     border-radius: 50%;
     color: #fff;
