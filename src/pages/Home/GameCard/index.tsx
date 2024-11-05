@@ -299,7 +299,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       
       const jsonResult = JSON.stringify({
         running_status: true,
-        accelerated_apps: [...uniqueExecutable, ...processBlack],
+        accelerated_apps: [...uniqueExecutable],
         process_blacklist: [...processBlack],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
