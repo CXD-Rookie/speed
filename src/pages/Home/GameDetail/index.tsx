@@ -42,6 +42,7 @@ import oculusIcon from "@/assets/images/common/Oculus@2x.png";
 import garenaIcon from "@/assets/images/common/Garena@2x.png";
 import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
 import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
+import toggleIcon from "@/assets/images/home/toggle.png";
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -455,7 +456,10 @@ const GameDetail: React.FC = () => {
           <div className="game-right">
             <div className="info-switch info-common-style" onClick={showModal}>
               <span>{regionNode}</span>
-              <span>切换</span>
+              <span>
+                <img src={toggleIcon} alt=""/>
+                切换
+              </span>
             </div>
             <div className="info-speed info-common-style">
               <div className="keep speed-common">

@@ -27,11 +27,14 @@
   }
 }
 
-
 .custom-dropdown-title-tooltip {
+  width: 16.5vw;
+  height: 4.5vw;
+  font-size: 1.2vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1.2vw 1.6vw !important;
   
   & img {
     width: 1.2vw;
