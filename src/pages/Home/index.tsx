@@ -23,6 +23,8 @@ import Swiper from "../../containers/swiper/index";
 import GameCardCopy from "./GameCard";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
+import gamesBlackIcon from "@/assets/images/home/games_black.png";
+import rechargeBlackIcon from "@/assets/images/home/recharge_black.png";
 import emptyIcon from "@/assets/images/home/empty.svg";
 
 import "./style.scss";
@@ -143,9 +145,22 @@ const Home: React.FC = () => {
             className={`membership-recharge ${
               images?.length > 0 ? "areas-list-box-auto" : "areas-list-box"
             }`}
+            style={
+              images?.length > 0 ?
+                {
+                  height: "20vh",
+                  width: "calc(50% - 0.8vw)",
+                  color: "#683d11",
+                  fontWeight: "bold",
+                  backgroundImage: "linear-gradient(to bottom right, #f8e7d6, #fdd9b3)"
+                } : {}
+            }
             onClick={openModal}
           >
-            <img src={rechargeIcon} alt="" />
+            <img
+              src={images?.length > 0 ? rechargeBlackIcon : rechargeIcon}
+              alt=""
+            />
             会员充值
           </div>
           <div
@@ -154,7 +169,10 @@ const Home: React.FC = () => {
             }`}
             onClick={() => navigate("/myGames")}
           >
-            <img src={gamesIcon} alt="" />
+            <img
+              src={images?.length > 0 ? gamesBlackIcon : gamesIcon}
+              alt=""
+            />
             我的游戏 ({getGameList()?.length})
           </div>
         </div>

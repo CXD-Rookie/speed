@@ -220,14 +220,14 @@
           background: #ffffff;
           display: flex;
           align-items: center;
-          justify-content: center;
           column-gap: 0.8vw;
           cursor: pointer;
 
           img {
             width: 1.8vw;
-            height: 2.7vh;
+            height: 1.8vw;
             position: static;
+            margin-left: 2.8vw
           }
         }
       };
@@ -296,7 +296,7 @@
       & .down-accelerate {
         width: 15vw;
         height: 5.4vh;
-        font-size: var(--speed-dominant-font-size);
+        font-size: 1.6vw;
         border-radius: 2.7vh;
         margin-left: calc(50% - 7.5vw);
         margin-top: 10vh;

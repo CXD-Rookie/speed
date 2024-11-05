@@ -1,7 +1,7 @@
 .currency-exchange {
   .ant-modal-content {
-    width: 67.6vw;
-    height: 75vh !important;
+    width: 45vw;
+    height: 69vh !important;
     background-color: #fff;
     border-radius: 3.2vh;
     position: relative;
@@ -29,7 +29,8 @@
   }
 
   .currency-banner {
-    width: 100%;
+    width: 45vw;
+    height: auto;
     position: absolute;
     top: 0;
     left: 0;
@@ -156,6 +157,25 @@
       // .ant-table-row:hover .record-columns-render {
       //   color: #f86c34;
       // }
+    }
+
+    .no-data-box {
+      width: 100%;
+      height: 30vh;
+
+      img {
+        width: 6.9vw;
+        height: 6.75vw;
+        margin-left: 19vw;
+        margin-top: 8vh;
+      }
+
+      div {
+        width: 100%;
+        color: #999999;
+        font-size: 1.2vw;
+        text-align: center;
+      }
     }
   }
 }

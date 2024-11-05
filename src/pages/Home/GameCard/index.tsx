@@ -705,7 +705,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 <div className="accelerating-content">
                   {locationType === "home" && (
                     <>
-                      <div className="instant-delay">即时延迟</div>
+                      <div className="instant-delay">实时延迟</div>
                       <div className="speed">
                         {accDelay || 2}
                         <span>ms</span>

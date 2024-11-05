@@ -96,9 +96,11 @@
         }
 
         .minType, .closeType {
+          width: 1.2vw;
+          height: 1.2vw;
           filter: brightness(100%);
         }
-
+        
         .minType:hover, .closeType:hover {
           filter: brightness(150%);
         }
