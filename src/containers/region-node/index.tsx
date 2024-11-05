@@ -149,7 +149,8 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           tracking.trackBoostDisconnectManual("手动停止加速");
           historyContext?.accelerateTime?.stopTimer();
           removeGameList("initialize"); // 更新我的游戏
-
+          console.log(selectNode);
+          
           const game = {
             ...presentGameData,
             serverNode: {
