@@ -291,14 +291,19 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             }
           })
         );
-
+        
         const sortedData = updatedNodes.sort((a, b) => {
-          if (a.health !== b.health) {
+          if (
+            a.health !== b.health &&
+            a.delay < 9999 &&
+            a.delay < 9999
+          ) {
             return a.health - b.health; // 首先比较 health 字段
           } else {
             return a.delay - b.delay; // 如果 health 相同，再比较 delay 字段
           }
         });
+        
         return sortedData;
       } catch (error) {
         console.log("初始化获取所有的加速服务器列表:", error);
