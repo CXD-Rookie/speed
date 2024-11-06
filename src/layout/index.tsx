@@ -145,8 +145,25 @@ const Layouts: React.FC = () => {
         }
       })
       
-      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(result));
-      return result;
+      const filteredArray = result.filter((item: any) => {
+        // 检查 item 是否为 undefined 或 null
+        if (item === undefined || item === null) {
+          return false;
+        }
+        // 检查 item 是否为空对象 {}
+        if (
+          typeof item === "object" &&
+          item !== null &&
+          Object.keys(item).length === 0
+        ) {
+          return false;
+        }
+        // 其他情况保留
+        return true;
+      });
+
+      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(filteredArray));
+      return filteredArray;
     } catch (error) {
       console.log("初始化更新游戏", error);
     }
