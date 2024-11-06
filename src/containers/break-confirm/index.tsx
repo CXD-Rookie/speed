@@ -155,6 +155,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
+      case "loginOut":
+        (window as any).loginOutStopWidow()
+        break;
       case "exit":
         (window as any)?.stopProcessReset("exit"); // 关闭主程序
         break;

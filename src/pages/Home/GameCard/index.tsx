@@ -609,7 +609,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             <img
               className="background-img"
               src={option?.cover_img}
-              alt={option.name}
+              alt={option?.name}
             />
             {/* 立即加速卡片 */}
             {localStorage.getItem("isAccelLoading") !== "1" &&
