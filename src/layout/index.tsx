@@ -161,8 +161,9 @@ const Layouts: React.FC = () => {
         // 其他情况保留
         return true;
       });
-
+      
       localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(filteredArray));
+      navigate("/home");
       return filteredArray;
     } catch (error) {
       console.log("初始化更新游戏", error);
@@ -483,7 +484,6 @@ const Layouts: React.FC = () => {
     remindWhetherRenew(); // 判断是否续费提醒
     nativeVersion(); // 读取客户端版本
     initialSetup(); // 初始设置
-    navigate("/home");
 
     (window as any).bannerTimer = () => clearInterval(intervalId);
 
