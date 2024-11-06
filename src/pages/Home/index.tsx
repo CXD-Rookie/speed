@@ -44,7 +44,6 @@ const Home: React.FC = () => {
   const [images, setImages] = useState<ImageItem[]>([]);
 
   const [isImagesLoaded, setIsImagesLoaded] = useState(false);
-  const [modalType, setModalType] = useState<number | null>(null);
   const [status, setStatus] = useState<number>(0); // 触发首页展示数据更新的状态
   const [homeList, setHomeList] = useState([]);
   const [accelTag, setAccelTag] = useState({});
@@ -72,10 +71,6 @@ const Home: React.FC = () => {
   };
 
   const handleShowModal = (type: any) => {
-    console.log(type, "图片的type值---------------------");
-
-    setModalType(Number(type));
-    
     if (accountInfo?.isLogin) {
       if (type === "1") {
         dispatch(setDrawVipActive({ open: true })); // 领取兑换码弹窗
