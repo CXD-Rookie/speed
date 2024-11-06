@@ -27,7 +27,7 @@ export const useGamesInitialize = () => {
 
     if (data?.length > 0 && data instanceof Array) {
       for (let index = 0; index < data.length; index++) {
-        if (data[index].is_accelerate) {
+        if (data?.[index]?.is_accelerate) {
           find_result = [
             true, // 是否有加速数据
             data[index], // 加速数据
