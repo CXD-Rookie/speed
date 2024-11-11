@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import {
-  setNewUserOpen,
+  setDrawVipActive,
   setFirstPayRP,
   setMinorState,
   setAppCloseOpen,
@@ -41,7 +41,6 @@ const Layouts: React.FC = () => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
   const historyContext: any = useHistoryContext(); // 自定义传递上下文 hook
-
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
   const { fetchBanner } = useFetchBanner(); // 请求banner图 hook
 
@@ -376,10 +375,13 @@ const Layouts: React.FC = () => {
           eventBus.emit("dataUpdated", firstPAndR);
 
           if (banner?.length > 0 && store?.getState()?.accountInfo?.isLogin) {
-            if (isNewUser && !isModalDisplayed) {
+            const isNewOpen = store?.getState()?.modalOpen?.drawVipActive?.open; // 新用户领取弹窗
+
+            // 是新用户 没有点击过新用户弹窗 新用户弹窗是否打开
+            if (isNewUser && !isModalDisplayed && !isNewOpen) {
               // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
               setTimeout(() => {
-                dispatch(setNewUserOpen(true)); // 新用户弹出
+                dispatch(setDrawVipActive({ open: true, value: {} }));
               }, 500);
             }
 
@@ -501,7 +503,7 @@ const Layouts: React.FC = () => {
       initialProcessBlack(); // 初始进程黑名单
     }
   }, [accountInfo.isLogin]);
-  
+
   // 在应用启动时挂载方法到 window 对象上
   useEffect(() => {
     (window as any).speedError = stopProcessReset; // 客户端使用，业务不处理，用于判断加速异常的提示使用
