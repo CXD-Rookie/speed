@@ -478,8 +478,7 @@ const Layouts: React.FC = () => {
     const intervalId = setInterval(() => {
       fetchBanner(); // 获取 banner 图逻辑
     }, 3 * 60 * 60 * 1000);
-
-    initialProcessBlack(); // 初始进程黑名单
+    
     iniliteRenewal(); // 初始化更新游戏;
     remindWhetherRenew(); // 判断是否续费提醒
     nativeVersion(); // 读取客户端版本
@@ -496,7 +495,13 @@ const Layouts: React.FC = () => {
       }
     };
   }, []);
-
+  
+  useEffect(() => {
+    if (accountInfo.isLogin) {
+      initialProcessBlack(); // 初始进程黑名单
+    }
+  }, [accountInfo.isLogin]);
+  
   // 在应用启动时挂载方法到 window 对象上
   useEffect(() => {
     (window as any).speedError = stopProcessReset; // 客户端使用，业务不处理，用于判断加速异常的提示使用
