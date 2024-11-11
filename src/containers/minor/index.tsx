@@ -14,9 +14,17 @@ import { closeRealNameModal } from "@/redux/actions/auth";
 import { useNavigate } from "react-router-dom";
 import { setAccountInfo } from "../../redux/actions/account-info";
 import {
+  setBindState,
+  setFirstPayRP,
+  setDrawVipActive,
+  setAppCloseOpen,
+  setNewUserOpen,
+  setFeedbackPopup,
+  setStartPathOpen,
+  setCurrencyOpen,
+  setSetting,
   setPayState,
   setMinorState,
-  setBindState,
 } from "@/redux/actions/modal-open";
 import "./index.scss";
 
@@ -54,8 +62,19 @@ const MinorModal: React.FC = () => {
       dispatch(setBindState({ open: false, type: "" })); // 关闭绑定类型弹窗
     }
 
+    // 异地登录确定时
     if (realType === 9) {
-      dispatch(setAccountInfo(undefined, undefined, true));
+      dispatch(setBindState({ open: false, type: "" })); // 第三方手机绑定类型弹窗
+      dispatch(setPayState({ open: false, couponValue: {} })); // 支付弹窗
+      dispatch(setFirstPayRP({ open: false, type: "" })); // 首次支付弹窗
+      dispatch(setDrawVipActive({ open: false, value: {} })); // 领取会员有效期弹窗
+      dispatch(setAppCloseOpen(false)); // app关闭窗口设置提醒
+      dispatch(setNewUserOpen(false)); // 新用户弹窗
+      dispatch(setFeedbackPopup({ open: false, defaultInfo: "" })); // 问题反馈
+      dispatch(setStartPathOpen(false)); // 启动路径开关
+      dispatch(setCurrencyOpen(false)); // 口令兑换开关
+      dispatch(setSetting({ settingOpen: false, type: "default" })); // 设置开关传递信息
+      dispatch(setAccountInfo(undefined, undefined, true)); // 用户信息
     }
 
     if ([10, 11].includes(realType)) {
