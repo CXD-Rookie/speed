@@ -625,12 +625,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   if (shelves?.data) data = shelves?.data;
 
                   setIsClicking(true);
-                  
+
                   if (!isClicking) {
                     await accelerateDataHandling({ ...data, router: "home" });
                   }
 
-                  setIsClicking(false)
+                  setIsClicking(false);
                 }}
               >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
@@ -656,7 +656,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
                     let shelves = await checkShelves(option);
                     let data = { ...option };
-                    
+
                     // 判断是否当前游戏下架
                     if (shelves?.state) return;
                     if (shelves?.data) data = shelves?.data;
@@ -697,7 +697,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isAllowShowAccelerating && option?.is_accelerate ? (
               <div
                 className="accelerating-card"
-                onClick={() => navigate("/gameDetail", { state: { fromRefresh: true } })}
+                onClick={() =>
+                  navigate("/gameDetail", {
+                    state: {
+                      fromRefresh: identifyAccelerationData()?.[0]
+                        ? false
+                        : true,
+                    },
+                  }) // 通过判断当前是否有游戏加速，判断进入详情是否是第一次
+                }
               >
                 <img
                   className="accelerating-content-img"

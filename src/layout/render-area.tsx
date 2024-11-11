@@ -19,7 +19,7 @@ const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const state = useSelector((state: any) => state?.modalOpen);
 
-  const { payState = {}, firstPayRP = {}, setting = {} } = state;
+  const { payState = {}, firstPayRP = {}, setting = {}, drawVipActive = {} } = state;
   
   return (
     <Fragment>
@@ -47,7 +47,7 @@ const RenderSrea:React.FC = () => {
       {/* 提示修改关闭窗口设置 */}
       <AppCloseModal />
       {/* 领取会员有效期弹窗 */}
-      <Active />
+      {drawVipActive?.open && <Active />}
       {/* 首续，首充支付弹窗 */}
       {firstPayRP?.open && <PayModalNew />}
       {/* 正常支付页面 */}

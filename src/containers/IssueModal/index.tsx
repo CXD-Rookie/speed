@@ -25,6 +25,7 @@ const FeedbackPopup: React.FC = () => {
   );
 
   const [issueOpen, setIssueOpen] = useState(false);
+
   const closeFeedbackForm = (open: any = false) => {
     dispatch(setFeedbackPopup({ open }));
   };
@@ -53,6 +54,7 @@ const FeedbackPopup: React.FC = () => {
         title="问题反馈"
         width={"67.6vw"}
         centered
+        destroyOnClose
         maskClosable={false}
         footer={null}
       >
@@ -61,16 +63,16 @@ const FeedbackPopup: React.FC = () => {
           defaultInfo={defaultInfo}
           setIssueOpen={setIssueOpen}
         />
+        <BreakConfirmModal
+          type={"issueFeedback"}
+          accelOpen={issueOpen}
+          setAccelOpen={closeFeedbackForm}
+          onConfirm={() => {
+            setIssueOpen(false);
+            closeFeedbackForm();
+          }}
+        />
       </Modal>
-      <BreakConfirmModal
-        type={"issueFeedback"}
-        accelOpen={issueOpen}
-        setAccelOpen={closeFeedbackForm}
-        onConfirm={() => {
-          setIssueOpen(false);
-          closeFeedbackForm();
-        }}
-      />
     </Fragment>
   );
 };

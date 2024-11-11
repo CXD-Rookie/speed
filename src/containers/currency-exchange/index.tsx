@@ -116,10 +116,9 @@ const CurrencyExchange: React.FC = (props) => {
     setCurrencyCode("");
     setCurrencyState("");
     setCurrencyTable([]);
-    dispatch(setDrawVipActive({ value: {} }));
     dispatch(setPayState({ open: false, couponValue: {} })); // 会员充值页面
     dispatch(setCurrencyOpen(false));
-    dispatch(setDrawVipActive({ open: false }));
+    dispatch(setDrawVipActive({ open: false, value: {} }));
     setPagination(inilitePagination);
     setTableTotal(0);
   };
@@ -139,8 +138,8 @@ const CurrencyExchange: React.FC = (props) => {
 
       if (res?.error === 0) {
         setCurrencyState("");
-        dispatch(setDrawVipActive({ open: true })); // 领取兑换码弹窗
-        dispatch(setDrawVipActive({ value: res?.data ?? {} })); // 领取兑换码弹窗内容值
+        dispatch(setDrawVipActive({ open: true, value: res?.data ?? {} })); // 领取兑换码弹窗
+        fetchRecords();
       } else {
         setCurrencyState(res?.message);
       }

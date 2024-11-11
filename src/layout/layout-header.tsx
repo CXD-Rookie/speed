@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { setActiveMenu } from "@/redux/actions/menu";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -54,6 +54,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
   const { couponRefreshNum } = props;
 
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch: any = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
@@ -173,6 +174,12 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
         ] as any)
       : []),
   ];
+
+  useEffect(() => {
+    if (location) {
+      dispatch(setActiveMenu(location?.pathname));
+    }
+  }, [location]);
 
   return (
     <Fragment>

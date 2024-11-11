@@ -63,9 +63,9 @@ class WebSocketService {
         if (!localStorage.getItem('isClosed') && localStorage.getItem('token')) {
           localStorage.setItem('isClosed', 'true'); // 标记为已关闭
           const isRemote = JSON.parse(localStorage.getItem("isRemote") || "0") // 标记11001是绑定手机时出现的
-          
+   
           if (!Number(isRemote)) {
-            (window as any).loginOutStopWidow();
+            (window as any).loginOutStopWidow("remoteLogin");
           } else {
             localStorage.removeItem("token");
             localStorage.removeItem("isRealName");

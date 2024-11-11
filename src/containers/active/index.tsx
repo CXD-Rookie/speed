@@ -26,10 +26,11 @@ const Active: React.FC = (props) => {
   const iniliteFun = () => {
     const vip_experience_time = localStorage.getItem("vip_experience_time");
     const accountInfo = store.getState()?.accountInfo;
-    
-    let rebates_time = vip_experience_time
-      ? JSON.parse(vip_experience_time)
-      : 0;
+    const isTrue = 
+      vip_experience_time &&
+      vip_experience_time !== "undefined" &&
+      vip_experience_time !== "null";
+    let rebates_time = isTrue ? JSON.parse(vip_experience_time ?? "{}") : 0;
     let vip_time = accountInfo?.userInfo.vip_expiration_time - 86400;
     
     return {
