@@ -7,7 +7,7 @@ export const setEnterSign = (sign: number) => {
   return async (dispatch: Dispatch) => {
     try {
       let results = sign + 1
-
+      
       dispatch({
         type: ENTER_SEARCH_QUERY,
         payload: results as number,

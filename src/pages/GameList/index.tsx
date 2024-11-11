@@ -124,14 +124,14 @@ const GameLibrary: React.FC = () => {
 
   useEffect(() => {
     let result_game: Game[] = [];
-
+    
     if (searchResults.length === 0) {
       setPage(1);
       setTotal(0);
       setGames([]); // 清空游戏列表
     } else {
       setEnterQuery(searchBarValue);
-      fetchGameList({page, s: searchBarValue});
+      fetchGameList({page: 1, s: searchBarValue});
     }
 
     if (result_game?.length === 0) {
