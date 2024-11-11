@@ -76,8 +76,9 @@ const GameLibrary: React.FC = () => {
       .slice(0, -1)
       .reverse()
       .find((path: any) => path !== currentPath);
-
-    if (previousPath) {
+    
+    // 处理在游戏详情中到结果页点击返回的情况 
+    if (previousPath && previousPath !== "/gameDetail") {
       navigate(previousPath);
     } else {
       navigate("/home");
