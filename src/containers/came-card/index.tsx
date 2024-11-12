@@ -560,6 +560,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       setIsVerifying(true);
 
       if (isVerifying) return; // 防止进行多次点击
+      if (localStorage.getItem("isAccelLoading") === "1") {
+        // 触发游戏在加速中提示
+        eventBus.emit("showModal", {
+          show: true,
+          type: "gamesAccelerating",
+        });
+      }
 
       // 如果是游戏库 结果页
       if (["library", "result"].includes(locationType)) {
