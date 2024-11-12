@@ -93,61 +93,23 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
 
-  const userToken = localStorage.getItem("token");
-  const jsKey = localStorage.getItem("StartKey");
-
   const isRealNamel = localStorage.getItem("isRealName");
 
   // 停止加速
-  const stopAcceleration = () => {
+  const stopAcceleration = async () => {
     setStopModalOpen(false);
-    let jsonString = "";
-    if (jsKey) {
-      jsonString = JSON.stringify({
-        params: {
-          user_token: userToken ? JSON.parse(userToken) : "",
-          js_key: jsKey,
-        },
-      });
-    }
-    (window as any).NativeApi_AsynchronousRequest(
-      "NativeApi_StopProxy",
-      jsonString,
-      function (response: any) {
-        console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速");
-        removeGameList("initialize"); // 更新我的游戏
-        historyContext?.accelerateTime?.stopTimer();
-
-        if ((window as any).stopDelayTimer) {
-          (window as any).stopDelayTimer();
-        }
-
-        triggerDataUpdate(); // 更新显示数据
-      }
-    );
+    await (window as any).stopProcessReset();
+    triggerDataUpdate(); // 更新显示数据
   };
 
   // 获取游戏运营平台列表
   const fetchPcPlatformList = async () => {
-    try {
-      let res = await playSuitApi.pcPlatform();
-
-      return res?.data;
-    } catch (error) {
-      console.log(error);
-    }
+    return (await playSuitApi.pcPlatform())?.data;
   };
 
   //查询黑白名单列表数据
   const fetchPcWhiteBlackList = async () => {
-    try {
-      let res = await playSuitApi.playSpeedBlackWhitelist();
-
-      return res?.data;
-    } catch (error) {
-      console.log(error);
-    }
+    return (await playSuitApi.playSpeedBlackWhitelist())?.data;
   };
 
   // 多次请求同时触发函数
