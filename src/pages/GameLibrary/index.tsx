@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./style.scss";
-
 import gameApi from "@/api/gamelist";
-
+import GameCard from "@/containers/came-card";
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 
@@ -79,7 +78,6 @@ const GameLibrary: React.FC = () => {
 
   const [games, setGames] = useState<Game[]>([]);
   const [gameActiveType, setGameActiveType] = useState<string>("1");
-  const [t, setT] = useState<string | null>("限时免费"); // 默认选中限时免费
 
   const gameListRef: any = useRef<HTMLDivElement>(null);
 
@@ -122,22 +120,8 @@ const GameLibrary: React.FC = () => {
   const handleTitleClick = (item: GamesTitleProps) => {
     gameListRef.current.scrollTop = 0
     setGameActiveType(item.key);
-    setT(item.t);
     filterGamesByCategory(item.t);
   };
-
-  // useEffect(() => {
-  //   // 首次加载时请求数据并缓存
-  //   if (!localStorage.getItem("cachedGames")) {
-  //     fetchAndCacheGames();
-  //   } else {
-  //     filterGamesByCategory(t || "限时免费");
-  //   }
-
-  //   return () => {
-  //     localStorage.removeItem("cachedGames");
-  //   }
-  // }, []);
 
   useEffect(() => {
     // 每次激活组件时重新请求数据并更新缓存
@@ -146,7 +130,6 @@ const GameLibrary: React.FC = () => {
     const freeTitle = gamesTitle.find(title => title.t === "限时免费");
     if (freeTitle) {
       setGameActiveType(freeTitle.key);
-      setT(freeTitle.t);
     }
     
     filterGamesByCategory("限时免费");
@@ -167,37 +150,11 @@ const GameLibrary: React.FC = () => {
           </div>
         ))}
       </div>
-      <div className="game-list" ref={gameListRef}>
-        {games.map((game) => (
-          <div key={game.id} className="game-card">
-            <div className="content-box" onClick={() => clickAddGame(game)}>
-              {game?.tags.includes("限时免费") && game?.free_time && (
-                <div className="exemption-box">
-                  <div className="exemption">限免</div>
-                  {game?.free_time !== "永久" && (
-                    <div className="time">剩余 {game?.free_time}</div>
-                  )}
-                </div>
-              )}
-              <img className="back-icon" src={game.cover_img} alt={game.name} />
-              <div className="game-card-content">
-                <img className="add-icon" src={addThemeIcon} alt="" />
-                <img
-                  className="game-card-active-icon"
-                  src={acceleratedIcon}
-                  alt=""
-                />
-              </div>
-            </div>
-            <div className="card-text-box">
-              <div className="game-name">{game.name}</div>
-              <div className="game-name-en">
-                {game.note ? game.note : `${game.name_en}`}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <GameCard
+        options={games}
+        locationType={"library"}
+        bindRef={gameListRef}
+      />
     </div>
   );
 };

@@ -1,0 +1,42 @@
+.library-game-card-module {
+  height: 80vh;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  row-gap: 2.4vw;
+  margin-top: 3vh;
+  overflow-y: scroll;
+
+  & .game-card {
+    width: calc(16.66% - 1.33vw);
+
+    & .background-img {
+      height: 31vh;
+    }
+
+    & .accelerate-immediately-card {
+      height: 31vh;
+
+      & .mask-layer-img {
+        border-radius: var(--speed-dominant-border-radius);
+      }
+
+      & .accelerate-immediately-button {
+        & .accelerate-immediately-text {
+          font-size: 2vw;
+        }
+
+        & .accelerate-immediately-img {
+          width: 1.8vw;
+          height: 1.8vw;
+          margin-top: 0.6vh;
+        }
+      }
+    }
+
+    & .background-img:hover + .accelerate-immediately-card,
+    & .accelerate-immediately-card:hover {
+      border: 0.15vw solid #F86C34;
+      border-radius: 1vw;
+    }
+  }
+}

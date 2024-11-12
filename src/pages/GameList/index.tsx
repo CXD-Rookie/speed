@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
-import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import { nodeDebounce } from "@/common/utils";
 import { setFeedbackPopup } from "@/redux/actions/modal-open";
 
 import "./style.scss";
+import GameCard from "@/containers/came-card";
 import gameApi from "@/api/gamelist";
 
-import addThemeIcon from "@/assets/images/common/add-theme.svg";
-import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 import emptyIcon from "@/assets/images/home/empty.svg";
 import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 
@@ -50,7 +48,6 @@ const GameLibrary: React.FC = () => {
   const dispatch: any = useDispatch();
 
   const historyContext: any = useHistoryContext();
-  const { appendGameToList } = useGamesInitialize();
 
   const searchBarValue = useSelector((state: any) => state.search.query);
   const searchResults = useSelector((state: any) => state.search.results);
@@ -63,11 +60,6 @@ const GameLibrary: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pagesize,] = useState(30);
   const [total, setTotal] = useState(0);
-
-  const clickAddGame = (option: Game) => {
-    appendGameToList(option);
-    navigate("/home");
-  };
 
   const handleGoBack = () => {
     const currentPath = window.location.pathname;
@@ -109,11 +101,14 @@ const GameLibrary: React.FC = () => {
   
   // 表格滚动
   function handleScroll(e: any) {
-    if (e.target.getAttribute("class") === "game-list") {
+    if (
+      e.target.getAttribute("class") ===
+      "game-card-module result-game-card-module"
+    ) {
       let scrollTop = e.target.scrollTop;
       let clientHeight = e.target.clientHeight;
       let scrollHeight = e.target.scrollHeight;
-      
+
       if (
         Math.ceil(scrollTop) + Math.ceil(clientHeight) + 1 >= scrollHeight &&
         total > games?.length
@@ -151,34 +146,12 @@ const GameLibrary: React.FC = () => {
         />
         <span className="num-search">共{total}个搜索结果</span>
       </div>
-      {games.length > 0 ? (
-        <div className="game-list" onScroll={nodeDebounce(handleScroll, 200)}>
-          {games.map((game: any) => (
-            <div key={game.id} className="game-card">
-              <div className="content-box" onClick={() => clickAddGame(game)}>
-                <img
-                  className="back-icon"
-                  src={game.cover_img}
-                  alt={game.name}
-                />
-                <div className="game-card-content">
-                  <img className="add-icon" src={addThemeIcon} alt="" />
-                  <img
-                    className="game-card-active-icon"
-                    src={acceleratedIcon}
-                    alt=""
-                  />
-                </div>
-              </div>
-              <div className="card-text-box">
-                <div className="game-name">{game.name}</div>
-                <div className="game-name-en">
-                  {game.note ? game.note : `${game.name_en}`}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      {games?.length > 0 ? (
+        <GameCard
+          options={games}
+          locationType={"result"}
+          onScroll={nodeDebounce(handleScroll, 200)}
+        />
       ) : (
         <div className="empty-page">
           <div className="empty-content">

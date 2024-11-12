@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import "./style.scss";
-import GameCard from "../GameCard";
+import GameCard from "@/containers/came-card";
 
 import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 
@@ -39,7 +39,7 @@ const MyGames: React.FC = () => {
         {gamesList?.length > 0 && (
           <GameCard
             options={gamesList}
-            locationType={"my-game"}
+            locationType={"myGame"}
             triggerDataUpdate={() => setStatus(status + 1)}
           />
         )}

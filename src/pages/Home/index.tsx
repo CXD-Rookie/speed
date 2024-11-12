@@ -20,7 +20,7 @@ import { setPayState, setMinorState } from "@/redux/actions/modal-open";
 
 import RealNameModal from "@/containers/real-name";
 import Swiper from "../../containers/swiper/index";
-import GameCardCopy from "./GameCard";
+import GameCard from "@/containers/came-card";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
 import gamesBlackIcon from "@/assets/images/home/games_black.png";
@@ -109,7 +109,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-module">
-      <GameCardCopy
+      <GameCard
         options={homeList}
         locationType={"home"}
         customAccelerationData={accelTag}
