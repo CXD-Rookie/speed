@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
-import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { store } from "@/redux/store";
 import { setPayState, setMinorState } from "@/redux/actions/modal-open";
 import { areaStyleClass } from "./utils";
@@ -67,8 +66,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
-
-  const historyContext: any = useHistoryContext();
 
   const {
     identifyAccelerationData,
@@ -430,12 +427,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     );
   };
 
-  // 确认开始加速
-  const confirmStartAcceleration = () => {
-    setAccelOpen(false); // 关闭确认框
-    accelerateProcessing();
-  };
-
   // 点击立即加速 执行加速前校验函数
   const handleBeforeVerify = async (option: any) => {
     try {
@@ -443,6 +434,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (accountInfo?.isLogin) {
         const latestAccountInfo = store.getState().accountInfo; // 登录信息
 
+        let find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
+
+        // 是否有加速中的游戏
+        if (find_accel?.[0] && option?.router !== "details") {
+          setAccelOpen(true);
+          setSelectAccelerateOption(option);
+          return;
+        }
+        
         if (latestAccountInfo) {
           const userInfo = latestAccountInfo?.userInfo; // 用户信息
           const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
@@ -481,15 +481,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             setSelectAccelerateOption(option);
             return;
           }
-          
-          let find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
-
-          // 是否有加速中的游戏
-          if (find_accel?.[0] && option?.router !== "details") {
-            setAccelOpen(true);
-            setSelectAccelerateOption(option);
-            return;
-          }
 
           // 是否下架
           let shelves = await checkShelves(option);
@@ -499,16 +490,23 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           if (shelves?.state) return;
           if (shelves?.data) data = shelves?.data; // 如果游戏数据有更新，则进行更新
 
-          data = await checkGameisFree(data); // 查询当前游戏是否限时免费并更新数据
+          data = await checkGameisFree(data, "card"); // 查询当前游戏是否限时免费并更新数据
 
           // 是否限时免费 free_time 
-          if (!(option?.free_time && option?.tags.includes("限时免费"))) {
+          if (
+            !(option?.free_time && option?.tags.includes("限时免费")) &&
+            !userInfo?.is_vip
+          ) {
             dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
             return;
           }
 
           setSelectAccelerateOption(data);
           accelerateProcessing(data);
+        } else {
+          localStorage.removeItem("isAccelLoading");
+          (window as any).loginOutStopWidow(); // 退出登录
+          dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
         }
       } else {
         localStorage.removeItem("isAccelLoading");
@@ -519,6 +517,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     } finally {
       localStorage.removeItem("isAccelLoading");
     }
+  };
+
+  // 确认开始加速
+  const confirmStartAcceleration = async () => {
+    setAccelOpen(false); // 关闭确认框
+    await stopAcceleration(); // 停止加速
+    handleBeforeVerify(selectAccelerateOption);
+    // accelerateProcessing();
   };
 
   // 打开区服节点
