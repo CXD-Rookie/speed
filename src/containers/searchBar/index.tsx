@@ -112,7 +112,7 @@ const SearchBar: React.FC = () => {
                   setIsClicking(true)
                   
                   if (localStorage.getItem("isAccelLoading") !== "1") {
-                    localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
+                    // localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
                     if (!isClicking) {
                       handleSearchResultClick(result);
                     }

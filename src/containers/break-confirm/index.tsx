@@ -155,6 +155,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
+      case "stopAccelerate":
+        // (window as any)
+        break
       case "loginOut":
         (window as any).loginOutStopWidow()
         break;
