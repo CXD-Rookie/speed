@@ -451,16 +451,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
           // 是否实名认证 isRealNamel === "1" 是
           // 是否是未成年 is_adult
-          // 是否是vip
           // 是否提醒续费快到期
           if (isRealNamel === "1") {
             dispatch(openRealNameModal());
             return;
           } else if (!userInfo?.user_ext?.is_adult) {
             dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
-            return;
-          } else if (!userInfo?.is_vip) {
-            dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
             return;
           } else if (
             userInfo?.is_vip &&
@@ -492,7 +488,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
           data = await checkGameisFree(data, "card"); // 查询当前游戏是否限时免费并更新数据
 
-          // 是否限时免费 free_time 
+          // 是否是vip
+          // 是否限时免费 free_time
           if (
             !(option?.free_time && option?.tags.includes("限时免费")) &&
             !userInfo?.is_vip
@@ -532,15 +529,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     event: React.MouseEvent<HTMLImageElement>,
     option: any
   ) => {
-    const latestAccountInfo = store.getState().accountInfo;
-
     event.stopPropagation();
-
-    let shelves = await checkShelves(option);
-    let data = { ...option };
-
-    if (shelves?.state) return;
-    if (shelves?.data) data = shelves?.data;
+    const latestAccountInfo = store.getState().accountInfo;
 
     if (accountInfo?.isLogin) {
       if (isRealNamel === "1") {
@@ -552,7 +542,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       } else {
         event.stopPropagation();
         setIsOpenRegion(true);
-        setSelectAccelerateOption(data);
+        setSelectAccelerateOption(option);
       }
     } else {
       // 3个参数 用户信息 是否登录 是否显示登录
@@ -575,7 +565,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       }
 
       // 如果是游戏库 结果页
-      if (["library", "result"].includes(locationType)) {
+      if (["library", "result", "myGame"].includes(locationType)) {
         const data = appendGameToList(option);
         const optionParams =
           data.filter((item: any) => item?.id === option?.id)?.[0] || {};
