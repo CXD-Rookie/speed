@@ -325,13 +325,13 @@ const Layouts: React.FC = () => {
 
       if (token) {
         // 升级版本比较
-        if (!isClosed && version) {
+        if (!isClosed && version && versionNowRef.current) {
           // 升级弹窗要在登录之后才会弹出
           let isTrue = compareVersions(
-            versionNowRef.current,
+            versionNowRef.current || version?.min_version,
             version?.min_version
           );
-
+          
           if (isTrue) {
             eventBus.emit("showModal", {
               show: true,
