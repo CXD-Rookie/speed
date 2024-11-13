@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="96px" height="96px" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>添加</title>
     <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="游戏库" transform="translate(-172, -430)">
-            <g id="关闭1" transform="translate(172, 430)">
-                <rect id="_mockplus_fix_" x="0" y="0" width="96" height="96"></rect>
-                <g transform="translate(8, 8)" stroke="#FFFFFF" stroke-width="3">
-                    <circle id="椭圆形" cx="40" cy="40" r="40"></circle>
-                    <line x1="21.3333333" y1="41.3333333" x2="58.6666667" y2="41.3333333" id="路径-4" stroke-linecap="round" stroke-linejoin="round"></line>
-                    <line x1="21.3333333" y1="41.3333333" x2="58.6666667" y2="41.3333333" id="路径-4" stroke-linecap="round" stroke-linejoin="round" transform="translate(40, 41.3333) rotate(90) translate(-40, -41.3333)"></line>
+        <g id="游戏库" transform="translate(-612, -292)">
+            <g id="编组-2备份-2" transform="translate(392, 268)">
+                <g id="关闭1" transform="translate(220, 24)">
+                    <rect id="_mockplus_fix_" x="0" y="0" width="36" height="36"></rect>
+                    <g transform="translate(3, 3)" stroke="#FFFFFF" stroke-width="2.5">
+                        <circle id="椭圆形" cx="15" cy="15" r="15"></circle>
+                        <line x1="8" y1="15.5" x2="22" y2="15.5" id="路径-4" stroke-linecap="round" stroke-linejoin="round"></line>
+                        <line x1="8" y1="15.5" x2="22" y2="15.5" id="路径-4" stroke-linecap="round" stroke-linejoin="round" transform="translate(15, 15.5) rotate(90) translate(-15, -15.5)"></line>
+                    </g>
                 </g>
             </g>
         </g>

@@ -21,7 +21,6 @@ message.config({
 });
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
-  onClose,
   defaultInfo,
   setIssueOpen,
 }) => {
@@ -33,6 +32,14 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
   useEffect(() => {
     fetchFeedbackTypes(); // 组件加载时获取反馈类型
+
+    return () => {
+      setTypes([]);
+      setSelectedType(null);
+      setDescription("");
+      setContact("");
+      setImages([]);
+    }
   }, []);
 
   useEffect(() => {
@@ -58,7 +65,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     try {
       const response = await feedbackApi.feedback_type();
       setTypes(response.data.types);
-      console.log(types);
     } catch (error) {
       console.error("Failed to fetch feedback types:", error);
     }

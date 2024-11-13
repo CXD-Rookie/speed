@@ -206,16 +206,16 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       const isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
 
       let data = { ...presentGameData };
-      let shelves = await checkShelves(
-        { ...presentGameData },
-        {
-          onOk: onCancel,
-          onTrigger: onCancel,
-        }
-      );
+      // let shelves = await checkShelves(
+      //   { ...presentGameData },
+      //   {
+      //     onOk: onCancel,
+      //     onTrigger: onCancel,
+      //   }
+      // );
 
-      if (shelves?.state) return; // 判断是否当前游戏下架
-      if (shelves?.data) data = shelves?.data;
+      // if (shelves?.state) return; // 判断是否当前游戏下架
+      // if (shelves?.data) data = shelves?.data;
 
       setPresentGameInfo(data);
       

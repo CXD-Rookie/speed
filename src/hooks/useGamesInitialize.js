@@ -104,7 +104,7 @@ export const useGamesInitialize = () => {
     let is_accelerate = sort_list.some((item) => item?.is_accelerate);
     
     if (find_index !== -1) {
-      if (find_index > 4) {
+      if (find_index >= 4) {
         // sort_list.splice(is_accelerate ? 1 : 0, 0, option)
         let temp = sort_list[find_index];
         // 将第二个索引处的值移动到第一个索引处
@@ -183,10 +183,17 @@ export const useGamesInitialize = () => {
     }
   }
 
-  const checkGameisFree = async (option) => {
+  const checkGameisFree = async (option, type) => {
     try {
-      const res = await gameApi.gameList({ s: option?.name });
-      const data = res?.data?.list || []
+      let data = [];
+      
+      if (type) {
+        data = [option]
+      } else {
+        const res = await gameApi.gameList({ s: option?.name });
+        data = res?.data?.list || []
+      }
+
       const result = data.filter(item => item?.id === option?.id)?.[0] || { ...option }
       const return_result = {
         ...option,

@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\containers\IssueModal\index.tsx
  */
 /* eslint-disable react/jsx-no-comment-textnodes */
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "antd";
 import { setFeedbackPopup } from "@/redux/actions/modal-open";
@@ -27,23 +27,8 @@ const FeedbackPopup: React.FC = () => {
   const [issueOpen, setIssueOpen] = useState(false);
 
   const closeFeedbackForm = (open: any = false) => {
-    dispatch(setFeedbackPopup({ open }));
+    dispatch(setFeedbackPopup({ open, defaultInfo: "" }));
   };
-
-  useEffect(() => {
-    window.addEventListener("message", function (event) {
-      if (event.origin !== "http://192.168.111.119:3001") {
-        return;
-      }
-
-      // 处理来自 iframe 的消息
-      const message = event.data;
-
-      if (message.type === "GREETING") {
-        closeFeedbackForm();
-      }
-    });
-  }, []);
 
   return (
     <Fragment>
@@ -58,11 +43,13 @@ const FeedbackPopup: React.FC = () => {
         maskClosable={false}
         footer={null}
       >
-        <FeedbackForm
-          onClose={closeFeedbackForm}
-          defaultInfo={defaultInfo}
-          setIssueOpen={setIssueOpen}
-        />
+        {open && (
+          <FeedbackForm
+            onClose={closeFeedbackForm}
+            defaultInfo={defaultInfo}
+            setIssueOpen={setIssueOpen}
+          />
+        )}
         <BreakConfirmModal
           type={"issueFeedback"}
           accelOpen={issueOpen}

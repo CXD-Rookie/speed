@@ -191,7 +191,7 @@ const PayModal: React.FC = (props) => {
 
       // 生成二维码信息
       updateQRCodesInfo({
-        cid: commodities?.[activeTabIndex].id,
+        cid: commodities?.[index].id,
       });
       setQRCodeLoading(false);
     }
