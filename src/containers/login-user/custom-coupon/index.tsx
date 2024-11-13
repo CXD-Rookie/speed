@@ -40,10 +40,26 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   const [loseSearch] = useState({ type: 2, status: "2,3" }); // 已失效类型参数
   const [losePagination, setLosePagination] = useState(inilitePagination); // 已失效分页参数
   const [loseTotal, setLoseTotal] = useState(0); // 已失效数量总数
-  
+  const [loseActiveNum, setLoseActiveNum] = useState(0); // 记录失效tab切换次数
+
   const onClose = () => {
     setOpen(false);
     setActiveTab("make");
+    setLosePagination(inilitePagination)
+  };
+
+  const fetchLoseRecords = async (pagination = losePagination) => {
+    try {
+      const res: any = await fetchRecords(loseSearch, pagination);
+      
+      setLosePagination(pagination);
+      setLoseTotal(res?.total);
+      setCouponLoseData(
+        pagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // 表格滚动
@@ -73,8 +89,8 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
             ...losePagination,
             page: losePagination?.page + 1,
           };
-          
-          setLosePagination(pagination);
+
+          fetchLoseRecords(pagination);
         }
       }
     }
@@ -85,19 +101,10 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
   }, [value]);
 
   useEffect(() => {
-    const iniliteFun = async () => {
-      const res: any = await fetchRecords(loseSearch, losePagination);
-
-      setLoseTotal(res?.total);
-      setCouponLoseData(
-        losePagination?.page > 1 ? [...couponLoseData, ...res?.data] : res?.data
-      );
-    }
-    
     if (open) {
-      iniliteFun();
+      fetchLoseRecords()
     }
-  }, [losePagination, open]);
+  }, [open]);
 
   useEffect(() => {
     // 打开优惠券弹窗滚动条回到顶部
@@ -116,11 +123,20 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
         width={"67.6vw"}
         centered
         maskClosable={false}
+        destroyOnClose
         footer={null}
       >
         <Tabs
           activeKey={activeTab}
-          onChange={(key) => setActiveTab(key)}
+          onChange={(key) => {
+            setActiveTab(key);
+            console.log(loseActiveNum, key);
+            
+            if (key === "lose" && loseActiveNum === 0) {
+              scrollRef.current.scrollTop = 0;
+              setLoseActiveNum(loseActiveNum + 1);
+            }
+          }}
           items={[
             {
               key: "make",
