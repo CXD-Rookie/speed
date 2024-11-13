@@ -422,7 +422,6 @@ const PayModal: React.FC = (props) => {
             </div>
           </div>
           {iniliteLoading ? (
-            // 全局加载动画
             <img className="pay-loading-img" src={loadingGif} alt="" />
           ) : (
             <div className="tabs-container">
@@ -430,7 +429,9 @@ const PayModal: React.FC = (props) => {
               {commodities?.length > 4 && (
                 <Fragment>
                   <div
-                    className="arrow left"
+                    className={`arrow left ${
+                      arrow === 0 ? "disabled-arrow" : ""
+                    }`}
                     onClick={() => {
                       if (!(arrow === 0)) {
                         setArrow(arrow + 1);
@@ -438,7 +439,11 @@ const PayModal: React.FC = (props) => {
                     }}
                   />
                   <div
-                    className="arrow right"
+                    className={`arrow right ${
+                      arrow === -(commodities?.length - 4)
+                        ? "disabled-arrow"
+                        : ""
+                    }`}
                     onClick={() => {
                       if (!(arrow === -(commodities?.length - 4))) {
                         setArrow(arrow - 1);
@@ -454,7 +459,7 @@ const PayModal: React.FC = (props) => {
                   const isPurchase =
                     images?.length > 0 &&
                     ["purchase", "renewed"].includes(purchaseState);
-                  
+
                   return (
                     <div
                       key={index}
@@ -554,8 +559,8 @@ const PayModal: React.FC = (props) => {
                       >
                         用户协议
                       </span>
-                      》{activePayId && "及《"}
-                      {activePayId && (
+                      》
+                      {activePayId && "及《" + (
                         <span
                           className="txt"
                           ref={divRef}
@@ -564,9 +569,7 @@ const PayModal: React.FC = (props) => {
                         >
                           自动续费协议
                         </span>
-                      )}
-                      {activePayId && "》"}
-                      到期按每月29元自动续费，可随时取消 <TooltipCom />
+                      ) + "》到期按每月29元自动续费，可随时取消" + (<TooltipCom />)}
                     </div>
                   </div>
                 ) : null}
@@ -674,11 +677,11 @@ const PayModal: React.FC = (props) => {
         <PayErrorModal
           accelOpen={payErrorModalOpen}
           setAccelOpen={(e) => {
-            onCancel();
+            iniliteReset();
             setPayErrorModalOpen(e);
           }}
           onConfirm={() => {
-            onCancel();
+            iniliteReset();
             setPayErrorModalOpen(false);
           }}
         />

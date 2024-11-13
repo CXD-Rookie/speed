@@ -30,7 +30,7 @@
   }
   
   .pay-loading-img {
-    margin: 30vh 0 0 48%;
+    margin: 24vh 0 0 48%;
   }
 
   .pay-modal {
@@ -153,7 +153,7 @@
       /* Left and right arrow styles */
       .arrow {
         position: absolute;
-        top: calc(50% - 0.9vw);
+        top: calc(5.85vh - 0.9vw);
         width: 1.8vw;
         height: 1.8vw;
         font-size: 1.2vw;
@@ -178,8 +178,8 @@
         content: "";
         width: 0.8vw;
         height: 0.8vw;
-        border-top: 1.5px solid;
-        border-right: 1.5px solid;
+        border-top: 0.2vw solid;
+        border-right: 0.2vw solid;
         border-color: #ffffff;
         position: absolute;
         right: 0.5vw;
@@ -187,18 +187,28 @@
         transform: rotate(45deg);
       }
 
+      .disabled-arrow.right::after {
+        border-color: #616169;
+        cursor: no-drop;
+      }
+
       .arrow.left::after {
         content: "";
         width: 0.8vw;
         height: 0.8vw;
-        border-top: 1.5px solid;
-        border-right: 1.5px solid;
+        border-top: 0.2vw solid;
+        border-right: 0.2vw solid;
         border-color: #ffffff;
         position: absolute;
         position: absolute;
         left: 0.5vw;
         top: 0.5vw;
         transform: rotate(-135deg); /* This is the main difference */
+      }
+
+      .disabled-arrow.left::after {
+        border-color: #616169;
+        cursor: no-drop;
       }
     }
 

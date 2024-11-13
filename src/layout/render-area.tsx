@@ -14,10 +14,12 @@ import PayModalNew from "@/containers/Pay/new";
 import PayModal from "@/containers/Pay";
 import MinorModal from "@/containers/minor";
 import BindPhoneMode from "@/containers/bind-phone-mode";
+import VisitorLogin from "@/containers/visitor-login";
 
 const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const state = useSelector((state: any) => state?.modalOpen);
+  const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
 
   const { payState = {}, firstPayRP = {}, setting = {}, drawVipActive = {} } = state;
   
@@ -56,6 +58,8 @@ const RenderSrea:React.FC = () => {
       <MinorModal />
       {/* 第三方手机绑定类型弹窗 */}
       <BindPhoneMode />
+      {/* 三方登录绑定手机号登录 */}
+      {isBindPhone && <VisitorLogin />}
     </Fragment>
   );
 }

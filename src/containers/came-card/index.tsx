@@ -255,9 +255,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const processBlack = JSON.parse(
         localStorage.getItem("processBlack") ?? "[]"
       ); // 进程黑名单
-
+      console.log(option);
+      
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { addr = "", server_v2, id } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
+      const { addr = "", server_v2 = [], id } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -317,7 +318,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     resolve({ state: true, platform: pc_platform });
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
-                    // tracking.trackBoostDisconnectManual("手动停止加速");
                     stopAcceleration();
                     resolve({ state: false });
                   }
@@ -332,7 +332,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             } else {
               console.error("响应数据缺失");
               resolve({ state: false });
-              // reject("响应数据缺失");
             }
           }
         );
@@ -348,8 +347,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let option = { ...event };
 
     const selectRegion = option?.serverNode?.selectRegion;
-
-    localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
+    
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
@@ -433,8 +431,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // 是否登录
       if (accountInfo?.isLogin) {
         const latestAccountInfo = store.getState().accountInfo; // 登录信息
+        const find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
 
-        let find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
+        // 当前历史选择区服
+        const selectRegion = option?.serverNode?.selectRegion;
+
+        // 是否是第一次加速弹窗区服节点
+        if (!selectRegion) {
+          setIsOpenRegion(true);
+          setSelectAccelerateOption(option);
+          return;
+        }
 
         // 是否有加速中的游戏
         if (find_accel?.[0] && option?.router !== "details") {
@@ -442,6 +449,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setSelectAccelerateOption(option);
           return;
         }
+
+        localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
         
         if (latestAccountInfo) {
           const userInfo = latestAccountInfo?.userInfo; // 用户信息
@@ -451,16 +460,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
           // 是否实名认证 isRealNamel === "1" 是
           // 是否是未成年 is_adult
-          // 是否是vip
           // 是否提醒续费快到期
           if (isRealNamel === "1") {
+            localStorage.removeItem("isAccelLoading");
             dispatch(openRealNameModal());
             return;
           } else if (!userInfo?.user_ext?.is_adult) {
+            localStorage.removeItem("isAccelLoading");
             dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
-            return;
-          } else if (!userInfo?.is_vip) {
-            dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
             return;
           } else if (
             userInfo?.is_vip &&
@@ -468,17 +475,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             userInfo?.vip_expiration_time - time <= 432000
           ) {
             setRenewalOpen(true);
+            localStorage.removeItem("isAccelLoading");
             localStorage.setItem("renewalTime", String(time));
-            return;
-          }
-
-          // 当前历史选择区服
-          const selectRegion = option?.serverNode?.selectRegion;
-
-          // 是否是第一次加速弹窗区服节点
-          if (!selectRegion) {
-            setIsOpenRegion(true);
-            setSelectAccelerateOption(option);
             return;
           }
 
@@ -487,17 +485,22 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           let data = { ...option };
 
           // 判断是否当前游戏下架
-          if (shelves?.state) return;
+          if (shelves?.state) {
+            localStorage.removeItem("isAccelLoading");
+            return;
+          }
           if (shelves?.data) data = shelves?.data; // 如果游戏数据有更新，则进行更新
 
           data = await checkGameisFree(data, "card"); // 查询当前游戏是否限时免费并更新数据
 
-          // 是否限时免费 free_time 
+          // 是否是vip
+          // 是否限时免费 free_time
           if (
             !(option?.free_time && option?.tags.includes("限时免费")) &&
             !userInfo?.is_vip
           ) {
             dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
+            localStorage.removeItem("isAccelLoading");
             return;
           }
 
@@ -513,9 +516,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
       }
     } catch (error) {
-      console.log("游戏卡片错误", error)
-    } finally {
+      console.log("游戏卡片错误", error);
       localStorage.removeItem("isAccelLoading");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -524,7 +528,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setAccelOpen(false); // 关闭确认框
     await stopAcceleration(); // 停止加速
     handleBeforeVerify(selectAccelerateOption);
-    // accelerateProcessing();
   };
 
   // 打开区服节点
@@ -532,28 +535,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     event: React.MouseEvent<HTMLImageElement>,
     option: any
   ) => {
-    const latestAccountInfo = store.getState().accountInfo;
-
     event.stopPropagation();
 
-    let shelves = await checkShelves(option);
-    let data = { ...option };
-
-    if (shelves?.state) return;
-    if (shelves?.data) data = shelves?.data;
-
     if (accountInfo?.isLogin) {
-      if (isRealNamel === "1") {
-        dispatch(openRealNameModal());
-        return;
-      } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
-        dispatch(setMinorState({ open: true, type: "recharge" })); // 实名认证提示
-        return;
-      } else {
-        event.stopPropagation();
-        setIsOpenRegion(true);
-        setSelectAccelerateOption(data);
-      }
+      event.stopPropagation();
+      setIsOpenRegion(true);
+      setSelectAccelerateOption(option);
     } else {
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo(undefined, undefined, true));
@@ -564,7 +551,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const handleGameCard = (option: any) => {
     try {
       setIsVerifying(true);
-
       if (isVerifying) return; // 防止进行多次点击
       if (localStorage.getItem("isAccelLoading") === "1") {
         // 触发游戏在加速中提示
@@ -575,7 +561,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       }
 
       // 如果是游戏库 结果页
-      if (["library", "result"].includes(locationType)) {
+      if (["library", "result", "myGame"].includes(locationType)) {
         const data = appendGameToList(option);
         const optionParams =
           data.filter((item: any) => item?.id === option?.id)?.[0] || {};
@@ -596,8 +582,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       }
     } catch (error) {
       setIsVerifying(false);
-    } finally {
-      setIsVerifying(false)
     }
   };
 
@@ -618,6 +602,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
+      setIsVerifying(true);
       handleBeforeVerify(customAccelerationData);
     }
   }, [customAccelerationData]);

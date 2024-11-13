@@ -155,6 +155,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
+      case "stopAccelerate":
+        // (window as any)
+        break
       case "loginOut":
         (window as any).loginOutStopWidow()
         break;
@@ -185,7 +188,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       case "infectedOrHijacked":
         // 打开设置
         stopAcceleration();
-        dispatch(setSetting({ settingOpen: true, type: "fix" }));
+        (window as any).native_update();
+        // dispatch(setSetting({ settingOpen: true, type: "fix" }));
         break;
       case "accelerationServiceNotStarting":
         stopAcceleration();
