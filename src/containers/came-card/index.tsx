@@ -513,6 +513,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       console.log("游戏卡片错误", error)
     } finally {
       localStorage.removeItem("isAccelLoading");
+      setIsVerifying(false);
     }
   };
 
@@ -521,7 +522,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setAccelOpen(false); // 关闭确认框
     await stopAcceleration(); // 停止加速
     handleBeforeVerify(selectAccelerateOption);
-    // accelerateProcessing();
   };
 
   // 打开区服节点
@@ -554,7 +554,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const handleGameCard = (option: any) => {
     try {
       setIsVerifying(true);
-
+      
       if (isVerifying) return; // 防止进行多次点击
       if (localStorage.getItem("isAccelLoading") === "1") {
         // 触发游戏在加速中提示
@@ -586,8 +586,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       }
     } catch (error) {
       setIsVerifying(false);
-    } finally {
-      setIsVerifying(false)
     }
   };
 

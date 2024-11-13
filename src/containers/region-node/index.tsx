@@ -43,7 +43,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       getGameList,
       identifyAccelerationData,
       removeGameList,
-      checkShelves,
     } = useGamesInitialize();
 
     const historyContext: any = useHistoryContext();
@@ -183,8 +182,15 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           if (type === "acelerate") {
-            notice(state_data);
-            navigate("/home");
+            // notice(state_data);
+            // navigate("/home");
+            navigate("/home", {
+              state: {
+                isNav: true,
+                data: state_data,
+                autoAccelerate: true,
+              },
+            });
           } else {
             // 跳转到首页并触发自动加速autoAccelerate
             navigate("/home", {
@@ -204,20 +210,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     // 开始加速
     const startAcceleration = async (node: any = selectNode) => {
       const isFind = identifyAccelerationData()?.[0] || false; // 当前是否有加速数据
-
-      let data = { ...presentGameData };
-      // let shelves = await checkShelves(
-      //   { ...presentGameData },
-      //   {
-      //     onOk: onCancel,
-      //     onTrigger: onCancel,
-      //   }
-      // );
-
-      // if (shelves?.state) return; // 判断是否当前游戏下架
-      // if (shelves?.data) data = shelves?.data;
-
-      setPresentGameInfo(data);
       
       if (isFind) {
         // 在游戏详情中进行区服节点切换进行提示窗类型
