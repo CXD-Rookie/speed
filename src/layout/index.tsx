@@ -401,7 +401,7 @@ const Layouts: React.FC = () => {
           } else {
             localStorage.setItem("isRealName", "0");
           }
-
+          
           if (!!user_info?.phone) {
             const data = identifyAccelerationData();
             const isTrue = data?.[0];
@@ -450,14 +450,17 @@ const Layouts: React.FC = () => {
             let bind_type = JSON.parse(
               localStorage.getItem("thirdBind") || "-1"
             );
+            
             // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
             if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
               localStorage.removeItem("thirdBind");
-              dispatch(updateBindPhoneState(true));
 
               if ((window as any).bannerTimer) {
                 (window as any).bannerTimer();
               }
+              
+              dispatch(setAccountInfo(undefined, false, false));
+              dispatch(updateBindPhoneState(true));
             }
           }
         }

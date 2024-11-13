@@ -16,12 +16,8 @@ import challengeIcon from "@/assets/images/common/challenge.svg";
 
 import "./index.scss";
 
-interface VisitorLoginProps {
-  loginOutStop: () => void;
-}
-
 // 是否绑定加速器的手机号绑定登录
-const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
+const VisitorLogin: React.FC= (props) => {
   const dispatch: any = useDispatch();
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
 
@@ -34,7 +30,7 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCode, setVeryCode] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
-
+  
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
     debounce((value: any) => {
@@ -123,7 +119,7 @@ const VisitorLogin: React.FC<VisitorLoginProps> = ({ loginOutStop }) => {
 
   const close = async () => {
     dispatch(updateBindPhoneState(false));
-    loginOutStop()
+    (window as any).loginOutStopWidow();
   };
   
   return (
