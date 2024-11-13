@@ -37,7 +37,7 @@ const Layouts: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch: any = useDispatch();
-  const versionNowRef = useRef(); // 客户端版本绑定
+  const versionNowRef = useRef("1.0.0.1002"); // 客户端版本绑定
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
   const historyContext: any = useHistoryContext(); // 自定义传递上下文 hook
@@ -325,10 +325,10 @@ const Layouts: React.FC = () => {
 
       if (token) {
         // 升级版本比较
-        if (!isClosed && version && versionNowRef.current) {
+        if (!isClosed && version) {
           // 升级弹窗要在登录之后才会弹出
           let isTrue = compareVersions(
-            versionNowRef.current || version?.min_version,
+            versionNowRef.current,
             version?.min_version
           );
           
