@@ -360,6 +360,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     const nodeHistory = option?.serverNode?.nodeHistory || [];
     const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
+    
+    // 处理选中节点在某些特殊情况下key是null的时候，弹窗区服节点弹窗
+    if (!selectNode?.key) {
+      localStorage.removeItem("isAccelLoading"); // 删除存储临时的加速中状态
+      setIsAllowAcceleration(true); // 启用立即加速
+      setIsAllowShowAccelerating(true); // 启用显示加速中
+      setIsStartAnimate(false); // 结束加速动画
+      setIsOpenRegion(true);
+      return;
+    }
 
     option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
     option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服

@@ -249,7 +249,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             keys.includes(String(item))
           )
         );
-
+        
         const updatedNodes = await Promise.all(
           nodes.map(async (node: any) => {
             try {
