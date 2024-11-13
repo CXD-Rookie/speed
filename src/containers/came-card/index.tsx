@@ -360,6 +360,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     const nodeHistory = option?.serverNode?.nodeHistory || [];
     const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
+    
+    // 处理选中节点在某些特殊情况下key是null的时候，弹窗区服节点弹窗
+    if (!selectNode?.key) {
+      setIsOpenRegion(true);
+      return;
+    }
 
     option.serverNode.selectNode = selectNode; // 给数据添加已名字的节点
     option.serverNode.selectRegion = selectRegion; // 给数据添加已名字的区服
