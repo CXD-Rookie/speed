@@ -255,9 +255,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const processBlack = JSON.parse(
         localStorage.getItem("processBlack") ?? "[]"
       ); // 进程黑名单
-
+      console.log(option);
+      
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { addr = "", server_v2, id } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
+      const { addr = "", server_v2 = [], id } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -317,7 +318,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     resolve({ state: true, platform: pc_platform });
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
-                    // tracking.trackBoostDisconnectManual("手动停止加速");
                     stopAcceleration();
                     resolve({ state: false });
                   }
@@ -332,7 +332,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             } else {
               console.error("响应数据缺失");
               resolve({ state: false });
-              // reject("响应数据缺失");
             }
           }
         );
@@ -433,8 +432,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // 是否登录
       if (accountInfo?.isLogin) {
         const latestAccountInfo = store.getState().accountInfo; // 登录信息
-
-        let find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
+        const find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
 
         // 是否有加速中的游戏
         if (find_accel?.[0] && option?.router !== "details") {
@@ -554,7 +552,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const handleGameCard = (option: any) => {
     try {
       setIsVerifying(true);
-      
       if (isVerifying) return; // 防止进行多次点击
       if (localStorage.getItem("isAccelLoading") === "1") {
         // 触发游戏在加速中提示
@@ -606,6 +603,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
+      setIsVerifying(true);
       handleBeforeVerify(customAccelerationData);
     }
   }, [customAccelerationData]);
