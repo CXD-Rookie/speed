@@ -86,6 +86,15 @@ code {
   border-radius: var(--speed-dominant-border-radius) !important;
 }
 
+.ant-tabs .ant-tabs-tab .ant-tabs-tab-btn,
+.ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #fff !important;
+}
+
+.ant-tabs-tab-btn {
+  color: #fff !important;
+}
+
 .ant-dropdown-menu-item {
   width: 12.8vw;
   height: 4.8vh;
