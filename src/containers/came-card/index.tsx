@@ -347,8 +347,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let option = { ...event };
 
     const selectRegion = option?.serverNode?.selectRegion;
-
-    localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
+    
     setIsAllowAcceleration(false); // 禁用立即加速
     setIsAllowShowAccelerating(false); // 禁用显示加速中
     setIsStartAnimate(true); // 开始加速动画
@@ -434,12 +433,24 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const latestAccountInfo = store.getState().accountInfo; // 登录信息
         const find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
 
+        // 当前历史选择区服
+        const selectRegion = option?.serverNode?.selectRegion;
+
+        // 是否是第一次加速弹窗区服节点
+        if (!selectRegion) {
+          setIsOpenRegion(true);
+          setSelectAccelerateOption(option);
+          return;
+        }
+
         // 是否有加速中的游戏
         if (find_accel?.[0] && option?.router !== "details") {
           setAccelOpen(true);
           setSelectAccelerateOption(option);
           return;
         }
+
+        localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
         
         if (latestAccountInfo) {
           const userInfo = latestAccountInfo?.userInfo; // 用户信息
@@ -451,9 +462,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           // 是否是未成年 is_adult
           // 是否提醒续费快到期
           if (isRealNamel === "1") {
+            localStorage.removeItem("isAccelLoading");
             dispatch(openRealNameModal());
             return;
           } else if (!userInfo?.user_ext?.is_adult) {
+            localStorage.removeItem("isAccelLoading");
             dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
             return;
           } else if (
@@ -462,17 +475,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             userInfo?.vip_expiration_time - time <= 432000
           ) {
             setRenewalOpen(true);
+            localStorage.removeItem("isAccelLoading");
             localStorage.setItem("renewalTime", String(time));
-            return;
-          }
-
-          // 当前历史选择区服
-          const selectRegion = option?.serverNode?.selectRegion;
-
-          // 是否是第一次加速弹窗区服节点
-          if (!selectRegion) {
-            setIsOpenRegion(true);
-            setSelectAccelerateOption(option);
             return;
           }
 
@@ -481,7 +485,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           let data = { ...option };
 
           // 判断是否当前游戏下架
-          if (shelves?.state) return;
+          if (shelves?.state) {
+            localStorage.removeItem("isAccelLoading");
+            return;
+          }
           if (shelves?.data) data = shelves?.data; // 如果游戏数据有更新，则进行更新
 
           data = await checkGameisFree(data, "card"); // 查询当前游戏是否限时免费并更新数据
@@ -493,6 +500,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             !userInfo?.is_vip
           ) {
             dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
+            localStorage.removeItem("isAccelLoading");
             return;
           }
 
@@ -508,9 +516,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
       }
     } catch (error) {
-      console.log("游戏卡片错误", error)
-    } finally {
+      console.log("游戏卡片错误", error);
       localStorage.removeItem("isAccelLoading");
+    } finally {
       setIsVerifying(false);
     }
   };
@@ -528,20 +536,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     option: any
   ) => {
     event.stopPropagation();
-    const latestAccountInfo = store.getState().accountInfo;
 
     if (accountInfo?.isLogin) {
-      if (isRealNamel === "1") {
-        dispatch(openRealNameModal());
-        return;
-      } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
-        dispatch(setMinorState({ open: true, type: "recharge" })); // 实名认证提示
-        return;
-      } else {
-        event.stopPropagation();
-        setIsOpenRegion(true);
-        setSelectAccelerateOption(option);
-      }
+      event.stopPropagation();
+      setIsOpenRegion(true);
+      setSelectAccelerateOption(option);
     } else {
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo(undefined, undefined, true));

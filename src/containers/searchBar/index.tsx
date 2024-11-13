@@ -109,13 +109,12 @@ const SearchBar: React.FC = () => {
                 className="search-item"
                 onClick={async (e) => {
                   e.stopPropagation();
-
                   setIsClicking(true)
                   
                   if (localStorage.getItem("isAccelLoading") !== "1") {
                     localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
                     if (!isClicking) {
-                      await handleSearchResultClick(result);
+                      handleSearchResultClick(result);
                     }
                   } else {
                     eventBus.emit("showModal", {

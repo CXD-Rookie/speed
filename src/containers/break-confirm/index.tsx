@@ -185,7 +185,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       case "infectedOrHijacked":
         // 打开设置
         stopAcceleration();
-        dispatch(setSetting({ settingOpen: true, type: "fix" }));
+        (window as any).native_update();
+        // dispatch(setSetting({ settingOpen: true, type: "fix" }));
         break;
       case "accelerationServiceNotStarting":
         stopAcceleration();

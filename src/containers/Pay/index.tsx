@@ -559,8 +559,8 @@ const PayModal: React.FC = (props) => {
                       >
                         用户协议
                       </span>
-                      》{activePayId && "及《"}
-                      {activePayId && (
+                      》
+                      {activePayId && "及《" + (
                         <span
                           className="txt"
                           ref={divRef}
@@ -569,9 +569,7 @@ const PayModal: React.FC = (props) => {
                         >
                           自动续费协议
                         </span>
-                      )}
-                      {activePayId && "》"}
-                      到期按每月29元自动续费，可随时取消 <TooltipCom />
+                      ) + "》到期按每月29元自动续费，可随时取消" + (<TooltipCom />)}
                     </div>
                   </div>
                 ) : null}
