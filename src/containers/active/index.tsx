@@ -11,7 +11,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { convertSecondsToDays,formatDate } from "@/common/utils";
 import { store } from "@/redux/store";
-import { setDrawVipActive, setNewUserOpen } from "@/redux/actions/modal-open";
+import {
+  setDrawVipActive,
+  setNewUserOpen,
+  setPayState,
+} from "@/redux/actions/modal-open";
 
 import "./index.scss";
 
@@ -57,6 +61,10 @@ const Active: React.FC = (props) => {
   }
   
   const onCancel = () => {
+    if (value?.type === 1) {
+      dispatch(setPayState({ open: false, couponValue: {} })); // 会员充值页面
+    }
+
     dispatch(setDrawVipActive({ open: false, value: {} }));
 
     // 如果时新用户触发的这个逻辑
