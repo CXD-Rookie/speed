@@ -122,7 +122,7 @@ const Layouts: React.FC = () => {
     try {
       const [list, data]: any = await Promise.all([
         await stopProcessReset(), // 初始化调用停止加速
-        await gameApi.gameList({ page: 1, pagesize: 5000 }), // 所有游戏
+        await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
       ]);
       const meGame: any = list?.data ?? [];
       const allGame = data?.data?.list ?? [];

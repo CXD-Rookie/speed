@@ -198,7 +198,7 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
       initialFetch();
     }
   }, [open]);
-
+  
   return (
     <Modal
       className="activation-modal"
@@ -250,20 +250,31 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
           </div>
         </div>
         <div className="content-title">启动平台：</div>
-        <Select
-          className="content-select"
-          value={selectPlatform}
-          onChange={(e) => clickSelectPlatform(e)}
-        >
-          {platforms?.length > 0 &&
-            platforms.map((item: any) => {
-              return (
-                <Option value={item?.pid} key={item?.pid}>
-                  {String(item?.pid) === "0" ? "自定义" : item?.name}
-                </Option>
-              );
-            })}
-        </Select>
+        {platforms?.length > 1 ? (
+          <Select
+            className="content-select"
+            value={selectPlatform}
+            onChange={(e) => clickSelectPlatform(e)}
+            disabled={true}
+          >
+            {platforms?.length > 0 &&
+              platforms.map((item: any) => {
+                return (
+                  <Option value={item?.pid} key={item?.pid}>
+                    {String(item?.pid) === "0" ? "自定义" : item?.name}
+                  </Option>
+                );
+              })}
+          </Select>
+        ) : (
+          <div className="content-select-div">
+            {
+              (platforms || []).find(
+                (item: any) => item?.pid === selectPlatform
+              )?.name
+            }
+          </div>
+        )}
         <div className="content-title">启动路径：</div>
         <div className="content-path-box">
           <Input
