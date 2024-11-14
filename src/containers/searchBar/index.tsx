@@ -70,6 +70,7 @@ const SearchBar: React.FC = () => {
 
   const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && query?.length > 0) {
+      setShowDropdown(false)
       dispatch(setEnterSign(enterSign));
       navigate("/gameList"); // 在输入框按下回车键时跳转到搜索结果页面
     }
