@@ -90,8 +90,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
 
-  const isRealNamel = localStorage.getItem("isRealName");
-
   // 停止加速
   const stopAcceleration = async () => {
     setStopModalOpen(false);
@@ -196,9 +194,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     // 聚合所以的api 数据中的 executable
     const result = data.reduce(
       (acc: any, item: any) => {
-        const { executable, pc_platform } = item.data;
+        const { executable, pc_platform, start_path = "" } = item.data;
         const isExecutable = Array.isArray(executable) && executable.length > 0;
-
+        
         // 聚合 executable 数据
         if (isExecutable) {
           acc.executable = acc.executable.concat(executable);
@@ -209,9 +207,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           acc.pc_platform.push(default_platform?.[pc_platform]);
         }
 
+        // 平台类型和pid相同，并且启动路径存在
+        if (Number(pc_platform) === Number(item.data?.pid) && start_path) {
+          acc.startGather.push({
+            ...item.data,
+            pc_platform,
+            path: start_path,
+          });
+        }
+
         return acc;
       },
-      { executable: [], pc_platform: [] }
+      { executable: [], pc_platform: [], startGather: [] }
     );
 
     return result;
@@ -232,7 +239,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
       // 游戏本身的pc_platform为空时 执行文件运行平台默认为空
-      let { executable, pc_platform } = gameFiles;
+      let { executable, pc_platform, startGather } = gameFiles;
+
+      // 添加自定义类型数据
+      startGather.push({
+        pc_platform: 0,
+        path: "", // 启动路径
+        pid: "0", // 平台id
+        name: "自定义",
+      });
+
+      const gather = { gid: option?.id, gather: startGather }; // 游戏id 平台列表
+      // 加速存储启动路径信息
+      localStorage.setItem("startGather", JSON.stringify(gather));
 
       // 同步加速商店的进程
       if (option?.pc_platform?.length > 0) {
@@ -256,9 +275,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         localStorage.getItem("processBlack") ?? "[]"
       ); // 进程黑名单
       console.log(option);
-      
+
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { addr = "", server_v2 = [], id } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
+      const {
+        addr = "",
+        server_v2 = [],
+        id,
+      } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -342,15 +365,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     }
   };
 
+  const stopAnimation = () => {
+    localStorage.removeItem("isAccelLoading"); // 删除存储临时的加速中状态
+    setIsAllowAcceleration(true); // 启用立即加速
+    setIsAllowShowAccelerating(true); // 启用显示加速中
+    setIsStartAnimate(false); // 结束加速动画
+  };
+
   // 加速实际操作
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
 
     const selectRegion = option?.serverNode?.selectRegion;
     
-    setIsAllowAcceleration(false); // 禁用立即加速
-    setIsAllowShowAccelerating(false); // 禁用显示加速中
-    setIsStartAnimate(true); // 开始加速动画
     stopAcceleration(); // 停止加速
 
     // 进行重新ping节点
@@ -422,10 +449,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         setTimeout(() => {
-          localStorage.removeItem("isAccelLoading"); // 删除存储临时的加速中状态
-          setIsAllowAcceleration(true); // 启用立即加速
-          setIsAllowShowAccelerating(true); // 启用显示加速中
-          setIsStartAnimate(false); // 结束加速动画
+          stopAnimation();
 
           if (isPre) {
             navigate("/gameDetail", { state: { fromRefresh: true } });
@@ -461,7 +485,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
-        
+        setIsAllowAcceleration(false); // 禁用立即加速
+        setIsAllowShowAccelerating(false); // 禁用显示加速中
+        setIsStartAnimate(true); // 开始加速动画
+
         if (latestAccountInfo) {
           const userInfo = latestAccountInfo?.userInfo; // 用户信息
           const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
@@ -472,11 +499,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           // 是否是未成年 is_adult
           // 是否提醒续费快到期
           if (isRealNamel === "1") {
-            localStorage.removeItem("isAccelLoading");
+            stopAnimation();
             dispatch(openRealNameModal());
             return;
           } else if (!userInfo?.user_ext?.is_adult) {
-            localStorage.removeItem("isAccelLoading");
+            stopAnimation();
             dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
             return;
           } else if (
@@ -484,8 +511,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             time - renewalTime > 86400 &&
             userInfo?.vip_expiration_time - time <= 432000
           ) {
+            stopAnimation();
             setRenewalOpen(true);
-            localStorage.removeItem("isAccelLoading");
             localStorage.setItem("renewalTime", String(time));
             return;
           }
@@ -496,7 +523,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
           // 判断是否当前游戏下架
           if (shelves?.state) {
-            localStorage.removeItem("isAccelLoading");
+            stopAnimation();
             return;
           }
           if (shelves?.data) data = shelves?.data; // 如果游戏数据有更新，则进行更新
@@ -509,15 +536,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             !(option?.free_time && option?.tags.includes("限时免费")) &&
             !userInfo?.is_vip
           ) {
+            stopAnimation();
             dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
-            localStorage.removeItem("isAccelLoading");
             return;
           }
 
           setSelectAccelerateOption(data);
           accelerateProcessing(data);
         } else {
-          localStorage.removeItem("isAccelLoading");
+          stopAnimation();
           (window as any).loginOutStopWidow(); // 退出登录
           dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
         }

@@ -37,7 +37,7 @@ const Layouts: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch: any = useDispatch();
-  const versionNowRef = useRef(); // 客户端版本绑定
+  const versionNowRef = useRef("1.0.0.1002"); // 客户端版本绑定
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
   const historyContext: any = useHistoryContext(); // 自定义传递上下文 hook
@@ -122,7 +122,7 @@ const Layouts: React.FC = () => {
     try {
       const [list, data]: any = await Promise.all([
         await stopProcessReset(), // 初始化调用停止加速
-        await gameApi.gameList({ page: 1, pagesize: 5000 }), // 所有游戏
+        await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
       ]);
       const meGame: any = list?.data ?? [];
       const allGame = data?.data?.list ?? [];
@@ -331,7 +331,7 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.min_version
           );
-
+          
           if (isTrue) {
             eventBus.emit("showModal", {
               show: true,

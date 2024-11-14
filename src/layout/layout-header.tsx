@@ -145,7 +145,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
             key: "2",
             label: (
               <div
-                className="public-style"
+                className="public-style feedback-public-style"
                 onClick={() => dispatch(setFeedbackPopup({ open: true }))}
               >
                 问题反馈
@@ -237,6 +237,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
           )}
           {/* 设置 */}
           <Dropdown
+            overlayClassName="layout-setting"
             menu={{ items }}
             placement="bottomRight"
             trigger={["click"]}
@@ -251,7 +252,12 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
             alt=""
           />
           {/* 关闭 */}
-          <img className="closeType" onClick={onClickOff} src={closeIcon} alt="" />
+          <img
+            className="closeType"
+            onClick={onClickOff}
+            src={closeIcon}
+            alt=""
+          />
         </div>
       </div>
     </Fragment>

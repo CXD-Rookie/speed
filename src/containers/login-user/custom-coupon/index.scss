@@ -53,9 +53,8 @@
     column-gap: 20vw;
   }
 
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs
-    .ant-tabs-tab.ant-tabs-tab-active
-    .ant-tabs-tab-btn {
+  .ant-tabs .ant-tabs-tab .ant-tabs-tab-btn,
+  .ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
     color: #fff !important;
   }
 
