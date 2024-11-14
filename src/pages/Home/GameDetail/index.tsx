@@ -262,8 +262,9 @@ const GameDetail: React.FC = () => {
   const startProgress = (data: any, start: any, event?: any) => {
     const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
     const startAssemble = startStorage ? JSON.parse(startStorage) : []; // 解析存储数据
-    const hitGame = startAssemble.filter((item: any) => item?.id === data?.id); // 当前游戏的启动信息
-    
+    // const hitGame = startAssemble.filter((item: any) => item?.id === data?.id); // 当前游戏的启动信息
+    console.log(startStorage);
+    const hitGame: any = [];
     // 如果是手动点击启动，防止捕获
     if (event) {
       event.stopPropagation();

@@ -194,9 +194,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     // 聚合所以的api 数据中的 executable
     const result = data.reduce(
       (acc: any, item: any) => {
-        const { executable, pc_platform } = item.data;
+        const { executable, pc_platform, start_path = "" } = item.data;
         const isExecutable = Array.isArray(executable) && executable.length > 0;
-
+        
         // 聚合 executable 数据
         if (isExecutable) {
           acc.executable = acc.executable.concat(executable);
@@ -207,9 +207,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           acc.pc_platform.push(default_platform?.[pc_platform]);
         }
 
+        // 平台类型和pid相同，并且启动路径存在
+        if (Number(pc_platform) === Number(item.data?.pid) && start_path) {
+          acc.startGather.push({
+            ...item.data,
+            pc_platform,
+            path: start_path,
+          });
+        }
+
         return acc;
       },
-      { executable: [], pc_platform: [] }
+      { executable: [], pc_platform: [], startGather: [] }
     );
 
     return result;
@@ -230,7 +239,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
       // 游戏本身的pc_platform为空时 执行文件运行平台默认为空
-      let { executable, pc_platform } = gameFiles;
+      let { executable, pc_platform, startGather } = gameFiles;
+
+      // 添加自定义类型数据
+      startGather.push({
+        pc_platform: 0,
+        path: "", // 启动路径
+        pid: "0", // 平台id
+        name: "自定义",
+      });
+
+      const gather = { gid: option?.id, gather: startGather }; // 游戏id 平台列表
+      // 加速存储启动路径信息
+      localStorage.setItem("startGather", JSON.stringify(gather));
 
       // 同步加速商店的进程
       if (option?.pc_platform?.length > 0) {
@@ -254,9 +275,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         localStorage.getItem("processBlack") ?? "[]"
       ); // 进程黑名单
       console.log(option);
-      
+
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
-      const { addr = "", server_v2 = [], id } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
+      const {
+        addr = "",
+        server_v2 = [],
+        id,
+      } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,

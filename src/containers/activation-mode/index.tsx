@@ -52,23 +52,31 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
   const handleSave = () => {
     const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
     const startAssemble = startStorage ? JSON.parse(startStorage) : [];
+    console.log(startAssemble);
+    
     const findIndex = startAssemble.findIndex(
-      (item: any) => item?.id === options?.id
+      (item: any) => item?.gid === options?.id
     ); // 查找当前游戏的索引
 
+    let temp = {}
     // 如果找到，先删除已存在的游戏启动信息
     if (findIndex !== -1) {
+      temp = startAssemble?.findIndex;
       startAssemble.splice(findIndex, 1, 1);
     }
 
     // 当前保存的启动信息存
     startAssemble.unshift({
-      id: options?.id,
-      path: filePath,
-      pid: selectPlatform,
-      start: quickStartType,
+      ...temp,
+      active: {
+        id: options?.id,
+        path: filePath,
+        pid: selectPlatform,
+        start: quickStartType,
+      },
     });
-
+    console.log(startAssemble);
+    
     localStorage.setItem("startAssemble", JSON.stringify(startAssemble)); // 更新localStorage
     onCancel(); // 关闭弹窗
   };
@@ -97,81 +105,6 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
     });
   };
 
-  // 处理请求 游戏平台信息
-  const fetchPDetails = (option: any) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let res = await playSuitApi.speedInfo({
-          platform: 3,
-          gid: options?.id,
-          pid: option?.pid,
-        });
-
-        resolve({
-          state: true,
-          data: {
-            ...res?.data,
-            option,
-          },
-        });
-      } catch (error) {
-        reject({ state: false });
-      }
-    });
-  };
-
-  // 组合启动平台
-  const handleMethod = async () => {
-    try {
-      const res = await playSuitApi.pcPlatform(); // 请求运营平台接口
-      const list = res?.data || {}; // 运营平台类型
-      const platformList = Object?.keys(list); // 运营平台数据转换key数组
-      const apiList: any = []; // 待循环请求是否有路径接口
-
-      // 对循环请求api数量进行整合
-      platformList.forEach((key: string) => {
-        apiList.push(fetchPDetails({ pid: key, name: res?.data?.[key] }));
-      });
-
-      const data: any = await Promise.all(apiList); // 请求等待统一请求完毕
-
-      // 聚合所以的api 数据中的 游戏平台
-      let excutable = data.reduce((acc: any = [], item: any) => {
-        const data = item?.data || {}; // 每个请求的返回数据
-        const { pc_platform = -1, option = {}, start_path = "" } = data; // 解构 pc_platform， option
-
-        // 平台类型和pid相同，并且启动路径存在
-        if (Number(pc_platform) === Number(option?.pid) && start_path) {
-          return acc.concat([
-            {
-              ...option,
-              pc_platform,
-              path: start_path,
-            },
-          ]);
-        }
-
-        return acc;
-      }, []);
-
-      const customObj = {
-        // 自定义类型数据
-        pc_platform: 0,
-        path: "",
-        pid: "0",
-        name: "自定义",
-      };
-
-      // 添加自定义类型数据
-      excutable.push(customObj);
-
-      setPlatforms(excutable);
-      return excutable;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const clickSelectPlatform = async (e: string) => {
     let path = platforms.filter((item: any) => item?.pid === e)?.[0];
 
@@ -179,21 +112,61 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
     setFilePath(path?.path || "");
   };
 
+  const initialFetch = async () => {
+    let arr = [undefined, null, "undefined", "null"];
+    let method: any = localStorage.getItem("startGather"); // 读取当前组合好的启动平台信息
+    let startStorage: any = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
+
+    method = arr.includes(method) || !method ? {} : JSON.parse(method);
+    startStorage =
+      arr.includes(startStorage) || !startStorage
+        ? []
+        : JSON.parse(startStorage);
+
+    const custom = {
+      path: "", // 启动路径
+      pid: "0", // 平台id
+      start: "human", // 启动方式
+      name: "自定义",
+    };
+    // 如果启动游戏信息有值找到当前游戏启动信息进行更新，否则添加到启动游戏信息
+    const assemble =
+      startStorage?.length > 0
+        ? (startStorage ?? []).map((item: any) => {
+            if (item?.id === method?.id) {
+              return {
+                ...item,
+                ...method,
+                active: {
+                  ...(item?.item || custom),
+                },
+              };
+            }
+
+            return item;
+          })
+        : [
+            {
+              ...method,
+              active: custom,
+            },
+          ];
+    // 找出当前游戏的启动信息
+    const startAssemble = assemble?.find(
+      (item: any) => item?.gid === options?.id
+    );
+
+    const { path = "", pid = "0", start = "human" } = startAssemble?.active; // 解构启动信息
+
+    localStorage.setItem("startAssemble", JSON.stringify(assemble)); // 更新localStorage
+    setPlatforms(startAssemble?.gather);
+    setFilePath(path); // 更新文件路径
+    setSelectPlatform(pid); // 更新启动平台
+    setQuickStartType(start); // 更新启动类型
+  };
+
   // 初始化
   useEffect(() => {
-    const initialFetch = async () => {
-      const method = await handleMethod(); // 组合好的所有存在启动平台信息
-      const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
-      const startAssemble = startStorage
-        ? JSON.parse(startStorage)?.filter((item: any) => item?.id === options?.id)?.[0] || {}
-        : { ...method?.[0], start: "human" }; // 启动信息
-      const { path = "", pid = "0", start = "human" } = startAssemble; // 解构启动信息
-
-      setFilePath(path); // 更新文件路径
-      setSelectPlatform(pid); // 更新启动平台
-      setQuickStartType(start); // 更新启动类型
-    };
-
     if (open) {
       initialFetch();
     }
