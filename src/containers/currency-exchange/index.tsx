@@ -139,7 +139,14 @@ const CurrencyExchange: React.FC = (props) => {
       if (res?.error === 0) {
         setCurrencyState("");
         dispatch(setDrawVipActive({ open: true, value: res?.data ?? {} })); // 领取兑换码弹窗
-        fetchRecords();
+        setCurrencyCode("");
+        setCurrencyState("");
+        setCurrencyTable([]);
+        dispatch(setPayState({ open: false, couponValue: {} })); // 会员充值页面
+        dispatch(setCurrencyOpen(false));
+        setPagination(inilitePagination);
+        setTableTotal(0);
+        // fetchRecords();
       } else {
         setCurrencyState(res?.message);
       }

@@ -86,9 +86,11 @@ const Active: React.FC = (props) => {
   return (
     <div className={`modal-wrapper ${open ? "visible" : ""}`}>
       <div className="modal-content">
-        <div className="close-button" onClick={onCancel}>
-          ×
-        </div>
+        {value?.type !== 1 && (
+          <div className="close-button" onClick={onCancel}>
+            ×
+          </div>
+        )}
         <h3>恭喜！领取成功！</h3>
         <p>
           您已获得
