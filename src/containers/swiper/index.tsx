@@ -8,9 +8,10 @@
  */
 import React, { Fragment, useEffect, useRef, useState, useCallback } from "react";
 import { Carousel } from "antd";
-import eventBus from '../../api/eventBus'; 
-import { useDispatch, useSelector } from "react-redux";
+
 import "./index.scss";
+import eventBus from "../../api/eventBus";
+
 import rightIcon from "@/assets/images/common/you@2x.png";
 import leftIcon from "@/assets/images/common/zuo@2x.png";
 
