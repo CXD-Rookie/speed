@@ -260,11 +260,11 @@ const GameDetail: React.FC = () => {
 
   // 启动游戏或者打开启动游戏路径
   const startProgress = (data: any, start: any, event?: any) => {
-    const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
-    const startAssemble = startStorage ? JSON.parse(startStorage) : []; // 解析存储数据
-    // const hitGame = startAssemble.filter((item: any) => item?.id === data?.id); // 当前游戏的启动信息
-    console.log(startStorage);
-    const hitGame: any = [];
+    let storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
+    let assemble = storage ? JSON.parse(storage) : []; // 解析存储游戏id 平台列表
+    let hitGame = assemble.find((item: any) => item?.id === data?.id); // 当前游戏的启动信息
+    console.log(hitGame);
+
     // 如果是手动点击启动，防止捕获
     if (event) {
       event.stopPropagation();
@@ -272,15 +272,12 @@ const GameDetail: React.FC = () => {
 
     // 当前游戏是存储过游戏路径，且启动方式为自动启动
     // 游戏为初始自动启动 或者 手动触发
-    if (
-      hitGame?.[0]?.start === start ||
-      (hitGame?.length > 0 && start === "human")
-    ) {
+    if (hitGame?.start === start || (hitGame && start === "human" && hitGame?.path)) {
       new Promise((resolve, reject) => {
         (window as any).NativeApi_AsynchronousRequest(
           "NativeApi_StartProcess",
           JSON.stringify({
-            params: { path: hitGame?.[0]?.path },
+            params: { path: hitGame?.path },
           }),
           (response: string) => {
             const res = JSON.parse(response);
@@ -296,7 +293,7 @@ const GameDetail: React.FC = () => {
       });
 
       return;
-    }else if (event) {
+    } else if (event) {
       dispatch(setStartPathOpen(true)); // 打开启动路径弹窗
     }
   };

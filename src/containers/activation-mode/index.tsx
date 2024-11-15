@@ -52,28 +52,26 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
   const handleSave = () => {
     const startStorage = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
     const startAssemble = startStorage ? JSON.parse(startStorage) : [];
-    console.log(startAssemble);
     
     const findIndex = startAssemble.findIndex(
-      (item: any) => item?.gid === options?.id
+      (item: any) => item?.id === options?.id
     ); // 查找当前游戏的索引
 
     let temp = {}
     // 如果找到，先删除已存在的游戏启动信息
     if (findIndex !== -1) {
-      temp = startAssemble?.findIndex;
-      startAssemble.splice(findIndex, 1, 1);
+      temp = startAssemble?.[findIndex];
+      startAssemble.splice(findIndex, 1);
     }
-
+    console.log(startAssemble);
+    
     // 当前保存的启动信息存
     startAssemble.unshift({
       ...temp,
-      active: {
-        id: options?.id,
-        path: filePath,
-        pid: selectPlatform,
-        start: quickStartType,
-      },
+      id: options?.id,
+      path: filePath,
+      pid: selectPlatform,
+      start: quickStartType,
     });
     console.log(startAssemble);
     
@@ -113,56 +111,14 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
   };
 
   const initialFetch = async () => {
-    let arr = [undefined, null, "undefined", "null"];
-    let method: any = localStorage.getItem("startGather"); // 读取当前组合好的启动平台信息
-    let startStorage: any = localStorage.getItem("startAssemble"); // localStorage存储的启动游戏信息
+    let storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
+    let assemble = storage ? JSON.parse(storage) : []; // 解析存储游戏id 平台列表
+    let hitGame = assemble.find((item: any) => item?.id === options?.id); // 当前游戏的启动信息
 
-    method = arr.includes(method) || !method ? {} : JSON.parse(method);
-    startStorage =
-      arr.includes(startStorage) || !startStorage
-        ? []
-        : JSON.parse(startStorage);
-
-    const custom = {
-      path: "", // 启动路径
-      pid: "0", // 平台id
-      start: "human", // 启动方式
-      name: "自定义",
-    };
-    // 如果启动游戏信息有值找到当前游戏启动信息进行更新，否则添加到启动游戏信息
-    const assemble =
-      startStorage?.length > 0
-        ? (startStorage ?? []).map((item: any) => {
-            if (item?.id === method?.id) {
-              return {
-                ...item,
-                ...method,
-                active: {
-                  ...(item?.item || custom),
-                },
-              };
-            }
-
-            return item;
-          })
-        : [
-            {
-              ...method,
-              active: custom,
-            },
-          ];
-    // 找出当前游戏的启动信息
-    const startAssemble = assemble?.find(
-      (item: any) => item?.gid === options?.id
-    );
-
-    const { path = "", pid = "0", start = "human" } = startAssemble?.active; // 解构启动信息
-
-    localStorage.setItem("startAssemble", JSON.stringify(assemble)); // 更新localStorage
-    setPlatforms(startAssemble?.gather);
-    setFilePath(path); // 更新文件路径
-    setSelectPlatform(pid); // 更新启动平台
-    setQuickStartType(start); // 更新启动类型
+    setPlatforms(hitGame?.platform);
+    setFilePath(hitGame?.path); // 更新文件路径
+    setSelectPlatform(hitGame?.pid); // 更新启动平台
+    setQuickStartType(hitGame?.start ?? "human"); // 更新启动类型
   };
 
   // 初始化
@@ -228,7 +184,6 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
             className="content-select"
             value={selectPlatform}
             onChange={(e) => clickSelectPlatform(e)}
-            disabled={true}
           >
             {platforms?.length > 0 &&
               platforms.map((item: any) => {
