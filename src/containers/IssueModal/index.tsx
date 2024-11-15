@@ -25,6 +25,7 @@ const FeedbackPopup: React.FC = () => {
   );
 
   const [issueOpen, setIssueOpen] = useState(false);
+  const [issueType, setIssueType] = useState("");
 
   const closeFeedbackForm = (open: any = false) => {
     dispatch(setFeedbackPopup({ open, defaultInfo: "" }));
@@ -47,11 +48,14 @@ const FeedbackPopup: React.FC = () => {
           <FeedbackForm
             onClose={closeFeedbackForm}
             defaultInfo={defaultInfo}
-            setIssueOpen={setIssueOpen}
+            setIssueOpen={(bool) => {
+              setIssueOpen(true);
+              setIssueType(bool ? "issueFeedback" : "issueFeedbackError");
+            }}
           />
         )}
         <BreakConfirmModal
-          type={"issueFeedback"}
+          type={issueType}
           accelOpen={issueOpen}
           setAccelOpen={closeFeedbackForm}
           onConfirm={() => {
