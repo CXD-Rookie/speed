@@ -9,6 +9,7 @@
 // index.tsx 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { convertSecondsToDays,formatDate } from "@/common/utils";
 import { store } from "@/redux/store";
 import {
@@ -21,7 +22,8 @@ import "./index.scss";
 
 const Active: React.FC = (props) => {
   const dispatch = useDispatch();
-
+  
+  const navigate = useNavigate();
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const { open = false, value = {} } = useSelector(
     (state: any) => state?.modalOpen?.drawVipActive
@@ -64,6 +66,7 @@ const Active: React.FC = (props) => {
     if (value?.type === 1) {
       // dispatch(setPayState({ open: false, couponValue: {} })); // 会员充值页面
       dispatch(setCurrencyOpen(false)); // 立即兑换页面
+      navigate("/home");
     }
 
     dispatch(setDrawVipActive({ open: false, value: {} }));

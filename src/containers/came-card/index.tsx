@@ -257,10 +257,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   element?.pc_platform === child?.pc_platform 
               )
             );
-            console.log(isFind, item);
             
             // 如果选中的当前游戏启动信息不在最新的平台列表中 并且不是自定义平台存在路径的情况
             if (!isFind && !(item?.path && item?.pc_platform === 0)) {
+              console.log(111);
+              
               // 如果平台列表存在除自定义以外的平台
               if (first) {
                 select = { ...item, ...first };

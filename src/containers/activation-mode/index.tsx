@@ -46,6 +46,7 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
   const onCancel = () => {
     setStartPathError("0")
     dispatch(setStartPathOpen(false));
+    setCustomPath("")
   };
   
   // 点击保存启动路径
