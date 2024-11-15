@@ -14,7 +14,7 @@ import { store } from "@/redux/store";
 import {
   setDrawVipActive,
   setNewUserOpen,
-  setPayState,
+  setCurrencyOpen,
 } from "@/redux/actions/modal-open";
 
 import "./index.scss";
@@ -62,7 +62,8 @@ const Active: React.FC = (props) => {
   
   const onCancel = () => {
     if (value?.type === 1) {
-      dispatch(setPayState({ open: false, couponValue: {} })); // 会员充值页面
+      // dispatch(setPayState({ open: false, couponValue: {} })); // 会员充值页面
+      dispatch(setCurrencyOpen(false)); // 立即兑换页面
     }
 
     dispatch(setDrawVipActive({ open: false, value: {} }));

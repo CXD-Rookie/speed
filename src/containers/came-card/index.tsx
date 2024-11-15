@@ -230,15 +230,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
     let assemble = storage ? JSON.parse(storage) : []; // 游戏id 平台列表
     let current = assemble.find((child: any) => child?.id === option?.id); // 查找当前存储中是否存储过此游戏启动路径信息
-    let first = (startGather?.platform || []).find((child: any) => child?.path); // 查找平台列表路径存在的第一个数据
+    let first = (startGather || []).find((child: any) => child?.path); // 查找平台列表路径存在的第一个数据
     let value = first ? first : startGather?.[0]; // 如果有存在的平台则使用存在的平台没有则使用自定义数据
-
+    
     // 如果找到则进行启动平台数据更新 否则添加新数据
     if (current) {
       assemble = assemble.map((item: any) => {
         if (item?.id === option?.id) {
           let select = { ...item }; // 默认赋值存储数据
-
+          console.log(item);
+          
           // 如果存储数据没有选中的启动信息
           if (!item?.path) {
             // 如果查找路径存在的第一个数据存在，更新到储存数据中
@@ -254,9 +255,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 child?.path === item?.path &&
                 child?.pc_platform === item?.pc_platform
             );
-
+            
             // 如果选中的当前游戏启动信息不在最新的平台列表中 并且不是自定义平台存在路径的情况
-            if (!isFind || !(item?.path && item?.pc_platform !== 0)) {
+            if (!isFind && !(item?.path && item?.pc_platform === 0)) {
               // 如果平台列表存在除自定义以外的平台
               if (first) {
                 select = { ...item, ...first };
@@ -784,7 +785,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               </div>
             )}
             {/* 加速中卡片 */}
-            {isAllowShowAccelerating && option?.is_accelerate ? (
+            {locationType === "home" && isAllowShowAccelerating && option?.is_accelerate ? (
               <div
                 className="accelerating-card"
                 onClick={

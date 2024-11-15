@@ -250,6 +250,7 @@ const PayModal: React.FC = (props) => {
       }
 
       let couponObj: any = activeCoupon;
+      console.log(activeCoupon, couponObj);
       
       // 优惠券列表数据 第一次打开页面也就是初始化使用接口直接返回优惠券列表 makeCoupon，
       // 手动刷新触发使用已经存储好的优惠券列表，过滤出最合适的优惠券
@@ -262,6 +263,7 @@ const PayModal: React.FC = (props) => {
       ) {
         // 过滤合适的优惠券
         setActiveCoupon(findMinIndex(makeCoupon));
+        couponObj = findMinIndex(makeCoupon);
       }
       // 有优惠券，商品列表传优惠券rid，，没有不传
       
@@ -270,6 +272,7 @@ const PayModal: React.FC = (props) => {
             rid: couponObj?.rid,
           }
         : {};
+        console.log(couponObj);
       const commodityRes = await payApi.getCommodityList(params);
 
       if (commodityRes?.error === 0) {

@@ -13,7 +13,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { setStartPathOpen } from "@/redux/actions/modal-open";
 
 import "./index.scss";
-import playSuitApi from "@/api/speed";
 
 import humanStartOIcon from "@/assets/images/common/human-start-o.png";
 import autoStartOIcon from "@/assets/images/common/auto-start-o.png";
@@ -63,15 +62,17 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
       temp = startAssemble?.[findIndex];
       startAssemble.splice(findIndex, 1);
     }
-    console.log(startAssemble);
-    
+
+    let name = platforms.find((item: any) => item?.pid === selectPlatform)?.name;
     // 当前保存的启动信息存
     startAssemble.unshift({
       ...temp,
       id: options?.id,
       path: filePath,
       pid: selectPlatform,
+      pc_platform: Number(selectPlatform),
       start: quickStartType,
+      name
     });
     console.log(startAssemble);
     

@@ -15,6 +15,10 @@ export const fetchSearchResults = (query: string, tag?: string, page: number = 1
   return async (dispatch: Dispatch, getState: any) => {
     dispatch({ type: SET_SEARCH_QUERY, payload: query });
     
+    if (!(query?.length > 0)) {
+      return
+    }
+
     try {
       const params = {
         s: query,
@@ -26,7 +30,7 @@ export const fetchSearchResults = (query: string, tag?: string, page: number = 1
       // const results_state = state.search.results;
 
       // console.log('Fetching search results with params:', params);
-
+      
       let response = await searchApi.search(params);
       let results = response.data.list || []; // 如果 data.list 为 null，则使用空数组
       

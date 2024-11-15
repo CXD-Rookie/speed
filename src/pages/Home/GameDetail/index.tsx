@@ -57,7 +57,6 @@ const GameDetail: React.FC = () => {
     identifyAccelerationData,
     removeGameList,
     forceStopAcceleration,
-    checkShelves,
   } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
