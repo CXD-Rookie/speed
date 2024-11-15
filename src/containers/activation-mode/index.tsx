@@ -107,6 +107,9 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
   const clickSelectPlatform = async (e: string) => {
     let path = platforms.filter((item: any) => item?.pid === e)?.[0];
 
+    if (path?.path) {
+      setStartPathError("0");
+    }
     setSelectPlatform(e);
     setFilePath(path?.path || "");
   };
