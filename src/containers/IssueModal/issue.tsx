@@ -126,9 +126,13 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
     try {
       const response = await feedbackApi.feedback(JSON.stringify(params));
-      console.log("Feedback submitted successfully:", response);
-      // 提交成功后的处理逻辑
-      setIssueOpen(true);
+      
+      if (response?.error === 0) {
+        // 提交成功后的处理逻辑
+        setIssueOpen(true);
+      } else {
+        setIssueOpen(false);
+      }
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       // message.error('反馈提交失败，请稍后重试！');

@@ -41,6 +41,7 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
   const [platforms, setPlatforms] = useState<any>([]); // 所有的运营平台
   const [startPathError, setStartPathError] = useState("0"); // 启动路径错误类型 0 正常 1 无路径
   
+  const [customPath, setCustomPath] = useState<any>(""); // 暂存的自定义路径
   // 取消函数
   const onCancel = () => {
     setStartPathError("0")
@@ -107,8 +108,21 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
   const clickSelectPlatform = async (e: string) => {
     let path = platforms.filter((item: any) => item?.pid === e)?.[0];
 
+    if (path?.path) {
+      setStartPathError("0");
+    }
+
+    // 如果切换启动平台时 平台为自定义且已经浏览过一次值，做值暂存处理
+    if (selectPlatform === "0" && filePath) {
+      setCustomPath(filePath);
+    }
+
+    if (e === "0" && customPath) {
+      setFilePath(customPath);
+    } else {
+      setFilePath(path?.path || "");
+    }
     setSelectPlatform(e);
-    setFilePath(path?.path || "");
   };
 
   const initialFetch = async () => {
@@ -185,6 +199,7 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
             className="content-select"
             value={selectPlatform}
             onChange={(e) => clickSelectPlatform(e)}
+            popupClassName={"popup-select"}
           >
             {platforms?.length > 0 &&
               platforms.map((item: any) => {

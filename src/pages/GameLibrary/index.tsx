@@ -1,12 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./style.scss";
 import gameApi from "@/api/gamelist";
 import GameCard from "@/containers/came-card";
-import addThemeIcon from "@/assets/images/common/add-theme.svg";
-import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 
 interface Game {
   id: string;
@@ -73,9 +69,6 @@ const gamesTitle: GamesTitleProps[] = [
 ];
 
 const GameLibrary: React.FC = () => {
-  const navigate = useNavigate();
-  const { appendGameToList } = useGamesInitialize();
-
   const [games, setGames] = useState<Game[]>([]);
   const [gameActiveType, setGameActiveType] = useState<string>("1");
 
@@ -104,17 +97,22 @@ const GameLibrary: React.FC = () => {
 
   // 根据分类进行本地数据过滤
   const filterGamesByCategory = (category: string, gamesList: Game[] | null = null) => {
-    const allGames = gamesList || JSON.parse(localStorage.getItem("cachedGames") || "[]");
-    
-    // 根据tags过滤
-    const filteredGames = allGames.filter((game: Game) => game.tags.includes(category));
-    
-    setGames(filteredGames);
-  };
+    const allGames =
+      gamesList || JSON.parse(localStorage.getItem("cachedGames") || "[]");
+    let filteredGames = [];
 
-  const clickAddGame = (option: any) => {
-    appendGameToList(option);
-    navigate("/home");
+    // 根据tags过滤 如果是限时免费 free_time 字段必须存在
+    if (category === "限时免费") {
+      filteredGames = allGames.filter(
+        (game: Game) => game.tags.includes(category) && game?.free_time
+      );
+    } else {
+      filteredGames = allGames.filter((game: Game) =>
+        game.tags.includes(category)
+      );
+    }
+
+    setGames(filteredGames);
   };
 
   // 点击分类时不再请求数据，而是本地过滤

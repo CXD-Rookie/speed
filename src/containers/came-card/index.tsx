@@ -238,7 +238,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       assemble = assemble.map((item: any) => {
         if (item?.id === option?.id) {
           let select = { ...item }; // 默认赋值存储数据
-          console.log(item);
           
           // 如果存储数据没有选中的启动信息
           if (!item?.path) {
@@ -250,11 +249,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             }
           } else {
             // 如果存储数据有选中的启动信息,判断选中的信息是否在最新的平台列表中
-            const isFind = (item?.platform || []).find(
-              (child: any) =>
-                child?.path === item?.path &&
-                child?.pc_platform === item?.pc_platform
+            const isFind = (item?.platform || []).find((child: any) =>
+              startGather.some(
+                (element: any) =>
+                  element.path &&
+                  element.path === child?.path &&
+                  element?.pc_platform === child?.pc_platform 
+              )
             );
+            console.log(isFind, item);
             
             // 如果选中的当前游戏启动信息不在最新的平台列表中 并且不是自定义平台存在路径的情况
             if (!isFind && !(item?.path && item?.pc_platform === 0)) {

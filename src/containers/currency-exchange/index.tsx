@@ -1,6 +1,7 @@
 // 口令兑换
 import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Modal, Table } from "antd";
+import { useNavigate } from "react-router-dom";
 import type { TableProps } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -33,6 +34,7 @@ const iniliteStatusObj: any = {
 
 const CurrencyExchange: React.FC = (props) => {
   const dispatch: any = useDispatch();
+  const navigate = useNavigate();
 
   const open = useSelector((state: any) => state?.modalOpen?.currencyOpen);
   
@@ -140,6 +142,10 @@ const CurrencyExchange: React.FC = (props) => {
         setCurrencyState("");
         dispatch(setDrawVipActive({ open: true, value: res?.data ?? {} })); // 领取兑换码弹窗
         fetchRecords();
+        setCurrencyCode("");
+        setCurrencyState("");
+        dispatch(setPayState({ open: false, couponValue: {} })); // 会员充值页面
+        navigate("/home");
       } else {
         setCurrencyState(res?.message);
       }

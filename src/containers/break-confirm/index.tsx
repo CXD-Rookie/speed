@@ -71,6 +71,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     accelMemEnd: "您的加速服务已到期，请续费继续使用",
     serverDisconnected: "无法连接到服务器，请重新启动客户端。",
     issueFeedback: "提交成功，感谢您的反馈！",
+    issueFeedbackError: "提交失败，请重新尝试。",
     connectionPay:
       "当前有一笔订单正在支付处理中。如需切换支付方式或会员套餐，请等待该订单自动关闭（约20分钟）后再尝试提交新订单.",
     switchServer: "更换区服，可能导致游戏重新连接，建议先退出游戏",
@@ -90,6 +91,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     accelMemEnd: "好的",
     serverDisconnected: "重启客户端",
     issueFeedback: "好的",
+    issueFeedbackError: "好的",
     connectionPay: "继续支付",
     gamesAccelerating: "好的",
     takenShelves: "好的",
@@ -106,6 +108,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "accelMemEnd", // 加速中并且会员到期 停止加速
     "serverDisconnected", // 服务器断开连接
     "issueFeedback", // 问题反馈
+    "issueFeedbackError", // 问题反馈
     "connectionPay", //继续支付，订单未支付
     "gamesAccelerating",
     "takenShelves", // 游戏下架提示
@@ -198,6 +201,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         (window as any).native_restart();
         break;
       case "issueFeedback":
+      case "issueFeedbackError":
         feedbackClose.onClose();
         break;
       case "accelerate":
