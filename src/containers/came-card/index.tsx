@@ -230,9 +230,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
     let assemble = storage ? JSON.parse(storage) : []; // 游戏id 平台列表
     let current = assemble.find((child: any) => child?.id === option?.id); // 查找当前存储中是否存储过此游戏启动路径信息
-    let first = (startGather?.platform || []).find((child: any) => child?.path); // 查找平台列表路径存在的第一个数据
+    let first = (startGather || []).find((child: any) => child?.path); // 查找平台列表路径存在的第一个数据
     let value = first ? first : startGather?.[0]; // 如果有存在的平台则使用存在的平台没有则使用自定义数据
-
+    
     // 如果找到则进行启动平台数据更新 否则添加新数据
     if (current) {
       assemble = assemble.map((item: any) => {
