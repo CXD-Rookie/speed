@@ -199,6 +199,7 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
             className="content-select"
             value={selectPlatform}
             onChange={(e) => clickSelectPlatform(e)}
+            popupClassName={"popup-select"}
           >
             {platforms?.length > 0 &&
               platforms.map((item: any) => {

@@ -194,6 +194,7 @@
       margin-left: 13.6vw;
       margin-top: 4.8vh;
       font-size: 1.4vw;
+      opacity: 0.2;
 
       &:hover {
         color: #fff;
@@ -206,8 +207,14 @@
       }
 
       &:enabled {
+        opacity: 1;
         background: #f86c34;
       }
     }
+  }
+}
+.popup-select {
+  .ant-select-item-option-selected {
+    background-color: rgba(255,255,255,0.30) !important;
   }
 }
