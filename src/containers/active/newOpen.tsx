@@ -18,8 +18,7 @@ import closeIcon from "@/assets/images/common/cloture.svg";
 const ActiveNew: React.FC = () => {
   const dispatch: any = useDispatch();
 
-  // const open = useSelector((state: any) => state?.modalOpen?.newUserOpen);
-  const open = true
+  const open = useSelector((state: any) => state?.modalOpen?.newUserOpen);
 
   const onCancel = (e?: any) => {
     dispatch(setNewUserOpen(false))
