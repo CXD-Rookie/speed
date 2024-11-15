@@ -238,7 +238,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       assemble = assemble.map((item: any) => {
         if (item?.id === option?.id) {
           let select = { ...item }; // 默认赋值存储数据
-
+          console.log(item);
+          
           // 如果存储数据没有选中的启动信息
           if (!item?.path) {
             // 如果查找路径存在的第一个数据存在，更新到储存数据中
@@ -254,9 +255,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 child?.path === item?.path &&
                 child?.pc_platform === item?.pc_platform
             );
-
+            
             // 如果选中的当前游戏启动信息不在最新的平台列表中 并且不是自定义平台存在路径的情况
-            if (!isFind || !(item?.path && item?.pc_platform !== 0)) {
+            if (!isFind && !(item?.path && item?.pc_platform === 0)) {
               // 如果平台列表存在除自定义以外的平台
               if (first) {
                 select = { ...item, ...first };
