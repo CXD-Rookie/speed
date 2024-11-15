@@ -206,13 +206,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         if (pc_platform !== 0 && isExecutable) {
           acc.pc_platform.push(default_platform?.[pc_platform]);
         }
-
+        
         // 平台类型和pid相同，并且启动路径存在
-        if (Number(pc_platform) === Number(item.data?.pid) && start_path) {
+        if (Number(pc_platform) && start_path) {
           acc.startGather.push({
-            ...item.data,
             pc_platform,
+            pid: String(pc_platform),
             path: start_path,
+            name: platform?.[pc_platform],
           });
         }
 
@@ -222,6 +223,69 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     );
 
     return result;
+  };
+
+  // 处理加速时启动方式的数据更新
+  const assembleFun = (option: any, startGather: any) => {
+    let storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
+    let assemble = storage ? JSON.parse(storage) : []; // 游戏id 平台列表
+    let current = assemble.find((child: any) => child?.id === option?.id); // 查找当前存储中是否存储过此游戏启动路径信息
+    let first = (startGather?.platform || []).find((child: any) => child?.path); // 查找平台列表路径存在的第一个数据
+    let value = first ? first : startGather?.[0]; // 如果有存在的平台则使用存在的平台没有则使用自定义数据
+
+    // 如果找到则进行启动平台数据更新 否则添加新数据
+    if (current) {
+      assemble = assemble.map((item: any) => {
+        if (item?.id === option?.id) {
+          let select = { ...item }; // 默认赋值存储数据
+
+          // 如果存储数据没有选中的启动信息
+          if (!item?.path) {
+            // 如果查找路径存在的第一个数据存在，更新到储存数据中
+            if (first) {
+              select = first;
+            } else {
+              select = item?.platform?.[0];
+            }
+          } else {
+            // 如果存储数据有选中的启动信息,判断选中的信息是否在最新的平台列表中
+            const isFind = (item?.platform || []).find(
+              (child: any) =>
+                child?.path === item?.path &&
+                child?.pc_platform === item?.pc_platform
+            );
+
+            // 如果选中的当前游戏启动信息不在最新的平台列表中 并且不是自定义平台存在路径的情况
+            if (!isFind || !(item?.path && item?.pc_platform !== 0)) {
+              // 如果平台列表存在除自定义以外的平台
+              if (first) {
+                select = { ...item, ...first };
+              } else {
+                // 如果平台列表只存在除自定义平台
+                select = item?.platform?.[0];
+              }
+            }
+          }
+
+          return {
+            ...item,
+            ...select,
+            platform: startGather,
+          };
+        }
+        return item;
+      });
+    } else {
+      assemble.push({
+        ...value,
+        id: option?.id,
+        platform: startGather,
+      });
+    }
+    console.log("储存的启动信息", assemble);
+
+    // 存储游戏启动路径信息
+    localStorage.setItem("startAssemble", JSON.stringify(assemble));
   };
 
   // 通知客户端进行游戏加速
@@ -238,20 +302,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
-      // 游戏本身的pc_platform为空时 执行文件运行平台默认为空
+      // 游戏本身的pc_platform为空时 执行文件运行平台默认为空 startGather 游戏启动平台列表
       let { executable, pc_platform, startGather } = gameFiles;
 
       // 添加自定义类型数据
-      startGather.push({
+      startGather.unshift({
         pc_platform: 0,
         path: "", // 启动路径
         pid: "0", // 平台id
-        name: "自定义",
+        name: "自定义", // 平台名称
       });
 
-      const gather = { gid: option?.id, gather: startGather }; // 游戏id 平台列表
-      // 加速存储启动路径信息
-      localStorage.setItem("startGather", JSON.stringify(gather));
+      // 处理加速时启动方式的数据更新
+      assembleFun(option, startGather);
 
       // 同步加速商店的进程
       if (option?.pc_platform?.length > 0) {
