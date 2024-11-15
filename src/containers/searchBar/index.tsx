@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
-import { fetchSearchResults } from "../../redux/actions/search";
 import { setEnterSign } from "@/redux/actions/search-enter";
+import { fetchSearchResults } from "@/redux/actions/search";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./index.scss";
