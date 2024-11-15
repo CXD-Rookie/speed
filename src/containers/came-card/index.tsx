@@ -785,7 +785,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               </div>
             )}
             {/* 加速中卡片 */}
-            {isAllowShowAccelerating && option?.is_accelerate ? (
+            {locationType === "home" && isAllowShowAccelerating && option?.is_accelerate ? (
               <div
                 className="accelerating-card"
                 onClick={
