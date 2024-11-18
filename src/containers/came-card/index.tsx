@@ -565,7 +565,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
           // 是否实名认证 isRealNamel === "1" 是
           // 是否是未成年 is_adult
-          // 是否提醒续费快到期
           if (isRealNamel === "1") {
             stopAnimation();
             dispatch(openRealNameModal());
@@ -574,16 +573,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             stopAnimation();
             dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
             return;
-          } else if (
-            userInfo?.is_vip &&
-            time - renewalTime > 86400 &&
-            userInfo?.vip_expiration_time - time <= 86400
-          ) {
-            stopAnimation();
-            setRenewalOpen(true);
-            localStorage.setItem("renewalTime", String(time));
-            return;
           }
+
+          // 是否提醒续费快到期 注释原因：现在免费领取会员时间由30天改为3天防止打开主程序就弹出
+          // else if (
+          //   userInfo?.is_vip &&
+          //   time - renewalTime > 86400 &&
+          //   userInfo?.vip_expiration_time - time <= 86400
+          // ) {
+          //   stopAnimation();
+          //   setRenewalOpen(true);
+          //   localStorage.setItem("renewalTime", String(time));
+          //   return;
+          // }
 
           // 是否下架
           let shelves = await checkShelves(option);
