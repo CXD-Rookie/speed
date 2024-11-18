@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
 import { setAccountInfo } from "@/redux/actions/account-info";
 import {
-  setNewUserOpen,
+  setDrawVipActive,
   setFirstPayRP,
   setMinorState,
   setAppCloseOpen,
@@ -381,7 +381,8 @@ const Layouts: React.FC = () => {
             if (isNewUser && !isModalDisplayed && !isNewOpen) {
               // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
               setTimeout(() => {
-                dispatch(setNewUserOpen(true));
+                // dispatch(setNewUserOpen(true));
+                dispatch(setDrawVipActive({ open: true }));
               }, 500);
             }
 
