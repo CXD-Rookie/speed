@@ -194,9 +194,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     // 聚合所以的api 数据中的 executable
     const result = data.reduce(
       (acc: any, item: any) => {
-        const { executable, pc_platform, start_path = "" } = item.data;
+        const {
+          executable,
+          pc_platform,
+          start_path = "",
+          ip_blacklist = "",
+          dir_list = "",
+        } = item.data;
         const isExecutable = Array.isArray(executable) && executable.length > 0;
-        
+        const blacklist = [];
+
         // 聚合 executable 数据
         if (isExecutable) {
           acc.executable = acc.executable.concat(executable);
@@ -206,7 +213,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         if (pc_platform !== 0 && isExecutable) {
           acc.pc_platform.push(default_platform?.[pc_platform]);
         }
-        
+
         // 平台类型和pid相同，并且启动路径存在
         if (Number(pc_platform) && start_path) {
           acc.startGather.push({
@@ -217,9 +224,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         }
 
+        if (ip_blacklist) {
+          blacklist.push(ip_blacklist);
+        }
+
+        if (dir_list) {
+          blacklist.push(ip_blacklist);
+        }
+
         return acc;
       },
-      { executable: [], pc_platform: [], startGather: [] }
+      { executable: [], pc_platform: [], startGather: [], blacklist: [] }
     );
 
     return result;
@@ -308,8 +323,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
       // 游戏本身的pc_platform为空时 执行文件运行平台默认为空 startGather 游戏启动平台列表
-      let { executable, pc_platform, startGather } = gameFiles;
-
+      let { executable, pc_platform, startGather, blacklist } = gameFiles;
+      console.log(gameFiles);
+      
       // 添加自定义类型数据
       startGather.unshift({
         pc_platform: 0,
@@ -328,7 +344,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           platform
         );
         const processResult = await triggerMultipleRequests(gameResult);
-
+        
         executable = [...executable, ...processResult?.executable];
       }
 
@@ -364,7 +380,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
-        process_blacklist: [...processBlack],
+        process_blacklist: [...processBlack], // ...blacklist
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
         domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now
