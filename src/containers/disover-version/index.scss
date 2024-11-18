@@ -1,3 +1,13 @@
+.disover-version-mask {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 998;
+}
+
 .disover-version-modal {
   position: fixed;
   top: 50%;
@@ -9,14 +19,29 @@
   background-repeat: no-repeat;
   background-size: cover;
   z-index: 999;
-}
 
-.disover-version-mask {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 998;
+  & .title-box {
+    display: flex;
+    margin: 4.8vh auto 8.9vh 11.1vh;
+
+    & .title {
+      color: #ffffff;
+      font-size: 2vw;
+      font-family: Source Han Sans SC, Source Han Sans SC-700;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 3.2vh;
+    }
+
+    & .version {
+      display: flex;
+      align-items: center;
+      font-size: 1.2vw;
+      font-weight: 400;
+      color: rgba(255,255,255,0.50);
+      background: rgba(255,255,255,0.06);
+      border-radius: 0.4vw;
+      padding: 0.3vw 0.8vw;
+    }
+  }
 }

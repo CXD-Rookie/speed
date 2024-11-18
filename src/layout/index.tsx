@@ -322,6 +322,9 @@ const Layouts: React.FC = () => {
         timestamp = 0, // 服务端时间
         first_purchase_renewed = {}, // 是否首充首续
       } = data?.data;
+      
+      // 存储版本信息
+      localStorage.setItem("version", JSON.stringify(version));
 
       if (token) {
         // 升级版本比较
@@ -333,12 +336,13 @@ const Layouts: React.FC = () => {
           );
           
           if (isTrue) {
-            eventBus.emit("showModal", {
-              show: true,
-              type: "newVersionFound",
-              version: version?.now_version,
-            });
-
+            // eventBus.emit("showModal", {
+            //   show: true,
+            //   type: "newVersionFound",
+            //   version: version?.now_version,
+            // });
+            // 版本升级提示
+            
             return;
           }
         }
