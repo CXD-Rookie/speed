@@ -198,11 +198,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           executable,
           pc_platform,
           start_path = "",
-          ip_blacklist = "",
-          dir_list = "",
+          ipv4_list = [],
+          dir_list = [],
         } = item.data;
         const isExecutable = Array.isArray(executable) && executable.length > 0;
-        const blacklist = [];
 
         // 聚合 executable 数据
         if (isExecutable) {
@@ -224,17 +223,23 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         }
 
-        if (ip_blacklist) {
-          blacklist.push(ip_blacklist);
+        if (ipv4_list) {
+          acc.ipv4_list = acc.ipv4_list.concat(ipv4_list);
         }
 
         if (dir_list) {
-          blacklist.push(ip_blacklist);
+          acc.dir_list = acc.ipv4_list.concat(dir_list);
         }
 
         return acc;
       },
-      { executable: [], pc_platform: [], startGather: [], blacklist: [] }
+      {
+        executable: [],
+        pc_platform: [],
+        startGather: [],
+        ipv4_list: [],
+        dir_list: [],
+      }
     );
 
     return result;
@@ -323,8 +328,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
       // 游戏本身的pc_platform为空时 执行文件运行平台默认为空 startGather 游戏启动平台列表
-      let { executable, pc_platform, startGather, blacklist } = gameFiles;
-      console.log(gameFiles);
+      let { executable, pc_platform, startGather, ipv4_list, dir_list } = gameFiles;
       
       // 添加自定义类型数据
       startGather.unshift({
@@ -360,6 +364,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       ); // 进程黑名单
       console.log(option);
 
+      // IP, 目录黑名单
+      const blackList = [...ipv4_list, ...dir_list].filter(
+        (value: any, index: any, self: any) => {
+          return self.indexOf(value) === index;
+        }
+      );;
+      console.log(blackList);
+      
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const {
         addr = "",
@@ -380,7 +392,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
-        process_blacklist: [...processBlack], // ...blacklist
+        process_blacklist: [...processBlack, ...blackList],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
         domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now

@@ -22,7 +22,7 @@ import logoIcon from "@/assets/images/common/logo.png";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
-
+import updateIcon from "@/assets/images/common/update.png";
 interface CustomMenuProps {
   key: string;
   label: string;
@@ -219,6 +219,11 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
           onMouseDown={stopPropagation}
           onMouseUp={stopPropagation}
         >
+          {/* 发现新版本 */}
+          <div className="find-version">
+            <img src={updateIcon} alt=""/>
+            发现新版本
+          </div>
           {/* 口令兑换弹窗 */}
           <div className="currency-exchange" onClick={onClickCurrency}>
             口令兑换
