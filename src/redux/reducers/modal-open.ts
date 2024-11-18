@@ -10,6 +10,7 @@ import {
   PAY,
   MINORTYPE,
   BINDPHONE,
+  UPDATE_VERSION,
 } from "../actions/modal-open";
 
 const initialState = {
@@ -45,10 +46,16 @@ const initialState = {
     open: false,
     type: "",
   },
+  versionState: false, // 发现新版本弹窗
 };
 
 const modalOpenReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case UPDATE_VERSION:
+      return {
+        ...state,
+        versionState: action.payload,
+      };
     case BINDPHONE:
       return {
         ...state,

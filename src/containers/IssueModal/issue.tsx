@@ -106,7 +106,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
   // 定义验证码js加载错误处理函数
   const loadErrorCallback = () => {
-    let appid = "195964536"; // 生成容灾票据或自行做其它处理
+    let appid = "190613711"; // 生成容灾票据或自行做其它处理
     let ticket =
       "terror_1001_" + appid + Math.floor(new Date().getTime() / 1000);
 
@@ -142,6 +142,8 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         content: description,
         image_url: imagesArr,
         contact_way: contact, // 你的联系方式
+        ticket: captcha_verify_param.ticket,
+        randstr: captcha_verify_param.randstr,
       };
 
       const response = await feedbackApi.feedback(JSON.stringify(params));
@@ -161,7 +163,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const handleSubmit = async () => {
     try {
       let captcha = new (window as any).TencentCaptcha(
-        "195964536",
+        "190613711",
         codeCallback,
         {
           userLanguage: "zh",

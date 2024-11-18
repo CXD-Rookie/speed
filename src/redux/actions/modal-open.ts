@@ -9,6 +9,13 @@ export const FIRSTPAYRP = 'FIRSTPAYRP' // 首次购买，续费弹窗
 export const PAY = 'PAY' // 支付弹窗
 export const MINORTYPE = 'MINORTYPE' // 三方登录 实名认证等UI确定弹窗
 export const BINDPHONE = 'BINDPHONE' // 第三方手机绑定类型弹窗
+export const UPDATE_VERSION = 'UPDATE_VERSION' // 发现新版本弹窗
+
+// 发现新版本弹窗
+export const setVersionState = (open: any) => ({
+  type: UPDATE_VERSION,
+  payload: open,
+});
 
 // 第三方手机绑定类型弹窗
 export const setBindState = (open: any) => ({

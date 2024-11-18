@@ -15,6 +15,7 @@ import PayModal from "@/containers/Pay";
 import MinorModal from "@/containers/minor";
 import BindPhoneMode from "@/containers/bind-phone-mode";
 import VisitorLogin from "@/containers/visitor-login";
+import DisoverVersion from "@/containers/disover-version";
 
 const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
@@ -60,6 +61,8 @@ const RenderSrea:React.FC = () => {
       <BindPhoneMode />
       {/* 三方登录绑定手机号登录 */}
       {isBindPhone && <VisitorLogin />}
+      {/* 发现新版本弹窗 */}
+      <DisoverVersion />
     </Fragment>
   );
 }
