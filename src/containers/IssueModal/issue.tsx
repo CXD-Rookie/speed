@@ -353,14 +353,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
             <span className="char-count-mobile">{contact.length}/50</span>
           </div>
         </div>
-        {/*
-        <Button
-          className="submit-btn"
-          onClick={handleSubmit}
-          disabled={!isFormValid()}
-        >
-          提交
-        </Button>*/}
         <Button
           className="submit-btn"
           onClick={handleSubmit}

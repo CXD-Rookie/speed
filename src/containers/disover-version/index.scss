@@ -20,6 +20,15 @@
   background-size: cover;
   z-index: 999;
 
+  & .close-icon {
+    position: absolute;
+    right: 1.6vw;
+    top: 1.6vw;
+    width: 2.4vw;
+    height: 2.4vw;
+    cursor: pointer;
+  }
+
   & .title-box {
     display: flex;
     margin: 4.8vh auto 8.9vh 11.1vh;

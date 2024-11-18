@@ -10,6 +10,7 @@ import {
   setMinorState,
   setAppCloseOpen,
   setSetting,
+  setVersionState,
 } from "@/redux/actions/modal-open";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { setFirstAuth } from "@/redux/actions/firstAuth";
@@ -40,6 +41,9 @@ const Layouts: React.FC = () => {
   const versionNowRef = useRef("1.0.0.1002"); // 客户端版本绑定
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
+  const { open: versionOpen = false } = useSelector(
+    (state: any) => state?.modalOpen?.versionState
+  );
   const historyContext: any = useHistoryContext(); // 自定义传递上下文 hook
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
   const { fetchBanner } = useFetchBanner(); // 请求banner图 hook
@@ -310,23 +314,70 @@ const Layouts: React.FC = () => {
       localStorage.setItem("version", JSON.stringify(version));
 
       if (token) {
-        // 升级版本比较
+        // isClosed异地登录被顶掉标记 升级版本比较
+        // 升级弹窗要在登录之后才会弹出
         if (!isClosed && version) {
-          // 升级弹窗要在登录之后才会弹出
-          let isTrue = compareVersions(
+          // 普通升级版本和客户端当前版本进行比较
+          const isInterim = compareVersions(
             versionNowRef.current,
-            version?.min_version
+            version?.now_version
           );
-          
-          if (isTrue) {
-            // eventBus.emit("showModal", {
-            //   show: true,
-            //   type: "newVersionFound",
-            //   version: version?.now_version,
-            // });
-            // 版本升级提示
-            
-            return;
+
+          // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
+          // 反之进行 else 进行版本比较
+          if (!isInterim) {
+            localStorage.removeItem("versionLock"); // 删除
+            dispatch(setVersionState({ open: false, type: "" })); // 关闭版本升级弹窗
+          } else {
+            // 版本比较信息锁
+            const versionLock = JSON.parse(
+              localStorage.getItem("versionLock") ?? JSON.stringify({})
+            );
+
+            // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
+            if (versionLock?.interimVersion) {
+              const isInterim = compareVersions(
+                versionLock?.interimVersion,
+                version?.now_version
+              );
+              
+              // 如果版本有升级并且版本没有进行更新并且弹窗是未打卡的情况下
+              if (isInterim && !versionOpen) {
+                // 打开升级弹窗 触发普通升级类型
+                dispatch(setVersionState({ open: true, type: "last" }));
+                localStorage.setItem(
+                  "versionLock", // 普通升级版本信息 是否升级标记 interimMark
+                  JSON.stringify({
+                    interimVersion: version?.now_version,
+                    interimMark: "1", // "1" 表示未升级
+                  })
+                );
+              }
+            } else {
+              // 当前版本存在可升级版本时 属于过渡版本判断
+              // 普通升级版本和客户端当前版本进行比较
+              const isInterim = compareVersions(
+                versionNowRef.current,
+                version?.now_version
+              );
+
+              // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
+              if (
+                isInterim &&
+                versionLock?.interimMark !== "1" &&
+                !versionOpen
+              ) {
+                localStorage.setItem(
+                  "versionLock", // 普通升级版本信息 是否升级标记 interimMark
+                  JSON.stringify({
+                    interimVersion: version?.now_version,
+                    interimMark: "1", // "1" 表示未升级
+                  })
+                );
+                // 打开升级弹窗 触发普通升级类型
+                dispatch(setVersionState({ open: true, type: "interim" }));
+              }
+            }
           }
         }
 
@@ -389,7 +440,7 @@ const Layouts: React.FC = () => {
           } else {
             localStorage.setItem("isRealName", "0");
           }
-          
+
           if (!!user_info?.phone) {
             const data = identifyAccelerationData();
             const isTrue = data?.[0];
@@ -438,7 +489,7 @@ const Layouts: React.FC = () => {
             let bind_type = JSON.parse(
               localStorage.getItem("thirdBind") || "-1"
             );
-            
+
             // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
             if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
               localStorage.removeItem("thirdBind");
@@ -446,7 +497,7 @@ const Layouts: React.FC = () => {
               if ((window as any).bannerTimer) {
                 (window as any).bannerTimer();
               }
-              
+
               dispatch(setAccountInfo(undefined, false, false));
               dispatch(updateBindPhoneState(true));
             }

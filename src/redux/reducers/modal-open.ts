@@ -46,7 +46,10 @@ const initialState = {
     open: false,
     type: "",
   },
-  versionState: false, // 发现新版本弹窗
+  versionState: {
+    open: false, // 弹窗开关
+    type: "", // 升级类型, 如果存在值则代表有可升级的版本
+  }, // 发现新版本弹窗
 };
 
 const modalOpenReducer = (state = initialState, action:any) => {
@@ -54,7 +57,10 @@ const modalOpenReducer = (state = initialState, action:any) => {
     case UPDATE_VERSION:
       return {
         ...state,
-        versionState: action.payload,
+        versionState: {
+          ...state?.versionState,
+          ...action.payload,
+        },
       };
     case BINDPHONE:
       return {
