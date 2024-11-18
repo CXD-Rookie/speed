@@ -577,7 +577,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           } else if (
             userInfo?.is_vip &&
             time - renewalTime > 86400 &&
-            userInfo?.vip_expiration_time - time <= 432000
+            userInfo?.vip_expiration_time - time <= 86400
           ) {
             stopAnimation();
             setRenewalOpen(true);
