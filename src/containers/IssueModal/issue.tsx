@@ -39,7 +39,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       setDescription("");
       setContact("");
       setImages([]);
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -104,29 +104,48 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     return selectedType !== null && description.trim() !== "";
   };
 
-  // 提交表单
-  const handleSubmit = async () => {
-    if (!isFormValid()) {
-      message.error("请选择问题类型并填写问题描述！");
-      return;
-    }
-    const imagesArr: string[] = [];
+  // 定义验证码js加载错误处理函数
+  const loadErrorCallback = () => {
+    let appid = "195964536"; // 生成容灾票据或自行做其它处理
+    let ticket =
+      "terror_1001_" + appid + Math.floor(new Date().getTime() / 1000);
 
-    images.forEach((image) => {
-      let filteredSrc = image.url.replace("https://cdn.accessorx.com/", "");
-      imagesArr.push(filteredSrc);
+    codeCallback({
+      ret: 0,
+      randstr: "@" + Math.random().toString(36).substr(2),
+      ticket,
+      errorCode: 1001,
+      errorMessage: "jsload_error",
     });
+  };
 
-    const params = {
-      feedback_type: String(selectedType),
-      content: description,
-      image_url: imagesArr,
-      contact_way: contact, // 你的联系方式
-    };
-
+  // 图形码验证通过回调兑换口令
+  const codeCallback = async (captcha_verify_param: any) => {
     try {
+      if (captcha_verify_param?.ret !== 0) {
+        return;
+      }
+
+      if (!isFormValid()) {
+        message.error("请选择问题类型并填写问题描述！");
+        return;
+      }
+      const imagesArr: string[] = [];
+
+      images.forEach((image) => {
+        let filteredSrc = image.url.replace("https://cdn.accessorx.com/", "");
+        imagesArr.push(filteredSrc);
+      });
+
+      const params = {
+        feedback_type: String(selectedType),
+        content: description,
+        image_url: imagesArr,
+        contact_way: contact, // 你的联系方式
+      };
+
       const response = await feedbackApi.feedback(JSON.stringify(params));
-      
+
       if (response?.error === 0) {
         // 提交成功后的处理逻辑
         setIssueOpen(true);
@@ -134,8 +153,24 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         setIssueOpen(false);
       }
     } catch (error) {
-      console.error("Failed to submit feedback:", error);
-      // message.error('反馈提交失败，请稍后重试！');
+      console.log("验证码错误", error);
+    }
+  };
+
+  // 提交表单
+  const handleSubmit = async () => {
+    try {
+      let captcha = new (window as any).TencentCaptcha(
+        "195964536",
+        codeCallback,
+        {
+          userLanguage: "zh",
+        }
+      );
+
+      captcha.show();
+    } catch (error) {
+      loadErrorCallback();
     }
   };
 
@@ -261,7 +296,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
               onClick={() => handleTypeSelect(type.id)}
             >
               {type.value}
-              {selectedType === type.id && <img className="tick" src={tickIcon} alt="" />}
+              {selectedType === type.id && (
+                <img className="tick" src={tickIcon} alt="" />
+              )}
             </button>
           ))}
         </div>
@@ -314,6 +351,14 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
             <span className="char-count-mobile">{contact.length}/50</span>
           </div>
         </div>
+        {/*
+        <Button
+          className="submit-btn"
+          onClick={handleSubmit}
+          disabled={!isFormValid()}
+        >
+          提交
+        </Button>*/}
         <Button
           className="submit-btn"
           onClick={handleSubmit}
