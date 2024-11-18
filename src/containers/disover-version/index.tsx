@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import "./index.scss";
 
 const DisoverVersion: React.FC = () => {
-  const open = useSelector((state: any) => state?.modalOpen?.versionState);
-  // const open = true
+  // const open = useSelector((state: any) => state?.modalOpen?.versionState);
+  const open = true
   
   return (
     open &&
