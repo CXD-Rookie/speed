@@ -54,23 +54,6 @@ const Layouts: React.FC = () => {
     (window as any).NativeApi_OnDragZoneMouseUp();
   };
 
-  // 判断是否续费提醒
-  const remindWhetherRenew = () => {
-    const renewTime = Number(localStorage.getItem("renewalTime")) || 0; // 到期时间
-    const time = new Date().getTime() / 1000; // 当前时间
-    const user = accountInfo?.userInfo;
-
-    if (
-      accountInfo?.isLogin &&
-      user?.is_vip &&
-      time - renewTime > 86400 &&
-      user?.vip_expiration_time - time <= 432000
-    ) {
-      localStorage.setItem("renewalTime", String(time));
-      eventBus.emit("showModal", { show: true, type: "renewalReminder" });
-    }
-  };
-
   // 读取客户端版本方法
   const nativeVersion = () => {
     (window as any).NativeApi_AsynchronousRequest(
@@ -490,7 +473,6 @@ const Layouts: React.FC = () => {
     }, 3 * 60 * 60 * 1000);
     
     iniliteRenewal(); // 初始化更新游戏;
-    remindWhetherRenew(); // 判断是否续费提醒
     nativeVersion(); // 读取客户端版本
     initialSetup(); // 初始设置
 
