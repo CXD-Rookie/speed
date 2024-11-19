@@ -35,7 +35,7 @@ const LocalGame: React.FC = () => {
             <img src={rightIcon} alt="" />
           </span>
         </div>
-        <img src={closeIcon} alt="" onClick={onCancel} />
+        <img className="close" src={closeIcon} alt="" onClick={onCancel} />
       </div>
       <div className="line" />
       {value?.length > 0 && 

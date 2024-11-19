@@ -15,6 +15,10 @@
     justify-content: space-between;
     align-items: center;
 
+    .close {
+      cursor: pointer;
+    }
+    
     .text {
       font-size: 1.4vw;
       font-weight: 400;
