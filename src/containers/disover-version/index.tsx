@@ -8,7 +8,7 @@ import "./index.scss";
 import versionCloseIcon from "@/assets/images/common/version-close.svg";
 
 const DisoverVersion: React.FC = () => {
-  const { open = false, type = ''} = useSelector((state: any) => state?.modalOpen?.versionState);
+  const { open = false } = useSelector((state: any) => state?.modalOpen?.versionState);
 
   const dispatch = useDispatch();
 

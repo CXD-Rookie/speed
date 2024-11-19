@@ -11,6 +11,7 @@ import {
   setAppCloseOpen,
   setSetting,
   setVersionState,
+  setLocalGameState,
 } from "@/redux/actions/modal-open";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { setFirstAuth } from "@/redux/actions/firstAuth";
@@ -45,7 +46,12 @@ const Layouts: React.FC = () => {
     (state: any) => state?.modalOpen?.versionState
   );
   const historyContext: any = useHistoryContext(); // 自定义传递上下文 hook
-  const { removeGameList, identifyAccelerationData } = useGamesInitialize();
+  const {
+    removeGameList,
+    identifyAccelerationData,
+    getGameList,
+    appendGameToList,
+  } = useGamesInitialize();
   const { fetchBanner } = useFetchBanner(); // 请求banner图 hook
 
   const [couponRefreshNum, setCouponRefreshNum] = useState(0); // 是否刷新优惠券过期判断
@@ -240,6 +246,69 @@ const Layouts: React.FC = () => {
       console.log("退出登录", error);
     }
   };
+
+  // 本地扫描游戏方法
+  const invokeLocalScan = async (option: any = [], isTootip: boolean = true) => {
+    try {
+      let all = []; // 扫描到的游戏
+
+      // 接收的参数是数据并且有数据的情况下
+      if (Array.isArray(option) && option?.length > 0) {
+        const allApi: any = [];
+
+        // 做接口请求组合
+        option.forEach((element) => {
+          allApi.push(
+            gameApi.gameList({ s: element }).then((res: any) => {
+              const result = res?.data?.list?.[0];
+              return result
+                ? {
+                    ...result,
+                    mark: "local", // 标记这个游戏是本地扫描到的
+                    cover_img: `https://cdn.accessorx.com/${
+                      result.cover_img
+                        ? result.cover_img
+                        : result.background_img
+                    }`,
+                  }
+                : false;
+            })
+          );
+        });
+
+        all = await Promise.all(allApi); // 请求接口
+        all = all.filter((item) => item !== false); // 去除布尔值为false的元素
+      }
+
+      // 已从本地扫描并且从我的游戏中删除的游戏
+      const scannedLocal = JSON.parse(
+        localStorage.getItem("scannedLocal") || JSON.stringify([])
+      );
+      const meGame = getGameList(); // 我的游戏
+      const allowAdd = all.filter(
+        (item: any) =>
+          scannedLocal.every((child: any) => child?.id !== item?.id) &&
+          meGame.every((child: any) => child?.id !== item?.id)
+      ); // 既不是已经标记过的游戏，也不是在我的游戏中的游戏
+
+      console.log(allowAdd);
+
+      if (allowAdd?.length > 0) {
+        // 添加到我的游戏
+        allowAdd.forEach((element) => {
+          appendGameToList(element)
+          navigate("/home")
+        });
+
+        // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
+        if (location?.pathname === "/home" && isTootip) {
+          dispatch(setLocalGameState({ open: true, value: allowAdd }));
+        }
+      }
+    } catch (error) {
+      console.log("本地扫描游戏方法", error);
+    }
+  }
 
   //控制24小时展示一次的活动充值页面
   // 控制活动充值页面在当天23:59:59后再次展示
@@ -565,9 +634,11 @@ const Layouts: React.FC = () => {
     (window as any).closeTypeNew = trayAreaControls; // 客户端调用托盘区
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
+    (window as any).invokeLocalScan = invokeLocalScan;
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
+      delete (window as any).invokeLocalScan;
       delete (window as any).speedError;
       delete (window as any).stopProcessReset;
       delete (window as any).stopSpeed;
@@ -641,6 +712,7 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
+        (window as any).invokeLocalScan(["星际争霸2国服", "Steam商店"]);
         (window as any).NativeApi_RenderComplete();
       }, 1000);
     } else {

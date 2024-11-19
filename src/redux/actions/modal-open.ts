@@ -10,6 +10,13 @@ export const PAY = 'PAY' // 支付弹窗
 export const MINORTYPE = 'MINORTYPE' // 三方登录 实名认证等UI确定弹窗
 export const BINDPHONE = 'BINDPHONE' // 第三方手机绑定类型弹窗
 export const UPDATE_VERSION = 'UPDATE_VERSION' // 发现新版本弹窗
+export const LOCAL_GAME = 'LOCAL_GAME' // 发现本地扫描到的游戏弹窗
+
+// 发现本地扫描到的游戏弹窗
+export const setLocalGameState = (open: any) => ({
+  type: LOCAL_GAME,
+  payload: open,
+});
 
 // 发现新版本弹窗
 export const setVersionState = (open: any) => ({

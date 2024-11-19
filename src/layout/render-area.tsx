@@ -16,13 +16,21 @@ import MinorModal from "@/containers/minor";
 import BindPhoneMode from "@/containers/bind-phone-mode";
 import VisitorLogin from "@/containers/visitor-login";
 import DisoverVersion from "@/containers/disover-version";
+import LocalGame from "@/containers/local-game";
 
 const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const state = useSelector((state: any) => state?.modalOpen);
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
 
-  const { payState = {}, firstPayRP = {}, setting = {}, drawVipActive = {} } = state;
+  const {
+    payState = {},
+    firstPayRP = {},
+    setting = {},
+    drawVipActive = {},
+    versionState = {},
+    localGameState = {},
+  } = state;
   
   return (
     <Fragment>
@@ -62,7 +70,9 @@ const RenderSrea:React.FC = () => {
       {/* 三方登录绑定手机号登录 */}
       {isBindPhone && <VisitorLogin />}
       {/* 发现新版本弹窗 */}
-      <DisoverVersion />
+      {versionState?.open && <DisoverVersion />}
+      {/* 发现本地扫描到的游戏弹窗 */}
+      {localGameState?.open && <LocalGame />}
     </Fragment>
   );
 }

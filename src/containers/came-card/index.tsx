@@ -767,9 +767,22 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 清除游戏
   const handleClearGame = (event: any, option: any) => {
+    // 已从本地扫描并且从我的游戏中删除的游戏
+    const scannedLocal = JSON.parse(
+      localStorage.getItem("scannedLocal") || JSON.stringify([])
+    );
+
     event.stopPropagation();
     removeGameList(option);
-    triggerDataUpdate();
+    triggerDataUpdate(); // 更新首页展示
+
+    // 如果这个游戏是扫描来的然后再清除，存储到本地扫描清除列表数据中
+    if (option?.mark === "local") {
+      localStorage.setItem(
+        "scannedLocal",
+        JSON.stringify([...scannedLocal, option])
+      );
+    }
   };
 
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
