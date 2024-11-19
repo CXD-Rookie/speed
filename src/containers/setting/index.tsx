@@ -29,7 +29,6 @@ import fixImg_3 from "@/assets/images/fixUtils/fix3@2x.png";
 import fixImg_6 from "@/assets/images/fixUtils/fix6@2x.png";
 import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
 import fix_failure from "@/assets/images/fixUtils/fix_failure@2x.png";
-import rightIcon from "@/assets/images/common/right-arrow.svg";
 import loginApi from "@/api/login";
 
 const { TabPane } = Tabs;

@@ -30,7 +30,13 @@ const LocalGame: React.FC = () => {
       <div className="header">
         <div className="text">
           <span className="desicrpt">发现本地游戏，</span>
-          <span className="check" onClick={() => navigate("/myGames")}>
+          <span
+            className="check"
+            onClick={() => {
+              navigate("/myGames")
+              onCancel();
+              }}
+            >
             去查看
             <img src={rightIcon} alt="" />
           </span>

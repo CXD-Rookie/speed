@@ -50,7 +50,7 @@ const Layouts: React.FC = () => {
     removeGameList,
     identifyAccelerationData,
     getGameList,
-    appendGameToList,
+    passiveAddition,
   } = useGamesInitialize();
   const { fetchBanner } = useFetchBanner(); // 请求banner图 hook
 
@@ -296,7 +296,7 @@ const Layouts: React.FC = () => {
       if (allowAdd?.length > 0) {
         // 添加到我的游戏
         allowAdd.forEach((element) => {
-          appendGameToList(element)
+          passiveAddition(element);
           navigate("/home")
         });
 

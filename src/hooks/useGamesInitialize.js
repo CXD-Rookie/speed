@@ -121,6 +121,16 @@ export const useGamesInitialize = () => {
     return sort_list;
   }
 
+  // 被动添加逻辑
+  const passiveAddition = (option) => {
+    let sort_list = [...sortGameList()]
+
+    sort_list.push(option)
+    localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(sort_list));
+
+    return sort_list;
+  }
+
   // 加速我的游戏
   const accelerateGameToList = (option, params = {}) => {
     let game_list = getGameList()
@@ -281,6 +291,7 @@ export const useGamesInitialize = () => {
     chooseDefaultNode,
     forceStopAcceleration,
     checkGameisFree,
-    checkShelves
+    checkShelves,
+    passiveAddition
   };
 };
