@@ -11,6 +11,7 @@ import {
   setSetting,
   setFeedbackPopup,
   setAppCloseOpen,
+  setVersionState,
 } from "@/redux/actions/modal-open";
 
 import "./index.scss";
@@ -22,7 +23,7 @@ import logoIcon from "@/assets/images/common/logo.png";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
-
+import updateIcon from "@/assets/images/common/update.png";
 interface CustomMenuProps {
   key: string;
   label: string;
@@ -58,6 +59,9 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
   const dispatch: any = useDispatch();
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
+  const { type: versionType = "" } = useSelector(
+    (state: any) => state?.modalOpen?.versionState
+  );
   const menuState = useSelector((state: any) => state?.menu?.active_menu); // 头部tab状态
   
   const { identifyAccelerationData } = useGamesInitialize();
@@ -219,6 +223,19 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
           onMouseDown={stopPropagation}
           onMouseUp={stopPropagation}
         >
+          {/* 发现新版本 */}
+          {versionType && (
+            <div
+              className="find-version"
+              onClick={() =>
+                // 打开升级弹窗 触发普通升级类型
+                dispatch(setVersionState({ open: true  }))
+              }
+            >
+              <img src={updateIcon} alt="" />
+              发现新版本
+            </div>
+          )}
           {/* 口令兑换弹窗 */}
           <div className="currency-exchange" onClick={onClickCurrency}>
             口令兑换

@@ -67,6 +67,25 @@
         align-items: center;
         column-gap: 2vw;
 
+        .find-version {
+          width: 11.2vw;
+          height: 3.6vh;
+          font-size: 1.2vw;
+          color: #ff4900;
+          background: rgba(255,255,255,0.00);
+          border: 0.1vw solid rgba(255,255,255,0.10);
+          border-radius: 1.8vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          
+          & img {
+            width: 2vw;
+            height: 2vw;
+          }
+        }
+
         .currency-exchange {
           width: 8vw;
           height: 3.6vh;

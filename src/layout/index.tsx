@@ -10,6 +10,8 @@ import {
   setMinorState,
   setAppCloseOpen,
   setSetting,
+  setVersionState,
+  setLocalGameState,
 } from "@/redux/actions/modal-open";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { setFirstAuth } from "@/redux/actions/firstAuth";
@@ -40,8 +42,16 @@ const Layouts: React.FC = () => {
   const versionNowRef = useRef("1.0.0.1002"); // 客户端版本绑定
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
+  const { open: versionOpen = false } = useSelector(
+    (state: any) => state?.modalOpen?.versionState
+  );
   const historyContext: any = useHistoryContext(); // 自定义传递上下文 hook
-  const { removeGameList, identifyAccelerationData } = useGamesInitialize();
+  const {
+    removeGameList,
+    identifyAccelerationData,
+    getGameList,
+    passiveAddition,
+  } = useGamesInitialize();
   const { fetchBanner } = useFetchBanner(); // 请求banner图 hook
 
   const [couponRefreshNum, setCouponRefreshNum] = useState(0); // 是否刷新优惠券过期判断
@@ -62,6 +72,7 @@ const Layouts: React.FC = () => {
       (response: string) => {
         const parsedResponse = JSON.parse(response);
         versionNowRef.current = parsedResponse?.version;
+        (window as any).versionNowRef = parsedResponse?.version; // 将版本挂载到window，强制升级处使用
       }
     );
   };
@@ -236,6 +247,69 @@ const Layouts: React.FC = () => {
     }
   };
 
+  // 本地扫描游戏方法
+  const invokeLocalScan = async (option: any = [], isTootip: boolean = true) => {
+    try {
+      let all = []; // 扫描到的游戏
+
+      // 接收的参数是数据并且有数据的情况下
+      if (Array.isArray(option) && option?.length > 0) {
+        const allApi: any = [];
+
+        // 做接口请求组合
+        option.forEach((element) => {
+          allApi.push(
+            gameApi.gameList({ s: element }).then((res: any) => {
+              const result = res?.data?.list?.[0];
+              return result
+                ? {
+                    ...result,
+                    mark: "local", // 标记这个游戏是本地扫描到的
+                    cover_img: `https://cdn.accessorx.com/${
+                      result.cover_img
+                        ? result.cover_img
+                        : result.background_img
+                    }`,
+                  }
+                : false;
+            })
+          );
+        });
+
+        all = await Promise.all(allApi); // 请求接口
+        all = all.filter((item) => item !== false); // 去除布尔值为false的元素
+      }
+
+      // 已从本地扫描并且从我的游戏中删除的游戏
+      const scannedLocal = JSON.parse(
+        localStorage.getItem("scannedLocal") || JSON.stringify([])
+      );
+      const meGame = getGameList(); // 我的游戏
+      const allowAdd = all.filter(
+        (item: any) =>
+          scannedLocal.every((child: any) => child?.id !== item?.id) &&
+          meGame.every((child: any) => child?.id !== item?.id)
+      ); // 既不是已经标记过的游戏，也不是在我的游戏中的游戏
+
+      console.log(allowAdd);
+
+      if (allowAdd?.length > 0) {
+        // 添加到我的游戏
+        allowAdd.forEach((element) => {
+          passiveAddition(element);
+          navigate("/home")
+        });
+
+        // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
+        if (location?.pathname === "/home" && isTootip) {
+          dispatch(setLocalGameState({ open: true, value: allowAdd }));
+        }
+      }
+    } catch (error) {
+      console.log("本地扫描游戏方法", error);
+    }
+  }
+
   //控制24小时展示一次的活动充值页面
   // 控制活动充值页面在当天23:59:59后再次展示
   const payNewActive = async (first_renewed: any, first_purchase: any) => {
@@ -305,24 +379,85 @@ const Layouts: React.FC = () => {
         timestamp = 0, // 服务端时间
         first_purchase_renewed = {}, // 是否首充首续
       } = data?.data;
+      
+      // 存储版本信息
+      localStorage.setItem("version", JSON.stringify(version));
 
       if (token) {
-        // 升级版本比较
+        // isClosed异地登录被顶掉标记 升级版本比较
+        // 升级弹窗要在登录之后才会弹出
         if (!isClosed && version) {
-          // 升级弹窗要在登录之后才会弹出
-          let isTrue = compareVersions(
+          // 普通升级版本和客户端当前版本进行比较
+          const isInterim = compareVersions(
+            versionNowRef.current,
+            version?.now_version
+          );
+          // 比较版本是否需要升级
+          const isForceInterim = compareVersions(
             versionNowRef.current,
             version?.min_version
           );
-          
-          if (isTrue) {
-            eventBus.emit("showModal", {
-              show: true,
-              type: "newVersionFound",
-              version: version?.now_version,
-            });
 
-            return;
+          // 如果强制版本压根不需要升级，删除存储的标记
+          if (!isForceInterim) {
+            localStorage.removeItem("forceVersionLock");
+          }
+
+          // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
+          // 反之进行 else 进行版本比较
+          if (!isInterim) {
+            localStorage.removeItem("versionLock"); // 删除
+            dispatch(setVersionState({ open: false, type: "" })); // 关闭版本升级弹窗
+          } else {
+            // 版本比较信息锁
+            const versionLock = JSON.parse(
+              localStorage.getItem("versionLock") ?? JSON.stringify({})
+            );
+
+            // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
+            if (versionLock?.interimVersion) {
+              const isInterim = compareVersions(
+                versionLock?.interimVersion,
+                version?.now_version
+              );
+
+              // 如果版本有升级并且版本没有进行更新并且弹窗是未打卡的情况下
+              if (isInterim && !versionOpen) {
+                // 打开升级弹窗 触发普通升级类型
+                dispatch(setVersionState({ open: true, type: "last" }));
+                localStorage.setItem(
+                  "versionLock", // 普通升级版本信息 是否升级标记 interimMark
+                  JSON.stringify({
+                    interimVersion: version?.now_version,
+                    interimMark: "1", // "1" 表示未升级
+                  })
+                );
+              }
+            } else {
+              // 当前版本存在可升级版本时 属于过渡版本判断
+              // 普通升级版本和客户端当前版本进行比较
+              const isInterim = compareVersions(
+                versionNowRef.current,
+                version?.now_version
+              );
+
+              // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
+              if (
+                isInterim &&
+                versionLock?.interimMark !== "1" &&
+                !versionOpen
+              ) {
+                localStorage.setItem(
+                  "versionLock", // 普通升级版本信息 是否升级标记 interimMark
+                  JSON.stringify({
+                    interimVersion: version?.now_version,
+                    interimMark: "1", // "1" 表示未升级
+                  })
+                );
+                // 打开升级弹窗 触发普通升级类型
+                dispatch(setVersionState({ open: true, type: "interim" }));
+              }
+            }
           }
         }
 
@@ -385,7 +520,7 @@ const Layouts: React.FC = () => {
           } else {
             localStorage.setItem("isRealName", "0");
           }
-          
+
           if (!!user_info?.phone) {
             const data = identifyAccelerationData();
             const isTrue = data?.[0];
@@ -434,7 +569,7 @@ const Layouts: React.FC = () => {
             let bind_type = JSON.parse(
               localStorage.getItem("thirdBind") || "-1"
             );
-            
+
             // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
             if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
               localStorage.removeItem("thirdBind");
@@ -442,7 +577,7 @@ const Layouts: React.FC = () => {
               if ((window as any).bannerTimer) {
                 (window as any).bannerTimer();
               }
-              
+
               dispatch(setAccountInfo(undefined, false, false));
               dispatch(updateBindPhoneState(true));
             }
@@ -499,9 +634,11 @@ const Layouts: React.FC = () => {
     (window as any).closeTypeNew = trayAreaControls; // 客户端调用托盘区
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
+    (window as any).invokeLocalScan = invokeLocalScan;
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
+      delete (window as any).invokeLocalScan;
       delete (window as any).speedError;
       delete (window as any).stopProcessReset;
       delete (window as any).stopSpeed;
@@ -575,6 +712,8 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
+        // 测试弹出扫描到的游戏
+        // (window as any).invokeLocalScan(["星际争霸2国服", "Steam商店"]);
         (window as any).NativeApi_RenderComplete();
       }, 1000);
     } else {

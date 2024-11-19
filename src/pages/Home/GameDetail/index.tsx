@@ -340,6 +340,8 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     const iniliteFun = () => {
       const accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
+      console.log(accel);
+      
       const server = handleSelectServer(accel?.serverNode); // 存储的区服节点信息
 
       // 如果计时器已经存在，则代表已经加速游戏

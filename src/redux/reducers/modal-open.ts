@@ -10,6 +10,8 @@ import {
   PAY,
   MINORTYPE,
   BINDPHONE,
+  UPDATE_VERSION,
+  LOCAL_GAME,
 } from "../actions/modal-open";
 
 const initialState = {
@@ -45,10 +47,34 @@ const initialState = {
     open: false,
     type: "",
   },
+  versionState: {
+    open: false, // 弹窗开关
+    type: "", // 升级类型, 如果存在值则代表有可升级的版本
+  }, // 发现新版本弹窗
+  localGameState: {
+    open: false, // 弹窗开关
+    value: [], 
+  }, // 发现本地扫描到的游戏弹窗
 };
 
 const modalOpenReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case LOCAL_GAME:
+      return {
+        ...state,
+        localGameState: {
+          ...state?.localGameState,
+          ...action.payload,
+        },
+      };
+    case UPDATE_VERSION:
+      return {
+        ...state,
+        versionState: {
+          ...state?.versionState,
+          ...action.payload,
+        },
+      };
     case BINDPHONE:
       return {
         ...state,

@@ -14,8 +14,13 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
-import { setPayState, setMinorState } from "@/redux/actions/modal-open";
+import {
+  setPayState,
+  setMinorState,
+  setVersionState,
+} from "@/redux/actions/modal-open";
 import { areaStyleClass } from "./utils";
+import { compareVersions } from "@/layout/utils";
 
 import "./style.scss";
 import "./home.scss";
@@ -66,6 +71,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
+  const { open: versionOpen = false } = useSelector(
+    (state: any) => state?.modalOpen?.versionState
+  ); // 升级弹窗开关
 
   const {
     identifyAccelerationData,
@@ -194,9 +202,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     // 聚合所以的api 数据中的 executable
     const result = data.reduce(
       (acc: any, item: any) => {
-        const { executable, pc_platform, start_path = "" } = item.data;
+        const {
+          executable,
+          pc_platform,
+          start_path = "",
+          ipv4_list = [],
+          dir_list = [],
+        } = item.data;
         const isExecutable = Array.isArray(executable) && executable.length > 0;
-        
+
         // 聚合 executable 数据
         if (isExecutable) {
           acc.executable = acc.executable.concat(executable);
@@ -206,7 +220,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         if (pc_platform !== 0 && isExecutable) {
           acc.pc_platform.push(default_platform?.[pc_platform]);
         }
-        
+
         // 平台类型和pid相同，并且启动路径存在
         if (Number(pc_platform) && start_path) {
           acc.startGather.push({
@@ -217,9 +231,23 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         }
 
+        if (ipv4_list) {
+          acc.ipv4_list = acc.ipv4_list.concat(ipv4_list);
+        }
+
+        if (dir_list) {
+          acc.dir_list = acc.ipv4_list.concat(dir_list);
+        }
+
         return acc;
       },
-      { executable: [], pc_platform: [], startGather: [] }
+      {
+        executable: [],
+        pc_platform: [],
+        startGather: [],
+        ipv4_list: [],
+        dir_list: [],
+      }
     );
 
     return result;
@@ -308,8 +336,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
       // 游戏本身的pc_platform为空时 执行文件运行平台默认为空 startGather 游戏启动平台列表
-      let { executable, pc_platform, startGather } = gameFiles;
-
+      let { executable, pc_platform, startGather, ipv4_list, dir_list } = gameFiles;
+      
       // 添加自定义类型数据
       startGather.unshift({
         pc_platform: 0,
@@ -328,7 +356,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           platform
         );
         const processResult = await triggerMultipleRequests(gameResult);
-
+        
         executable = [...executable, ...processResult?.executable];
       }
 
@@ -344,6 +372,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       ); // 进程黑名单
       console.log(option);
 
+      // IP, 目录黑名单
+      const blackList = [...ipv4_list, ...dir_list].filter(
+        (value: any, index: any, self: any) => {
+          return self.indexOf(value) === index;
+        }
+      );;
+      console.log(blackList);
+      
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const {
         addr = "",
@@ -364,7 +400,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
-        process_blacklist: [...processBlack],
+        process_blacklist: [...processBlack, ...blackList],
         domain_blacklist: WhiteBlackList.blacklist.domain,
         ip_blacklist: WhiteBlackList.blacklist.ipv4,
         domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now
@@ -553,15 +589,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
-        setIsAllowAcceleration(false); // 禁用立即加速
-        setIsAllowShowAccelerating(false); // 禁用显示加速中
-        setIsStartAnimate(true); // 开始加速动画
 
         if (latestAccountInfo) {
           const userInfo = latestAccountInfo?.userInfo; // 用户信息
           const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
-          let time = new Date().getTime() / 1000;
-          let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
+          // let time = new Date().getTime() / 1000;
+          // let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
 
           // 是否实名认证 isRealNamel === "1" 是
           // 是否是未成年 is_adult
@@ -573,6 +606,35 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             stopAnimation();
             dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
             return;
+          }
+
+          // 应用存储的版本信息 and window挂载的当前客户端版本
+          const version = JSON.parse(
+            localStorage.getItem("version") ?? JSON.stringify({})
+          );
+          const clientVersion = (window as any).versionNowRef;
+
+          // 比较版本是否需要升级
+          const isInterim = compareVersions(
+            clientVersion,
+            version?.min_version
+          );
+          // 强制升级版本比较信息锁
+          const versionLock = JSON.parse(
+            localStorage.getItem("forceVersionLock") ?? JSON.stringify({})
+          );
+
+          // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
+          if (isInterim && versionLock?.interimMark !== "1" && !versionOpen) {
+            localStorage.setItem(
+              "forceVersionLock", // 普通升级版本信息 是否升级标记 interimMark
+              JSON.stringify({
+                interimVersion: version?.min_version,
+                interimMark: "1", // "1" 表示未升级
+              })
+            );
+            // 打开升级弹窗 触发普通升级类型
+            dispatch(setVersionState({ open: true, type: "force" }));
           }
 
           // 是否提醒续费快到期 注释原因：现在免费领取会员时间由30天改为3天防止打开主程序就弹出
@@ -587,6 +649,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           //   return;
           // }
 
+          setIsAllowAcceleration(false); // 禁用立即加速
+          setIsAllowShowAccelerating(false); // 禁用显示加速中
+          setIsStartAnimate(true); // 开始加速动画
+          
           // 是否下架
           let shelves = await checkShelves(option);
           let data = { ...option };
@@ -701,9 +767,22 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 清除游戏
   const handleClearGame = (event: any, option: any) => {
+    // 已从本地扫描并且从我的游戏中删除的游戏
+    const scannedLocal = JSON.parse(
+      localStorage.getItem("scannedLocal") || JSON.stringify([])
+    );
+
     event.stopPropagation();
     removeGameList(option);
-    triggerDataUpdate();
+    triggerDataUpdate(); // 更新首页展示
+
+    // 如果这个游戏是扫描来的然后再清除，存储到本地扫描清除列表数据中
+    if (option?.mark === "local") {
+      localStorage.setItem(
+        "scannedLocal",
+        JSON.stringify([...scannedLocal, option])
+      );
+    }
   };
 
   // 如果有自定义的加速数据 则替换选择加速数据 并且进行加速
