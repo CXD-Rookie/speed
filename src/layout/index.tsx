@@ -712,7 +712,8 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
-        (window as any).invokeLocalScan(["星际争霸2国服", "Steam商店"]);
+        // 测试弹出扫描到的游戏
+        // (window as any).invokeLocalScan(["星际争霸2国服", "Steam商店"]);
         (window as any).NativeApi_RenderComplete();
       }, 1000);
     } else {
