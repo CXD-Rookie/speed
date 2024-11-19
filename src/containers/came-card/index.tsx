@@ -14,8 +14,13 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
-import { setPayState, setMinorState } from "@/redux/actions/modal-open";
+import {
+  setPayState,
+  setMinorState,
+  setVersionState,
+} from "@/redux/actions/modal-open";
 import { areaStyleClass } from "./utils";
+import { compareVersions } from "@/layout/utils";
 
 import "./style.scss";
 import "./home.scss";
@@ -66,6 +71,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
+  const { open: versionOpen = false } = useSelector(
+    (state: any) => state?.modalOpen?.versionState
+  ); // 升级弹窗开关
 
   const {
     identifyAccelerationData,
@@ -588,8 +596,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         if (latestAccountInfo) {
           const userInfo = latestAccountInfo?.userInfo; // 用户信息
           const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
-          let time = new Date().getTime() / 1000;
-          let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
+          // let time = new Date().getTime() / 1000;
+          // let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
 
           // 是否实名认证 isRealNamel === "1" 是
           // 是否是未成年 is_adult
@@ -601,6 +609,35 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             stopAnimation();
             dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
             return;
+          }
+
+          // 应用存储的版本信息 and window挂载的当前客户端版本
+          const version = JSON.parse(
+            localStorage.getItem("version") ?? JSON.stringify({})
+          );
+          const clientVersion = (window as any).versionNowRef;
+
+          // 比较版本是否需要升级
+          const isInterim = compareVersions(
+            clientVersion,
+            version?.min_version
+          );
+          // 强制升级版本比较信息锁
+          const versionLock = JSON.parse(
+            localStorage.getItem("forceVersionLock") ?? JSON.stringify({})
+          );
+
+          // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
+          if (isInterim && versionLock?.interimMark !== "1" && !versionOpen) {
+            localStorage.setItem(
+              "forceVersionLock", // 普通升级版本信息 是否升级标记 interimMark
+              JSON.stringify({
+                interimVersion: version?.min_version,
+                interimMark: "1", // "1" 表示未升级
+              })
+            );
+            // 打开升级弹窗 触发普通升级类型
+            dispatch(setVersionState({ open: true, type: "force" }));
           }
 
           // 是否提醒续费快到期 注释原因：现在免费领取会员时间由30天改为3天防止打开主程序就弹出
