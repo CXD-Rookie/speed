@@ -1,0 +1,56 @@
+{
+  "running_status": true,
+  "accelerated_apps": [
+    "name：test0.exe",
+    "name：test1.exe",
+    "name：test10.exe",
+    "name：test11.exe",
+    "steamwebhelper.exe"
+  ],
+  "process_blacklist": [
+    "*\\ToDesk.exe",
+    "*\\DingtalkLauncher.exe",
+    "*\\TeamViewer.exe",
+    "*\\Feishu.exe",
+    "*\\WeMeetApp.exe",
+    "*\\SunloginClient.exe",
+    "*\\QQ.exe",
+    "name：test_black1.exe"
+  ],
+  "domain_blacklist": [
+    "global\\.blacklist\\.domain\\.com",
+    "www\\.heibaidu0\\.com",
+    "www\\.heibaidu1\\.com",
+    "www\\.heibaidu10\\.com",
+    "www\\.heibaidu11\\.com"
+  ],
+  "ip_blacklist": [
+    "110.0.0.0/32",
+    "192.168.222.0/32",
+    "192.168.222.1/32",
+    "192.168.222.10/32",
+    "192.168.222.11/32"
+  ],
+  "domain_whitelist": [
+    "global\\.whitelist\\.domain\\.com"
+  ],
+  "ip_whitelist": [
+    "110.1.0.0/32",
+    "192.168.111.0/32",
+    "192.168.111.1/32",
+    "192.168.111.10/32",
+    "192.168.111.11/32"
+  ],
+  "acceleration_nodes": [
+    {
+      "server_address": "js-japan-test.accessorx.com:19090",
+      "protocol": "http_xkcp",
+      "acc_key": "d8bc0fff048d3131f0ea2757d00e4cd2"
+    },
+    {
+      "server_address": "js-japan-test.accessorx.com:19091",
+      "protocol": "xudp_fec_udp",
+      "acc_key": "d8bc0fff048d3131f0ea2757d00e4cd2"
+    }
+  ]
+}

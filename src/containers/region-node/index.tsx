@@ -322,8 +322,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     // 生成所有的加速节点服务器列表
     const buildNodeList = async (option: any = {}, event: any = {}) => {
-      setTableLoading(true); // 节点表格loading
-
       let data = currentGameServer; // 当前区服列表
 
       // 当前游戏区服的数量为0
@@ -539,11 +537,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           <Tabs
             activeKey={activeTab}
             items={items}
-            onChange={(key: string) => {
+            onChange={async (key: string) => {
               setActiveTab(key);
 
               if (key === "node") {
-                generateNode();
+                setTableLoading(true); // 节点表格loading
+                await generateNode();
               }
             }}
           />

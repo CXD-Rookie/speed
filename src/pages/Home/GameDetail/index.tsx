@@ -314,8 +314,11 @@ const GameDetail: React.FC = () => {
               setDelayOpen(true); // 延迟过高提示
             }
 
-            // 如果用户是vip，会进行vip到期判断处理
-            if (accountInfo?.userInfo?.is_vip) {
+            // 如果用户是vip，并且此游戏不是限免游戏的情况下，会进行vip到期判断处理
+            if (
+              accountInfo?.userInfo?.is_vip &&
+              !(detailData?.free_time && detailData?.tags.includes("限时免费"))
+            ) {
               forceStopAcceleration(accountInfo, stopSpeed);
             }
 

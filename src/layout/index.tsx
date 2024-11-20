@@ -393,15 +393,15 @@ const Layouts: React.FC = () => {
             version?.now_version
           );
           // 比较版本是否需要升级
-          const isForceInterim = compareVersions(
-            versionNowRef.current,
-            version?.min_version
-          );
+          // const isForceInterim = compareVersions(
+          //   versionNowRef.current,
+          //   version?.min_version
+          // );
 
           // 如果强制版本压根不需要升级，删除存储的标记
-          if (!isForceInterim) {
-            localStorage.removeItem("forceVersionLock");
-          }
+          // if (!isForceInterim) {
+          //   localStorage.removeItem("forceVersionLock");
+          // }
 
           // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
           // 反之进行 else 进行版本比较
