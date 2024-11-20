@@ -193,7 +193,10 @@ const PayModal: React.FC = (props) => {
       updateQRCodesInfo({
         cid: commodities?.[index].id,
       });
-      setQRCodeLoading(false);
+      
+      setTimeout(() => {
+        setQRCodeLoading(false);
+      }, 100);
     }
 
     setActiveTabIndex(index);
