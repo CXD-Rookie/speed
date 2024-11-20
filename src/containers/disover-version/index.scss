@@ -68,7 +68,8 @@
       line-height: 3.6vh;
       column-gap: 0.8vw;
       word-break: break-all;
-
+      white-space: pre-wrap; /* 保留空格和换行符，但允许文本换行 */
+      
       & .dot-box {
         height: 3.2vh;
         display: flex;
