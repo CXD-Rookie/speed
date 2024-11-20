@@ -533,6 +533,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           centered
           destroyOnClose
           onCancel={onCancel}
+          zIndex={998}
         >
           <Tabs
             activeKey={activeTab}
