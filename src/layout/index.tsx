@@ -392,17 +392,8 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.now_version
           );
-          // 比较版本是否需要升级
-          // const isForceInterim = compareVersions(
-          //   versionNowRef.current,
-          //   version?.min_version
-          // );
-
-          // 如果强制版本压根不需要升级，删除存储的标记
-          // if (!isForceInterim) {
-          //   localStorage.removeItem("forceVersionLock");
-          // }
-
+          console.log(isInterim, versionNowRef.current, version?.now_version);
+          
           // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
           // 反之进行 else 进行版本比较
           if (!isInterim) {
@@ -421,18 +412,19 @@ const Layouts: React.FC = () => {
                 version?.now_version
               );
 
-              // 如果版本有升级并且版本没有进行更新并且弹窗是未打卡的情况下
+              // 如果版本有升级并且版本没有进行更新并且弹窗是未打开的情况下
               if (isInterim && !versionOpen) {
                 // 打开升级弹窗 触发普通升级类型
                 dispatch(setVersionState({ open: true, type: "last" }));
-                localStorage.setItem(
-                  "versionLock", // 普通升级版本信息 是否升级标记 interimMark
-                  JSON.stringify({
-                    interimVersion: version?.now_version,
-                    interimMark: "1", // "1" 表示未升级
-                  })
-                );
               }
+
+              localStorage.setItem(
+                "versionLock", // 普通升级版本信息 是否升级标记 interimMark
+                JSON.stringify({
+                  interimVersion: version?.now_version,
+                  interimMark: "1", // "1" 表示未升级
+                })
+              );
             } else {
               // 当前版本存在可升级版本时 属于过渡版本判断
               // 普通升级版本和客户端当前版本进行比较
