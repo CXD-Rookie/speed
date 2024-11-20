@@ -686,6 +686,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             // );
             // 打开升级弹窗 触发普通升级类型
             dispatch(setVersionState({ open: true, type: "force" }));
+            stopAnimation();
+            return;
           }
 
           // 是否提醒续费快到期 注释原因：现在免费领取会员时间由30天改为3天防止打开主程序就弹出
