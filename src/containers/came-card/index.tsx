@@ -206,8 +206,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           executable,
           pc_platform,
           start_path = "",
+          domain_blacklist = [],
+          domain_list = [],
+          ipv4_blacklist = [],
           ipv4_list = [],
-          dir_list = [],
+          executable_blacklist = [],
         } = item.data;
         const isExecutable = Array.isArray(executable) && executable.length > 0;
 
@@ -231,12 +234,38 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         }
 
-        if (ipv4_list) {
+        const isAarray = (arr: any) => {
+          if (Array.isArray(arr) && arr?.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        };
+
+        // domain 黑名单
+        if (isAarray(domain_blacklist)) {
+          acc.domain_blacklist = acc.domain_blacklist.concat(domain_blacklist);
+        }
+
+        // domain 白名单
+        if (isAarray(domain_list)) {
+          acc.domain_list = acc.domain_list.concat(domain_list);
+        }
+
+        // ip 黑名单名单
+        if (isAarray(ipv4_blacklist)) {
+          acc.ipv4_blacklist = acc.ipv4_blacklist.concat(ipv4_blacklist);
+        }
+
+        // ip 白名单
+        if (isAarray(ipv4_list)) {
           acc.ipv4_list = acc.ipv4_list.concat(ipv4_list);
         }
 
-        if (dir_list) {
-          acc.dir_list = acc.ipv4_list.concat(dir_list);
+        // 进程黑名单
+        if (isAarray(executable_blacklist)) {
+          acc.executable_blacklist =
+            acc.executable_blacklist.concat(executable_blacklist);
         }
 
         return acc;
@@ -245,8 +274,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         executable: [],
         pc_platform: [],
         startGather: [],
+        domain_blacklist: [],
+        domain_list: [],
+        ipv4_blacklist: [],
         ipv4_list: [],
-        dir_list: [],
+        executable_blacklist: [],
       }
     );
 
@@ -321,6 +353,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     localStorage.setItem("startAssemble", JSON.stringify(assemble));
   };
 
+  // 去重
+  const removalFun = (list: any) => {
+    // 对进程进行去重
+    return list.filter((value: any, index: any, self: any) => {
+      return self.indexOf(value) === index;
+    });
+  };
+
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
@@ -336,8 +376,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
       // 游戏本身的pc_platform为空时 执行文件运行平台默认为空 startGather 游戏启动平台列表
-      let { executable, pc_platform, startGather, ipv4_list, dir_list } = gameFiles;
-      
+      let {
+        executable,
+        pc_platform,
+        startGather,
+        domain_blacklist,
+        domain_list,
+        ipv4_blacklist,
+        ipv4_list,
+        executable_blacklist,
+      } = gameFiles;
+
       // 添加自定义类型数据
       startGather.unshift({
         pc_platform: 0,
@@ -356,7 +405,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           platform
         );
         const processResult = await triggerMultipleRequests(gameResult);
-        
+
         executable = [...executable, ...processResult?.executable];
       }
 
@@ -372,14 +421,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       ); // 进程黑名单
       console.log(option);
 
-      // IP, 目录黑名单
-      const blackList = [...ipv4_list, ...dir_list].filter(
-        (value: any, index: any, self: any) => {
-          return self.indexOf(value) === index;
-        }
-      );;
-      console.log(blackList);
-      
+      // IP domain 黑白名单 executable 黑名单
+      domain_blacklist = removalFun(domain_blacklist);
+      domain_list = removalFun(domain_list);
+      ipv4_blacklist = removalFun(ipv4_blacklist);
+      ipv4_list = removalFun(ipv4_list);
+      executable_blacklist = removalFun(executable_blacklist);
+
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const {
         addr = "",
@@ -400,11 +448,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
-        process_blacklist: [...processBlack, ...blackList],
-        domain_blacklist: WhiteBlackList.blacklist.domain,
-        ip_blacklist: WhiteBlackList.blacklist.ipv4,
-        domain_whitelist: WhiteBlackList.whitelist.domain, // Assuming empty for now
-        ip_whitelist: WhiteBlackList.whitelist.ipv4, // Assuming empty for now
+        process_blacklist: [...processBlack, ...executable_blacklist],
+        domain_blacklist: [
+          ...WhiteBlackList.blacklist.domain,
+          ...domain_blacklist,
+        ],
+        ip_blacklist: [...WhiteBlackList.blacklist.ipv4, ...ipv4_blacklist],
+        domain_whitelist: [...WhiteBlackList.whitelist.domain, ...domain_list], // Assuming empty for now
+        ip_whitelist: [...WhiteBlackList.whitelist.ipv4, ...ipv4_list], // Assuming empty for now
         acceleration_nodes: server_v2.map((s: any) => ({
           server_address: `${addr}:${s.port}`,
           protocol: s.protocol,
