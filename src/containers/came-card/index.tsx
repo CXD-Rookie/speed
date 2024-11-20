@@ -626,13 +626,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
           // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
           if (isInterim && versionLock?.interimMark !== "1" && !versionOpen) {
-            localStorage.setItem(
-              "forceVersionLock", // 普通升级版本信息 是否升级标记 interimMark
-              JSON.stringify({
-                interimVersion: version?.min_version,
-                interimMark: "1", // "1" 表示未升级
-              })
-            );
+            // localStorage.setItem(
+            //   "forceVersionLock", // 普通升级版本信息 是否升级标记 interimMark
+            //   JSON.stringify({
+            //     interimVersion: version?.min_version,
+            //     interimMark: "1", // "1" 表示未升级
+            //   })
+            // );
             // 打开升级弹窗 触发普通升级类型
             dispatch(setVersionState({ open: true, type: "force" }));
           }
