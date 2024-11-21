@@ -670,23 +670,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             clientVersion,
             version?.min_version
           );
-          // 强制升级版本比较信息锁
-          const versionLock = JSON.parse(
-            localStorage.getItem("forceVersionLock") ?? JSON.stringify({})
-          );
 
-          // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
-          if (isInterim && versionLock?.interimMark !== "1" && !versionOpen) {
-            // localStorage.setItem(
-            //   "forceVersionLock", // 普通升级版本信息 是否升级标记 interimMark
-            //   JSON.stringify({
-            //     interimVersion: version?.min_version,
-            //     interimMark: "1", // "1" 表示未升级
-            //   })
-            // );
+          // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打开的情况下
+          if (isInterim  && !versionOpen) {
             // 打开升级弹窗 触发普通升级类型
             dispatch(setVersionState({ open: true, type: "force" }));
-            stopAnimation();
+            stopAnimation(); // 停止加速动画
             return;
           }
 
@@ -726,7 +715,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             !userInfo?.is_vip
           ) {
             stopAnimation();
-            dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
+            eventBus.emit("showModal", {
+              show: true,
+              type: "serviceExpired",
+            });
             return;
           }
 
