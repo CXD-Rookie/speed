@@ -715,7 +715,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             !userInfo?.is_vip
           ) {
             stopAnimation();
-            dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
+            eventBus.emit("showModal", {
+              show: true,
+              type: "serviceExpired",
+            });
             return;
           }
 
