@@ -61,7 +61,6 @@ const GameDetail: React.FC = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [stopModalOpen, setStopModalOpen] = useState(false);
-  const [delayOpen, setDelayOpen] = useState(false); // 延迟弹窗
   
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(1); // 实时延迟
@@ -310,10 +309,6 @@ const GameDetail: React.FC = () => {
             console.log("详情丢包信息：", response);
             let delay = JSON.parse(response)?.delay; // 返回信息 delay 毫秒,9999代表超时与丢包
 
-            if (!response || delay >= 9999) {
-              setDelayOpen(true); // 延迟过高提示
-            }
-
             // 如果用户是vip，并且此游戏不是限免游戏的情况下，会进行vip到期判断处理
             if (
               accountInfo?.userInfo?.is_vip &&
@@ -336,7 +331,6 @@ const GameDetail: React.FC = () => {
       });
     } catch (error) {
       console.log("游戏详情获取客户端延迟方法错误：", error);
-      setDelayOpen(true);
     }
   };
 
@@ -533,14 +527,6 @@ const GameDetail: React.FC = () => {
           accelOpen={stopModalOpen}
           setAccelOpen={setStopModalOpen}
           onConfirm={stopSpeed}
-        />
-      ) : null}
-      {delayOpen ? (
-        <BreakConfirmModal
-          type={"delayTooHigh"}
-          accelOpen={delayOpen}
-          setAccelOpen={setDelayOpen}
-          onConfirm={() => setIsModalVisible(true)}
         />
       ) : null}
     </div>
