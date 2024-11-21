@@ -12,10 +12,7 @@ export interface CustomRadioProps {
   onChange?: ((value: string) => void) | undefined;
 }
 
-const CustomRadio: React.FC = React.forwardRef<
-  HTMLSpanElement,
-  CustomRadioProps
->((props, ref) => {
+const CustomRadio: React.FC = React.forwardRef<HTMLSpanElement,CustomRadioProps>((props, ref) => {
   const {
     children,
     className = "",
