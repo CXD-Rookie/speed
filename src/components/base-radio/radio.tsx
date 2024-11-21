@@ -12,17 +12,20 @@ export interface CustomRadioProps {
   onChange?: ((value: string) => void) | undefined;
 }
 
-const CustomRadio: React.FC<CustomRadioProps> = (props) => {
-  const { 
-    children, 
-    className = "", 
-    value, 
+const CustomRadio: React.FC = React.forwardRef<
+  HTMLSpanElement,
+  CustomRadioProps
+>((props, ref) => {
+  const {
+    children,
+    className = "",
+    value,
     checked: checkedProp, // 避免内外checked变量导致冲突
-    onChange 
+    onChange,
   } = props;
 
   const [radioChecked, setRadioChecked] = useState(false);
-  
+
   // 监听外部传值状态
   useEffect(() => {
     setRadioChecked(!!checkedProp);
@@ -39,7 +42,7 @@ const CustomRadio: React.FC<CustomRadioProps> = (props) => {
   };
 
   return (
-    <span className={`speed-custom-radio-wrapper`} key={value}>
+    <span ref={ref} className={`speed-custom-radio-wrapper`} key={value}>
       {/* 边框 */}
       <span
         className={`speed-custom-radio ${
@@ -55,6 +58,6 @@ const CustomRadio: React.FC<CustomRadioProps> = (props) => {
       {children}
     </span>
   );
-};
+});
 
 export default CustomRadio;

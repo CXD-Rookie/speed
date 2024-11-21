@@ -1,5 +1,6 @@
 import type * as React from "react";
 import type { CustomRadioProps } from "./radio";
+import type { GroupProps } from "./group";
 
 import InternalRadio from "./radio";
 import Group from "./group";
