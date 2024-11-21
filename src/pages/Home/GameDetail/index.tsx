@@ -61,8 +61,7 @@ const GameDetail: React.FC = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [stopModalOpen, setStopModalOpen] = useState(false);
-  const [delayOpen, setDelayOpen] = useState(false); // 延迟弹窗
-  
+
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(1); // 实时延迟
   const [packetLoss, setPacketLoss] = useState<any>(0); // 丢包率
@@ -159,6 +158,12 @@ const GameDetail: React.FC = () => {
   // 生成图表数据函数
   const generateChart = (value: any, packet: any) => {
     const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
+    
+    if (value !== 9999) {
+      localStorage.setItem("correctDelay", value);
+    } else {
+      value = localStorage.getItem("correctDelay") || 0;
+    }
 
     // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
     if (iniliteChart?.length === 0) {
@@ -252,6 +257,7 @@ const GameDetail: React.FC = () => {
 
     // 返回一个函数，该函数用于停止定时器
     return () => {
+      localStorage.removeItem("correctDelay"); // 清除正常情况下存储的延迟数据
       clearInterval(timerId);
       dispatch(setAccelerateChart([])); // 还原加速图表存储的图表数据
     };
@@ -310,10 +316,6 @@ const GameDetail: React.FC = () => {
             console.log("详情丢包信息：", response);
             let delay = JSON.parse(response)?.delay; // 返回信息 delay 毫秒,9999代表超时与丢包
 
-            if (!response || delay >= 9999) {
-              setDelayOpen(true); // 延迟过高提示
-            }
-
             // 如果用户是vip，并且此游戏不是限免游戏的情况下，会进行vip到期判断处理
             if (
               accountInfo?.userInfo?.is_vip &&
@@ -321,9 +323,14 @@ const GameDetail: React.FC = () => {
             ) {
               forceStopAcceleration(accountInfo, stopSpeed);
             }
-
-            delay = delay < 2 ? 2 : delay; // 对延迟小于2进行处理，避免展示问题
-
+            
+            delay =
+              delay < 2
+                ? 2 // 对延迟小于2进行处理，避免展示问题
+                : delay === 9999 // 对延迟等于9999进行处理，避免展示问题
+                ? localStorage.getItem("correctDelay")
+                : delay; 
+            
             const chart = generateChart(delay, delay === 9999 ? 100 : 0); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率
 
@@ -336,15 +343,12 @@ const GameDetail: React.FC = () => {
       });
     } catch (error) {
       console.log("游戏详情获取客户端延迟方法错误：", error);
-      setDelayOpen(true);
     }
   };
 
   useEffect(() => {
     const iniliteFun = () => {
       const accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-      console.log(accel);
-      
       const server = handleSelectServer(accel?.serverNode); // 存储的区服节点信息
 
       // 如果计时器已经存在，则代表已经加速游戏
@@ -533,14 +537,6 @@ const GameDetail: React.FC = () => {
           accelOpen={stopModalOpen}
           setAccelOpen={setStopModalOpen}
           onConfirm={stopSpeed}
-        />
-      ) : null}
-      {delayOpen ? (
-        <BreakConfirmModal
-          type={"delayTooHigh"}
-          accelOpen={delayOpen}
-          setAccelOpen={setDelayOpen}
-          onConfirm={() => setIsModalVisible(true)}
         />
       ) : null}
     </div>

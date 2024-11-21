@@ -17,6 +17,7 @@ import BindPhoneMode from "@/containers/bind-phone-mode";
 import VisitorLogin from "@/containers/visitor-login";
 import DisoverVersion from "@/containers/disover-version";
 import LocalGame from "@/containers/local-game";
+import ResourceCache from "./resource-cache";
 
 const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
@@ -73,6 +74,7 @@ const RenderSrea:React.FC = () => {
       {versionState?.open && <DisoverVersion />}
       {/* 发现本地扫描到的游戏弹窗 */}
       {localGameState?.open && <LocalGame />}
+      <ResourceCache />
     </Fragment>
   );
 }

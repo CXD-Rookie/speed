@@ -14,7 +14,7 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useNavigate } from "react-router-dom";
-import { setSetting, setPayState } from "@/redux/actions/modal-open";
+import { setPayState } from "@/redux/actions/modal-open";
 
 import eventBus from "@/api/eventBus";
 
@@ -78,6 +78,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     gamesAccelerating: "其他游戏正在加速！",
     takenShelves: "当前游戏已被下架，无法加速。",
     nodeDelete: "该节点已被删除，请选择其他节点",
+    serviceExpired: "您的加速服务已到期，请续费以继续使用。",
   };
 
   // footer 确认按钮的文案
@@ -113,6 +114,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "gamesAccelerating",
     "takenShelves", // 游戏下架提示
     "nodeDelete", // 在节点历史记录中，当用户选择一个已被删除的节点
+    "serviceExpired", // 加速校验是vip的时候
   ];
 
   // 不显示右上角关闭的类型
@@ -158,11 +160,12 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
-      case "stopAccelerate":
-        // (window as any)
-        break
+      case "serviceExpired":
+        cancel();
+        dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
+        break;
       case "loginOut":
-        (window as any).loginOutStopWidow()
+        (window as any).loginOutStopWidow();
         break;
       case "exit":
         (window as any)?.stopProcessReset("exit"); // 关闭主程序

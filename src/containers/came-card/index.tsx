@@ -450,12 +450,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         accelerated_apps: [...uniqueExecutable],
         process_blacklist: [...processBlack, ...executable_blacklist],
         domain_blacklist: [
-          ...WhiteBlackList.blacklist.domain,
+          ...(WhiteBlackList.blacklist.domain ?? []),
           ...domain_blacklist,
         ],
-        ip_blacklist: [...WhiteBlackList.blacklist.ipv4, ...ipv4_blacklist],
-        domain_whitelist: [...WhiteBlackList.whitelist.domain, ...domain_list], // Assuming empty for now
-        ip_whitelist: [...WhiteBlackList.whitelist.ipv4, ...ipv4_list], // Assuming empty for now
+        ip_blacklist: [
+          ...(WhiteBlackList.blacklist.ipv4 ?? []),
+          ...ipv4_blacklist,
+        ],
+        domain_whitelist: [
+          ...(WhiteBlackList.whitelist.domain ?? []),
+          ...domain_list,
+        ], // Assuming empty for now
+        ip_whitelist: [...(WhiteBlackList.whitelist.ipv4 ?? []), ...ipv4_list], // Assuming empty for now
         acceleration_nodes: server_v2.map((s: any) => ({
           server_address: `${addr}:${s.port}`,
           protocol: s.protocol,
@@ -715,7 +721,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             !userInfo?.is_vip
           ) {
             stopAnimation();
-            dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
+            eventBus.emit("showModal", {
+              show: true,
+              type: "serviceExpired",
+            });
             return;
           }
 

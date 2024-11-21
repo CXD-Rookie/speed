@@ -8,14 +8,15 @@
  * @FilePath: \speed\src\containers\app-close\index.tsx
  */
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Radio, Checkbox } from "antd";
+import { Button, Modal, Checkbox } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setAppCloseOpen } from "@/redux/actions/modal-open";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
-import eventBus from "@/api/eventBus";
 
 import "./index.scss";
+import eventBus from "@/api/eventBus";
+import BaseRadio from "@/components/base-radio";
 
 const AppCloseModal: React.FC = (props) => {
   const dispatch = useDispatch();
@@ -71,7 +72,7 @@ const AppCloseModal: React.FC = (props) => {
   };
 
   const handleRadioChange = (e: any) => {
-    setEventType(e.target.value);
+    setEventType(e);
   };
 
   useEffect(() => {
@@ -105,20 +106,20 @@ const AppCloseModal: React.FC = (props) => {
     >
       <div className="app-close-module-content">
         <div>当关闭窗口时</div>
-        <Radio.Group
+        <BaseRadio.Group
           className="content-radio-group"
           value={eventType}
           onChange={handleRadioChange}
         >
-          <Radio value={"0"}>
+          <BaseRadio value={"0"}>
             <span style={{ color: "#fff", fontSize: "1.4vw" }}>
               隐藏任务到托盘
             </span>
-          </Radio>
-          <Radio value={"1"}>
+          </BaseRadio>
+          <BaseRadio value={"1"}>
             <span style={{ color: "#fff", fontSize: "1.4vw" }}>关闭程序</span>
-          </Radio>
-        </Radio.Group>
+          </BaseRadio>
+        </BaseRadio.Group>
         <div>
           <Button
             className="content-confirm"

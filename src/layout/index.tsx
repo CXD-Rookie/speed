@@ -392,7 +392,6 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.now_version
           );
-          console.log(isInterim, versionNowRef.current, version?.now_version);
           
           // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
           // 反之进行 else 进行版本比较
