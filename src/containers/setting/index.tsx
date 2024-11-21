@@ -21,6 +21,7 @@ import {
 } from "@/redux/actions/modal-open";
 
 import "./index.scss";
+import BaseRadio from "@/components/base-radio";
 import tracking from "@/common/tracking";
 import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
@@ -458,6 +459,7 @@ const SettingsModal: React.FC = (props) => {
               <div className="setting-item">
                 <div className="item-title">关闭窗口时</div>
                 <div className="off-item-content">
+                  <BaseRadio />
                   <Radio.Group onChange={handleRadioChange} value={closeWindow} size="large">
                     <Radio value={"1"}>
                       <span style={{ color: "#fff", fontSize: "1.4vw" }}>

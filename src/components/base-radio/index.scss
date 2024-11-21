@@ -1,0 +1,25 @@
+.speed-custom-radio {
+  display: inline-block;
+  width: 1.2vw;
+  height: 1.2vw;
+  border: 0.15vw solid #999999;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+
+  .speed-custom-radio-circle-checked {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    width: 0.6vw;
+    height: 0.6vw;
+    background-color: #F86C34;
+    border-radius: 50%;
+  }
+}
+
+.speed-custom-radio-checked {
+  border-color: #F86C34;
+}
