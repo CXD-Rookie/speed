@@ -61,7 +61,7 @@ const GameDetail: React.FC = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [stopModalOpen, setStopModalOpen] = useState(false);
-  
+
   const [detailData, setDetailData] = useState<any>({}); // 当前加速游戏数据
   const [lostBag, setLostBag] = useState<any>(1); // 实时延迟
   const [packetLoss, setPacketLoss] = useState<any>(0); // 丢包率
@@ -158,6 +158,12 @@ const GameDetail: React.FC = () => {
   // 生成图表数据函数
   const generateChart = (value: any, packet: any) => {
     const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
+    
+    if (value !== 9999) {
+      localStorage.setItem("correctDelay", value);
+    } else {
+      value = localStorage.getItem("correctDelay") || 0;
+    }
 
     // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
     if (iniliteChart?.length === 0) {
@@ -251,6 +257,7 @@ const GameDetail: React.FC = () => {
 
     // 返回一个函数，该函数用于停止定时器
     return () => {
+      localStorage.removeItem("correctDelay"); // 清除正常情况下存储的延迟数据
       clearInterval(timerId);
       dispatch(setAccelerateChart([])); // 还原加速图表存储的图表数据
     };
@@ -316,9 +323,14 @@ const GameDetail: React.FC = () => {
             ) {
               forceStopAcceleration(accountInfo, stopSpeed);
             }
-
-            delay = delay < 2 ? 2 : delay; // 对延迟小于2进行处理，避免展示问题
-
+            
+            delay =
+              delay < 2
+                ? 2 // 对延迟小于2进行处理，避免展示问题
+                : delay === 9999 // 对延迟等于9999进行处理，避免展示问题
+                ? localStorage.getItem("correctDelay")
+                : delay; 
+            
             const chart = generateChart(delay, delay === 9999 ? 100 : 0); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率
 
@@ -337,8 +349,6 @@ const GameDetail: React.FC = () => {
   useEffect(() => {
     const iniliteFun = () => {
       const accel = identifyAccelerationData()?.[1] || {}; // 当前加速数据
-      console.log(accel);
-      
       const server = handleSelectServer(accel?.serverNode); // 存储的区服节点信息
 
       // 如果计时器已经存在，则代表已经加速游戏
