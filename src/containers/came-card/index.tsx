@@ -182,22 +182,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     platform: any = {},
     option: any = {}
   ) => {
-    const default_platform = Object?.keys(platform) || []; // 运营平台数据
-    let api_group: any = [];
-
-    if (Array.isArray(default_platform) && default_platform.length > 0) {
-      default_platform.forEach((key: any) => {
-        api_group.push(
-          playSuitApi.speedInfo({
-            platform: 3,
-            gid: option?.id,
-            pid: key,
-          })
-        );
-      });
-    }
-
-    const data: any = await Promise.all(api_group); // 请求等待统一请求完毕
+    const def_form = Object?.keys(platform) || []; // 运营平台数据
+    const data = option?.game_speed ?? []; // 读取游戏的平台信息
 
     // 聚合所以的api 数据中的 executable
     const result = data.reduce(
@@ -205,7 +191,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const {
           executable,
           pc_platform,
-          start_path = "",
+          start_info = {},
           domain_blacklist = [],
           domain_list = [],
           ipv4_blacklist = [],
@@ -221,15 +207,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         // 聚合 pc_platform 数据
         if (pc_platform !== 0 && isExecutable) {
-          acc.pc_platform.push(default_platform?.[pc_platform]);
+          acc.combined_platform.push(def_form?.[pc_platform]);
         }
 
         // 平台类型和pid相同，并且启动路径存在
-        if (Number(pc_platform) && start_path) {
+        if (Number(pc_platform) && start_info?.path) {
           acc.startGather.push({
             pc_platform,
             pid: String(pc_platform),
-            path: start_path,
+            path: start_info?.path + start_info?.args,
             name: platform?.[pc_platform],
           });
         }
@@ -386,11 +372,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ipv4_list,
         executable_blacklist,
       } = gameFiles;
-
+      
       // 添加自定义类型数据
       startGather.unshift({
         pc_platform: 0,
-        path: "", // 启动路径
+        path: option?.scan_path ? option?.scan_path : "", // 启动路径
         pid: "0", // 平台id
         name: "自定义", // 平台名称
       });
@@ -580,7 +566,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             type: "infectedOrHijacked",
           });
         }
-
+        
         if (isCheck?.pre_check_status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
 

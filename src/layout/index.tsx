@@ -259,12 +259,13 @@ const Layouts: React.FC = () => {
         // 做接口请求组合
         option.forEach((element) => {
           allApi.push(
-            gameApi.gameList({ s: element }).then((res: any) => {
+            gameApi.gameList({ s: element?.name }).then((res: any) => {
               const result = res?.data?.list?.[0];
               return result
                 ? {
                     ...result,
                     mark: "local", // 标记这个游戏是本地扫描到的
+                    scan_path: element?.path, // 扫描到的本地游戏路径
                     cover_img: `https://cdn.accessorx.com/${
                       result.cover_img
                         ? result.cover_img
@@ -703,8 +704,20 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
-        // 测试弹出扫描到的游戏
-        // (window as any).invokeLocalScan(["星际争霸2国服", "Steam商店"]);
+        // 测试弹出扫描到的游戏 
+        (window as any).invokeLocalScan(
+          [
+            {
+              name: "星际争霸2国服",
+              path: "steam.exe",
+            },
+            {
+              name: "Steam商店",
+              path: "Steam.exe",
+            },
+          ],
+          true
+        );
         (window as any).NativeApi_RenderComplete();
       }, 1000);
     } else {
