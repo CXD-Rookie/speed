@@ -5,7 +5,7 @@ import InternalRadio from "./radio";
 import Group from "./group";
 
 export type { CustomRadioProps } from "./radio";
-export type { CustomGroupProps } from "./group";
+export type { GroupProps } from "./group";
 
 type CompoundedComponent = React.ForwardRefExoticComponent<CustomRadioProps> & {
   Group: typeof Group;

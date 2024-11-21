@@ -1,38 +1,58 @@
 // 自定义单选框组件
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 
 import "./index.scss";
 
 export interface CustomRadioProps {
   value?: string;
+  checked?: boolean;
   style?: React.CSSProperties;
+  children?: ReactElement<CustomRadioProps> | ReactElement<CustomRadioProps>[];
   className?: string;
-  onChange?: ((value: object) => void) | undefined;
+  onChange?: ((value: string) => void) | undefined;
 }
 
 const CustomRadio: React.FC<CustomRadioProps> = (props) => {
-  const { className = "", value } = props;
+  const { 
+    children, 
+    className = "", 
+    value, 
+    checked: checkedProp, // 避免内外checked变量导致冲突
+    onChange 
+  } = props;
 
   const [radioChecked, setRadioChecked] = useState(false);
+  
+  // 监听外部传值状态
+  useEffect(() => {
+    setRadioChecked(!!checkedProp);
+  }, [checkedProp]);
 
-  const handleClick = (e: any) => {
+  // 内部点击触发选中
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     setRadioChecked(true);
+
+    if (onChange) {
+      onChange(value || "");
+    }
   };
 
-  useEffect(() => {
-    return () => {};
-  }, [value]);
-
   return (
-    <span
-      className={`speed-custom-radio ${
-        radioChecked && "speed-custom-radio-checked"
-      }${className}`}
-      onClick={handleClick}
-    >
+    <span className={`speed-custom-radio-wrapper`} key={value}>
+      {/* 边框 */}
       <span
-        className={`${radioChecked && "speed-custom-radio-circle-checked"}`}
-      />
+        className={`speed-custom-radio ${
+          radioChecked ? "speed-custom-radio-checked" : ""
+        }${className}`}
+        onClick={handleClick}
+      >
+        {/* 圆点 */}
+        <span
+          className={`${radioChecked && "speed-custom-radio-circle-checked"}`}
+        />
+      </span>
+      {children}
     </span>
   );
 };
