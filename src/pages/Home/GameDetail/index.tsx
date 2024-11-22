@@ -323,21 +323,20 @@ const GameDetail: React.FC = () => {
             ) {
               forceStopAcceleration(accountInfo, stopSpeed);
             }
-            
-            delay =
-              delay < 2
-                ? 2 // 对延迟小于2进行处理，避免展示问题
-                : delay === 9999 // 对延迟等于9999进行处理，避免展示问题
-                ? localStorage.getItem("correctDelay")
-                : delay; 
-            
-            const chart = generateChart(delay, delay === 9999 ? 100 : 0); // 图表展示数据
+
+            // 对延迟小于2进行处理，避免展示问题
+            delay = delay < 2 ? 2 : delay;
+
+            // 对延迟等于9999进行处理，避免展示问题，并且只对设备连接，实时延迟，图表进行处理，丢包率不进行处理
+            const chartDelay =
+              delay === 9999 ? localStorage.getItem("correctDelay") : delay;
+            const chart = generateChart(chartDelay, delay === 9999 ? 100 : 0); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率
 
             setChartData([...chart]);
-            setLostBag(delay);
+            setLostBag(chartDelay);
             setPacketLoss(packetLoss);
-            dispatch(updateDelay(delay));
+            dispatch(updateDelay(chartDelay));
           }
         );
       });
