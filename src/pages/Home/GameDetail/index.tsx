@@ -329,14 +329,15 @@ const GameDetail: React.FC = () => {
 
             // 对延迟等于9999进行处理，避免展示问题，并且只对设备连接，实时延迟，图表进行处理，丢包率不进行处理
             const chartDelay =
-              delay === 9999 ? localStorage.getItem("correctDelay") : delay;
+              delay === 9999 ? localStorage.getItem("correctDelay") ?? 0: delay;
+            const realDelay = chartDelay < 2 ? 2 : chartDelay; // 实时延迟
             const chart = generateChart(chartDelay, delay === 9999 ? 100 : 0); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率
 
             setChartData([...chart]);
-            setLostBag(chartDelay);
+            setLostBag(realDelay);
             setPacketLoss(packetLoss);
-            dispatch(updateDelay(chartDelay));
+            dispatch(updateDelay(realDelay));
           }
         );
       });
