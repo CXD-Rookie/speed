@@ -40,7 +40,7 @@ const CustomGroup: React.FC<GroupProps> = (props: any) => {
   };
 
   useEffect(() => {
-    return () => {};
+    setSelectedValue(value);
   }, [value]);
 
   return (
