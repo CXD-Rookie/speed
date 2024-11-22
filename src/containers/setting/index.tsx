@@ -388,7 +388,7 @@ const SettingsModal: React.FC = (props) => {
         open={settingOpen}
         onCancel={onClose}
         destroyOnClose
-        title="系统设置"
+        title="设置"
         width={"67.6vw"}
         maskClosable={false}
         centered
@@ -480,7 +480,6 @@ const SettingsModal: React.FC = (props) => {
                 <div className="item-title">关于</div>
                 <div className="regard-item-content">
                   版本号: {versionNow}
-                  {/* <Button type="default">检查新版本</Button> */}
                 </div>
               </div>
               <div className="protocols">

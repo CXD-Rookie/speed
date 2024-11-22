@@ -49,14 +49,14 @@ const GameDetail: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const accountInfo: any = useSelector((state: any) => state.accountInfo);
+  // const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const iniliteChart = useSelector((state: any) => state.auth.accelerateChart); // 存储的游戏详情图表数据
   
   const historyContext: any = useHistoryContext();
   const {
     identifyAccelerationData,
     removeGameList,
-    forceStopAcceleration,
+    // forceStopAcceleration,
   } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -317,27 +317,26 @@ const GameDetail: React.FC = () => {
             let delay = JSON.parse(response)?.delay; // 返回信息 delay 毫秒,9999代表超时与丢包
 
             // 如果用户是vip，并且此游戏不是限免游戏的情况下，会进行vip到期判断处理
-            if (
-              accountInfo?.userInfo?.is_vip &&
-              !(detailData?.free_time && detailData?.tags.includes("限时免费"))
-            ) {
-              forceStopAcceleration(accountInfo, stopSpeed);
-            }
-            
-            delay =
-              delay < 2
-                ? 2 // 对延迟小于2进行处理，避免展示问题
-                : delay === 9999 // 对延迟等于9999进行处理，避免展示问题
-                ? localStorage.getItem("correctDelay")
-                : delay; 
-            
-            const chart = generateChart(delay, delay === 9999 ? 100 : 0); // 图表展示数据
+            // if (
+            //   accountInfo?.userInfo?.is_vip &&
+            //   !(detailData?.free_time && detailData?.tags.includes("限时免费"))
+            // ) {
+            //   forceStopAcceleration(accountInfo, stopSpeed);
+            // }
+
+            // 对延迟小于2进行处理，避免展示问题
+            delay = delay < 2 ? 2 : delay;
+
+            // 对延迟等于9999进行处理，避免展示问题，并且只对设备连接，实时延迟，图表进行处理，丢包率不进行处理
+            const chartDelay =
+              delay === 9999 ? localStorage.getItem("correctDelay") : delay;
+            const chart = generateChart(chartDelay, delay === 9999 ? 100 : 0); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率
 
             setChartData([...chart]);
-            setLostBag(delay);
+            setLostBag(chartDelay);
             setPacketLoss(packetLoss);
-            dispatch(updateDelay(delay));
+            dispatch(updateDelay(chartDelay));
           }
         );
       });
