@@ -68,7 +68,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       ? "退出加速器将会中断正在加速的游戏，是否确认退出？"
       : "确定要退出加速器吗？",
     renewalReminder: "您的加速服务即将到期，请尽快续费以享受流畅的游戏体验。",
-    accelMemEnd: "您的加速服务已到期，请续费继续使用",
     serverDisconnected: "无法连接到服务器，请重新启动客户端。",
     issueFeedback: "提交成功，感谢您的反馈！",
     issueFeedbackError: "提交失败，请重新尝试。",
@@ -78,7 +77,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     gamesAccelerating: "其他游戏正在加速！",
     takenShelves: "当前游戏已被下架，无法加速。",
     nodeDelete: "该节点已被删除，请选择其他节点",
-    serviceExpired: "您的加速服务已到期，请续费以继续使用。",
+    serviceExpired: "您的加速服务已到期，请续费继续使用。",
   };
 
   // footer 确认按钮的文案
@@ -89,7 +88,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     accelerationServiceNotStarting: "好的",
     delayTooHigh: "更换节点",
     renewalReminder: "立即充值",
-    accelMemEnd: "好的",
     serverDisconnected: "重启客户端",
     issueFeedback: "好的",
     issueFeedbackError: "好的",
@@ -106,7 +104,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "accelerationServiceNotStarting", // 无法启动加速服务
     "delayTooHigh", // 延迟过高
     "renewalReminder", // 会员快到期，续费提醒
-    "accelMemEnd", // 加速中并且会员到期 停止加速
     "serverDisconnected", // 服务器断开连接
     "issueFeedback", // 问题反馈
     "issueFeedbackError", // 问题反馈
@@ -179,9 +176,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         }
 
         dispatch(setPayState({ open: true })); // 关闭会员充值页面
-        break;
-      case "accelMemEnd":
-        stopAcceleration();
         break;
       case "netorkError":
         stopAcceleration();

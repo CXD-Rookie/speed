@@ -98,6 +98,10 @@
     border-top: 0.6vw solid white;
   }
 
+  .triangle-disabeld {
+    border-top-color: #999;
+  }
+
   .content {
     height: 61.8vh;
     padding: 2.4vh 1.6vw 1.2vh 1.6vw;
@@ -214,7 +218,7 @@
         font-size: 1.4vw;
         font-weight: Regular;
         text-align: left;
-        color: #999999;
+        color: #fff;
         line-height: 3vh;
         margin-right: 0.8vw;
       }
@@ -239,11 +243,11 @@
         border: none;
         outline: none;
       }
-
+      
       .ant-select-single {
         height: 4.8vh;
       }
-      
+
       .refresh-button {
         width: 7vw;
         height: 4.8vh;
@@ -263,6 +267,12 @@
           height: 1.8vw;
           margin-bottom: 0.2vw;
         }
+      }
+    }
+
+    .node-select-disabled {
+      & div span {
+        color: #999999;
       }
     }
 
@@ -366,6 +376,11 @@
 .ant-select-item-option-selected {
   background-color: #4B4B59 !important; /* 修改背景颜色 */
   color: #fff !important;            /* 修改文字颜色 */
+}
+
+.ant-select-disabled .ant-select-selection-item,
+.ant-select-disabled .ant-select-selection-search-input {
+  cursor: default !important;
 }
 
 .up-triangle {
