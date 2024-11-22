@@ -101,8 +101,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 停止加速
   const stopAcceleration = async () => {
     setStopModalOpen(false);
-    await (window as any).stopProcessReset();
+    const data = await (window as any).stopProcessReset();
+    const list = (data?.data ?? []).filter((item: any) => item?.id === selectAccelerateOption?.id)?.[0] || {}
+    
+    setSelectAccelerateOption({
+      ...selectAccelerateOption,
+      is_accelerate: list?.is_accelerate ?? selectAccelerateOption?.is_accelerate,
+    });
     triggerDataUpdate(); // 更新显示数据
+
+    return list;
   };
 
   // 获取游戏运营平台列表
@@ -750,8 +758,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 确认开始加速
   const confirmStartAcceleration = async () => {
     setAccelOpen(false); // 关闭确认框
-    await stopAcceleration(); // 停止加速
-    handleBeforeVerify(selectAccelerateOption);
+    const list = await stopAcceleration(); // 停止加速
+    handleBeforeVerify(list);
   };
 
   // 打开区服节点
