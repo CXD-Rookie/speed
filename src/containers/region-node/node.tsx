@@ -109,6 +109,7 @@ const CustomNode: React.FC<NodeProps> = ({
             placement={"bottomRight"}
             popupMatchSelectWidth={false}
             suffixIcon={<div className="triangle" />}
+            disabled={tableLoading}
             onChange={(key) => {
               // 查询当前选中节点
               const select = nodeHistory?.filter(
@@ -121,7 +122,9 @@ const CustomNode: React.FC<NodeProps> = ({
 
               // 如果历史节点不存在，删除此节点
               if (hitIndex === -1) {
-                const nodeList = [...nodeHistory]?.filter((item: any) => item?.key !== key);
+                const nodeList = [...nodeHistory]?.filter(
+                  (item: any) => item?.key !== key
+                );
                 const info = {
                   ...value,
                   serverNode: {
@@ -129,7 +132,7 @@ const CustomNode: React.FC<NodeProps> = ({
                     nodeHistory: nodeList,
                   },
                 };
-                
+
                 eventBus.emit("showModal", {
                   show: true,
                   type: "nodeDelete",
