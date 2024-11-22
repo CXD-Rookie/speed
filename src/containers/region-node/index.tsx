@@ -151,7 +151,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           
           const game = {
             ...presentGameData,
-            ...data?.[0],
+            is_accelerate: data?.[0]?.is_accelerate,
             serverNode: {
               ...presentGameData?.serverNode,
               selectRegion,
