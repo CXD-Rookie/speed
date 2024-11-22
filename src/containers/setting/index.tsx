@@ -388,7 +388,7 @@ const SettingsModal: React.FC = (props) => {
         open={settingOpen}
         onCancel={onClose}
         destroyOnClose
-        title="系统设置"
+        title="设置"
         width={"67.6vw"}
         maskClosable={false}
         centered

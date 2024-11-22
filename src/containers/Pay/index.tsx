@@ -50,7 +50,7 @@ const PayModal: React.FC = (props) => {
   const { open = false, couponValue = {} } = useSelector(
     (state: any) => state?.modalOpen?.payState
   );
-  
+
   const divRef = useRef<HTMLDivElement>(null); // 协议地址绑定引用ref
   const intervalIdRef: any = useRef(null); // 用于存储轮询计时器interval的引用
 
@@ -74,6 +74,7 @@ const PayModal: React.FC = (props) => {
 
   const [activeCoupon, setActiveCoupon] = useState<any>(couponValue); // 选中优惠券信息
 
+  const [qrCodeUrlNum, setQrCodeUrlNum] = useState(1); // 二维码cdn地址请求次数
   const [qrCodeUrl, setQrCodeUrl] = useState(""); // 二维码cdn地址
   const [QRCodeLoading, setQRCodeLoading] = useState(false); // 二维码是否加载中
   const [QRCodeState, setQRCodeState] = useState("normal"); // 二维码状态 normal 正常 incoming 支付中 timeout 超时 spining 生成中
@@ -88,8 +89,10 @@ const PayModal: React.FC = (props) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0); // 选中商品索引
 
   // 当前选中的商品是否是连续续费的
-  const activePayId = ["5", "6", "7", "8"].includes(Object.keys(payTypes as any)?.[activeTabIndex]);
-  
+  const activePayId = ["5", "6", "7", "8"].includes(
+    Object.keys(payTypes as any)?.[activeTabIndex]
+  );
+
   // 计算折扣
   const isInteger = (value: number | string) => {
     const num = Number(value);
@@ -149,7 +152,7 @@ const PayModal: React.FC = (props) => {
     }
 
     return minItem;
-  }
+  };
 
   // 点击协议进行链接跳转到浏览器
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -184,7 +187,7 @@ const PayModal: React.FC = (props) => {
   const updateActiveTabIndex = (index: number) => {
     // 如果商品在支付中保持轮询不变
     if (QRCodeState !== "incoming") {
-      setQRCodeLoading(true);
+      setQrCodeUrl(""); // 存储二维码地址
       clearInterval(intervalIdRef?.current);
       setQRCodeState("normal"); // 重置二维码状态
       setPollingTimeNum(0); // 清空轮询计时器当前累计时长
@@ -193,10 +196,6 @@ const PayModal: React.FC = (props) => {
       updateQRCodesInfo({
         cid: commodities?.[index].id,
       });
-      
-      setTimeout(() => {
-        setQRCodeLoading(false);
-      }, 100);
     }
 
     setActiveTabIndex(index);
@@ -253,7 +252,7 @@ const PayModal: React.FC = (props) => {
       }
 
       let couponObj: any = activeCoupon;
-      
+
       // 优惠券列表数据 第一次打开页面也就是初始化使用接口直接返回优惠券列表 makeCoupon，
       // 手动刷新触发使用已经存储好的优惠券列表，过滤出最合适的优惠券
       if (
@@ -268,7 +267,7 @@ const PayModal: React.FC = (props) => {
         couponObj = findMinIndex(makeCoupon);
       }
       // 有优惠券，商品列表传优惠券rid，，没有不传
-      
+
       const params = couponObj?.rid
         ? {
             rid: couponObj?.rid,
@@ -345,6 +344,23 @@ const PayModal: React.FC = (props) => {
     }
   };
 
+  // 监听二维码地址，等待二维码资源完全加载完成后，再停止loading
+  useEffect(() => {
+    const img = new Image();
+
+    setQRCodeLoading(true);
+    img.src = qrCodeUrl;
+
+    img.onload = () => {
+      setQRCodeLoading(false);
+      setQrCodeUrlNum(qrCodeUrlNum + 1);
+    };
+
+    return () => {
+      img.onload = null;
+    };
+  }, [qrCodeUrl]);
+
   // 在初始化，token改变，进行刷新refresh，别的页面携带优惠券activeCoupon进入时触发逻辑刷新逻辑
   useEffect(() => {
     const inilteFun = async () => {
@@ -396,7 +412,7 @@ const PayModal: React.FC = (props) => {
     };
     // 初始化时从 localStorage 读取banner数据
     const storedData = JSON.parse(localStorage.getItem("all_data") || "[]");
-    
+
     setImages(storedData);
     eventBus.on("dataUpdated", handleDataUpdated);
 
@@ -536,7 +552,14 @@ const PayModal: React.FC = (props) => {
                       </div>
                     )}
                     {QRCodeLoading && (
-                      <div className="QR-loading-mask">
+                      <div
+                        className="QR-loading-mask"
+                        style={
+                          qrCodeUrlNum === 1
+                            ? { backgroundColor: "rgba(0, 0, 0, 0.2)" }
+                            : { backgroundColor: "rgba(0, 0, 0, 0.6)" }
+                        }
+                      >
                         <img
                           className="qrcode-loading-img"
                           src={loadingGif}

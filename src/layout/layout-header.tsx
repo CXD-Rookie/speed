@@ -215,7 +215,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
           ))}
         </div>
         {/* 搜索框 */}
-        <div onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
+        <div style={{marginLeft: accountInfo?.isLogin ? "1vw" : "5vw"}} onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
           <SearchBar />
         </div>
         <div
