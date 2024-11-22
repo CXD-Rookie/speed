@@ -101,14 +101,18 @@ const CustomNode: React.FC<NodeProps> = ({
     <div className="content">
       <div className="current-settings">
         {value?.name} | {selectRegion?.qu} | {selectNode?.name || "所有服务器"}
-        <div className="node-select">
+        <div
+          className={`node-select ${
+            tableLoading ? "node-select-disabled" : ""
+          }`}
+        >
           <Select
             className="content-name"
             value={nodeValue}
             placeholder="节点记录"
             placement={"bottomRight"}
             popupMatchSelectWidth={false}
-            suffixIcon={<div className="triangle" />}
+            suffixIcon={<div className={`triangle ${tableLoading ? "triangle-disabeld" : ""}`} />}
             disabled={tableLoading}
             onChange={(key) => {
               // 查询当前选中节点

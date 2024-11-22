@@ -379,11 +379,11 @@ const Layouts: React.FC = () => {
         timestamp = 0, // 服务端时间
         first_purchase_renewed = {}, // 是否首充首续
       } = data?.data;
-      
-      // 存储版本信息
-      localStorage.setItem("version", JSON.stringify(version));
 
       if (token) {
+        // 存储版本信息
+        localStorage.setItem("version", JSON.stringify(version));
+
         // isClosed异地登录被顶掉标记 升级版本比较
         // 升级弹窗要在登录之后才会弹出
         if (!isClosed && version) {
@@ -392,7 +392,7 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.now_version
           );
-          
+
           // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
           // 反之进行 else 进行版本比较
           if (!isInterim) {

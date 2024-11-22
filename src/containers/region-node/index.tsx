@@ -147,10 +147,11 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
           tracking.trackBoostDisconnectManual("手动停止加速");
           historyContext?.accelerateTime?.stopTimer();
-          removeGameList("initialize"); // 更新我的游戏
+          const data = removeGameList("initialize"); // 更新我的游戏
           
           const game = {
             ...presentGameData,
+            ...data?.[0],
             serverNode: {
               ...presentGameData?.serverNode,
               selectRegion,
@@ -159,7 +160,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           let serverNode = { ...game?.serverNode }; // 区服节点存储数据
           let isNode = true;
           let isAuto = false;
-
+          
           // 如果有选中节点
           if (Object.keys(node)?.length > 0) {
             serverNode = {
@@ -182,8 +183,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           if (type === "acelerate") {
-            // notice(state_data);
-            // navigate("/home");
             navigate("/home", {
               state: {
                 isNav: true,
