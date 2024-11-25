@@ -208,7 +208,11 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
             (window as any).invokeLocalScan(
               [
                 {
-                  name: "Steam商店",
+                  name: "无畏契约国服",
+                  path: "Steam.exe",
+                },
+                {
+                  name: "魔兽世界国服",
                   path: "Steam.exe",
                 },
               ],

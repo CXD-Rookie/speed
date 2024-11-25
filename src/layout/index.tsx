@@ -306,16 +306,20 @@ const Layouts: React.FC = () => {
       console.log("已经存在的本地扫描游戏: ", storeScanned, "新扫描到的游戏:", allowAdd, "展示的扫描游戏:", store);
       
       if (allowAdd?.length > 0) {
-        localStorage.setItem("storeScanned", JSON.stringify(store));
+        const localStore = store.slice(0, 2); // 只允许展示2个，且本地应用存储最多2个
+
+        localStorage.setItem("storeScanned", JSON.stringify(localStore));
         // 添加到我的游戏
         allowAdd.forEach((element: any) => {
           passiveAddition(element);
-          navigate("/home");
+          navigate(location?.pathname);
         });
-
+        
+        
         // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
         if (location?.pathname === "/home" && isTootip) {
-          dispatch(setLocalGameState({ open: true, value: store }));
+          // 弹出扫描游戏弹窗
+          dispatch(setLocalGameState({ open: true, value: localStore }));
         }
       }
     } catch (error) {
