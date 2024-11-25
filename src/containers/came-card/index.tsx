@@ -263,7 +263,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 处理加速时启动方式的数据更新
   const assembleFun = (option: any, startGather: any) => {
     let storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
-    let assemble = storage ? JSON.parse(storage) : []; // 游戏id 平台列表
+    let assemble = storage ? JSON.parse(storage) : []; // 游戏启动路径信息
     let current = assemble.find((child: any) => child?.id === option?.id); // 查找当前存储中是否存储过此游戏启动路径信息
     let first = (startGather || []).find((child: any) => child?.path); // 查找平台列表路径存在的第一个数据
     let value = first ? first : startGather?.[0]; // 如果有存在的平台则使用存在的平台没有则使用自定义数据
@@ -360,10 +360,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         executable_blacklist,
       } = gameFiles;
 
+      const storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
+      const assemble = storage ? JSON.parse(storage) : []; // 游戏启动路径信息
+      const current = assemble.find((child: any) => child?.id === option?.id); // 查找当前存储中是否存储过此游戏启动路径信息
+      const customPath = current?.platform?.[0]?.path; // 当前游戏的自定义路径是否存在
+
       // 添加自定义类型数据
       startGather.unshift({
         pc_platform: 0,
-        path: option?.scan_path ? option?.scan_path : "", // 启动路径
+        path: option?.scan_path ? option?.scan_path : customPath ? customPath : "", // 启动路径
         pid: "0", // 平台id
         name: "自定义", // 平台名称
       });
