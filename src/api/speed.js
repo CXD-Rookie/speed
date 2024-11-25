@@ -12,10 +12,10 @@ class PlaySuit {
 
   url = process.env.REACT_APP_API_URL;
 
-  speedInfo (params) {
-    const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/game/speed_info?${queryString}`);
-  }
+  // speedInfo (params) {
+  //   const queryString = new URLSearchParams(params).toString();
+  //   return get(`${this.url}/game/speed_info?${queryString}`);
+  // }
 
   pcPlatform (params) {
     const queryString = new URLSearchParams(params).toString();

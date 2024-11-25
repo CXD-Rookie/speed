@@ -291,19 +291,31 @@ const Layouts: React.FC = () => {
           scannedLocal.every((child: any) => child?.id !== item?.id) &&
           meGame.every((child: any) => child?.id !== item?.id)
       ); // 既不是已经标记过的游戏，也不是在我的游戏中的游戏
+      const storeScanned = JSON.parse(localStorage.getItem("storeScanned") ?? JSON.stringify([])); // 存储扫描到的游戏
+      const store = storeScanned;
+      
+      // 从前添加，从后删除，最多只保留2个展示的扫描游戏
+      allowAdd.forEach((item: any) => {
+        store.unshift(item);
 
-      console.log(allowAdd);
+        if (store?.length > 1) {
+          store.slice(2, store?.length);
+        }
+      });
 
+      console.log("已经存在的本地扫描游戏: ", storeScanned, "新扫描到的游戏:", allowAdd, "展示的扫描游戏:", store);
+      
       if (allowAdd?.length > 0) {
+        localStorage.setItem("storeScanned", JSON.stringify(store));
         // 添加到我的游戏
-        allowAdd.forEach((element) => {
+        allowAdd.forEach((element: any) => {
           passiveAddition(element);
-          navigate("/home")
+          navigate("/home");
         });
 
         // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
         if (location?.pathname === "/home" && isTootip) {
-          dispatch(setLocalGameState({ open: true, value: allowAdd }));
+          dispatch(setLocalGameState({ open: true, value: store }));
         }
       }
     } catch (error) {
@@ -691,20 +703,6 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
-        // 测试弹出扫描到的游戏 
-        (window as any).invokeLocalScan(
-          [
-            {
-              name: "星际争霸2国服",
-              path: "steam.exe",
-            },
-            {
-              name: "Steam商店",
-              path: "Steam.exe",
-            },
-          ],
-          true
-        );
         (window as any).NativeApi_RenderComplete();
       }, 1000);
     } else {

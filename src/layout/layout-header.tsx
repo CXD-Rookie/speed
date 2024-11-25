@@ -196,6 +196,28 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
         alt=""
       />
       <div className="header-functional-areas">
+        <div
+          onMouseDown={stopPropagation}
+          onMouseUp={stopPropagation}
+          style={{
+            color: "#fff",
+            fontSize: "1.6vw",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            (window as any).invokeLocalScan(
+              [
+                {
+                  name: "Steam商店",
+                  path: "Steam.exe",
+                },
+              ],
+              true
+            );
+          }}
+        >
+          点击测试触发扫描游戏
+        </div>
         {/* 切换标签tabs */}
         <div
           className="menu-list"
@@ -214,8 +236,13 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
             </div>
           ))}
         </div>
+
         {/* 搜索框 */}
-        <div style={{marginLeft: accountInfo?.isLogin ? "-0.4vw" : "3.6vw"}} onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
+        <div
+          style={{ marginLeft: accountInfo?.isLogin ? "-0.4vw" : "3.6vw" }}
+          onMouseDown={stopPropagation}
+          onMouseUp={stopPropagation}
+        >
           <SearchBar />
         </div>
         <div
@@ -229,7 +256,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
               className="find-version"
               onClick={() =>
                 // 打开升级弹窗 触发普通升级类型
-                dispatch(setVersionState({ open: true  }))
+                dispatch(setVersionState({ open: true }))
               }
             >
               <img src={updateIcon} alt="" />
