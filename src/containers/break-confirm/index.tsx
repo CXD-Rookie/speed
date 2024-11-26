@@ -161,6 +161,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         tracking.trackBoostDisconnectManual(accelerateTime?.count);
         break;
       case "serviceExpired":
+        tracking.trackPurchasePageShow("boostExpiry");
         cancel();
         dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
         break;
@@ -177,7 +178,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           dispatch(openRealNameModal());
           return;
         }
-
+        
+        tracking.trackPurchasePageShow("boostExpiry");
         dispatch(setPayState({ open: true })); // 关闭会员充值页面
         break;
       case "netorkError":

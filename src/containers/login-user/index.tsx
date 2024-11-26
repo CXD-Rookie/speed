@@ -17,6 +17,7 @@ import {
   setMinorState,
 } from "@/redux/actions/modal-open";
 
+import tracking from "@/common/tracking";
 import payApi from "@/api/pay";
 import RealNameModal from "../real-name";
 import UserAvatarCom from "./user-avatar";
@@ -205,6 +206,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
             dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
             return;
           } else {
+            tracking.trackPurchasePageShow("boostFirst");
             dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
           }
         }}

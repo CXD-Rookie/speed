@@ -121,7 +121,8 @@ const Layouts: React.FC = () => {
       
       (window as any).NativeApi_AsynchronousRequest(
         "SetGameData",
-        JSON.stringify({ list: list?.data ?? [] })
+        JSON.stringify({ list: list?.data ?? [] }),
+        () => {}
       );
 
       const meGame: any = list?.data ?? [];
@@ -357,8 +358,10 @@ const Layouts: React.FC = () => {
       setTimeout(() => {
         // 标记弹窗已展示
         if (!first_renewed && first_purchase) {
+          tracking.trackPurchaseFirstBuy();
           dispatch(setFirstPayRP({ open: true, type: 2 }));
         } else if (!first_purchase && first_renewed) {
+          tracking.trackPurchaseFirstShow();
           dispatch(setFirstPayRP({ open: true, type: 3 }));
         }
         localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
@@ -371,8 +374,10 @@ const Layouts: React.FC = () => {
         setTimeout(() => {
           // 更新弹窗展示时间到今天的23:59:59
           if (!first_renewed && first_purchase) {
+            tracking.trackPurchaseFirstBuy();
             dispatch(setFirstPayRP({ open: true, type: 2 }));
           } else if (!first_purchase && first_renewed) {
+            tracking.trackPurchaseFirstShow();
             dispatch(setFirstPayRP({ open: true, type: 3 }));
           }
           localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
@@ -664,7 +669,7 @@ const Layouts: React.FC = () => {
         event.message === "Network Error" ||
         (event.error && event.error.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error.message);
+        tracking.trackNetworkError(event.error);
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -676,7 +681,7 @@ const Layouts: React.FC = () => {
         event.reason.message === "Network Error" ||
         (event.reason && event.reason.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error.message);
+        tracking.trackNetworkError(event.error);
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }

@@ -362,8 +362,6 @@ const PayModal: React.FC<PayModalProps> = (props) => {
       if (iniliteData?.commodity?.length > 0) {
         const newKey = guid();
 
-        tracking.trackPurchasePageShow();
-
         setPollingKey(newKey);
         setQrCodeUrl(
           `${env_url}/pay/qrcode?cid=${

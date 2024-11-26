@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { setPayState } from "@/redux/actions/modal-open";
 
 import "./index.scss";
+import tracking from "@/common/tracking";
 import noIcon from "@/assets/images/common/no-data.svg";
 import loseIcon from "@/assets/images/common/yishiyong.svg";
 import expiresIcon from "@/assets/images/common/yiguoqi.svg";
@@ -184,6 +185,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                                   onMouseOver={() => setMouseoverState(true)}
                                   onMouseLeave={() => setMouseoverState(false)}
                                   onClick={(e) => {
+                                    tracking.trackPurchasePageShow("home");
                                     dispatch(
                                       setPayState({
                                         open: true,

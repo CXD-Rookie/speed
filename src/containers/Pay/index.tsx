@@ -126,7 +126,6 @@ const PayModal: React.FC = (props) => {
       key: randomKey,
     }); // 生成的二维码地址
 
-    tracking.trackPurchasePageShow();
     setPollingKey(randomKey); // 存储当前二维码的规则key
     setQrCodeUrl(qRCodes); // 存储二维码地址
   };
@@ -332,9 +331,11 @@ const PayModal: React.FC = (props) => {
           if ([3, 4, 5].includes(status)) {
             setShowPopup(null);
             setPayErrorModalOpen(true);
+            tracking.trackPurchaseFailure(status);
           }
 
           if (status === 2) {
+            tracking.trackPurchaseSuccess("boostExpiry");
             setShowPopup("支付成功");
           }
         }

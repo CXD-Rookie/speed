@@ -81,32 +81,55 @@ class Tracking {
   }
 
   trackBoostFailure(errorCode) {
-    this.trackEvent("加速失败", "boost_failure", errorCode);
+    this.trackEvent("加速", "boost_failure", errorCode);
   }
  
   trackBoostDisconnectManual(time) {
-    this.trackEvent("手动断开加速", "boost_disconnect_manual", `time=${time}`);
+    this.trackEvent("加速", "boost_disconnect_manual", `time=${time}`);
   }
 
   trackBoostDisconnectPassive(reason) {
-    this.trackEvent("被动断开加速", "boost_disconnect_passive", reason, reason);
+    this.trackEvent("加速", "boost_disconnect_passive", reason, reason);
   }
 
-  trackPurchasePageShow() {
-    this.trackEvent("付费页", "purchase_page_show");
+  trackPurchasePageShow(value) {
+    this.trackEvent("付费页", "purchase_page_show", `entrance=${value}`);
   }
 
-  trackPurchaseStart(buyCount) {
-    this.trackEvent("付费页", "purchase_start", "buyCount", buyCount);
+  trackPurchaseFailure(buyCount) {
+    this.trackEvent("付费页", "purchase_failure", `errorCode=${buyCount}` );
   }
-
+  
   trackPurchaseSuccess(buyCount) {
-    this.trackEvent("付费页", "purchase_success", "buyCount", buyCount);
+    this.trackEvent("付费页", "purchase_success", `buy=${buyCount}`);
+  }
+
+  trackPurchaseFirstBuy() {
+    this.trackEvent("活动页", "banner_firstBuy_show");
+  }
+
+  trackPurchaseFirstShow() {
+    this.trackEvent("活动页", "banner_firstReneWal_show");
+  }
+
+  trackPurchaseFirstBuySuccess() {
+    this.trackEvent("活动页", "banner_firstBuy_success");
+  }
+
+  trackPurchaseFirstShowSuccess() {
+    this.trackEvent("活动页", "banner_firstReneWal_success");
+  }
+
+  trackRedemption(value) {
+    this.trackEvent("口令码", "redemption_success", value);
   }
 
   trackNetworkError(errorCode) {
-    this.trackEvent("其他异常情况", "network_error", "errorCode", errorCode);
-    // this.trackEvent("其他异常情况", "network_error", "retryCount", retryCount);
+    this.trackEvent("报错", "error_frontend", `errorCode=${errorCode}`);
+  }
+
+  trackServerError (errorCode) {
+    this.trackEvent("报错", "error_server", `errorCode=${errorCode}`);
   }
 
   // 是否是首次

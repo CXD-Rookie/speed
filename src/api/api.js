@@ -50,6 +50,7 @@ instance.interceptors.response.use(
     if (code > 0) {
       let errorCode = [110001];
 
+      tracking.trackServerError(code)
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
         // window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {
@@ -76,12 +77,14 @@ instance.interceptors.response.use(
   error => {
     if (error.response) {
       if (error.response.status === 401) {
+        tracking.trackNetworkError(error.response.status)
         message.error('登录过期，请重新登录');
       } else {
         tracking.trackNetworkError(error.response.status)
         message.error('网络错误，请稍后再试');
       }
     } else if (error.request) {
+      tracking.trackNetworkError(error.response.status)
       // 这里处理断网异常
       // eventBus.emit('showModal', { show: true, type: "netorkError" });
     } else {

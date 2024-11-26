@@ -18,6 +18,7 @@ import { store } from "@/redux/store";
 import { setDrawVipActive, setFirstPayRP } from "@/redux/actions/modal-open";
 import { setPayState, setMinorState } from "@/redux/actions/modal-open";
 
+import tracking from "@/common/tracking";
 import RealNameModal from "@/containers/real-name";
 import Swiper from "../../containers/swiper/index";
 import GameCard from "@/containers/came-card";
@@ -62,6 +63,7 @@ const Home: React.FC = () => {
         dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
         return;
       } else {
+        tracking.trackPurchasePageShow("home");
         dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
       }
     } else {
@@ -75,6 +77,7 @@ const Home: React.FC = () => {
       if (type === "1") {
         dispatch(setDrawVipActive({ open: true })); // 领取兑换码弹窗
       } else {
+        type === 2 ? tracking.trackPurchaseFirstBuy() : tracking.trackPurchaseFirstShow();
         dispatch(setFirstPayRP({ open: true, type: Number(type) }));
       }
     } else {
