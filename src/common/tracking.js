@@ -34,13 +34,18 @@ class Tracking {
       }
     });
 
+    // 定时每10小时发送一次后台活跃
+    setInterval(() => {
+      this.trackEvent("活跃", "active_background");
+    }, 60 * 60 * 10 * 1000);
+
     // 后台活跃
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        this.trackEvent("活跃", "active_background", "youXia", this.trueOrFalseYouXia());
-        this.trackEvent("活跃", "active_background", "firstVisit", this.trueOrFalseFirstVisit());
-      }
-    });
+    // document.addEventListener('visibilitychange', () => {
+    //   if (document.visibilityState === 'hidden') {
+    //     this.trackEvent("活跃", "active_background", "youXia", this.trueOrFalseYouXia());
+    //     this.trackEvent("活跃", "active_background", "firstVisit", this.trueOrFalseFirstVisit());
+    //   }
+    // });
   }
 
   trackEvent(category, action, label, value) {
