@@ -94,6 +94,7 @@ const Login: React.FC = () => {
       });
 
       if (res?.error === 0) {
+        localStorage.setItem("loginMethod", "phone");
         tracking.trackSignUpSuccess("1");
         tracking.trackLoginSuccess("1");
         localStorage.setItem("token", JSON.stringify(res.data.token));

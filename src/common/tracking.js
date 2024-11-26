@@ -1,3 +1,5 @@
+import { getCouponTimeLock } from "@/layout/utils";
+import { store } from "@/redux/store";
 class Tracking {
   constructor() {
     this.initEventListeners();
@@ -6,8 +8,30 @@ class Tracking {
   initEventListeners() {
     // 前台活跃 - 任何点击、滚动、输入等操作
     document.addEventListener('click', () => {
-      this.trackEvent("活跃", "active_foreground", "youXia", this.trueOrFalseYouXia());
-      this.trackEvent("活跃", "active_foreground", "firstVisit", this.trueOrFalseFirstVisit());
+      // 点击触发埋点上报时，查询是否是第一次，是第一次上传首次活跃，反之非首次活跃，
+      // 每天0点之后允许点击上报一次
+      const foreground = localStorage.getItem("activeTime"); // 每天定时00点时间锁
+      const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+
+      if (!foreground || currentTime > Number(foreground)) {
+        const timeLock = getCouponTimeLock(); // 生成每天定时00点时间锁
+        const isVisit = this.trueOrFalseFirstVisit() // 是否首次活跃
+        const isLogin = store.getState()?.accountInfo?.isLogin;// 是否登录
+        const method = 
+          isLogin
+            ? localStorage.getItem("loginMethod") === "phone" 
+              ? "phone" 
+              : "youXia"
+            : 0; // 手机登录 | 游侠登录 | 未登录
+        const isReal = localStorage.getItem("isRealName") === "0" ? 1 : 0 // 实名认证 0 未认证 1 认证
+
+        localStorage.setItem("activeTime", String(timeLock));
+        this.trackEvent(
+          "活跃",
+          "active_foreground",
+          `firstVisit=${isVisit};method=${method};${method ? ";realName=" + isReal : ""}`
+        );
+      }
     });
 
     // 后台活跃
@@ -90,14 +114,21 @@ class Tracking {
     // this.trackEvent("其他异常情况", "network_error", "retryCount", retryCount);
   }
 
+  // 是否是首次
   trueOrFalseYouXia() {
-    // 根据具体逻辑返回 0是true 或 1是false
-    return 0; // 或 false
+    // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
+    const foreground = localStorage.getItem("activeTime"); // 每天定时00点时间锁
+    console.log(Boolean(foreground));
+
+    return Boolean(foreground) ? 0 : 1;
   }
 
+  // 是否是首次活跃
   trueOrFalseFirstVisit() {
-    // 根据具体逻辑返回 0是true 或 1是false
-    return 0; // 或 false
+    // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
+    const foreground = localStorage.getItem("activeTime"); // 每天定时00点时间锁
+
+    return Boolean(foreground) ? 0 : 1;
   }
 }
   
