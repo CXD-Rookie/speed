@@ -196,32 +196,6 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
         alt=""
       />
       <div className="header-functional-areas">
-        <div
-          onMouseDown={stopPropagation}
-          onMouseUp={stopPropagation}
-          style={{
-            color: "#fff",
-            fontSize: "1.6vw",
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            (window as any).invokeLocalScan(
-              [
-                {
-                  name: "无畏契约国服",
-                  path: "Steam.exe",
-                },
-                {
-                  name: "魔兽世界国服",
-                  path: "Steam.exe",
-                },
-              ],
-              true
-            );
-          }}
-        >
-          点击测试触发扫描游戏
-        </div>
         {/* 切换标签tabs */}
         <div
           className="menu-list"
