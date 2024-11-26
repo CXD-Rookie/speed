@@ -57,6 +57,7 @@ const stopProxy = async (t = null) => {
 
           // 加速时服务端返回703异常弹窗
           if (t === 703) {
+            tracking.trackBoostDisconnectPassive(`client=${t}`);
             eventBus.emit("showModal", { show: true, type: "serverFailure" });
           }
 

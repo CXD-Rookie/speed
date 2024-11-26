@@ -68,38 +68,28 @@ class Tracking {
     this.trackEvent("登录注册", "login_failure", "errorCode", errorCode);
   }
 
-  trackBoostStart(gameName) {
-    this.trackEvent("加速", "boost_start", gameName);
+  trackBoostStart(value) {
+    this.trackEvent("加速", "boost_start", `entrance=${value}`);
   }
 
   trackBoostSuccess(gameName, region, node) {
-    this.trackEvent("加速", "boost_success", gameName);
-    this.trackEvent("加速", "boost_success", region);
-    this.trackEvent("加速", "boost_success", node);
-    // this.trackEvent("加速", "boost_success", "originalLatency", originalLatency);
-    // this.trackEvent("加速", "boost_success", "optimizedLatency", optimizedLatency);
-    // this.trackEvent("加速", "boost_success", "packetLoss", packetLoss);
+    this.trackEvent(
+      "加速",
+      "boost_success",
+      `gameName=${gameName};region=${region};node=${node}`
+    );
   }
-  // 完整版本加速成功
-  // trackBoostSuccess(gameName: string, region: string, node: string, originalLatency: number, optimizedLatency: number, packetLoss: number) {
-  //   this.trackEvent("加速", "boost_success", gameName);
-  //   this.trackEvent("加速", "boost_success", region);
-  //   this.trackEvent("加速", "boost_success", node);
-  //   this.trackEvent("加速", "boost_success", "originalLatency", originalLatency);
-  //   this.trackEvent("加速", "boost_success", "optimizedLatency", optimizedLatency);
-  //   this.trackEvent("加速", "boost_success", "packetLoss", packetLoss);
-  // }
 
   trackBoostFailure(errorCode) {
-    this.trackEvent("加速", "boost_failure",errorCode);
+    this.trackEvent("加速失败", "boost_failure", errorCode);
   }
-
-  trackBoostDisconnectManual(t) {
-    this.trackEvent("加速", "boost_disconnect_manual",t);
+ 
+  trackBoostDisconnectManual(time) {
+    this.trackEvent("手动断开加速", "boost_disconnect_manual", `time=${time}`);
   }
 
   trackBoostDisconnectPassive(reason) {
-    this.trackEvent("加速", "boost_disconnect_passive", "reason", reason);
+    this.trackEvent("被动断开加速", "boost_disconnect_passive", reason, reason);
   }
 
   trackPurchasePageShow() {

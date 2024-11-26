@@ -119,7 +119,10 @@ const Layouts: React.FC = () => {
         await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
       ]);
       
-      (window as any).NativeApi_AsynchronousRequest("NativeApi_StopProxy", JSON.stringify({list: list?.data ?? []}));
+      (window as any).NativeApi_AsynchronousRequest(
+        "SetGameData",
+        JSON.stringify({ list: list?.data ?? [] })
+      );
 
       const meGame: any = list?.data ?? [];
       const allGame = data?.data?.list ?? [];

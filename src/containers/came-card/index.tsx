@@ -119,12 +119,32 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 获取游戏运营平台列表
   const fetchPcPlatformList = async () => {
-    return (await playSuitApi.pcPlatform())?.data;
+    try {
+      const res = await playSuitApi.pcPlatform();
+
+      if (res?.error === 0) {
+        return res?.data
+      } else {
+        tracking.trackBoostFailure(`server=${res?.error}`);
+      }
+    } catch (error) {
+      console.log("获取游戏运营平台列表", "error")
+    }
   };
 
   //查询黑白名单列表数据
   const fetchPcWhiteBlackList = async () => {
-    return (await playSuitApi.playSpeedBlackWhitelist())?.data;
+    try {
+      const res = await playSuitApi.playSpeedBlackWhitelist();
+
+      if (res?.error === 0) {
+        return res?.data;
+      } else {
+        tracking.trackBoostFailure(`server=${res?.error}`);
+      }
+    } catch (error) {
+      console.log("查询黑白名单列表数据", "error");
+    }
   };
 
   // 聚合 executable 数据
@@ -162,7 +182,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         };
         api_group.push(
           gameApi.gameList(param).then((response: any) => {
-            return { pid: key, param, list: response?.data?.list };
+            if (response?.error !== 0) {
+              tracking.trackBoostFailure(`server=${response?.error}`);
+            }
+
+            return { pid: key, param, list: response?.data?.list || [] };
           })
         );
       });
@@ -337,14 +361,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
-      tracking.trackBoostStart(option.name);
-      tracking.trackBoostSuccess(
-        option.name,
-        option?.serverNode?.selectRegion?.qu +
-          option?.serverNode?.selectRegion?.fu,
-        option.serverNode.selectNode
-      );
-
+      tracking.trackBoostStart(option.track === "result" ? "searchPage" : option.track);
+      
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
@@ -419,6 +437,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       }); // 游戏加速信息
       const js_key = startInfo?.data?.js_key;
 
+      if (startInfo?.error !== 0) {
+        tracking.trackBoostFailure(`server=${startInfo?.error}`);
+      }
+      
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
@@ -454,7 +476,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           "NativeApi_StartProxy",
           "",
           async function (response: any) {
-            console.log("是否开启真实加速(1成功)", response);
+            console.log("是否开启真实加速(0成功)", response);
             const responseObj = JSON.parse(response); // 解析外层 response
             const restfulObj = responseObj?.restful
               ? JSON.parse(responseObj?.restful)
@@ -462,7 +484,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
             console.log(restfulObj); // { port: 57499, version: "1.0.0.1" }
             // 检查是否有 restful 字段，并解析为 JSON
-            if (restfulObj) {
+            if (restfulObj?.status === 0) {
               // 检查解析后的 restfulData 是否包含 port
               if (restfulObj?.port) {
                 const url = `http://127.0.0.1:${restfulObj.port}/start`; // 拼接 URL
@@ -478,22 +500,28 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   console.log("请求成功:", result.data);
                   if (result.data === "Acceleration started") {
                     resolve({ state: true, platform: pc_platform });
+                    tracking.trackBoostSuccess(
+                      option.name,
+                      option?.serverNode?.selectRegion?.qu +
+                        option?.serverNode?.selectRegion?.fu,
+                      option.serverNode.selectNode?.name
+                    );
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
                     stopAcceleration();
-                    resolve({ state: false });
+                    resolve({ state: false, code: restfulObj?.status });
                   }
                 } catch (error) {
                   console.error("请求失败:", error);
-                  resolve({ state: false }); // 请求失败，返回错误信息
+                  resolve({ state: false, code: restfulObj?.status }); // 请求失败，返回错误信息
                 }
               } else {
                 console.error("端口信息缺失");
-                resolve({ state: false });
+                resolve({ state: false, code: restfulObj?.status });
               }
             } else {
               console.error("响应数据缺失");
-              resolve({ state: false });
+              resolve({ state: false, code: restfulObj?.status });
             }
           }
         );
@@ -551,8 +579,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const isCheck = JSON.parse(response);
 
         if (!response) {
-          tracking.trackBoostFailure("加速失败，检查文件合法性");
-          tracking.trackBoostDisconnectManual("手动停止加速");
+          tracking.trackBoostFailure(`client=${1}`);
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",
@@ -568,8 +595,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             }); // 加速完后更新我的游戏
             isPre = true;
           } else {
-            tracking.trackBoostFailure("加速失败，检查文件合法性");
-            tracking.trackBoostDisconnectManual("手动停止加速");
+            tracking.trackBoostFailure(`client=${state?.code}`);
             isPre = false;
             eventBus.emit("showModal", {
               show: true,
@@ -578,8 +604,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
-          tracking.trackBoostFailure("加速失败，检查文件合法性");
-          tracking.trackBoostDisconnectManual("手动停止加速");
+          tracking.trackBoostFailure(`client=${1}`);
           isPre = false;
           eventBus.emit("showModal", {
             show: true,
@@ -850,7 +875,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isPermitA && (
               <div
                 className="accelerate-immediately-card"
-                onClick={() => handleGameCard(option)}
+                onClick={() =>
+                  handleGameCard({ ...option, track: locationType })
+                }
               >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
                 <div className="accelerate-immediately-button">
