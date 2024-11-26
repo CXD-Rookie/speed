@@ -53,7 +53,7 @@ class Tracking {
   }
 
   trackSignUpSuccess(status) {
-    this.trackEvent("登录注册", "signUp_success", "status", status);
+    this.trackEvent("登录注册", "signUp_success", `method=${status}`);
   }
 
   trackLoginSuccess(isYouXia) {

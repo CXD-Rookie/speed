@@ -118,6 +118,9 @@ const Layouts: React.FC = () => {
         await stopProcessReset(), // 初始化调用停止加速
         await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
       ]);
+      
+      (window as any).NativeApi_AsynchronousRequest("NativeApi_StopProxy", JSON.stringify({list: list?.data ?? []}));
+
       const meGame: any = list?.data ?? [];
       const allGame = data?.data?.list ?? [];
       const result = meGame.map((item: any) => {
