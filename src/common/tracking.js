@@ -56,8 +56,8 @@ class Tracking {
     this.trackEvent("登录注册", "signUp_success", `method=${status}`);
   }
 
-  trackLoginSuccess(isYouXia) {
-    this.trackEvent("登录注册", "login_success", "youXia", isYouXia);
+  trackLoginSuccess (status) {
+    this.trackEvent("登录注册", "login_success", `method=${status}`);
   }
 
   trackSignUpFailure(errorCode) {

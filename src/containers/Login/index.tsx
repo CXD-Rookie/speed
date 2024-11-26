@@ -94,14 +94,18 @@ const Login: React.FC = () => {
       });
 
       if (res?.error === 0) {
+        const isNew = res.data.is_new_user;
+
+        // 是新用户 上报注册成功，反之登录成功
+        if (isNew) {
+          tracking.trackSignUpSuccess("phone");
+        } else {
+          tracking.trackLoginSuccess("phone");
+        }
+
         localStorage.setItem("loginMethod", "phone");
-        tracking.trackSignUpSuccess("1");
-        tracking.trackLoginSuccess("1");
         localStorage.setItem("token", JSON.stringify(res.data.token));
-        localStorage.setItem(
-          "is_new_user",
-          JSON.stringify(res.data.is_new_user)
-        );
+        localStorage.setItem("is_new_user", JSON.stringify(isNew));
         localStorage.setItem(
           "vip_experience_time",
           JSON.stringify(res.data.vip_experience_time)
