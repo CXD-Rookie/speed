@@ -361,8 +361,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
-      tracking.trackBoostStart(option.track === "result" ? "searchPage" : option.track);
+      // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
+      const boost = localStorage.getItem("isBoostStart");
       
+      tracking.trackBoostStart(
+        option.track === "result" ? "searchPage" : option.track,
+        boost === "1" ? 0 : 1,
+      );
+
+      localStorage.setItem("isBoostStart", "1");
+
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
@@ -386,7 +394,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // 添加自定义类型数据
       startGather.unshift({
         pc_platform: 0,
-        path: option?.scan_path ? option?.scan_path : customPath ? customPath : "", // 启动路径
+        path: option?.scan_path
+          ? option?.scan_path
+          : customPath
+          ? customPath
+          : "", // 启动路径
         pid: "0", // 平台id
         name: "自定义", // 平台名称
       });
@@ -440,7 +452,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (startInfo?.error !== 0) {
         tracking.trackBoostFailure(`server=${startInfo?.error}`);
       }
-      
+
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
@@ -504,12 +516,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   console.log("请求成功:", result.data);
                   if (result.data === "Acceleration started") {
                     resolve({ state: true, platform: pc_platform });
+                    // 读取是否第一次加速成功标识
+                    const boost = localStorage.getItem("isBoostSuccess");
+                    
                     tracking.trackBoostSuccess(
                       option.name,
                       option?.serverNode?.selectRegion?.qu +
                         option?.serverNode?.selectRegion?.fu,
-                      option.serverNode.selectNode?.name
+                      option.serverNode.selectNode?.name,
+                      boost === "1" ? 0 : 1
                     );
+
+                    localStorage.setItem("isBoostSuccess", "1");
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
                     stopAcceleration();

@@ -311,7 +311,16 @@ const Layouts: React.FC = () => {
         }
       });
 
-      console.log("已经存在的本地扫描游戏: ", storeScanned, "新扫描到的游戏:", allowAdd, "展示的扫描游戏:", store);
+      console.log(
+        "已经存在的本地扫描游戏: ", 
+        storeScanned,
+        "新扫描到的游戏:",
+        allowAdd, 
+        "展示的扫描游戏:", 
+        store,
+        "当前游戏是否允许弹出:",
+        isTootip,
+      );
       
       if (allowAdd?.length > 0) {
         const localStore = store.slice(0, 2); // 只允许展示2个，且本地应用存储最多2个
@@ -641,7 +650,7 @@ const Layouts: React.FC = () => {
     (window as any).closeTypeNew = trayAreaControls; // 客户端调用托盘区
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
-    (window as any).invokeLocalScan = invokeLocalScan;
+    (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
