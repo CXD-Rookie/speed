@@ -2,6 +2,7 @@
 .speed-custom-radio-wrapper {
   display: inline-flex;
   align-items: center;
+  cursor: pointer;
   
   .speed-custom-radio {
     display: inline-block;
@@ -9,7 +10,6 @@
     height: 1.2vw;
     border: 0.15vw solid #999999;
     border-radius: 50%;
-    cursor: pointer;
     position: relative;
     margin-right: 0.4vw;
 

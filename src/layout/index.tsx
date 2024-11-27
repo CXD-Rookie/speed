@@ -299,44 +299,43 @@ const Layouts: React.FC = () => {
           scannedLocal.every((child: any) => child?.id !== item?.id) &&
           meGame.every((child: any) => child?.id !== item?.id)
       ); // 既不是已经标记过的游戏，也不是在我的游戏中的游戏
-      const storeScanned = JSON.parse(localStorage.getItem("storeScanned") ?? JSON.stringify([])); // 存储扫描到的游戏
-      const store = storeScanned;
-      
-      // 从前添加，从后删除，最多只保留2个展示的扫描游戏
-      allowAdd.forEach((item: any) => {
-        store.unshift(item);
-
-        if (store?.length > 1) {
-          store.slice(2, store?.length);
-        }
-      });
+      const storeScanned = JSON.parse(
+        localStorage.getItem("storeScanned") ?? JSON.stringify([])
+      ); // 存储扫描到的游戏
+      const store = [...storeScanned];
 
       console.log(
-        "已经存在的本地扫描游戏: ", 
+        "已经存在的本地扫描游戏: ",
         storeScanned,
         "新扫描到的游戏:",
-        allowAdd, 
-        "展示的扫描游戏:", 
-        store,
+        allowAdd,
         "当前游戏是否允许弹出:",
-        isTootip,
+        isTootip
       );
-      
-      if (allowAdd?.length > 0) {
-        const localStore = store.slice(0, 2); // 只允许展示2个，且本地应用存储最多2个
 
-        localStorage.setItem("storeScanned", JSON.stringify(localStore));
-        // 添加到我的游戏
-        allowAdd.forEach((element: any) => {
-          passiveAddition(element);
-          navigate(location?.pathname);
+      if (allowAdd?.length > 0) {
+        // 从前添加，从后删除，最多只保留2个展示的扫描游戏
+        [...allowAdd].forEach((item: any) => {
+          store.unshift(item); // 扫描展示添加
+          passiveAddition(item); // 添加到我的游戏
+
+          if (store?.length > 1) {
+            store.slice(2, store?.length);
+          }
         });
         
+        const localStore = store.slice(0, 2); // 只允许展示2个，且本地应用存储最多2个
+        
+        console.log("展示的扫描游戏:", localStore, location?.pathname);
+        navigate(location?.pathname);
+        localStorage.setItem("storeScanned", JSON.stringify(localStore)); // 本地储存用于展示扫描弹出的数据
         
         // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
-        if (location?.pathname === "/home" && isTootip) {
+        if (isTootip) {
           // 弹出扫描游戏弹窗
           dispatch(setLocalGameState({ open: true, value: localStore }));
+        } else {
+          localStorage.removeItem("storeScanned");
         }
       }
     } catch (error) {
@@ -618,7 +617,9 @@ const Layouts: React.FC = () => {
     const intervalId = setInterval(() => {
       fetchBanner(); // 获取 banner 图逻辑
     }, 3 * 60 * 60 * 1000);
-    
+
+    localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
+
     iniliteRenewal(); // 初始化更新游戏;
     nativeVersion(); // 读取客户端版本
     initialSetup(); // 初始设置
