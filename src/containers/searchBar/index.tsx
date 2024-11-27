@@ -14,7 +14,6 @@ import { AnyAction } from "redux";
 import { setEnterSign } from "@/redux/actions/search-enter";
 import { fetchSearchResults } from "@/redux/actions/search";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
-
 import "./index.scss";
 
 import rightArrowIcon from "@/assets/images/common/right-search-arrow.svg";
@@ -111,8 +110,8 @@ const SearchBar: React.FC = () => {
                 className="search-item"
                 onClick={async (e) => {
                   e.stopPropagation();
-                  setIsClicking(true)
-                  
+                  setIsClicking(true);
+
                   if (localStorage.getItem("isAccelLoading") !== "1") {
                     // localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
                     if (!isClicking) {
@@ -125,7 +124,7 @@ const SearchBar: React.FC = () => {
                     });
                   }
 
-                  setIsClicking(false)
+                  setIsClicking(false);
                 }}
               >
                 <div className="name-box">
@@ -136,9 +135,7 @@ const SearchBar: React.FC = () => {
                     {result?.note || result?.name_en}
                   </div>
                 </div>
-                <div className="acc-text">
-                  加速
-                </div>
+                <div className="acc-text">加速</div>
               </div>
             ))}
           </div>

@@ -325,9 +325,10 @@ const Layouts: React.FC = () => {
         });
         
         const localStore = store.slice(0, 2); // 只允许展示2个，且本地应用存储最多2个
+        const path = window?.location?.hash.split("#");
         
-        console.log("展示的扫描游戏:", localStore, location?.pathname);
-        navigate(location?.pathname);
+        console.log("展示的扫描游戏:", localStore, path);
+        navigate(path?.[1]);
         localStorage.setItem("storeScanned", JSON.stringify(localStore)); // 本地储存用于展示扫描弹出的数据
         
         // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
