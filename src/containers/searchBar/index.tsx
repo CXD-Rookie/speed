@@ -62,6 +62,7 @@ const SearchBar: React.FC = () => {
         data: {
           ...optionParams,
           router: "search",
+          track: "searchBar" // 埋点点击加速来源标记
         },
         autoAccelerate: true,
       },

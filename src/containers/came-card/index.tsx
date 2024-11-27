@@ -102,11 +102,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const stopAcceleration = async () => {
     setStopModalOpen(false);
     const data = await (window as any).stopProcessReset();
-    const list = (data?.data ?? []).filter((item: any) => item?.id === selectAccelerateOption?.id)?.[0] || {}
-    
+    const list =
+      (data?.data ?? []).filter(
+        (item: any) => item?.id === selectAccelerateOption?.id
+      )?.[0] || {};
+
     setSelectAccelerateOption({
       ...selectAccelerateOption,
-      is_accelerate: list?.is_accelerate ?? selectAccelerateOption?.is_accelerate,
+      is_accelerate:
+        list?.is_accelerate ?? selectAccelerateOption?.is_accelerate,
     });
     triggerDataUpdate(); // 更新显示数据
 
@@ -115,37 +119,40 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   // 获取游戏运营平台列表
   const fetchPcPlatformList = async () => {
-    return (await playSuitApi.pcPlatform())?.data;
+    try {
+      const res = await playSuitApi.pcPlatform();
+
+      if (res?.error === 0) {
+        return res?.data
+      } else {
+        tracking.trackBoostFailure(`server=${res?.error}`);
+      }
+    } catch (error) {
+      console.log("获取游戏运营平台列表", "error")
+    }
   };
 
   //查询黑白名单列表数据
   const fetchPcWhiteBlackList = async () => {
-    return (await playSuitApi.playSpeedBlackWhitelist())?.data;
+    try {
+      const res = await playSuitApi.playSpeedBlackWhitelist();
+
+      if (res?.error === 0) {
+        return res?.data;
+      } else {
+        tracking.trackBoostFailure(`server=${res?.error}`);
+      }
+    } catch (error) {
+      console.log("查询黑白名单列表数据", "error");
+    }
   };
 
-  // 多次请求同时触发函数
+  // 聚合 executable 数据
   const triggerMultipleRequests = async (loopBody: any = []) => {
-    let api_group: any = [];
-
-    if (Array.isArray(loopBody) && loopBody.length > 0) {
-      loopBody.forEach((key: any) => {
-        const { list, pid } = key;
-
-        api_group.push(
-          playSuitApi.speedInfo({
-            platform: 3,
-            gid: list?.[0]?.id,
-            pid: pid,
-          })
-        );
-      });
-    }
-
-    const data: any = await Promise.all(api_group); // 请求等待统一请求完毕
-
+    const data: any = loopBody?.[0]?.list || []; // 游戏信息数据
     const result_data = data.reduce(
       (acc: any, item: any) => {
-        const { executable } = item.data;
+        const { executable } = item;
 
         // 聚合 executable 数据
         if (Array.isArray(executable) && executable.length > 0) {
@@ -175,7 +182,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         };
         api_group.push(
           gameApi.gameList(param).then((response: any) => {
-            return { pid: key, param, list: response?.data?.list };
+            if (response?.error !== 0) {
+              tracking.trackBoostFailure(`server=${response?.error}`);
+            }
+
+            return { pid: key, param, list: response?.data?.list || [] };
           })
         );
       });
@@ -190,22 +201,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     platform: any = {},
     option: any = {}
   ) => {
-    const default_platform = Object?.keys(platform) || []; // 运营平台数据
-    let api_group: any = [];
-
-    if (Array.isArray(default_platform) && default_platform.length > 0) {
-      default_platform.forEach((key: any) => {
-        api_group.push(
-          playSuitApi.speedInfo({
-            platform: 3,
-            gid: option?.id,
-            pid: key,
-          })
-        );
-      });
-    }
-
-    const data: any = await Promise.all(api_group); // 请求等待统一请求完毕
+    const data = option?.game_speed ?? []; // 读取游戏的平台信息
 
     // 聚合所以的api 数据中的 executable
     const result = data.reduce(
@@ -213,13 +209,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const {
           executable,
           pc_platform,
-          start_path = "",
+          start_info = {},
           domain_blacklist = [],
           domain_list = [],
           ipv4_blacklist = [],
           ipv4_list = [],
           executable_blacklist = [],
-        } = item.data;
+        } = item;
         const isExecutable = Array.isArray(executable) && executable.length > 0;
 
         // 聚合 executable 数据
@@ -227,17 +223,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           acc.executable = acc.executable.concat(executable);
         }
 
-        // 聚合 pc_platform 数据
-        if (pc_platform !== 0 && isExecutable) {
-          acc.pc_platform.push(default_platform?.[pc_platform]);
-        }
-
         // 平台类型和pid相同，并且启动路径存在
-        if (Number(pc_platform) && start_path) {
+        if (Number(pc_platform) && start_info?.path) {
           acc.startGather.push({
             pc_platform,
             pid: String(pc_platform),
-            path: start_path,
+            path: start_info?.path + start_info?.args,
             name: platform?.[pc_platform],
           });
         }
@@ -296,17 +287,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 处理加速时启动方式的数据更新
   const assembleFun = (option: any, startGather: any) => {
     let storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
-    let assemble = storage ? JSON.parse(storage) : []; // 游戏id 平台列表
+    let assemble = storage ? JSON.parse(storage) : []; // 游戏启动路径信息
     let current = assemble.find((child: any) => child?.id === option?.id); // 查找当前存储中是否存储过此游戏启动路径信息
     let first = (startGather || []).find((child: any) => child?.path); // 查找平台列表路径存在的第一个数据
     let value = first ? first : startGather?.[0]; // 如果有存在的平台则使用存在的平台没有则使用自定义数据
-    
+
     // 如果找到则进行启动平台数据更新 否则添加新数据
     if (current) {
       assemble = assemble.map((item: any) => {
         if (item?.id === option?.id) {
           let select = { ...item }; // 默认赋值存储数据
-          
+
           // 如果存储数据没有选中的启动信息
           if (!item?.path) {
             // 如果查找路径存在的第一个数据存在，更新到储存数据中
@@ -322,14 +313,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 (element: any) =>
                   element.path &&
                   element.path === child?.path &&
-                  element?.pc_platform === child?.pc_platform 
+                  element?.pc_platform === child?.pc_platform
               )
             );
-            
+
             // 如果选中的当前游戏启动信息不在最新的平台列表中 并且不是自定义平台存在路径的情况
             if (!isFind && !(item?.path && item?.pc_platform === 0)) {
-              console.log(111);
-              
               // 如果平台列表存在除自定义以外的平台
               if (first) {
                 select = { ...item, ...first };
@@ -372,14 +361,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
-      tracking.trackBoostStart(option.name);
-      tracking.trackBoostSuccess(
-        option.name,
-        option?.serverNode?.selectRegion?.qu +
-          option?.serverNode?.selectRegion?.fu,
-        option.serverNode.selectNode
-      );
-
+      tracking.trackBoostStart(option.track === "result" ? "searchPage" : option.track);
+      
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
@@ -395,10 +378,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         executable_blacklist,
       } = gameFiles;
 
+      const storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
+      const assemble = storage ? JSON.parse(storage) : []; // 游戏启动路径信息
+      const current = assemble.find((child: any) => child?.id === option?.id); // 查找当前存储中是否存储过此游戏启动路径信息
+      const customPath = current?.platform?.[0]?.path; // 当前游戏的自定义路径是否存在
+
       // 添加自定义类型数据
       startGather.unshift({
         pc_platform: 0,
-        path: "", // 启动路径
+        path: option?.scan_path ? option?.scan_path : customPath ? customPath : "", // 启动路径
         pid: "0", // 平台id
         name: "自定义", // 平台名称
       });
@@ -406,13 +394,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       // 处理加速时启动方式的数据更新
       assembleFun(option, startGather);
 
-      // 同步加速商店的进程
+      // 同步加速平台的进程
       if (option?.pc_platform?.length > 0) {
         const gameResult = await queryGameIdByPlatform(
           option?.pc_platform,
           platform
-        );
-        const processResult = await triggerMultipleRequests(gameResult);
+        ); // 请求加速平台游戏
+        const processResult = await triggerMultipleRequests(gameResult); // 聚合加速平台的进程
 
         executable = [...executable, ...processResult?.executable];
       }
@@ -449,6 +437,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       }); // 游戏加速信息
       const js_key = startInfo?.data?.js_key;
 
+      if (startInfo?.error !== 0) {
+        tracking.trackBoostFailure(`server=${startInfo?.error}`);
+      }
+      
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
@@ -484,7 +476,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           "NativeApi_StartProxy",
           "",
           async function (response: any) {
-            console.log("是否开启真实加速(1成功)", response);
+            console.log("是否开启真实加速(0成功)", response);
             const responseObj = JSON.parse(response); // 解析外层 response
             const restfulObj = responseObj?.restful
               ? JSON.parse(responseObj?.restful)
@@ -492,7 +484,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
             console.log(restfulObj); // { port: 57499, version: "1.0.0.1" }
             // 检查是否有 restful 字段，并解析为 JSON
-            if (restfulObj) {
+            if (restfulObj?.status === 0) {
               // 检查解析后的 restfulData 是否包含 port
               if (restfulObj?.port) {
                 const url = `http://127.0.0.1:${restfulObj.port}/start`; // 拼接 URL
@@ -508,22 +500,28 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   console.log("请求成功:", result.data);
                   if (result.data === "Acceleration started") {
                     resolve({ state: true, platform: pc_platform });
+                    tracking.trackBoostSuccess(
+                      option.name,
+                      option?.serverNode?.selectRegion?.qu +
+                        option?.serverNode?.selectRegion?.fu,
+                      option.serverNode.selectNode?.name
+                    );
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
                     stopAcceleration();
-                    resolve({ state: false });
+                    resolve({ state: false, code: restfulObj?.status });
                   }
                 } catch (error) {
                   console.error("请求失败:", error);
-                  resolve({ state: false }); // 请求失败，返回错误信息
+                  resolve({ state: false, code: restfulObj?.status }); // 请求失败，返回错误信息
                 }
               } else {
                 console.error("端口信息缺失");
-                resolve({ state: false });
+                resolve({ state: false, code: restfulObj?.status });
               }
             } else {
               console.error("响应数据缺失");
-              resolve({ state: false });
+              resolve({ state: false, code: restfulObj?.status });
             }
           }
         );
@@ -546,7 +544,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let option = { ...event };
 
     const selectRegion = option?.serverNode?.selectRegion;
-    
+
     stopAcceleration(); // 停止加速
 
     // 进行重新ping节点
@@ -556,7 +554,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     const nodeHistory = option?.serverNode?.nodeHistory || [];
     const selectNode = nodeHistory.filter((item: any) => item?.is_select)?.[0];
-    
+
     // 处理选中节点在某些特殊情况下key是null的时候，弹窗区服节点弹窗
     if (!selectNode?.key) {
       localStorage.removeItem("isAccelLoading"); // 删除存储临时的加速中状态
@@ -581,8 +579,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const isCheck = JSON.parse(response);
 
         if (!response) {
-          tracking.trackBoostFailure("加速失败，检查文件合法性");
-          tracking.trackBoostDisconnectManual("手动停止加速");
+          tracking.trackBoostFailure(`client=${1}`);
           eventBus.emit("showModal", {
             show: true,
             type: "infectedOrHijacked",
@@ -598,8 +595,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             }); // 加速完后更新我的游戏
             isPre = true;
           } else {
-            tracking.trackBoostFailure("加速失败，检查文件合法性");
-            tracking.trackBoostDisconnectManual("手动停止加速");
+            tracking.trackBoostFailure(`client=${state?.code}`);
             isPre = false;
             eventBus.emit("showModal", {
               show: true,
@@ -608,8 +604,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
-          tracking.trackBoostFailure("加速失败，检查文件合法性");
-          tracking.trackBoostDisconnectManual("手动停止加速");
+          tracking.trackBoostFailure(`client=${1}`);
           isPre = false;
           eventBus.emit("showModal", {
             show: true,
@@ -686,7 +681,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           );
 
           // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打开的情况下
-          if (isInterim  && !versionOpen) {
+          if (isInterim && !versionOpen) {
             // 打开升级弹窗 触发普通升级类型
             dispatch(setVersionState({ open: true, type: "force" }));
             stopAnimation(); // 停止加速动画
@@ -708,7 +703,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsAllowAcceleration(false); // 禁用立即加速
           setIsAllowShowAccelerating(false); // 禁用显示加速中
           setIsStartAnimate(true); // 开始加速动画
-          
+
           // 是否下架
           let shelves = await checkShelves(option);
           let data = { ...option };
@@ -880,7 +875,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isPermitA && (
               <div
                 className="accelerate-immediately-card"
-                onClick={() => handleGameCard(option)}
+                onClick={() =>
+                  handleGameCard({ ...option, track: locationType })
+                }
               >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
                 <div className="accelerate-immediately-button">
@@ -929,7 +926,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               </div>
             )}
             {/* 加速中卡片 */}
-            {locationType === "home" && isAllowShowAccelerating && option?.is_accelerate ? (
+            {locationType === "home" &&
+            isAllowShowAccelerating &&
+            option?.is_accelerate ? (
               <div
                 className="accelerating-card"
                 onClick={

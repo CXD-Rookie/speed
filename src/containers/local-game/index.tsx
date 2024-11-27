@@ -22,6 +22,9 @@ const LocalGame: React.FC = () => {
 
   // 关闭弹窗
   const onCancel = () => {
+    // 关闭时清除扫描游戏存储
+    localStorage.removeItem("storeScanned");
+    // 关闭扫描游戏弹窗
     dispatch(setLocalGameState({ open: false, value: [] }));
   }
 

@@ -214,8 +214,13 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
             </div>
           ))}
         </div>
+
         {/* 搜索框 */}
-        <div style={{marginLeft: accountInfo?.isLogin ? "-0.4vw" : "3.6vw"}} onMouseDown={stopPropagation} onMouseUp={stopPropagation}>
+        <div
+          style={{ marginLeft: accountInfo?.isLogin ? "-0.4vw" : "3.6vw" }}
+          onMouseDown={stopPropagation}
+          onMouseUp={stopPropagation}
+        >
           <SearchBar />
         </div>
         <div
@@ -229,7 +234,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
               className="find-version"
               onClick={() =>
                 // 打开升级弹窗 触发普通升级类型
-                dispatch(setVersionState({ open: true  }))
+                dispatch(setVersionState({ open: true }))
               }
             >
               <img src={updateIcon} alt="" />

@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { setPayState } from "@/redux/actions/modal-open";
 
 import eventBus from "@/api/eventBus";
-
+import tracking from "@/common/tracking";
 import "./index.scss";
 
 interface SettingsModalProps {
@@ -38,7 +38,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isNetworkError, setIsNetworkError }: any =
+  const { isNetworkError, setIsNetworkError, accelerateTime }: any =
     useHistoryContext();
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
@@ -157,7 +157,11 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
+      case "stopAccelerate":
+        tracking.trackBoostDisconnectManual(accelerateTime?.count);
+        break;
       case "serviceExpired":
+        tracking.trackPurchasePageShow("boostExpiry");
         cancel();
         dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
         break;
@@ -174,7 +178,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           dispatch(openRealNameModal());
           return;
         }
-
+        
+        tracking.trackPurchasePageShow("boostExpiry");
         dispatch(setPayState({ open: true })); // 关闭会员充值页面
         break;
       case "netorkError":

@@ -12,9 +12,15 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = function (app) {
   app.use(
     createProxyMiddleware("/apiProxy", {
-      target: "http://dev-passport.rongma.tech",
+      target: "https://rm-mga-dev.yuwenlong.cn/api/v1",
       changeOrigin: true,
       pathRewrite: { "^/apiProxy": "" },
+      logLevel: "debug"
+    }),
+    createProxyMiddleware("/wsApiProxy", {
+      target: "https://rm-mga-dev.yuwenlong.cn/ws/v1/user/info",
+      changeOrigin: true,
+      pathRewrite: { "^/wsApiProxy": "" },
       logLevel: "debug"
     }),
   );

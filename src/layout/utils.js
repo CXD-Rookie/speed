@@ -1,6 +1,20 @@
 import eventBus from "@/api/eventBus";
 import tracking from "@/common/tracking";
 
+// 生成当天00点时间戳
+const getCouponTimeLock = () => {
+  // 获取当前日期时间
+  let now = new Date();
+
+  // 计算明天的日期
+  now.setDate(now.getDate() + 1);
+  // 设置时间为00:00:00
+  now.setHours(0, 0, 0, 0);
+
+  // 获取该时间的时间戳，并转换为秒级时间戳
+  return Math.floor(now.getTime() / 1000);
+}
+
 // 比较版本大小
 const compareVersions = (version1 = "", version2 = "") => {
   // 将版本号按点号分割成数组
@@ -43,6 +57,7 @@ const stopProxy = async (t = null) => {
 
           // 加速时服务端返回703异常弹窗
           if (t === 703) {
+            tracking.trackBoostDisconnectPassive(`client=${t}`);
             eventBus.emit("showModal", { show: true, type: "serverFailure" });
           }
 
@@ -57,5 +72,6 @@ const stopProxy = async (t = null) => {
 
 export {
   compareVersions,
-  stopProxy
+  stopProxy,
+  getCouponTimeLock
 }

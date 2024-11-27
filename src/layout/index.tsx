@@ -118,6 +118,14 @@ const Layouts: React.FC = () => {
         await stopProcessReset(), // 初始化调用停止加速
         await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
       ]);
+      console.log(data?.data?.list);
+      
+      (window as any).NativeApi_AsynchronousRequest(
+        "SetGameData",
+        JSON.stringify({ list: data?.data?.list ?? [] }),
+        () => {}
+      );
+
       const meGame: any = list?.data ?? [];
       const allGame = data?.data?.list ?? [];
       const result = meGame.map((item: any) => {
@@ -259,12 +267,13 @@ const Layouts: React.FC = () => {
         // 做接口请求组合
         option.forEach((element) => {
           allApi.push(
-            gameApi.gameList({ s: element }).then((res: any) => {
+            gameApi.gameList({ s: element?.name }).then((res: any) => {
               const result = res?.data?.list?.[0];
               return result
                 ? {
                     ...result,
                     mark: "local", // 标记这个游戏是本地扫描到的
+                    scan_path: element?.path, // 扫描到的本地游戏路径
                     cover_img: `https://cdn.accessorx.com/${
                       result.cover_img
                         ? result.cover_img
@@ -290,19 +299,35 @@ const Layouts: React.FC = () => {
           scannedLocal.every((child: any) => child?.id !== item?.id) &&
           meGame.every((child: any) => child?.id !== item?.id)
       ); // 既不是已经标记过的游戏，也不是在我的游戏中的游戏
+      const storeScanned = JSON.parse(localStorage.getItem("storeScanned") ?? JSON.stringify([])); // 存储扫描到的游戏
+      const store = storeScanned;
+      
+      // 从前添加，从后删除，最多只保留2个展示的扫描游戏
+      allowAdd.forEach((item: any) => {
+        store.unshift(item);
 
-      console.log(allowAdd);
+        if (store?.length > 1) {
+          store.slice(2, store?.length);
+        }
+      });
 
+      console.log("已经存在的本地扫描游戏: ", storeScanned, "新扫描到的游戏:", allowAdd, "展示的扫描游戏:", store);
+      
       if (allowAdd?.length > 0) {
-        // 添加到我的游戏
-        allowAdd.forEach((element) => {
-          passiveAddition(element);
-          navigate("/home")
-        });
+        const localStore = store.slice(0, 2); // 只允许展示2个，且本地应用存储最多2个
 
+        localStorage.setItem("storeScanned", JSON.stringify(localStore));
+        // 添加到我的游戏
+        allowAdd.forEach((element: any) => {
+          passiveAddition(element);
+          navigate(location?.pathname);
+        });
+        
+        
         // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
         if (location?.pathname === "/home" && isTootip) {
-          dispatch(setLocalGameState({ open: true, value: allowAdd }));
+          // 弹出扫描游戏弹窗
+          dispatch(setLocalGameState({ open: true, value: localStore }));
         }
       }
     } catch (error) {
@@ -334,8 +359,10 @@ const Layouts: React.FC = () => {
       setTimeout(() => {
         // 标记弹窗已展示
         if (!first_renewed && first_purchase) {
+          tracking.trackPurchaseFirstBuy();
           dispatch(setFirstPayRP({ open: true, type: 2 }));
         } else if (!first_purchase && first_renewed) {
+          tracking.trackPurchaseFirstShow();
           dispatch(setFirstPayRP({ open: true, type: 3 }));
         }
         localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
@@ -348,8 +375,10 @@ const Layouts: React.FC = () => {
         setTimeout(() => {
           // 更新弹窗展示时间到今天的23:59:59
           if (!first_renewed && first_purchase) {
+            tracking.trackPurchaseFirstBuy();
             dispatch(setFirstPayRP({ open: true, type: 2 }));
           } else if (!first_purchase && first_renewed) {
+            tracking.trackPurchaseFirstShow();
             dispatch(setFirstPayRP({ open: true, type: 3 }));
           }
           localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
@@ -529,9 +558,9 @@ const Layouts: React.FC = () => {
 
               if (isNewUser) {
                 dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
-                tracking.trackLoginSuccess("0");
+                tracking.trackSignUpSuccess("youXia");
               } else if ([2, 3].includes(Number(bind_type))) {
-                tracking.trackLoginSuccess("0");
+                tracking.trackLoginSuccess("youXia");
                 dispatch(
                   setMinorState({
                     open: true,
@@ -641,7 +670,7 @@ const Layouts: React.FC = () => {
         event.message === "Network Error" ||
         (event.error && event.error.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error.message);
+        tracking.trackNetworkError(event.error);
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -653,7 +682,7 @@ const Layouts: React.FC = () => {
         event.reason.message === "Network Error" ||
         (event.reason && event.reason.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error.message);
+        tracking.trackNetworkError(event.error);
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -690,8 +719,6 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
-        // 测试弹出扫描到的游戏
-        // (window as any).invokeLocalScan(["星际争霸2国服", "Steam商店"]);
         (window as any).NativeApi_RenderComplete();
       }, 1000);
     } else {

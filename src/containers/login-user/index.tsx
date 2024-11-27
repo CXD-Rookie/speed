@@ -10,12 +10,14 @@ import React, { useEffect, useState } from "react";
 import { Popover, Tooltip } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
+import { getCouponTimeLock } from "@/layout/utils";
 import {
   setSetting,
   setPayState,
   setMinorState,
 } from "@/redux/actions/modal-open";
 
+import tracking from "@/common/tracking";
 import payApi from "@/api/pay";
 import RealNameModal from "../real-name";
 import UserAvatarCom from "./user-avatar";
@@ -102,19 +104,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       console.log(error);
     }
   };
-
-  function getCouponTimeLock() {
-    // 获取当前日期时间
-    let now = new Date();
-
-    // 计算明天的日期
-    now.setDate(now.getDate() + 1);
-    // 设置时间为00:00:00
-    now.setHours(0, 0, 0, 0);
-
-    // 获取该时间的时间戳，并转换为秒级时间戳
-    return Math.floor(now.getTime() / 1000);
-  }
 
   useEffect(() => {
     const iniliteFun = async () => {
@@ -217,6 +206,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
             dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
             return;
           } else {
+            tracking.trackPurchasePageShow("boostFirst");
             dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
           }
         }}

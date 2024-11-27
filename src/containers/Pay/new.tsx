@@ -192,9 +192,16 @@ const PayModal: React.FC = (props) => {
           if ([3, 4, 5].includes(status)) {
             setShowPopup(null);
             setPayErrorModalOpen(true);
+            tracking.trackPurchaseFailure(status);
           }
 
           if (status === 2) {
+            const goods = res?.data?.pay_type;
+            const buy = firstAuth.firstAuth.first_purchase ? 1 : 2;
+
+            tracking.trackPurchaseSuccess(
+              `goods=${goods};buy=${buy}`
+            );
             setShowPopup("支付成功");
           }
 
@@ -260,8 +267,6 @@ const PayModal: React.FC = (props) => {
 
       if (iniliteData?.commodity?.length > 0) {
         const newKey = guid();
-
-        tracking.trackPurchasePageShow();
 
         setQRCodeState("normal");
         setPollingKey(newKey);

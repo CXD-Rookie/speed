@@ -6,6 +6,7 @@ import { updateBindPhoneState } from "@/redux/actions/auth";
 import { debounce } from "@/common/utils";
 import { setMinorState } from "@/redux/actions/modal-open";
 
+import tracking from "@/common/tracking";
 import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
 import loginApi from "@/api/login";
@@ -78,6 +79,16 @@ const VisitorLogin: React.FC= (props) => {
         localStorage.setItem("token", JSON.stringify(res.data.token));
         // localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
         // localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
+        
+        const isNew = res.data.is_new_user;
+
+        // 是新用户 上报注册成功，反之登录成功
+        if (isNew) {
+          tracking.trackSignUpSuccess("youXia");
+        } else {
+          tracking.trackLoginSuccess("youXia");
+        }
+        
         if (
           res.data.user_info.user_ext === null ||
           res.data.user_info.user_ext.idcard === ""

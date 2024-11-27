@@ -636,6 +636,7 @@ const SettingsModal: React.FC = (props) => {
                             ); // 认证提示
                             return;
                           } else {
+                            tracking.trackPurchasePageShow("home");
                             dispatch(
                               setPayState({ open: true, couponValue: {} })
                             ); // 会员充值页面
@@ -662,6 +663,7 @@ const SettingsModal: React.FC = (props) => {
                             ); // 认证提示
                             return;
                           } else {
+                            tracking.trackPurchasePageShow("home");
                             dispatch(
                               setPayState({ open: true, couponValue: {} })
                             ); // 会员充值页面

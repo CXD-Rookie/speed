@@ -126,7 +126,6 @@ const PayModal: React.FC = (props) => {
       key: randomKey,
     }); // 生成的二维码地址
 
-    tracking.trackPurchasePageShow();
     setPollingKey(randomKey); // 存储当前二维码的规则key
     setQrCodeUrl(qRCodes); // 存储二维码地址
   };
@@ -322,7 +321,7 @@ const PayModal: React.FC = (props) => {
             }
           });
         }
-
+        
         // 2已支付 3支付失败 4手动取消 5超时取消
         if ([2, 3, 4, 5].includes(status) && res?.data?.cid) {
           const commodityRes = await payApi.getCommodityInfo(res.data?.cid);
@@ -332,9 +331,15 @@ const PayModal: React.FC = (props) => {
           if ([3, 4, 5].includes(status)) {
             setShowPopup(null);
             setPayErrorModalOpen(true);
+            tracking.trackPurchaseFailure(status);
           }
 
           if (status === 2) {
+            const goods = res?.data?.pay_type;
+            const buy = purchaseState === "purchase" ? 1 : 2;
+            const coupon = activeCoupon?.redeem_code?.content;
+            
+            tracking.trackPurchaseSuccess(`goods=${goods};buy=${buy}${coupon ? ";discount" + coupon : ""}`);
             setShowPopup("支付成功");
           }
         }

@@ -12,6 +12,7 @@ import { nodeDebounce } from "@/common/utils";
 import { validityPeriod } from "./utils";
 
 import "./index.scss";
+import tracking from "@/common/tracking";
 import payApi from "@/api/pay";
 import currencyBanner from "@/assets/images/common/currency-banner.png";
 import noDataIcon from "@/assets/images/common/no-data.svg";
@@ -101,6 +102,7 @@ const CurrencyExchange: React.FC = (props) => {
           onMouseLeave={() => setIsHoverStatus("")}
           onClick={() => {
             if (record?.status === 1) {
+              tracking.trackPurchasePageShow("boostFirst");
               dispatch(setPayState({ open: true, couponValue: record ?? {} })); // 会员充值页面
               dispatch(setCurrencyOpen(false));
             }
@@ -137,6 +139,13 @@ const CurrencyExchange: React.FC = (props) => {
       });
 
       if (res?.error === 0) {
+        const data = res?.data?.redeem_code;
+        const category = data?.type === 1 ? "member" : "discount";
+        const content = data?.name;
+
+        tracking.trackRedemption(
+          `category=${category};code=${currencyCode};content=${content}`
+        );
         setCurrencyState("");
         dispatch(setDrawVipActive({ open: true, value: res?.data ?? {} })); // 领取兑换码弹窗
         fetchRecords();

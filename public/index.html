@@ -59,7 +59,7 @@
     // console.log("=============新111url==============", newUrl);
 
     </script>
-    <script>
+    <!-- <script>
       var _czc = _czc || [];
       // 三方埋点
       (function () {
@@ -69,7 +69,37 @@
         s.parentNode.insertBefore(um, s);
       })();
 
-      </script>
+    </script> -->
+    <!-- 新的友盟埋点 -->
+    <script>
+      // 获取当前环境变量
+      const env = window.location.pathname.split("/").includes('web_test') ? 'development' : 'production';
+      // 根据环境设置不同的 URL
+      const redirectUrl = env === 'production'
+      console.log(env, redirectUrl);
+      
+      // 三方埋点
+      // 测试环境
+      if (redirectUrl) {
+        var _czc = _czc || [];
+
+        (function () {
+          var um = document.createElement("script");
+          um.src = "https://v1.cnzz.com/z.js?id=1281368044&async=1";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(um, s);
+        })();
+      } else { // 生产环境
+        var _czc = _czc || [];
+        
+        (function () {
+          var um = document.createElement("script");
+          um.src = "https://s9.cnzz.com/z.js?id=1281396048&async=1";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(um, s);
+        })();
+      }
+    </script>
   </body>
 </html>
 

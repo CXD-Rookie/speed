@@ -27,6 +27,7 @@ import {
   setMinorState,
 } from "@/redux/actions/modal-open";
 import "./index.scss";
+import tracking from "@/common/tracking";
 
 import realErrorIcon from "@/assets/images/common/real_error_quan.svg";
 import realSucessIcon from "@/assets/images/common/real-sucess.svg";
@@ -85,6 +86,7 @@ const MinorModal: React.FC = () => {
 
     // 标记实名认证操作，当提醒加速服务即将到期，并且实名后使用此标记做判断
     if (sign_expires) {
+      tracking.trackPurchasePageShow("boostExpiry");
       dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
     }
   };
