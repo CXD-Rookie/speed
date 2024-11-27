@@ -76,7 +76,7 @@ class Tracking {
     this.trackEvent(
       "加速",
       "boost_success",
-      `gameName=${gameName};region=${region};node=${node}`
+      `gameName=${gameName};region=${region};node=${node};firstVisit=${firstVisit}`
     );
   }
 
@@ -101,7 +101,7 @@ class Tracking {
   }
   
   trackPurchaseSuccess(buyCount) {
-    this.trackEvent("付费页", "purchase_success", `buy=${buyCount}`);
+    this.trackEvent("付费页", "purchase_success", buyCount);
   }
 
   trackPurchaseFirstBuy() {

@@ -7,7 +7,7 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getMyGames } from "@/common/utils";
 import "./style.scss";
 import GameCard from "@/containers/came-card";
@@ -16,13 +16,23 @@ import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 
 const MyGames: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [status, setStatus] = useState<any>(0);
   const [gamesList, setGamesList] = useState([]);
 
+  // useEffect(() => {
+  //   (window as any).invokeLocalScan([
+  //     { name: "英雄联盟国服", path: "steam.ext" },
+  //     { name: "星际争霸2国服", path: "steam.ext" },
+  //   ]);
+  // }, []);
+
   useEffect(() => {
     setGamesList(getMyGames());
-  }, [status]);
+  }, [status, location]);
+  
+
 
   return (
     <div className="my-games-module">

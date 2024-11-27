@@ -325,9 +325,10 @@ const Layouts: React.FC = () => {
         });
         
         const localStore = store.slice(0, 2); // 只允许展示2个，且本地应用存储最多2个
+        const path = window?.location?.hash.split("#");
         
-        console.log("展示的扫描游戏:", localStore, location?.pathname);
-        navigate(location?.pathname);
+        console.log("展示的扫描游戏:", localStore, path);
+        navigate(path?.[1]);
         localStorage.setItem("storeScanned", JSON.stringify(localStore)); // 本地储存用于展示扫描弹出的数据
         
         // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
@@ -729,6 +730,10 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
+        // (window as any).invokeLocalScan([
+        //     { name: "英雄联盟国服", path: "steam.ext" },
+        //     { name: "星际争霸2国服", path: "steam.ext" },
+        //   ]);
         (window as any).NativeApi_RenderComplete();
       }, 1000);
     } else {
