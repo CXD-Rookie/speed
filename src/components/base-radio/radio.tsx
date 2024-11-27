@@ -39,13 +39,17 @@ const CustomRadio: React.FC = React.forwardRef<HTMLSpanElement,CustomRadioProps>
   };
 
   return (
-    <span ref={ref} className={`speed-custom-radio-wrapper`} key={value}>
+    <span
+      ref={ref}
+      className={`speed-custom-radio-wrapper`}
+      key={value}
+      onClick={handleClick}
+    >
       {/* 边框 */}
       <span
         className={`speed-custom-radio ${
           radioChecked ? "speed-custom-radio-checked" : ""
         }${className}`}
-        onClick={handleClick}
       >
         {/* 圆点 */}
         <span
