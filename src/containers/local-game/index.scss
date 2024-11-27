@@ -87,18 +87,24 @@
 
         .name {
           height: 3.3vh;
+          max-width: 12.5vw;
           font-size: 1.6vw;
           font-weight: 400;
           color: #fff;
           line-height: 3.3vh;
-          word-break: break-all;
+          white-space: nowrap;    /* 禁止换行 */
+          overflow: hidden;       /* 隐藏溢出内容 */
+          text-overflow: ellipsis;/* 使用省略号表示溢出 */
         }
 
         .en-name {
+          max-width: 12.5vw;
           font-size: 1.2vw;
           color: rgba(255,255,255,0.50);
           line-height: 3.3vh;
-          word-break: break-all;
+          white-space: nowrap;    /* 禁止换行 */
+          overflow: hidden;       /* 隐藏溢出内容 */
+          text-overflow: ellipsis;/* 使用省略号表示溢出 */
         }
       }
 

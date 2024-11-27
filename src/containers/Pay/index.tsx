@@ -338,8 +338,15 @@ const PayModal: React.FC = (props) => {
             const goods = res?.data?.pay_type;
             const buy = purchaseState === "purchase" ? 1 : 2;
             const coupon = activeCoupon?.redeem_code?.content;
-            
-            tracking.trackPurchaseSuccess(`goods=${goods};buy=${buy}${coupon ? ";discount" + coupon : ""}`);
+            const foreground = localStorage.getItem("isBuyFirstVisit");
+            const firstVisit = foreground === "1" ? 0 : 1;
+            tracking.trackPurchaseSuccess(
+              `goods=${goods};buy=${buy}${
+                coupon ? ";discount" + coupon : ""
+              };firstVisit=${firstVisit}`
+            );
+
+            localStorage.setItem("isBuyFirstVisit", "1");
             setShowPopup("支付成功");
           }
         }
