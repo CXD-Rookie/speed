@@ -68,11 +68,11 @@ class Tracking {
     this.trackEvent("登录注册", "login_failure", "errorCode", errorCode);
   }
 
-  trackBoostStart(value) {
-    this.trackEvent("加速", "boost_start", `entrance=${value}`);
+  trackBoostStart(value, firstVisit) {
+    this.trackEvent("加速", "boost_start", `entrance=${value};firstVisit=${firstVisit}`);
   }
 
-  trackBoostSuccess(gameName, region, node) {
+  trackBoostSuccess(gameName, region, node, firstVisit) {
     this.trackEvent(
       "加速",
       "boost_success",
