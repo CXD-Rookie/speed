@@ -118,10 +118,11 @@ const Layouts: React.FC = () => {
         await stopProcessReset(), // 初始化调用停止加速
         await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
       ]);
+      console.log(data?.data?.list);
       
       (window as any).NativeApi_AsynchronousRequest(
         "SetGameData",
-        JSON.stringify({ list: list?.data ?? [] }),
+        JSON.stringify({ list: data?.data?.list ?? [] }),
         () => {}
       );
 
