@@ -139,7 +139,13 @@ const CurrencyExchange: React.FC = (props) => {
       });
 
       if (res?.error === 0) {
-        tracking.trackRedemption(`category=${""};code=${currencyCode}`);
+        const data = res?.data?.redeem_code;
+        const category = data?.type === 1 ? "member" : "discount";
+        const content = data?.name;
+
+        tracking.trackRedemption(
+          `category=${category};code=${currencyCode};content=${content}`
+        );
         setCurrencyState("");
         dispatch(setDrawVipActive({ open: true, value: res?.data ?? {} })); // 领取兑换码弹窗
         fetchRecords();
