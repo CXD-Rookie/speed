@@ -731,8 +731,8 @@ const Layouts: React.FC = () => {
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
         // (window as any).invokeLocalScan([
-        //     { name: "英雄联盟国服", path: "steam.ext" },
-        //     { name: "星际争霸2国服", path: "steam.ext" },
+        //     { name: "地下城与勇士国服", path: "steam.ext" },
+        //     { name: "永劫无间（国际服）", path: "steam.ext" },
         //   ]);
         (window as any).NativeApi_RenderComplete();
       }, 1000);
