@@ -482,9 +482,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               ? JSON.parse(responseObj?.restful)
               : {}; // 解析内部 restful
 
-            console.log(restfulObj); // { port: 57499, version: "1.0.0.1" }
+            console.log(
+              restfulObj,
+              responseObj?.status === 0,
+              responseObj?.status
+            ); // { port: 57499, version: "1.0.0.1" }
             // 检查是否有 restful 字段，并解析为 JSON
-            if (restfulObj?.status === 0) {
+            if (responseObj?.status === 0) {
               // 检查解析后的 restfulData 是否包含 port
               if (restfulObj?.port) {
                 const url = `http://127.0.0.1:${restfulObj.port}/start`; // 拼接 URL
