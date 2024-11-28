@@ -68,7 +68,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
         (currentGameServer || []).filter(
           (item: any) => selectRegion?.fu && selectRegion?.fu === item?.qu
         )?.[0] || {}; // 初始化判断是否有选中的多级区服
-
+      
       setExpandedPanels(expand);
     }
   }, [value]);
@@ -138,6 +138,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
       <Button
         type="primary"
         className="region-start-button"
+        disabled={!selectRegion?.qu}
         onClick={async () => {
           setIsClicking(true);
 

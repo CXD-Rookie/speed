@@ -49,14 +49,12 @@ const GameDetail: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  // const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const iniliteChart = useSelector((state: any) => state.auth.accelerateChart); // 存储的游戏详情图表数据
   
   const historyContext: any = useHistoryContext();
   const {
     identifyAccelerationData,
     removeGameList,
-    // forceStopAcceleration,
   } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -95,12 +93,7 @@ const GameDetail: React.FC = () => {
 
   // 打开区服节点弹窗
   const showModal = async () => {
-    // let shelves = await checkShelves(detailData);
     let data = { ...detailData };
-
-    // // 判断是否当前游戏下架
-    // if (shelves?.state) return;
-    // if (shelves?.data) data = shelves?.data;
     
     setDetailData(data);
     setIsModalVisible(true);

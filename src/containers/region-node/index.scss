@@ -179,9 +179,27 @@
       border-radius: 3.3vh;
       bottom: 0;
       left: calc(50% - 9.25vw);
+      opacity: 0.2;
+      cursor: default;
 
-      &:hover, &:active {
-        background-color: #F86C34;
+      &:hover {
+        color: #fff;
+        background-color: #FF7741;
+      }
+
+      &:active {
+        color: #fff;
+        background: #f86c34;
+      }
+
+      &:enabled {
+        opacity: 1;
+        background: #f86c34;
+        cursor: pointer;
+
+        &:hover, &:active {
+          cursor: pointer;
+        }
       }
     }
 
