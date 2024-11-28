@@ -14,11 +14,12 @@ import { AnyAction } from "redux";
 import { setEnterSign } from "@/redux/actions/search-enter";
 import { fetchSearchResults } from "@/redux/actions/search";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
+
 import "./index.scss";
+import eventBus from "@/api/eventBus";
 
 import rightArrowIcon from "@/assets/images/common/right-search-arrow.svg";
 import searchIcon from "@/assets/images/common/search.svg";
-import eventBus from "@/api/eventBus";
 
 type RootState = {
   search: {

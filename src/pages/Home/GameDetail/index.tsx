@@ -49,14 +49,12 @@ const GameDetail: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  // const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const iniliteChart = useSelector((state: any) => state.auth.accelerateChart); // 存储的游戏详情图表数据
   
   const historyContext: any = useHistoryContext();
   const {
     identifyAccelerationData,
     removeGameList,
-    // forceStopAcceleration,
   } = useGamesInitialize();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -95,12 +93,7 @@ const GameDetail: React.FC = () => {
 
   // 打开区服节点弹窗
   const showModal = async () => {
-    // let shelves = await checkShelves(detailData);
     let data = { ...detailData };
-
-    // // 判断是否当前游戏下架
-    // if (shelves?.state) return;
-    // if (shelves?.data) data = shelves?.data;
     
     setDetailData(data);
     setIsModalVisible(true);
@@ -127,7 +120,9 @@ const GameDetail: React.FC = () => {
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
-        tracking.trackBoostDisconnectManual("手动停止加速");
+        tracking.trackBoostDisconnectManual(
+          historyContext?.accelerateTime?.count
+        );
         historyContext?.accelerateTime?.stopTimer();
 
         if ((window as any).stopDelayTimer) {

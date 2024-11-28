@@ -25,11 +25,11 @@ import BaseRadio from "@/components/base-radio";
 import tracking from "@/common/tracking";
 import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
-import fixImg from "@/assets/images/fixUtils/fix@2x.png";
-import fixImg_3 from "@/assets/images/fixUtils/fix3@2x.png";
-import fixImg_6 from "@/assets/images/fixUtils/fix6@2x.png";
-import fixImg_success from "@/assets/images/fixUtils/fix_success@2x.png";
-import fix_failure from "@/assets/images/fixUtils/fix_failure@2x.png";
+import fixImg from "@/assets/images/fix-utils/fix@2x.png";
+import fixImg_3 from "@/assets/images/fix-utils/fix3@2x.png";
+import fixImg_6 from "@/assets/images/fix-utils/fix6@2x.png";
+import fixImg_success from "@/assets/images/fix-utils/fix_success@2x.png";
+import fix_failure from "@/assets/images/fix-utils/fix_failure@2x.png";
 import loginApi from "@/api/login";
 
 const { TabPane } = Tabs;
@@ -158,7 +158,6 @@ const SettingsModal: React.FC = (props) => {
       jsonString,
       async function (response: any) {
         console.log(response, "----------------------------------");
-        tracking.trackBoostDisconnectManual("手动停止加速");
         let list = (await removeGameList("initialize")) || []; // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
 

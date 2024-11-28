@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { validityPeriod } from "../currency-exchange/utils";
 import { nodeDebounce } from "@/common/utils";
 
-import tracking from "@/common/tracking";
 import eventBus from '../../api/eventBus'; 
 import "./index.scss";
 import PayErrorModal from "../pay-error";
