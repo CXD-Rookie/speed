@@ -24,7 +24,7 @@ class Tracking {
               : "youXia"
             : 0; // 手机登录 | 游侠登录 | 未登录
         const isReal = localStorage.getItem("isRealName") === "0" ? 1 : 0 // 实名认证 0 未认证 1 认证
-        const webVersion = process.env.REACT_APP;
+        const webVersion = process.env.REACT_APP_VERSION;
         const clientVersion = window.versionNowRef;
 
         localStorage.setItem("activeTime", String(timeLock));
@@ -91,7 +91,7 @@ class Tracking {
   }
 
   trackBoostDisconnectPassive(reason) {
-    this.trackEvent("加速", "boost_disconnect_passive", reason, reason);
+    this.trackEvent("加速", "boost_disconnect_passive", reason);
   }
 
   trackPurchasePageShow(value) {

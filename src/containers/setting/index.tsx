@@ -158,7 +158,6 @@ const SettingsModal: React.FC = (props) => {
       jsonString,
       async function (response: any) {
         console.log(response, "----------------------------------");
-        tracking.trackBoostDisconnectManual("手动停止加速");
         let list = (await removeGameList("initialize")) || []; // 更新我的游戏
         historyContext?.accelerateTime?.stopTimer();
 
