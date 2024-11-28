@@ -11,7 +11,6 @@ import React, { Fragment } from "react";
 import { Modal } from "antd";
 
 import "./index.scss";
-// import realErrorIcon from "@/assets/images/common/real_error.svg";
 import realErrorQuan from "@/assets/images/common/real_error_quan.svg";
 
 interface SettingsModalProps {

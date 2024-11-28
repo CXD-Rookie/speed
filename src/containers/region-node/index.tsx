@@ -7,7 +7,6 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
-import tracking from "@/common/tracking";
 import CustomRegion from "./region";
 import CustomNode from "./node";
 import BreakConfirmModal from "../break-confirm";
