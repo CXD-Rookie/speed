@@ -33,6 +33,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "sass": "^1.75.0",
+    "shelljs": "^0.8.5",
     "terser-webpack-plugin": "^5.3.10",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
@@ -40,9 +41,10 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
+    "generate-env": "node generate-env.js",
     "build": "react-app-rewired build",
-    "build:dev": "dotenv -e .env.development react-app-rewired build",
-    "build:pro": "dotenv -e .env.production react-app-rewired build",
+    "build:dev": "yarn generate-env && dotenv -e .env.development react-app-rewired build",
+    "build:pro": "yarn generate-env && dotenv -e .env.production react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
