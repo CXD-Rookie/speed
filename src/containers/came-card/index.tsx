@@ -652,15 +652,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (accountInfo?.isLogin) {
         const latestAccountInfo = store.getState().accountInfo; // 登录信息
         const find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
-
+        const isLockArea = option?.is_lockout_area; // 是否锁区
         // 当前历史选择区服
         const selectRegion = option?.serverNode?.selectRegion;
 
-        // 是否是第一次加速弹窗区服节点
-        if (!selectRegion) {
-          setIsOpenRegion(true);
-          setSelectAccelerateOption(option);
-          return;
+        if (isLockArea) {
+          // 是否是第一次加速弹窗区服节点
+          if (!selectRegion) {
+            setIsOpenRegion(true);
+            setSelectAccelerateOption(option);
+            return;
+          }
         }
 
         // 是否有加速中的游戏
