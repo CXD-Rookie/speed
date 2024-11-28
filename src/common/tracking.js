@@ -26,7 +26,8 @@ class Tracking {
         const isReal = localStorage.getItem("isRealName") === "0" ? 1 : 0 // 实名认证 0 未认证 1 认证
         const webVersion = process.env.REACT_APP_VERSION;
         const clientVersion = window.versionNowRef;
-
+        console.log(webVersion);
+        
         localStorage.setItem("activeTime", String(timeLock));
         this.trackEvent(
           "活跃",
