@@ -8,8 +8,10 @@
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
  */
 import { useHandleUserInfo } from "./useHandleUserInfo";
+
 import gameApi from "@/api/gamelist";
 import eventBus from "@/api/eventBus";
+import playSuitApi from "@/api/speed";
 
 export const useGamesInitialize = () => {
   const { handleUserInfo } = useHandleUserInfo();
@@ -189,6 +191,30 @@ export const useGamesInitialize = () => {
     }
   }
 
+  // 获取每个区服的子区服列表
+  const handleSubRegions = async (event) => {
+    try {
+      let res = await playSuitApi.playSuitInfo({
+        system_id: 3,
+        gid: event?.id,
+      });
+      let data = res?.data || [];
+
+      if (!(event?.is_lockout_area && data?.length > 0)) {
+        data.unshift({
+          fu: "",
+          qu: "智能匹配",
+          gid: event?.id,
+          system_id: 3,
+        });
+      }
+
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const checkGameisFree = async (option, type) => {
     try {
       let data = [];
@@ -201,8 +227,30 @@ export const useGamesInitialize = () => {
       }
 
       const result = data.filter(item => item?.id === option?.id)?.[0] || { ...option }
+      
+      if (!result?.is_lockout_area && !option?.serverNode?.selectRegion) {
+        const list = await handleSubRegions(); // 获取区服列表接口
+
+        let suit =
+          result?.playsuit === 2 // 当前游戏是否是国服游戏
+            ? "国服"
+            : list?.length > 1
+              ? "全部" // "智能匹配"
+              : "国际服"; // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
+        
+        result.serverNode = {
+          ...result.serverNode,
+          selectRegion: {
+            fu: "",
+            qu: "智能匹配",
+            is_select: false, // 是否选择当前区服
+            suit
+          }
+        }
+      }
+      
       const return_result = {
-        ...option,
+        ...result,
         tags: result?.tags,
         free_time: result?.free_time
       };

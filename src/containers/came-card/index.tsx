@@ -652,15 +652,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (accountInfo?.isLogin) {
         const latestAccountInfo = store.getState().accountInfo; // 登录信息
         const find_accel = identifyAccelerationData(); // 查找是否有已加速的信息
-
+        const isLockArea = option?.is_lockout_area; // 是否锁区
         // 当前历史选择区服
         const selectRegion = option?.serverNode?.selectRegion;
-
-        // 是否是第一次加速弹窗区服节点
-        if (!selectRegion) {
-          setIsOpenRegion(true);
-          setSelectAccelerateOption(option);
-          return;
+        
+        if (isLockArea) {
+          // 是否是第一次加速弹窗区服节点
+          if (!selectRegion) {
+            setIsOpenRegion(true);
+            setSelectAccelerateOption(option);
+            return;
+          }
         }
 
         // 是否有加速中的游戏
@@ -675,8 +677,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         if (latestAccountInfo) {
           const userInfo = latestAccountInfo?.userInfo; // 用户信息
           const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
-          // let time = new Date().getTime() / 1000;
-          // let renewalTime = Number(localStorage.getItem("renewalTime")) || 0;
 
           // 是否实名认证 isRealNamel === "1" 是
           // 是否是未成年 is_adult
@@ -709,18 +709,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             stopAnimation(); // 停止加速动画
             return;
           }
-
-          // 是否提醒续费快到期 注释原因：现在免费领取会员时间由30天改为3天防止打开主程序就弹出
-          // else if (
-          //   userInfo?.is_vip &&
-          //   time - renewalTime > 86400 &&
-          //   userInfo?.vip_expiration_time - time <= 86400
-          // ) {
-          //   stopAnimation();
-          //   setRenewalOpen(true);
-          //   localStorage.setItem("renewalTime", String(time));
-          //   return;
-          // }
 
           setIsAllowAcceleration(false); // 禁用立即加速
           setIsAllowShowAccelerating(false); // 禁用显示加速中
