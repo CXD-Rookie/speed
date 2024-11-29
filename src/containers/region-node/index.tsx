@@ -225,12 +225,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     };
 
     // 初始化获取所有的加速服务器列表
-    const fetchAllSpeedList = async (keys: any = [], selectQu: any) => {
+    const fetchAllSpeedList = async (keys: any = [], selectQu: any, data: any) => {
       try {
         let res = await playSuitApi.playSpeedList({
           platform: 3,
         });
         const select = open ? selectRegion?.qu : selectQu;
+        const isLock = data?.is_lockout_area;
         const filtration: any = {
           港服: "js-hongkong-",
           日服: "js-japan-",
@@ -242,11 +243,11 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             (value?.playsuits || []).some((item: any) =>
               keys.includes(String(item))
             ) &&
-            (filtration?.[select]
+            (filtration?.[select] && isLock
               ? value?.addr.includes(filtration?.[select])
               : true)
         );
-        console.log(nodes, keys, select);
+        console.log(nodes, isLock, data);
         
         const updatedNodes = await Promise.all(
           nodes.map(async (node: any) => {
@@ -328,7 +329,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       }
 
       let suit = await fetchPlaysuit(option?.suit, data);
-      let all: any = (await fetchAllSpeedList(suit, open ? null : option?.qu)) || []; // 获取节点列表
+      let all: any =
+        (await fetchAllSpeedList(
+          suit,
+          open ? null : option?.qu,
+          open ? data : event
+        )) || []; // 获取节点列表
       
       all.unshift({
         ...all?.[0],
