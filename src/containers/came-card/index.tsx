@@ -366,7 +366,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     try {
       // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
       const boost = localStorage.getItem("isBoostStart");
-      console.log(option);
       
       tracking.trackBoostStart(
         option.track === "result" ? "searchPage" : option.track,
@@ -747,7 +746,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           if (!isLockArea && !selectRegion) {
             data = (await renderHistoryAreaSuit(data))?.data;
           }
-          console.log(data);
           
           setSelectAccelerateOption(data);
           accelerateProcessing(data);
