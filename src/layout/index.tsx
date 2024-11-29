@@ -368,10 +368,8 @@ const Layouts: React.FC = () => {
       setTimeout(() => {
         // 标记弹窗已展示
         if (!first_renewed && first_purchase) {
-          tracking.trackPurchaseFirstBuy();
           dispatch(setFirstPayRP({ open: true, type: 2 }));
         } else if (!first_purchase && first_renewed) {
-          tracking.trackPurchaseFirstShow();
           dispatch(setFirstPayRP({ open: true, type: 3 }));
         }
         localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());

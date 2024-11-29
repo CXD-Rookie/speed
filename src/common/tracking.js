@@ -106,13 +106,13 @@ class Tracking {
   trackPurchaseSuccess(buyCount) {
     this.trackEvent("付费页", "purchase_success", buyCount);
   }
-
+  
   trackPurchaseFirstBuy() {
-    this.trackEvent("活动页", "banner_firstBuy_show");
+    this.trackEvent("活动页", "banner_firstBuy_show", null, null);
   }
 
   trackPurchaseFirstShow() {
-    this.trackEvent("活动页", "banner_firstReneWal_show");
+    this.trackEvent("活动页", "banner_firstReneWal_show", null, null);
   }
 
   trackPurchaseFirstBuySuccess() {
