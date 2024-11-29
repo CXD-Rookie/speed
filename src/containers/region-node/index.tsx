@@ -333,7 +333,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         (await fetchAllSpeedList(
           suit,
           open ? null : option?.qu,
-          open ? data : event
+          open ? presentGameData : event
         )) || []; // 获取节点列表
       
       all.unshift({
