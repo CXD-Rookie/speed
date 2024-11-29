@@ -2,6 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('shelljs');
 
+// 切换到 dev 分支
+exec('git checkout dev', { silent: true });
+
+if (currentTag === '') {
+  // 如果没有标签，则可能使用commit hash作为版本标识
+  currentTag = exec('git rev-parse --short HEAD', { silent: true }).stdout.trim();
+}
+
 // 获取当前Git标签
 let currentTag = exec('git describe --tags --abbrev=0', { silent: true }).stdout.trim();
 
