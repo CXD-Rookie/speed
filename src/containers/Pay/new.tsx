@@ -196,11 +196,11 @@ const PayModal: React.FC = (props) => {
           }
 
           if (status === 2) {
-            const goods = res?.data?.pay_type;
+            const goods = res?.data?.type;
             const buy = firstAuth.firstAuth.first_purchase ? 1 : 2;
             const foreground = localStorage.getItem("isBuyFirstVisit");
             const firstVisit = foreground === "1" ? 0 : 1;
-
+            
             tracking.trackPurchaseSuccess(
               `goods=${goods};buy=${buy};firstVisit=${firstVisit}`
             );
