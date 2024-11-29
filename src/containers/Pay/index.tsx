@@ -335,14 +335,14 @@ const PayModal: React.FC = (props) => {
           }
 
           if (status === 2) {
-            const goods = res?.data?.pay_type;
+            const goods = res?.data?.type;
             const buy = purchaseState === "purchase" ? 1 : 2;
             const coupon = activeCoupon?.redeem_code?.content;
             const foreground = localStorage.getItem("isBuyFirstVisit");
             const firstVisit = foreground === "1" ? 0 : 1;
             tracking.trackPurchaseSuccess(
               `goods=${goods};buy=${buy}${
-                coupon ? ";discount" + coupon : ""
+                coupon ? ";discount=" + coupon : ""
               };firstVisit=${firstVisit}`
             );
 

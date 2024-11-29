@@ -77,7 +77,6 @@ const Home: React.FC = () => {
       if (type === "1") {
         dispatch(setDrawVipActive({ open: true })); // 领取兑换码弹窗
       } else {
-        type === 2 ? tracking.trackPurchaseFirstBuy() : tracking.trackPurchaseFirstShow();
         dispatch(setFirstPayRP({ open: true, type: Number(type) }));
       }
     } else {

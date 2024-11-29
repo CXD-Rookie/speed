@@ -41,6 +41,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       getGameList,
       identifyAccelerationData,
       removeGameList,
+      renderHistoryAreaSuit,
     } = useGamesInitialize();
 
     const historyContext: any = useHistoryContext();
@@ -230,7 +231,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           platform: 3,
         });
         const filtration: any = {
-          港服: "js-shanghai-",
+          港服: "js-hongkong-",
           日服: "js-japan-",
           新加坡服: "js-singapore-",
           东南亚服: "js-singapore-",
@@ -511,10 +512,11 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     useEffect(() => {
       const iniliteFun = async () => {
         setActiveTab("region"); // 初始化设置tabs为区服
-        const list = await handleSubRegions(); // 获取区服列表接口
+        const { area_suit, data } = await renderHistoryAreaSuit(options) as any;
 
-        setPresentGameInfo(options); // 更新当前游戏信息
-        generateRSuit(options, {}, list); // 存储当前选中区服
+        setSelectRegion(data?.serverNode?.selectRegion); // 更新选中区服
+        setCurrentGameServer(area_suit); // 更新当前游戏信息
+        setPresentGameInfo(data); // 更新当前游戏信息
       };
 
       if (open) {

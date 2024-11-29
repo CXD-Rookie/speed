@@ -82,7 +82,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     checkGameisFree,
     checkShelves,
     appendGameToList,
+    renderHistoryAreaSuit,
   } = useGamesInitialize();
+
   const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [isOpenRegion, setIsOpenRegion] = useState(false); // 是否是打开选择区服节点
 
@@ -655,14 +657,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const isLockArea = option?.is_lockout_area; // 是否锁区
         // 当前历史选择区服
         const selectRegion = option?.serverNode?.selectRegion;
-        
-        if (isLockArea) {
-          // 是否是第一次加速弹窗区服节点
-          if (!selectRegion) {
-            setIsOpenRegion(true);
-            setSelectAccelerateOption(option);
-            return;
-          }
+
+        // 锁区 是否是第一次加速弹窗区服节点
+        if (isLockArea && !selectRegion) {
+          setIsOpenRegion(true);
+          setSelectAccelerateOption(option);
+          return;
         }
 
         // 是否有加速中的游戏
@@ -741,6 +741,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             return;
           }
 
+          // 如果不是锁区的情况下
+          if (!isLockArea && !selectRegion) {
+            data = (await renderHistoryAreaSuit(data))?.data;
+          }
+          console.log(data);
+          
           setSelectAccelerateOption(data);
           accelerateProcessing(data);
         } else {

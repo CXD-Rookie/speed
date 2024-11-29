@@ -13,7 +13,6 @@ const DisoverVersion: React.FC = () => {
   const dispatch = useDispatch();
 
   const [version, setVersion] = useState<any>({});
-  const [note, setNote] = useState([]);
 
   // 进行关闭弹窗操作
   const onCancel = () => {
@@ -29,9 +28,7 @@ const DisoverVersion: React.FC = () => {
   useEffect(() => {
     if (open) {
       const version = JSON.parse(localStorage.getItem("version") ?? JSON.stringify({}));
-      const note = version?.note.split("；");
       
-      setNote(note);
       setVersion(version);
     }
   }, [open]);

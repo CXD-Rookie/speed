@@ -368,10 +368,8 @@ const Layouts: React.FC = () => {
       setTimeout(() => {
         // 标记弹窗已展示
         if (!first_renewed && first_purchase) {
-          tracking.trackPurchaseFirstBuy();
           dispatch(setFirstPayRP({ open: true, type: 2 }));
         } else if (!first_purchase && first_renewed) {
-          tracking.trackPurchaseFirstShow();
           dispatch(setFirstPayRP({ open: true, type: 3 }));
         }
         localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
@@ -566,10 +564,14 @@ const Layouts: React.FC = () => {
               dispatch(setAccountInfo(user_info, true, false));
 
               if (isNewUser) {
-                dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
                 tracking.trackSignUpSuccess("youXia");
-              } else if ([2, 3].includes(Number(bind_type))) {
+              } else {
                 tracking.trackLoginSuccess("youXia");
+              }
+
+              if (isNewUser) {
+                dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
+              } else if ([2, 3].includes(Number(bind_type))) {
                 dispatch(
                   setMinorState({
                     open: true,
