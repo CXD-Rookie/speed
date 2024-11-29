@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('shelljs');
 
+exec('git fetch --tags', { silent: true })
+
 // 获取所有标签并排序
 let tagsOutput = exec('git tag -l --sort=-creatordate', { silent: true }).stdout;
 
