@@ -76,7 +76,11 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
   return (
     <div className="content">
       <div className="current-box">
-        {value?.name} | {selectRegion?.qu} | {selectNode?.name || "智能节点"}
+        {value?.name}{" "}
+        {(selectRegion?.qu &&
+          " | " + selectRegion?.qu + " | " + (selectNode?.name ||
+          "智能节点")) }
+        {} {}
       </div>
       <div className="region-buttons">
         {currentGameServer?.length > 0 &&
