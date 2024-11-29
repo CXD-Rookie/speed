@@ -32,7 +32,7 @@ class Tracking {
         this.trackEvent(
           "活跃",
           "active_foreground",
-          `firstVisit=${isVisit};method=${method};${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`
+          `firstVisit=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`
         );
       }
     });
