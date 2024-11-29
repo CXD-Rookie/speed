@@ -230,7 +230,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           platform: 3,
         });
         const filtration: any = {
-          港服: "js-shanghai-",
+          港服: "js-hongkong-",
           日服: "js-japan-",
           新加坡服: "js-singapore-",
           东南亚服: "js-singapore-",
