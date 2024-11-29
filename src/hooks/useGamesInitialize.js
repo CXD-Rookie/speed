@@ -191,29 +191,88 @@ export const useGamesInitialize = () => {
     }
   }
 
-  // 获取每个区服的子区服列表
-  const handleSubRegions = async (event) => {
+  // 调用区服接口获取区服信息
+  const fetchCallAreaService = async (gid) => {
     try {
-      let res = await playSuitApi.playSuitInfo({
+      const res = await playSuitApi.playSuitInfo({
         system_id: 3,
-        gid: event?.id,
+        gid,
       });
-      let data = res?.data || [];
-
-      if (!(event?.is_lockout_area && data?.length > 0)) {
-        data.unshift({
-          fu: "",
-          qu: "智能匹配",
-          gid: event?.id,
-          system_id: 3,
-        });
-      }
+      const data = res?.data || []; // 接口原始数据
 
       return data;
     } catch (error) {
       console.log(error);
     }
-  };
+  }
+
+  // 生成历史区服 参数 游戏详情数据 选中的区服
+  const renderHistoryAreaSuit = async (option, current = {}) => {
+    try {
+      let list = (await fetchCallAreaService(option?.id)) ?? [];
+      let renderList = [...list]
+
+      // 除了锁区游戏并且游戏区服大于0的游戏
+      if (!(option?.is_lockout_area && list?.length > 0)) {
+        renderList.unshift({
+          fu: "",
+          qu: "智能匹配",
+          gid: option?.id,
+          system_id: 3,
+        });
+      }
+      
+      let suit = "全部";
+      let region = option?.serverNode?.selectRegion; // 历史存储区服
+
+      // 当前游戏是否是国服游戏
+      // 当前游戏是国际服并且没有区服
+      // 当前游戏不是智能匹配
+      if (option?.playsuit === 2) {
+        suit = "国服"
+      } else if (option?.playsuit === 1 && list?.length < 1) {
+        suit = "国际服"
+      } else if (current?.qu && current?.qu !== "智能匹配") {
+        suit = current?.qu
+      }
+      console.log(current, suit);
+      
+      let selectRegion = {
+        fu: "",
+        qu: "智能匹配",
+        is_select: true, // 是否选择当前区服
+        suit
+      }
+
+      if (
+        option?.is_lockout_area &&
+        list?.length > 0
+      ) {
+        selectRegion = {}
+      } else if (current?.qu) {
+        selectRegion = {
+          ...current,
+          suit
+        }
+      }
+
+      const serverNode = {
+        ...(option?.serverNode || {}),
+        selectRegion: region ? region : selectRegion
+      }
+      console.log(serverNode);
+      
+      return {
+        area_suit: renderList, // 区服
+        data: {
+          ...option,
+          serverNode
+        } // 游戏信息
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const checkGameisFree = async (option, type) => {
     try {
@@ -227,27 +286,6 @@ export const useGamesInitialize = () => {
       }
 
       const result = data.filter(item => item?.id === option?.id)?.[0] || { ...option }
-      
-      if (!result?.is_lockout_area && !option?.serverNode?.selectRegion) {
-        const list = await handleSubRegions(); // 获取区服列表接口
-
-        let suit =
-          result?.playsuit === 2 // 当前游戏是否是国服游戏
-            ? "国服"
-            : list?.length > 1
-              ? "全部" // "智能匹配"
-              : "国际服"; // 智能匹配在此游戏是国服游戏时传值国服，其他查询全部
-        
-        result.serverNode = {
-          ...result.serverNode,
-          selectRegion: {
-            fu: "",
-            qu: "智能匹配",
-            is_select: false, // 是否选择当前区服
-            suit
-          }
-        }
-      }
       
       const return_result = {
         ...result,
@@ -340,6 +378,7 @@ export const useGamesInitialize = () => {
     forceStopAcceleration,
     checkGameisFree,
     checkShelves,
-    passiveAddition
+    passiveAddition,
+    renderHistoryAreaSuit,
   };
 };
