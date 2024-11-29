@@ -225,11 +225,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     };
 
     // 初始化获取所有的加速服务器列表
-    const fetchAllSpeedList = async (keys: any = []) => {
+    const fetchAllSpeedList = async (keys: any = [], selectQu: any, data: any) => {
       try {
         let res = await playSuitApi.playSpeedList({
           platform: 3,
         });
+        const select = open ? selectRegion?.qu : selectQu;
+        const isLock = data?.is_lockout_area;
         const filtration: any = {
           港服: "js-hongkong-",
           日服: "js-japan-",
@@ -240,11 +242,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           (value: any) =>
             (value?.playsuits || []).some((item: any) =>
               keys.includes(String(item))
-            ) && (filtration?.[selectRegion?.qu]
-            ? value?.addr.includes(filtration?.[selectRegion?.qu])
-            : true)
+            ) &&
+            (filtration?.[select] && isLock
+              ? value?.addr.includes(filtration?.[select])
+              : true)
         );
-        console.log(nodes, keys);
+        console.log(nodes, isLock, data);
+        
         const updatedNodes = await Promise.all(
           nodes.map(async (node: any) => {
             try {
@@ -325,7 +329,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       }
 
       let suit = await fetchPlaysuit(option?.suit, data);
-      let all: any = (await fetchAllSpeedList(suit)) || []; // 获取节点列表
+      let all: any =
+        (await fetchAllSpeedList(
+          suit,
+          open ? null : option?.qu,
+          open ? data : event
+        )) || []; // 获取节点列表
       
       all.unshift({
         ...all?.[0],
@@ -376,6 +385,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       regionList: any = [] // regionList 当前游戏有多少区服
     ) => {
       let region = data?.serverNode?.selectRegion; // 历史存储区服
+      console.log(data, current);
       
       let suit =
         data?.playsuit === 2 // 当前游戏是否是国服游戏
@@ -391,7 +401,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           suit:
             data?.playsuit === 2 // 当前游戏是否是国服游戏
               ? "国服"
-              : regionList?.length <= 1 
+              : regionList?.length < 1 
                 ? "国际服" 
                 : current?.qu === "智能匹配" 
                 ? "全部" 
@@ -399,7 +409,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         };
       } else {
         // 如果没有存储历史区服
-        if (!region) {
+        if (!region?.qu) {
           // 如果是锁区并且锁区的游戏本身存在区服并且这个区服第一个不是智能区服
           if (
             data?.is_lockout_area &&
@@ -412,6 +422,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           }
         }
       }
+      console.log(region);
       
       setSelectRegion(region);
     };
@@ -447,12 +458,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
 
     const fastestNode = async (value: any, option: any) => {
       let nodes: any = [];
-      console.log(value, option);
       
       if (option?.isNode || (!option?.isNode && !option?.isAuto)) {
         const allNodes = await buildNodeList(value, option);
         const node = allNodes?.[0];
-        console.log(allNodes);
         
         nodes = await updateGamesDom(node, option);
         option.serverNode.nodeHistory = nodes;

@@ -113,6 +113,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       ...selectAccelerateOption,
       is_accelerate:
         list?.is_accelerate ?? selectAccelerateOption?.is_accelerate,
+      track: locationType,
     });
     triggerDataUpdate(); // 更新显示数据
 
@@ -745,7 +746,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           if (!isLockArea && !selectRegion) {
             data = (await renderHistoryAreaSuit(data))?.data;
           }
-          console.log(data);
           
           setSelectAccelerateOption(data);
           accelerateProcessing(data);
@@ -909,7 +909,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     className="add-img"
                     src={addThemeIcon}
                     alt=""
-                    onClick={(event) => handleAddGame(event, option)}
+                    onClick={(event) =>
+                      handleAddGame(event, { ...option, track: locationType })
+                    }
                   />
                 )}
                 {!isSearchR && (

@@ -207,9 +207,9 @@ export const useGamesInitialize = () => {
   }
 
   // 生成历史区服 参数 游戏详情数据 选中的区服
-  const renderHistoryAreaSuit = async (option, current = {}) => {
+  const renderHistoryAreaSuit = async (option, current = {}, area) => {
     try {
-      let list = (await fetchCallAreaService(option?.id)) ?? [];
+      let list = area ? area : (await fetchCallAreaService(option?.id)) ?? [];
       let renderList = [...list]
 
       // 除了锁区游戏并且游戏区服大于0的游戏
@@ -235,7 +235,6 @@ export const useGamesInitialize = () => {
       } else if (current?.qu && current?.qu !== "智能匹配") {
         suit = current?.qu
       }
-      console.log(current, suit);
       
       let selectRegion = {
         fu: "",
@@ -256,6 +255,7 @@ export const useGamesInitialize = () => {
         }
       }
 
+      console.log(selectRegion);
       const serverNode = {
         ...(option?.serverNode || {}),
         selectRegion: region ? region : selectRegion

@@ -263,7 +263,6 @@ const GameDetail: React.FC = () => {
     let storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
     let assemble = storage ? JSON.parse(storage) : []; // 解析存储游戏id 平台列表
     let hitGame = assemble.find((item: any) => item?.id === data?.id); // 当前游戏的启动信息
-    console.log(hitGame);
 
     // 如果是手动点击启动，防止捕获
     if (event) {
@@ -358,7 +357,7 @@ const GameDetail: React.FC = () => {
       }
 
       fetchAddrDelay(server?.node); // 调用客户端获取延迟方法
-      setDetailData(accel); // 更新游戏详情信息
+      setDetailData({ ...accel, track: "detailPage" }); // 更新游戏详情信息
       historyContext?.accelerateTime?.startTimer(); // 调用详情加速计时器
       setRegionNode(iniliteDomName(server)); // 更新区服节点展示
 
