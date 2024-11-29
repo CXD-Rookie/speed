@@ -113,7 +113,7 @@ const Active: React.FC = (props) => {
           </span>
         </p>
         {/* 如果领取弹窗是通过兑换码弹出的，那么在兑换类型为时间兑换码，也就是 type = 1时不展示 */}
-        {value?.type !== 1 && (
+        {value?.type && value?.type !== 1 && (
           <h6>
             {!isApproximatelyThirtyYearsApart(currencyInfo?.vip_time) &&
               "有效期至" + formatDate(currencyInfo?.vip_time || 0)}
