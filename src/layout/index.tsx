@@ -566,10 +566,14 @@ const Layouts: React.FC = () => {
               dispatch(setAccountInfo(user_info, true, false));
 
               if (isNewUser) {
-                dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
                 tracking.trackSignUpSuccess("youXia");
-              } else if ([2, 3].includes(Number(bind_type))) {
+              } else {
                 tracking.trackLoginSuccess("youXia");
+              }
+
+              if (isNewUser) {
+                dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
+              } else if ([2, 3].includes(Number(bind_type))) {
                 dispatch(
                   setMinorState({
                     open: true,
