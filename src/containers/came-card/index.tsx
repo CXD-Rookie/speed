@@ -113,6 +113,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       ...selectAccelerateOption,
       is_accelerate:
         list?.is_accelerate ?? selectAccelerateOption?.is_accelerate,
+      track: locationType,
     });
     triggerDataUpdate(); // 更新显示数据
 
@@ -365,6 +366,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     try {
       // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
       const boost = localStorage.getItem("isBoostStart");
+      console.log(option);
       
       tracking.trackBoostStart(
         option.track === "result" ? "searchPage" : option.track,
@@ -909,7 +911,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     className="add-img"
                     src={addThemeIcon}
                     alt=""
-                    onClick={(event) => handleAddGame(event, option)}
+                    onClick={(event) =>
+                      handleAddGame(event, { ...option, track: locationType })
+                    }
                   />
                 )}
                 {!isSearchR && (
