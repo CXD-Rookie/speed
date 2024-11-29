@@ -2,22 +2,21 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('shelljs');
 
-// 切换到 dev 分支
-exec('git checkout dev', { silent: true });
+// 获取所有标签并排序
+let tagsOutput = exec('git tag -l --sort=-creatordate', { silent: true }).stdout;
 
-if (currentTag === '') {
-  // 如果没有标签，则可能使用commit hash作为版本标识
+// 将输出分割成数组
+let tagsArray = tagsOutput.trim().split('\n');
+
+// 获取当前Git标签（最新第二条）
+let currentTag = '';
+if (tagsArray.length > 1) {
+  currentTag = tagsArray[0].trim(); // 获取第二个标签
+} else {
+  // 如果没有足够的标签，则可能使用commit hash作为版本标识
   currentTag = exec('git rev-parse --short HEAD', { silent: true }).stdout.trim();
 }
-
-// 获取当前Git标签
-let currentTag = exec('git describe --tags --abbrev=0', { silent: true }).stdout.trim();
-
-if (currentTag === '') {
-  // 如果没有标签，则可能使用commit hash作为版本标识
-  currentTag = exec('git rev-parse --short HEAD', { silent: true }).stdout.trim();
-}
-
+console.log(currentTag,)
 // 定义要添加或更新的环境变量
 const newEnvVars = {
   REACT_APP_VERSION: currentTag,
