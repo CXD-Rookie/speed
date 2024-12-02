@@ -120,6 +120,8 @@ const GameDetail: React.FC = () => {
       jsonString,
       function (response: any) {
         console.log("Success response from 停止加速:", response);
+        console.log(historyContext?.accelerateTime?.count, historyContext);
+        
         tracking.trackBoostDisconnectManual(
           historyContext?.accelerateTime?.count
         );

@@ -11,7 +11,7 @@ import CustomRegion from "./region";
 import CustomNode from "./node";
 import BreakConfirmModal from "../break-confirm";
 import loadingGif from "@/assets/images/common/jiazai.gif";
-
+import tracking from "@/common/tracking";
 interface RegionNodeSelectorProps {
   open: boolean;
   type?: string;
@@ -141,6 +141,9 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         jsonString,
         function (response: any) {
           if ((window as any).stopDelayTimer) {
+            tracking.trackBoostDisconnectManual(
+              historyContext?.accelerateTime?.count
+            );
             (window as any).stopDelayTimer();
           }
 
