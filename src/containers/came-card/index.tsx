@@ -366,6 +366,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     try {
       // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
       const boost = localStorage.getItem("isBoostStart");
+      console.log(option.track);
       
       tracking.trackBoostStart(
         option.track === "result" ? "searchPage" : option.track,
@@ -770,7 +771,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const confirmStartAcceleration = async () => {
     setAccelOpen(false); // 关闭确认框
     const list = await stopAcceleration(); // 停止加速
-    handleBeforeVerify(list);
+    handleBeforeVerify({ ...list, track: locationType });
   };
 
   // 打开区服节点
