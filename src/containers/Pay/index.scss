@@ -376,7 +376,8 @@
 
         .custom-down {
           width: 31.4vw;
-          height: 27.6vh;
+          // height: 27.6vh;
+          max-height: 27.2vh;
           overflow-y: scroll;
           background-color: #3e3e4a;
           padding: 1.6vw;
