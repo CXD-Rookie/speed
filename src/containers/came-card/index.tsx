@@ -525,9 +525,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     
                     tracking.trackBoostSuccess(
                       option.name,
-                      option?.serverNode?.selectRegion?.qu +
-                        option?.serverNode?.selectRegion?.fu,
-                      option.serverNode.selectNode?.name,
                       boost === "1" ? 0 : 1
                     );
 

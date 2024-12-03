@@ -32,7 +32,8 @@ class Tracking {
         this.trackEvent(
           "活跃",
           "active_foreground",
-          `firstVisit=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`
+          `method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
+          isVisit
         );
       }
     });
@@ -72,14 +73,15 @@ class Tracking {
   }
 
   trackBoostStart(value, firstVisit) {
-    this.trackEvent("加速", "boost_start", `entrance=${value};firstVisit=${firstVisit}`);
+    this.trackEvent("加速", "boost_start", `entrance=${value}`, firstVisit);
   }
 
-  trackBoostSuccess(gameName, region, node, firstVisit) {
+  trackBoostSuccess(gameName, firstVisit) {
     this.trackEvent(
       "加速",
       "boost_success",
-      `gameName=${gameName};region=${region};node=${node};firstVisit=${firstVisit}`
+      `gameName=${gameName}`,
+      firstVisit
     );
   }
 
@@ -88,7 +90,7 @@ class Tracking {
   }
  
   trackBoostDisconnectManual(time) {
-    this.trackEvent("加速", "boost_disconnect_manual", `time=${time}`);
+    this.trackEvent("加速", "boost_disconnect_manual");
   }
 
   trackBoostDisconnectPassive(reason) {

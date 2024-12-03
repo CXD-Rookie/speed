@@ -179,7 +179,7 @@ const Layouts: React.FC = () => {
         if (localStorage.getItem("isAccelLoading") === "1") {
           return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
         }
-
+        console.log(value);
         await stopProxy(value); // 调用停止加速
         const game = await removeGameList("initialize"); // 更新我的游戏
 

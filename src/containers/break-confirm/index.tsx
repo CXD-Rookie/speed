@@ -158,7 +158,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
     switch (noticeType) {
       case "stopAccelerate":
-        tracking.trackBoostDisconnectManual(accelerateTime?.count);
+        tracking.trackBoostDisconnectManual();
         break;
       case "serviceExpired":
         tracking.trackPurchasePageShow("boostExpiry");

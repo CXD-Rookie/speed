@@ -141,9 +141,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         jsonString,
         function (response: any) {
           if ((window as any).stopDelayTimer) {
-            tracking.trackBoostDisconnectManual(
-              historyContext?.accelerateTime?.count
-            );
+            tracking.trackBoostDisconnectManual();
             (window as any).stopDelayTimer();
           }
 
