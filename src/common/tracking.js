@@ -105,8 +105,8 @@ class Tracking {
     this.trackEvent("付费页", "purchase_failure", `errorCode=${buyCount}` );
   }
   
-  trackPurchaseSuccess(buyCount) {
-    this.trackEvent("付费页", "purchase_success", buyCount);
+  trackPurchaseSuccess (buyCount, firstVisit) {
+    this.trackEvent("付费页", "purchase_success", buyCount, firstVisit);
   }
   
   trackPurchaseFirstBuy() {

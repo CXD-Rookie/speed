@@ -342,9 +342,8 @@ const PayModal: React.FC = (props) => {
             const firstVisit = foreground === "1" ? 0 : 1;
             
             tracking.trackPurchaseSuccess(
-              `goods=${goods};buy=${buy}${
-                coupon ? ";discount=" + coupon : ""
-              };firstVisit=${firstVisit}`
+              `buy=${buy};goods=${goods}${coupon ? ";discount=" + coupon : ""}`,
+              firstVisit
             );
 
             localStorage.setItem("isBuyFirstVisit", "1");

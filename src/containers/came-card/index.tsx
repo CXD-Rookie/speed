@@ -532,19 +532,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
                     stopAcceleration();
-                    resolve({ state: false, code: restfulObj?.status });
+                    resolve({ state: false, code: responseObj?.status });
                   }
                 } catch (error) {
                   console.error("请求失败:", error);
-                  resolve({ state: false, code: restfulObj?.status }); // 请求失败，返回错误信息
+                  resolve({ state: false, code: responseObj?.status }); // 请求失败，返回错误信息
                 }
               } else {
                 console.error("端口信息缺失");
-                resolve({ state: false, code: restfulObj?.status });
+                resolve({ state: false, code: responseObj?.status });
               }
             } else {
               console.error("响应数据缺失");
-              resolve({ state: false, code: restfulObj?.status });
+              resolve({ state: false, code: responseObj?.status });
             }
           }
         );
