@@ -402,7 +402,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           suit:
             data?.playsuit === 2 // 当前游戏是否是国服游戏
               ? "国服"
-              : regionList?.length < 1 
+              : regionList?.length <= 1 
                 ? "国际服" 
                 : current?.qu === "智能匹配" 
                 ? "全部" 
