@@ -37,6 +37,8 @@ class Tracking {
         );
       }
     });
+    
+    this.trackEvent("活跃", "active_background");
 
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
