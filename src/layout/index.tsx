@@ -677,13 +677,18 @@ const Layouts: React.FC = () => {
   }, [historyContext, removeGameList]);
 
   useEffect(() => {
+    const webVersion = process.env.REACT_APP_VERSION;
+    const clientVersion = (window as any).versionNowRef;
+
     const handleGlobalError = (event: any) => {
       console.error("Global error handler:", event);
       if (
         event.message === "Network Error" ||
         (event.error && event.error.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error);
+        tracking.trackNetworkError(
+          `errorCode=${event.error};version=${clientVersion + "," + webVersion}`
+        );
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -695,7 +700,9 @@ const Layouts: React.FC = () => {
         event.reason.message === "Network Error" ||
         (event.reason && event.reason.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error);
+        tracking.trackNetworkError(
+          `errorCode=${event.error};version=${clientVersion + "," + webVersion}`
+        );
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }

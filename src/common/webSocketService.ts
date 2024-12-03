@@ -215,7 +215,7 @@ class WebSocketService {
   checkNetworkStatus() {
     window.addEventListener('offline', () => {
       console.log('Network disconnected, attempting reconnection...');
-      tracking.trackNetworkError("网络断开offline");
+      // tracking.trackNetworkError("网络断开offline");
       this.handleReconnection();
     }); 
     window.addEventListener('online', () => {

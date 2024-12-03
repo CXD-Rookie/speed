@@ -609,7 +609,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         }
 
-        if (isCheck?.pre_check_status === 0) {
+        if (isCheck?.status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
 
           if (state?.state) {
