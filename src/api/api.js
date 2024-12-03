@@ -45,14 +45,15 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   response => {
-    let code = response?.data?.error;
+    const code = response?.data?.error;
+    const url = response?.config?.url
 
     if (code > 0) {
       let errorCode = [110001];
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;
-
-      tracking.trackServerError(`errorCode=${code};version=${clientVersion + "," + webVersion}`)
+      
+      tracking.trackServerError(`errorCode=${code};version=${clientVersion + "," + webVersion};apiName=${url}`)
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
         // window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {

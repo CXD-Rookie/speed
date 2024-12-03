@@ -627,7 +627,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
-          tracking.trackBoostFailure(`client=${1}`);
+          tracking.trackBoostFailure(`client=${isCheck?.state}`);
           isPre = false;
           eventBus.emit("showModal", {
             show: true,
