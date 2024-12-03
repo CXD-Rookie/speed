@@ -73,8 +73,20 @@ const stopProxy = async (t = null) => {
   });
 };
 
+const clientStopDisconnect = (value) => {
+  if (value === 703) {
+    window.stopProcessReset();
+    eventBus.emit("showModal", { show: true, type: "serverFailure" });
+  }
+
+  if (value) {
+    tracking.trackBoostDisconnectPassive(`client=${value}`);
+  }
+}
+
 export {
   compareVersions,
   stopProxy,
-  getCouponTimeLock
+  getCouponTimeLock,
+  clientStopDisconnect
 }
