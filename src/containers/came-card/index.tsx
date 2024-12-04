@@ -366,6 +366,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     try {
       // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
       const boost = localStorage.getItem("isBoostStart");
+      console.log(option.track);
       
       tracking.trackBoostStart(
         option.track === "result" ? "searchPage" : option.track,
@@ -524,9 +525,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     
                     tracking.trackBoostSuccess(
                       option.name,
-                      option?.serverNode?.selectRegion?.qu +
-                        option?.serverNode?.selectRegion?.fu,
-                      option.serverNode.selectNode?.name,
                       boost === "1" ? 0 : 1
                     );
 
@@ -534,19 +532,19 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   } else {
                     tracking.trackBoostFailure("加速失败，检查文件合法性");
                     stopAcceleration();
-                    resolve({ state: false, code: restfulObj?.status });
+                    resolve({ state: false, code: responseObj?.status });
                   }
                 } catch (error) {
                   console.error("请求失败:", error);
-                  resolve({ state: false, code: restfulObj?.status }); // 请求失败，返回错误信息
+                  resolve({ state: false, code: responseObj?.status }); // 请求失败，返回错误信息
                 }
               } else {
                 console.error("端口信息缺失");
-                resolve({ state: false, code: restfulObj?.status });
+                resolve({ state: false, code: responseObj?.status });
               }
             } else {
               console.error("响应数据缺失");
-              resolve({ state: false, code: restfulObj?.status });
+              resolve({ state: false, code: responseObj?.status });
             }
           }
         );
@@ -611,7 +609,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         }
 
-        if (isCheck?.pre_check_status === 0) {
+        if (isCheck?.status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
 
           if (state?.state) {
@@ -629,7 +627,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
-          tracking.trackBoostFailure(`client=${1}`);
+          tracking.trackBoostFailure(`client=${isCheck?.state}`);
           isPre = false;
           eventBus.emit("showModal", {
             show: true,
@@ -770,7 +768,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const confirmStartAcceleration = async () => {
     setAccelOpen(false); // 关闭确认框
     const list = await stopAcceleration(); // 停止加速
-    handleBeforeVerify(list);
+    handleBeforeVerify({ ...list, track: locationType });
   };
 
   // 打开区服节点

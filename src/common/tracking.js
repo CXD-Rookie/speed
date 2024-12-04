@@ -32,10 +32,13 @@ class Tracking {
         this.trackEvent(
           "活跃",
           "active_foreground",
-          `firstVisit=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`
+          `method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
+          isVisit
         );
       }
     });
+    
+    this.trackEvent("活跃", "active_background");
 
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
@@ -72,14 +75,15 @@ class Tracking {
   }
 
   trackBoostStart(value, firstVisit) {
-    this.trackEvent("加速", "boost_start", `entrance=${value};firstVisit=${firstVisit}`);
+    this.trackEvent("加速", "boost_start", `entrance=${value}`, firstVisit);
   }
 
-  trackBoostSuccess(gameName, region, node, firstVisit) {
+  trackBoostSuccess(gameName, firstVisit) {
     this.trackEvent(
       "加速",
       "boost_success",
-      `gameName=${gameName};region=${region};node=${node};firstVisit=${firstVisit}`
+      `gameName=${gameName}`,
+      firstVisit
     );
   }
 
@@ -88,7 +92,7 @@ class Tracking {
   }
  
   trackBoostDisconnectManual(time) {
-    this.trackEvent("加速", "boost_disconnect_manual", `time=${time}`);
+    this.trackEvent("加速", "boost_disconnect_manual");
   }
 
   trackBoostDisconnectPassive(reason) {
@@ -103,8 +107,8 @@ class Tracking {
     this.trackEvent("付费页", "purchase_failure", `errorCode=${buyCount}` );
   }
   
-  trackPurchaseSuccess(buyCount) {
-    this.trackEvent("付费页", "purchase_success", buyCount);
+  trackPurchaseSuccess (buyCount, firstVisit) {
+    this.trackEvent("付费页", "purchase_success", buyCount, firstVisit);
   }
   
   trackPurchaseFirstBuy() {
@@ -132,7 +136,7 @@ class Tracking {
   }
 
   trackServerError (errorCode) {
-    this.trackEvent("报错", "error_server", `errorCode=${errorCode}`);
+    this.trackEvent("报错", "error_server", errorCode);
   }
 
   // 是否是首次

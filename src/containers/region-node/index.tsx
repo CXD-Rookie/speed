@@ -11,7 +11,7 @@ import CustomRegion from "./region";
 import CustomNode from "./node";
 import BreakConfirmModal from "../break-confirm";
 import loadingGif from "@/assets/images/common/jiazai.gif";
-
+import tracking from "@/common/tracking";
 interface RegionNodeSelectorProps {
   open: boolean;
   type?: string;
@@ -141,6 +141,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         jsonString,
         function (response: any) {
           if ((window as any).stopDelayTimer) {
+            tracking.trackBoostDisconnectManual();
             (window as any).stopDelayTimer();
           }
 
@@ -401,7 +402,7 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           suit:
             data?.playsuit === 2 // 当前游戏是否是国服游戏
               ? "国服"
-              : regionList?.length < 1 
+              : regionList?.length <= 1 
                 ? "国际服" 
                 : current?.qu === "智能匹配" 
                 ? "全部" 

@@ -45,12 +45,15 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   response => {
-    let code = response?.data?.error;
+    const code = response?.data?.error;
+    const url = response?.config?.url
 
     if (code > 0) {
       let errorCode = [110001];
-
-      tracking.trackServerError(code)
+      const webVersion = process.env.REACT_APP_VERSION;
+      const clientVersion = window.versionNowRef;
+      
+      tracking.trackServerError(`errorCode=${code};version=${clientVersion + "," + webVersion};apiName=${url}`)
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
         // window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {
@@ -75,16 +78,21 @@ instance.interceptors.response.use(
     return response.data;
   },
   error => {
+    const webVersion = process.env.REACT_APP_VERSION;
+    const clientVersion = window.versionNowRef;
+    
     if (error.response) {
+      const errorCode = error.response.status;
+
       if (error.response.status === 401) {
-        tracking.trackNetworkError(error.response.status)
+        tracking.trackNetworkError(`errorCode=${errorCode};version=${clientVersion + "," + webVersion}`);
         message.error('登录过期，请重新登录');
       } else {
-        tracking.trackNetworkError(error.response.status)
+        tracking.trackNetworkError(`errorCode=${errorCode};version=${clientVersion + "," + webVersion}`);
         message.error('网络错误，请稍后再试');
       }
     } else if (error.request) {
-      tracking.trackNetworkError(error.response.status)
+      tracking.trackNetworkError(`errorCode=${error.response.code};version=${clientVersion + "," + webVersion}` )
       // 这里处理断网异常
       // eventBus.emit('showModal', { show: true, type: "netorkError" });
     } else {

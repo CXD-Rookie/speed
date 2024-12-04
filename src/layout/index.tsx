@@ -18,7 +18,7 @@ import { setFirstAuth } from "@/redux/actions/firstAuth";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { setupInterceptors } from "@/api/api";
-import { compareVersions, stopProxy } from "./utils";
+import { compareVersions, stopProxy, clientStopDisconnect } from "./utils";
 
 import "./index.scss";
 import routes from "@/routes";
@@ -179,7 +179,7 @@ const Layouts: React.FC = () => {
         if (localStorage.getItem("isAccelLoading") === "1") {
           return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
         }
-
+        console.log(value);
         await stopProxy(value); // 调用停止加速
         const game = await removeGameList("initialize"); // 更新我的游戏
 
@@ -647,7 +647,7 @@ const Layouts: React.FC = () => {
 
   // 在应用启动时挂载方法到 window 对象上
   useEffect(() => {
-    (window as any).speedError = stopProcessReset; // 客户端使用，业务不处理，用于判断加速异常的提示使用
+    (window as any).speedError = clientStopDisconnect; // 客户端使用，业务不处理，用于判断加速异常的提示使用
     (window as any).stopProcessReset = stopProcessReset; // 停止加速后应该更新的数据
     (window as any).stopSpeed = stopSpeed; // 客户端调用，业务不处理,托盘弹出的关闭按钮的方法
     (window as any).loginOutStopWidow = loginOut; // 退出登录操作函数
@@ -677,13 +677,18 @@ const Layouts: React.FC = () => {
   }, [historyContext, removeGameList]);
 
   useEffect(() => {
+    const webVersion = process.env.REACT_APP_VERSION;
+    const clientVersion = (window as any).versionNowRef;
+
     const handleGlobalError = (event: any) => {
       console.error("Global error handler:", event);
       if (
         event.message === "Network Error" ||
         (event.error && event.error.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error);
+        tracking.trackNetworkError(
+          `errorCode=${event.error};version=${clientVersion + "," + webVersion}`
+        );
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
@@ -695,7 +700,9 @@ const Layouts: React.FC = () => {
         event.reason.message === "Network Error" ||
         (event.reason && event.reason.message === "Network Error")
       ) {
-        tracking.trackNetworkError(event.error);
+        tracking.trackNetworkError(
+          `errorCode=${event.error};version=${clientVersion + "," + webVersion}`
+        );
         eventBus.emit("showModal", { show: true, type: "netorkError" });
         event.preventDefault(); // 阻止默认处理
       }
