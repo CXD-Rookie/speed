@@ -532,7 +532,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
                     localStorage.setItem("isBoostSuccess", "1");
                   } else {
-                    tracking.trackBoostFailure("加速失败，检查文件合法性");
                     stopAcceleration();
                     resolve({ state: false, code: responseObj?.status });
                   }
@@ -603,14 +602,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
 
-        if (!response) {
-          tracking.trackBoostFailure(`client=${1}`);
-          eventBus.emit("showModal", {
-            show: true,
-            type: "infectedOrHijacked",
-          });
-        }
-
         if (isCheck?.status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
 
@@ -629,7 +620,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
-          tracking.trackBoostFailure(`client=${isCheck?.state}`);
+          tracking.trackBoostFailure(`client=${isCheck?.status}`);
           isPre = false;
           eventBus.emit("showModal", {
             show: true,
@@ -772,7 +763,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     tracking.trackBoostDisconnectManual();
 
     const list = await stopAcceleration(); // 停止加速
-    
+
     handleBeforeVerify({ ...list, track: locationType });
   };
 
