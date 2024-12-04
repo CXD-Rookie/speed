@@ -98,7 +98,10 @@ const Login: React.FC = () => {
 
         // 是新用户 上报注册成功，反之登录成功
         if (isNew) {
-          tracking.trackSignUpSuccess("phone");
+          const time = localStorage.getItem("firstActiveTime");
+          const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+          const isTrue = time && currentTime < Number(time);
+          tracking.trackSignUpSuccess("phone", isTrue ? 1 : 0);
         } else {
           tracking.trackLoginSuccess("phone");
         }
@@ -136,8 +139,6 @@ const Login: React.FC = () => {
         setCodeError("2")
       }
     } catch (error) {
-      tracking.trackSignUpFailure("注册失败");
-      tracking.trackLoginFailure("登录失败");
       console.log(error);
     }
   };

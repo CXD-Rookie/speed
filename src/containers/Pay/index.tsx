@@ -339,11 +339,16 @@ const PayModal: React.FC = (props) => {
             const buy = purchaseState === "purchase" ? 1 : 2;
             const coupon = activeCoupon?.redeem_code?.content;
             const foreground = localStorage.getItem("isBuyFirstVisit");
-            const firstVisit = foreground === "1" ? 0 : 1;
-            
+            const time = localStorage.getItem("firstActiveTime");
+            const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+            const isTrue =
+              !(foreground === "1") && time && currentTime < Number(time);
+            const firstVisit = isTrue ? 1 : 0;
+
             tracking.trackPurchaseSuccess(
-              `buy=${buy};goods=${goods}${coupon ? ";discount=" + coupon : ""}`,
-              firstVisit
+              `buy=${buy};firstVisit=${firstVisit};goods=${goods}${
+                coupon ? ";discount=" + coupon : ""
+              }`
             );
 
             localStorage.setItem("isBuyFirstVisit", "1");

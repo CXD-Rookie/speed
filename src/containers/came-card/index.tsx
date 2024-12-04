@@ -368,13 +368,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     try {
       // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
       const boost = localStorage.getItem("isBoostStart");
-      console.log(option.track);
+      const time = localStorage.getItem("firstActiveTime");
+      const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+      const isTrue = !(boost === "1") && time && currentTime < Number(time);
       
       tracking.trackBoostStart(
         option.track === "result" ? "searchPage" : option.track,
-        boost === "1" ? 0 : 1,
+        isTrue ? 1 : 0
       );
-
+      
       localStorage.setItem("isBoostStart", "1");
 
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
@@ -524,11 +526,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     resolve({ state: true, platform: pc_platform });
                     // 读取是否第一次加速成功标识
                     const boost = localStorage.getItem("isBoostSuccess");
-                    
-                    tracking.trackBoostSuccess(
-                      option.name,
-                      boost === "1" ? 0 : 1
-                    );
+                    const time = localStorage.getItem("firstActiveTime");
+                    const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+                    const isTrue = !(boost === "1") && time && currentTime < Number(time);
+
+                    tracking.trackBoostSuccess(option.name, isTrue ? 1 : 0);
 
                     localStorage.setItem("isBoostSuccess", "1");
                   } else {

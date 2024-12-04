@@ -564,7 +564,11 @@ const Layouts: React.FC = () => {
               dispatch(setAccountInfo(user_info, true, false));
 
               if (isNewUser) {
-                tracking.trackSignUpSuccess("youXia");
+                const time = localStorage.getItem("firstActiveTime");
+                const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+                const isTrue = time && currentTime < Number(time);
+
+                tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
               } else {
                 tracking.trackLoginSuccess("youXia");
               }
