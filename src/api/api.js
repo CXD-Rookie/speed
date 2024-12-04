@@ -47,11 +47,12 @@ instance.interceptors.response.use(
   response => {
     const code = response?.data?.error;
     const url = response?.config?.url
-
+    
     if (code > 0) {
       let errorCode = [110001];
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;
+      console.log(window.versionNowRef);
       
       tracking.trackServerError(`errorCode=${code};version=${clientVersion + "," + webVersion};apiName=${url}`)
       // token验证失败 退出登录

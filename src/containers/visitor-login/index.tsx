@@ -84,7 +84,10 @@ const VisitorLogin: React.FC= (props) => {
 
         // 是新用户 上报注册成功，反之登录成功
         if (isNew) {
-          tracking.trackSignUpSuccess("youXia");
+          const time = localStorage.getItem("firstActiveTime");
+          const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+          const isTrue = time && currentTime < Number(time);
+          tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
         } else {
           tracking.trackLoginSuccess("youXia");
         }

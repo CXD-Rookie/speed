@@ -97,12 +97,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const [isAllowShowAccelerating, setIsAllowShowAccelerating] =
     useState<boolean>(true); // 是否允许显示加速中
   const [isVerifying, setIsVerifying] = useState(false); // 是否在校验中
+  const [track, setTrack] = useState("home");
+
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
 
   // 停止加速
   const stopAcceleration = async () => {
     setStopModalOpen(false);
+    tracking.trackBoostDisconnectManual();
+
     const data = await (window as any).stopProcessReset();
     const list =
       (data?.data ?? []).filter(
@@ -113,7 +117,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       ...selectAccelerateOption,
       is_accelerate:
         list?.is_accelerate ?? selectAccelerateOption?.is_accelerate,
-      track: locationType,
     });
     triggerDataUpdate(); // 更新显示数据
 
@@ -366,13 +369,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     try {
       // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
       const boost = localStorage.getItem("isBoostStart");
-      console.log(option.track);
+      const time = localStorage.getItem("firstActiveTime");
+      const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+      const isTrue = !(boost === "1") && time && currentTime < Number(time);
+      console.log(track);
       
       tracking.trackBoostStart(
-        option.track === "result" ? "searchPage" : option.track,
-        boost === "1" ? 0 : 1,
+        track === "result" ? "searchPage" : track,
+        isTrue ? 1 : 0
       );
-
+      
       localStorage.setItem("isBoostStart", "1");
 
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
@@ -522,15 +528,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     resolve({ state: true, platform: pc_platform });
                     // 读取是否第一次加速成功标识
                     const boost = localStorage.getItem("isBoostSuccess");
-                    
-                    tracking.trackBoostSuccess(
-                      option.name,
-                      boost === "1" ? 0 : 1
-                    );
+                    const time = localStorage.getItem("firstActiveTime");
+                    const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+                    const isTrue = !(boost === "1") && time && currentTime < Number(time);
+
+                    tracking.trackBoostSuccess(option.name, isTrue ? 1 : 0);
 
                     localStorage.setItem("isBoostSuccess", "1");
                   } else {
-                    tracking.trackBoostFailure("加速失败，检查文件合法性");
                     stopAcceleration();
                     resolve({ state: false, code: responseObj?.status });
                   }
@@ -601,14 +606,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
 
-        if (!response) {
-          tracking.trackBoostFailure(`client=${1}`);
-          eventBus.emit("showModal", {
-            show: true,
-            type: "infectedOrHijacked",
-          });
-        }
-
         if (isCheck?.status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
 
@@ -627,7 +624,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
-          tracking.trackBoostFailure(`client=${isCheck?.state}`);
+          tracking.trackBoostFailure(`client=${isCheck?.status}`);
           isPre = false;
           eventBus.emit("showModal", {
             show: true,
@@ -767,8 +764,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 确认开始加速
   const confirmStartAcceleration = async () => {
     setAccelOpen(false); // 关闭确认框
+    tracking.trackBoostDisconnectManual();
+
     const list = await stopAcceleration(); // 停止加速
-    handleBeforeVerify({ ...list, track: locationType });
+
+    handleBeforeVerify({ ...list });
   };
 
   // 打开区服节点
@@ -857,6 +857,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
       setIsVerifying(true);
+      setTrack(customAccelerationData?.track);
       handleBeforeVerify(customAccelerationData);
     }
   }, [customAccelerationData]);
@@ -889,9 +890,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isPermitA && (
               <div
                 className="accelerate-immediately-card"
-                onClick={() =>
-                  handleGameCard({ ...option, track: locationType })
-                }
+                onClick={() => {
+                  setTrack(locationType);
+                  handleGameCard(option);
+                }}
               >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
                 <div className="accelerate-immediately-button">
@@ -907,9 +909,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     className="add-img"
                     src={addThemeIcon}
                     alt=""
-                    onClick={(event) =>
-                      handleAddGame(event, { ...option, track: locationType })
-                    }
+                    onClick={(event) => {
+                      setTrack(locationType);
+                      handleAddGame(event, option);
+                    }}
                   />
                 )}
                 {!isSearchR && (

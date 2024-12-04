@@ -522,11 +522,13 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     useEffect(() => {
       const iniliteFun = async () => {
         setActiveTab("region"); // 初始化设置tabs为区服
+        setLoading(true);
         const { area_suit, data } = await renderHistoryAreaSuit(options) as any;
 
         setSelectRegion(data?.serverNode?.selectRegion); // 更新选中区服
         setCurrentGameServer(area_suit); // 更新当前游戏信息
         setPresentGameInfo(data); // 更新当前游戏信息
+        setLoading(false);
       };
 
       if (open) {

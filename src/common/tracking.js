@@ -28,12 +28,15 @@ class Tracking {
         const clientVersion = window.versionNowRef;
         console.log(webVersion);
         
+        if (isVisit === 1) {
+          localStorage.setItem("firstActiveTime", String(timeLock));
+        }
+
         localStorage.setItem("activeTime", String(timeLock));
         this.trackEvent(
           "活跃",
           "active_foreground",
-          `method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
-          isVisit
+          `firstVisit=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
         );
       }
     });
@@ -58,32 +61,23 @@ class Tracking {
     window._czc.push(["_trackEvent", category, action, label, value]);
   }
 
-  trackSignUpSuccess(status) {
-    this.trackEvent("登录注册", "signUp_success", `method=${status}`);
+  trackSignUpSuccess (status, firstVisit) {
+    this.trackEvent("登录注册", "signUp_success", `method=${status};firstVisit=${firstVisit}`);
   }
 
   trackLoginSuccess (status) {
     this.trackEvent("登录注册", "login_success", `method=${status}`);
   }
 
-  trackSignUpFailure(errorCode) {
-    this.trackEvent("登录注册", "signUp_failure", "errorCode", errorCode);
-  }
-
-  trackLoginFailure(errorCode) {
-    this.trackEvent("登录注册", "login_failure", "errorCode", errorCode);
-  }
-
   trackBoostStart(value, firstVisit) {
-    this.trackEvent("加速", "boost_start", `entrance=${value}`, firstVisit);
+    this.trackEvent("加速", "boost_start", `firstVisit=${firstVisit};entrance=${value}`);
   }
 
   trackBoostSuccess(gameName, firstVisit) {
     this.trackEvent(
       "加速",
       "boost_success",
-      `gameName=${gameName}`,
-      firstVisit
+      `firstVisit=${firstVisit};gameName=${gameName}`
     );
   }
 
@@ -107,8 +101,8 @@ class Tracking {
     this.trackEvent("付费页", "purchase_failure", `errorCode=${buyCount}` );
   }
   
-  trackPurchaseSuccess (buyCount, firstVisit) {
-    this.trackEvent("付费页", "purchase_success", buyCount, firstVisit);
+  trackPurchaseSuccess (buyCount) {
+    this.trackEvent("付费页", "purchase_success", buyCount);
   }
   
   trackPurchaseFirstBuy() {
