@@ -97,6 +97,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const [isAllowShowAccelerating, setIsAllowShowAccelerating] =
     useState<boolean>(true); // 是否允许显示加速中
   const [isVerifying, setIsVerifying] = useState(false); // 是否在校验中
+  const [track, setTrack] = useState("home");
+
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
 
@@ -115,7 +117,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       ...selectAccelerateOption,
       is_accelerate:
         list?.is_accelerate ?? selectAccelerateOption?.is_accelerate,
-      track: locationType,
     });
     triggerDataUpdate(); // 更新显示数据
 
@@ -371,9 +372,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const time = localStorage.getItem("firstActiveTime");
       const currentTime = Math.floor(Date.now() / 1000); // 当前时间
       const isTrue = !(boost === "1") && time && currentTime < Number(time);
+      console.log(track);
       
       tracking.trackBoostStart(
-        option.track === "result" ? "searchPage" : option.track,
+        track === "result" ? "searchPage" : track,
         isTrue ? 1 : 0
       );
       
@@ -766,7 +768,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     const list = await stopAcceleration(); // 停止加速
 
-    handleBeforeVerify({ ...list, track: locationType });
+    handleBeforeVerify({ ...list });
   };
 
   // 打开区服节点
@@ -855,6 +857,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
       setIsVerifying(true);
+      setTrack(customAccelerationData?.track);
       handleBeforeVerify(customAccelerationData);
     }
   }, [customAccelerationData]);
@@ -887,9 +890,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             {isPermitA && (
               <div
                 className="accelerate-immediately-card"
-                onClick={() =>
-                  handleGameCard({ ...option, track: locationType })
-                }
+                onClick={() => {
+                  setTrack(locationType);
+                  handleGameCard(option);
+                }}
               >
                 <img className="mask-layer-img" src={accelerateIcon} alt="" />
                 <div className="accelerate-immediately-button">
@@ -905,9 +909,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     className="add-img"
                     src={addThemeIcon}
                     alt=""
-                    onClick={(event) =>
-                      handleAddGame(event, { ...option, track: locationType })
-                    }
+                    onClick={(event) => {
+                      setTrack(locationType);
+                      handleAddGame(event, option);
+                    }}
                   />
                 )}
                 {!isSearchR && (
