@@ -102,6 +102,8 @@ const GameDetail: React.FC = () => {
   // 停止加速
   const stopSpeed = async () => {
     setStopModalOpen(false);
+    tracking.trackBoostDisconnectManual();
+    
     let jsonString = "";
 
     const userToken = localStorage.getItem("token");

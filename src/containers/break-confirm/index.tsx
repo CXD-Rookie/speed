@@ -38,7 +38,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isNetworkError, setIsNetworkError, accelerateTime }: any =
+  const { isNetworkError, setIsNetworkError }: any =
     useHistoryContext();
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
 
@@ -157,9 +157,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
-      case "stopAccelerate":
-        tracking.trackBoostDisconnectManual();
-        break;
       case "serviceExpired":
         tracking.trackPurchasePageShow("boostExpiry");
         cancel();

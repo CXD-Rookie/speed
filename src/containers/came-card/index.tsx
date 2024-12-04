@@ -103,6 +103,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 停止加速
   const stopAcceleration = async () => {
     setStopModalOpen(false);
+    tracking.trackBoostDisconnectManual();
+
     const data = await (window as any).stopProcessReset();
     const list =
       (data?.data ?? []).filter(
@@ -767,7 +769,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 确认开始加速
   const confirmStartAcceleration = async () => {
     setAccelOpen(false); // 关闭确认框
+    tracking.trackBoostDisconnectManual();
+
     const list = await stopAcceleration(); // 停止加速
+    
     handleBeforeVerify({ ...list, track: locationType });
   };
 
