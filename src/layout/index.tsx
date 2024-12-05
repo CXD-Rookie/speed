@@ -668,6 +668,7 @@ const Layouts: React.FC = () => {
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
+      delete (window as any).speedErrorReport;
       delete (window as any).invokeLocalScan;
       delete (window as any).speedError;
       delete (window as any).stopProcessReset;
