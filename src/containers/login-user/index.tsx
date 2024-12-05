@@ -206,7 +206,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
             dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
             return;
           } else {
-            tracking.trackPurchasePageShow("boostFirst");
+            tracking.trackPurchasePageShow("profile");
             dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
           }
         }}
