@@ -143,6 +143,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   const cancel = () => {
     localStorage.removeItem("isAccelLoading");
+    localStorage.removeItem("stopActive");
     
     if (accelOpen) {
       setAccelOpen(false);

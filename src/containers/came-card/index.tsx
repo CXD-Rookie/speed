@@ -106,13 +106,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 停止加速
   const stopAcceleration = async () => {
     setStopModalOpen(false);
-
+    const stopActive = localStorage.getItem("stopActive") === "1";
     const data = await (window as any).stopProcessReset();
     const list =
       (data?.data ?? []).filter(
         (item: any) => item?.id === selectAccelerateOption?.id
       )?.[0] || {};
 
+    if (stopActive) {
+      tracking.trackBoostDisconnectManual();
+      localStorage.removeItem("stopActive");
+    }
+    
     setSelectAccelerateOption({
       ...selectAccelerateOption,
       is_accelerate:
@@ -656,6 +661,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         // 锁区 是否是第一次加速弹窗区服节点
         if (isLockArea && !selectRegion) {
+          setRegionType(store.getState().auth?.boostTrack);
           setIsOpenRegion(true);
           setSelectAccelerateOption(option);
           return;
@@ -780,7 +786,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     if (accountInfo?.isLogin) {
       event.stopPropagation();
-      setRegionType(locationType)
+      setRegionType(locationType);
       setIsOpenRegion(true);
       setSelectAccelerateOption(option);
     } else {
@@ -859,6 +865,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
       setIsVerifying(true);
+      console.log(customAccelerationData?.track);
+      
       dispatch(setBoostTrack(customAccelerationData?.track));
       handleBeforeVerify(customAccelerationData);
     }
@@ -988,6 +996,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     className="down-accelerate"
                     onClick={(e) => {
                       e.stopPropagation();
+                      localStorage.setItem("stopActive", "1");
                       setStopModalOpen(true);
                     }}
                   >
