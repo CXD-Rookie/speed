@@ -78,6 +78,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     takenShelves: "当前游戏已被下架，无法加速。",
     nodeDelete: "该节点已被删除，请选择其他节点",
     serviceExpired: "您的加速服务已到期，请续费继续使用。",
+    servicerechargeReport: "加速失败，请查看游戏是否限免或者您是否是 VIP",
   };
 
   // footer 确认按钮的文案
@@ -95,6 +96,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     gamesAccelerating: "好的",
     takenShelves: "好的",
     nodeDelete: "好的",
+    servicerechargeReport: "好的",
   };
 
   // footer 只显示一个按钮的类型
@@ -112,6 +114,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "takenShelves", // 游戏下架提示
     "nodeDelete", // 在节点历史记录中，当用户选择一个已被删除的节点
     "serviceExpired", // 加速校验是vip的时候
+    "servicerechargeReport", // 客户端充值到期错误码 停止加速 提示到期 上报埋点
   ];
 
   // 不显示右上角关闭的类型
@@ -158,6 +161,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
+      case "servicerechargeReport":
+        dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
+        break;
       case "serviceExpired":
         tracking.trackPurchasePageShow("boostExpiry");
         cancel();
@@ -176,7 +182,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           dispatch(openRealNameModal());
           return;
         }
-        
+
         tracking.trackPurchasePageShow("boostExpiry");
         dispatch(setPayState({ open: true })); // 关闭会员充值页面
         break;
