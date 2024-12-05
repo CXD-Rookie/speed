@@ -73,12 +73,44 @@ const stopProxy = async (t = null) => {
   });
 };
 
-const clientStopDisconnect = (value) => {
-  if (value === 703) {
-    window.stopProcessReset();
-    eventBus.emit("showModal", { show: true, type: "serverFailure" });
+// 服务端 客户端错误码上报
+const serverClientReport = (code) => {
+  const reportCode = [ 803, 804 ];
+  const rechargeReportCode = [ 801 ];
+  const disconnecReportCode = [ 601, 602, 701, 702, 703, 704, 802 ];
+
+  // 如果是上报码 只做埋点上报
+  if (reportCode.includes(Number(code))) {
+    console.log(code);
+    tracking.trackBoostDisconnectPassive(`server=${code}`);
+    return;
   }
 
+  // 充值到期错误码 停止加速 提示到期 上报埋点
+  if (rechargeReportCode.includes(Number(code))) {
+    console.log(code);
+    tracking.trackBoostDisconnectPassive(`server=${code}`);
+    window.stopProcessReset();
+    eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+    return;
+  }
+
+  // 加速服务异常断开 停止加速 提示异常 上报埋点
+  if (disconnecReportCode.includes(Number(code))) {
+    console.log(code);
+    tracking.trackBoostDisconnectPassive(`server=${code}`);
+    window.stopProcessReset();
+    eventBus.emit("showModal", { show: true, type: "serverFailure" });
+    return;
+  }
+
+  console.log(code);
+  // 退出码，异常退出，只做停止加速
+  window.stopProcessReset();
+}
+
+// 异常原因上报
+const exceptionReport = (value) => {
   if (value) {
     tracking.trackBoostDisconnectPassive(`client=${value}`);
   }
@@ -88,5 +120,6 @@ export {
   compareVersions,
   stopProxy,
   getCouponTimeLock,
-  clientStopDisconnect
+  serverClientReport,
+  exceptionReport
 }

@@ -18,7 +18,12 @@ import { setFirstAuth } from "@/redux/actions/firstAuth";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { setupInterceptors } from "@/api/api";
-import { compareVersions, stopProxy, clientStopDisconnect } from "./utils";
+import {
+  compareVersions,
+  stopProxy,
+  serverClientReport,
+  exceptionReport,
+} from "./utils";
 
 import "./index.scss";
 import routes from "@/routes";
@@ -651,7 +656,8 @@ const Layouts: React.FC = () => {
 
   // 在应用启动时挂载方法到 window 对象上
   useEffect(() => {
-    (window as any).speedError = clientStopDisconnect; // 客户端使用，业务不处理，用于判断加速异常的提示使用
+    (window as any).speedError = serverClientReport; // 客户端使用，业务不处理，用于判断加速异常的提示使用
+    (window as any).speedErrorReport = exceptionReport; // 客户端使用，异常原因上报
     (window as any).stopProcessReset = stopProcessReset; // 停止加速后应该更新的数据
     (window as any).stopSpeed = stopSpeed; // 客户端调用，业务不处理,托盘弹出的关闭按钮的方法
     (window as any).loginOutStopWidow = loginOut; // 退出登录操作函数
@@ -743,10 +749,6 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
-        // (window as any).invokeLocalScan([
-        //     { name: "地下城与勇士国服", path: "steam.ext" },
-        //     { name: "永劫无间（国际服）", path: "steam.ext" },
-        //   ]);
         (window as any).NativeApi_RenderComplete();
       }, 1000);
     } else {
