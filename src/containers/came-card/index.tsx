@@ -105,7 +105,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 停止加速
   const stopAcceleration = async () => {
     setStopModalOpen(false);
-    tracking.trackBoostDisconnectManual();
 
     const data = await (window as any).stopProcessReset();
     const list =
