@@ -367,20 +367,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
-      // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
-      const boost = localStorage.getItem("isBoostStart");
-      const time = localStorage.getItem("firstActiveTime");
-      const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-      const isTrue = !(boost === "1") && time && currentTime < Number(time);
-      console.log(track);
-      
-      tracking.trackBoostStart(
-        track === "result" ? "searchPage" : track,
-        isTrue ? 1 : 0
-      );
-      
-      localStorage.setItem("isBoostStart", "1");
-
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
       let gameFiles = await queryPlatformGameFiles(platform, option); // 查询当前游戏在各个平台的执行文件 运行平台
@@ -570,14 +556,26 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速实际操作
   const accelerateProcessing = async (event = selectAccelerateOption) => {
     let option = { ...event };
-
     const selectRegion = option?.serverNode?.selectRegion;
 
+    // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
+    const boost = localStorage.getItem("isBoostStart");
+    const time = localStorage.getItem("firstActiveTime");
+    const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+    const isTrue = !(boost === "1") && time && currentTime < Number(time);
+    console.log(track);
+
+    tracking.trackBoostStart(
+      track === "result" ? "searchPage" : track,
+      isTrue ? 1 : 0
+    );
+
+    localStorage.setItem("isBoostStart", "1"); // 存储开始加速的首次活跃
     stopAcceleration(); // 停止加速
 
     // 进行重新ping节点
     if ((window as any).fastestNode) {
-      option = await (window as any).fastestNode(selectRegion, option);
+      option = await(window as any).fastestNode(selectRegion, option);
     }
 
     const nodeHistory = option?.serverNode?.nodeHistory || [];

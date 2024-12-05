@@ -205,7 +205,7 @@ const PayModal: React.FC = (props) => {
             const firstVisit = isTrue ? 1 : 0;
 
             tracking.trackPurchaseSuccess(
-              `buy=${buy};firstVisit=${firstVisit};goods=月卡}`
+              `buy=${buy};firstVisit=${firstVisit};goods=月卡`
             );
             buy === 1
               ? tracking.trackPurchaseFirstBuySuccess()
