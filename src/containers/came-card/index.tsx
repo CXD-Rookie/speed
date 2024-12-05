@@ -482,7 +482,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         })),
       });
 
-      console.log(jsonResult);
+      // console.log(jsonResult);
 
       return new Promise((resolve, reject) => {
         (window as any).NativeApi_AsynchronousRequest(
@@ -495,11 +495,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               ? JSON.parse(responseObj?.restful)
               : {}; // 解析内部 restful
 
-            console.log(
-              restfulObj,
-              responseObj?.status === 0,
-              responseObj?.status
-            ); // { port: 57499, version: "1.0.0.1" }
             // 检查是否有 restful 字段，并解析为 JSON
             if (responseObj?.status === 0) {
               // 检查解析后的 restfulData 是否包含 port
@@ -517,16 +512,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   console.log("请求成功:", result.data);
                   if (result.data === "Acceleration started") {
                     resolve({ state: true, platform: pc_platform });
-                    // 读取是否第一次加速成功标识
-                    const boost = localStorage.getItem("isBoostSuccess");
                     const time = localStorage.getItem("firstActiveTime");
                     const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-                    const isTrue =
-                      !(boost === "1") && time && currentTime < Number(time);
+                    const isTrue = time && currentTime < Number(time);
 
                     tracking.trackBoostSuccess(option.name, isTrue ? 1 : 0);
-
-                    localStorage.setItem("isBoostSuccess", "1");
                   } else {
                     stopAcceleration();
                     resolve({ state: false, code: responseObj?.status });
@@ -564,20 +554,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     let option = { ...event };
     const selectRegion = option?.serverNode?.selectRegion;
 
-    // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
-    const boost = localStorage.getItem("isBoostStart");
     const time = localStorage.getItem("firstActiveTime");
     const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-    const isTrue = !(boost === "1") && time && currentTime < Number(time);
+    const isTrue = time && currentTime < Number(time);
     const track = store.getState()?.auth?.boostTrack;
-    console.log(22222222222222222222, track);
+    console.log(track, isTrue);
 
     tracking.trackBoostStart(
       track === "result" ? "searchPage" : track,
       isTrue ? 1 : 0
     );
 
-    localStorage.setItem("isBoostStart", "1"); // 存储开始加速的首次活跃
     stopAcceleration(); // 停止加速
 
     // 进行重新ping节点
