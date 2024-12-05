@@ -9,7 +9,7 @@
  */
 import React, { Fragment, useEffect, useState } from "react";
 import { Modal } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { openRealNameModal } from "@/redux/actions/auth";
@@ -38,6 +38,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const isPurchase = useSelector((state: any) => state.firstAuth)?.firstAuth
+    ?.first_purchase; // 是否首充
   const { isNetworkError, setIsNetworkError }: any =
     useHistoryContext();
   const { removeGameList, identifyAccelerationData } = useGamesInitialize();
@@ -165,7 +167,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
         break;
       case "serviceExpired":
-        tracking.trackPurchasePageShow("boostExpiry");
+        tracking.trackPurchasePageShow(isPurchase ? "boostFirst" : "boostExpiry");
         cancel();
         dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
         break;
@@ -183,7 +185,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
           return;
         }
 
-        tracking.trackPurchasePageShow("boostExpiry");
+        tracking.trackPurchasePageShow(
+          isPurchase ? "boostFirst" : "boostExpiry"
+        );
         dispatch(setPayState({ open: true })); // 关闭会员充值页面
         break;
       case "netorkError":
