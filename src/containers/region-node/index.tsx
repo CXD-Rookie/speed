@@ -178,8 +178,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             isNode,
             isAuto,
             router: "details",
+            track: type === "details" ? "detailPage" : type,
           };
-
+          // console.log(type);
+          
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           navigate("/home", {
             state: {

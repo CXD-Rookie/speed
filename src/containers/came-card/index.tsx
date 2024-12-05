@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
-import { openRealNameModal } from "@/redux/actions/auth";
+import { openRealNameModal, setBoostTrack } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
 import {
@@ -71,6 +71,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
+  
   const { open: versionOpen = false } = useSelector(
     (state: any) => state?.modalOpen?.versionState
   ); // 升级弹窗开关
@@ -87,6 +88,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const [renewalOpen, setRenewalOpen] = useState(false); // 续费提醒
   const [isOpenRegion, setIsOpenRegion] = useState(false); // 是否是打开选择区服节点
+  const [regionType, setRegionType] = useState(""); // 触发区服节点来源
 
   const [accelOpen, setAccelOpen] = useState(false); // 是否确认加速
   const [stopModalOpen, setStopModalOpen] = useState(false); // 停止加速确认
@@ -97,7 +99,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const [isAllowShowAccelerating, setIsAllowShowAccelerating] =
     useState<boolean>(true); // 是否允许显示加速中
   const [isVerifying, setIsVerifying] = useState(false); // 是否在校验中
-  const [track, setTrack] = useState("home");
 
   const isHomeNullCard =
     locationType === "home" && options?.length < 4 && options?.length > 0; // 判断是否是首页无数据卡片条件
@@ -128,12 +129,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const res = await playSuitApi.pcPlatform();
 
       if (res?.error === 0) {
-        return res?.data
+        return res?.data;
       } else {
         tracking.trackBoostFailure(`server=${res?.error}`);
       }
     } catch (error) {
-      console.log("获取游戏运营平台列表", "error")
+      console.log("获取游戏运营平台列表", "error");
     }
   };
 
@@ -515,7 +516,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     const boost = localStorage.getItem("isBoostSuccess");
                     const time = localStorage.getItem("firstActiveTime");
                     const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-                    const isTrue = !(boost === "1") && time && currentTime < Number(time);
+                    const isTrue =
+                      !(boost === "1") && time && currentTime < Number(time);
 
                     tracking.trackBoostSuccess(option.name, isTrue ? 1 : 0);
 
@@ -562,7 +564,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     const time = localStorage.getItem("firstActiveTime");
     const currentTime = Math.floor(Date.now() / 1000); // 当前时间
     const isTrue = !(boost === "1") && time && currentTime < Number(time);
-    console.log(track);
+    const track = store.getState()?.auth?.boostTrack;
+    console.log(22222222222222222222, track);
 
     tracking.trackBoostStart(
       track === "result" ? "searchPage" : track,
@@ -574,7 +577,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     // 进行重新ping节点
     if ((window as any).fastestNode) {
-      option = await(window as any).fastestNode(selectRegion, option);
+      option = await (window as any).fastestNode(selectRegion, option);
     }
 
     const nodeHistory = option?.serverNode?.nodeHistory || [];
@@ -738,7 +741,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           if (!isLockArea && !selectRegion) {
             data = (await renderHistoryAreaSuit(data))?.data;
           }
-          
+
           setSelectAccelerateOption(data);
           accelerateProcessing(data);
         } else {
@@ -777,6 +780,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
     if (accountInfo?.isLogin) {
       event.stopPropagation();
+      setRegionType(locationType)
       setIsOpenRegion(true);
       setSelectAccelerateOption(option);
     } else {
@@ -811,6 +815,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             data: {
               ...optionParams,
               router: "home",
+              track: locationType,
             },
             autoAccelerate: true,
           },
@@ -854,7 +859,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   useEffect(() => {
     if (Object.keys(customAccelerationData)?.length > 0) {
       setIsVerifying(true);
-      setTrack(customAccelerationData?.track);
+      dispatch(setBoostTrack(customAccelerationData?.track));
       handleBeforeVerify(customAccelerationData);
     }
   }, [customAccelerationData]);
@@ -888,7 +893,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               <div
                 className="accelerate-immediately-card"
                 onClick={() => {
-                  setTrack(locationType);
+                  dispatch(setBoostTrack(locationType));
                   handleGameCard(option);
                 }}
               >
@@ -907,7 +912,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     src={addThemeIcon}
                     alt=""
                     onClick={(event) => {
-                      setTrack(locationType);
                       handleAddGame(event, option);
                     }}
                   />
@@ -917,7 +921,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     className="select-img"
                     src={select}
                     alt=""
-                    onClick={(event) => handleRegsion(event, option)}
+                    onClick={(event) => {
+                      dispatch(setBoostTrack(locationType));
+                      handleRegsion(event, option);
+                    }}
                   />
                 )}
                 {!isSearchR && (
@@ -1043,7 +1050,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       <RegionNodeSelector
         ref={childRef}
         open={isOpenRegion}
-        type={"acelerate"}
+        type={regionType}
         options={selectAccelerateOption}
         onCancel={() => {
           triggerDataUpdate();

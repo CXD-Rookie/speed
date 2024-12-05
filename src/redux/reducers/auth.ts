@@ -24,6 +24,7 @@ import {
   SIGN_EXPIRES,
   ACCELERATE_CHART,
   STARTPROGRESS,
+  BOOSTTRACK,
 } from '../actions/auth';
 
 const initialState = {
@@ -39,10 +40,16 @@ const initialState = {
   sign_expires: false,
   accelerateChart: [], // 加速图表信息
   isStartProgress: false, // 是否已经启动游戏
+  boostTrack: "", // 更新点击加速卡片来源
 };
 
 const authReducer = (state = initialState, action:any) => {
   switch (action.type) {
+    case BOOSTTRACK:
+      return {
+        ...state,
+        boostTrack: action.payload,
+      };
     case STARTPROGRESS:
       return {
         ...state,
