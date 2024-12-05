@@ -185,7 +185,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
                                   onMouseOver={() => setMouseoverState(true)}
                                   onMouseLeave={() => setMouseoverState(false)}
                                   onClick={(e) => {
-                                    tracking.trackPurchasePageShow("home");
+                                    tracking.trackPurchasePageShow("coupon");
                                     dispatch(
                                       setPayState({
                                         open: true,

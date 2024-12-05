@@ -54,7 +54,7 @@ class Tracking {
   }
 
   trackSignUpSuccess (status, firstVisit) {
-    this.trackEvent("登录注册", "signUp_success", `method=${status};firstDay=${firstVisit}`);
+    this.trackEvent("登录注册", "signUp_success", `firstDay=${firstVisit};method=${status}`);
   }
 
   trackLoginSuccess (status) {

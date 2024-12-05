@@ -102,7 +102,7 @@ const CurrencyExchange: React.FC = (props) => {
           onMouseLeave={() => setIsHoverStatus("")}
           onClick={() => {
             if (record?.status === 1) {
-              tracking.trackPurchasePageShow("boostFirst");
+              tracking.trackPurchasePageShow("redemption");
               dispatch(setPayState({ open: true, couponValue: record ?? {} })); // 会员充值页面
               dispatch(setCurrencyOpen(false));
             }

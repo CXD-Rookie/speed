@@ -195,6 +195,9 @@ const Layouts: React.FC = () => {
         }
 
         if (value === "exit") {
+          if (identifyAccelerationData()?.[0]) {
+            tracking.trackBoostDisconnectManual();
+          }
           (window as any).NativeApi_ExitProcess();
         }
 
@@ -250,6 +253,10 @@ const Layouts: React.FC = () => {
 
       if (event === "remoteLogin") {
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
+      }
+      
+      if (identifyAccelerationData()?.[0]) {
+        tracking.trackBoostDisconnectManual();
       }
 
       // if (event === 1) {
