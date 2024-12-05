@@ -36,7 +36,7 @@ class Tracking {
         this.trackEvent(
           "活跃",
           "active_foreground",
-          `firstVisit=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
+          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
         );
       }
     });
@@ -47,14 +47,6 @@ class Tracking {
     setInterval(() => {
       this.trackEvent("活跃", "active_background");
     }, 60 * 60 * 10 * 1000);
-
-    // 后台活跃
-    // document.addEventListener('visibilitychange', () => {
-    //   if (document.visibilityState === 'hidden') {
-    //     this.trackEvent("活跃", "active_background", "youXia", this.trueOrFalseYouXia());
-    //     this.trackEvent("活跃", "active_background", "firstVisit", this.trueOrFalseFirstVisit());
-    //   }
-    // });
   }
 
   trackEvent(category, action, label, value) {
@@ -62,7 +54,7 @@ class Tracking {
   }
 
   trackSignUpSuccess (status, firstVisit) {
-    this.trackEvent("登录注册", "signUp_success", `method=${status};firstVisit=${firstVisit}`);
+    this.trackEvent("登录注册", "signUp_success", `method=${status};firstDay=${firstVisit}`);
   }
 
   trackLoginSuccess (status) {
@@ -70,14 +62,14 @@ class Tracking {
   }
 
   trackBoostStart(value, firstVisit) {
-    this.trackEvent("加速", "boost_start", `firstVisit=${firstVisit};entrance=${value}`);
+    this.trackEvent("加速", "boost_start", `firstDay=${firstVisit};entrance=${value}`);
   }
 
   trackBoostSuccess(gameName, firstVisit) {
     this.trackEvent(
       "加速",
       "boost_success",
-      `firstVisit=${firstVisit};gameName=${gameName}`
+      `firstDay=${firstVisit};gameName=${gameName}`
     );
   }
 

@@ -21,17 +21,24 @@ export const BIND_PHONE = 'BIND_PHONE';
 export const SIGN_EXPIRES = 'SIGN_EXPIRES';
 export const ACCELERATE_CHART = "ACCELERATE_CHART";
 export const STARTPROGRESS = "STARTPROGRESS";
+export const BOOSTTRACK = "BOOSTTRACK";
+
+// 更新点击加速卡片来源
+export const setBoostTrack = (boostTrack: any) => ({
+  type: BOOSTTRACK,
+  payload: boostTrack,
+});
 
 // 更新是否已经启动游戏状态
 export const setStartProgress = (isStartProgress: any) => ({
-    type: STARTPROGRESS,
-    payload: isStartProgress,
+  type: STARTPROGRESS,
+  payload: isStartProgress,
 });
 
 // 更新加速详情图表数据
 export const setAccelerateChart = (accelerateChart: any) => ({
-    type: ACCELERATE_CHART,
-    payload: accelerateChart,
+  type: ACCELERATE_CHART,
+  payload: accelerateChart,
 });
 
 // 标记提示加速服务并且没有实名认证的记号

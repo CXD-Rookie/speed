@@ -197,15 +197,13 @@ const PayModal: React.FC = (props) => {
 
           if (status === 2) {
             const buy = firstAuth.firstAuth.first_purchase ? 1 : 2;
-            const foreground = localStorage.getItem("isBuyFirstVisit");
             const time = localStorage.getItem("firstActiveTime");
             const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-            const isTrue =
-              !(foreground === "1") && time && currentTime < Number(time);
+            const isTrue = time && currentTime < Number(time);
             const firstVisit = isTrue ? 1 : 0;
 
             tracking.trackPurchaseSuccess(
-              `buy=${buy};firstVisit=${firstVisit};goods=月卡}`
+              `buy=${buy};firstDay=${firstVisit};goods=月卡`
             );
             buy === 1
               ? tracking.trackPurchaseFirstBuySuccess()

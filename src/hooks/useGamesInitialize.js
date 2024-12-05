@@ -255,12 +255,10 @@ export const useGamesInitialize = () => {
         }
       }
 
-      console.log(selectRegion);
       const serverNode = {
         ...(option?.serverNode || {}),
         selectRegion: region ? region : selectRegion
       }
-      console.log(serverNode);
       
       return {
         area_suit: renderList, // 区服
@@ -307,6 +305,9 @@ export const useGamesInitialize = () => {
             delete data.isAuto;
           }
 
+          if (data?.track) {
+            delete data.track;
+          }
           return data
         }
 

@@ -141,7 +141,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
         jsonString,
         function (response: any) {
           if ((window as any).stopDelayTimer) {
-            tracking.trackBoostDisconnectManual();
             (window as any).stopDelayTimer();
           }
 
@@ -178,8 +177,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             isNode,
             isAuto,
             router: "details",
+            track: type === "details" ? "detailPage" : type,
           };
-
+          console.log(state_data?.track, type);
+          
           // 如果是在卡片进行加速的过程中将选择的信息回调到卡片
           navigate("/home", {
             state: {
@@ -248,7 +249,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
               ? value?.addr.includes(filtration?.[select])
               : true)
         );
-        console.log(nodes, isLock, data);
         
         const updatedNodes = await Promise.all(
           nodes.map(async (node: any) => {
@@ -386,8 +386,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
       regionList: any = [] // regionList 当前游戏有多少区服
     ) => {
       let region = data?.serverNode?.selectRegion; // 历史存储区服
-      console.log(data, current);
-      
       let suit =
         data?.playsuit === 2 // 当前游戏是否是国服游戏
           ? "国服"
@@ -423,7 +421,6 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
           }
         }
       }
-      console.log(region);
       
       setSelectRegion(region);
     };
@@ -579,9 +576,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
               setIsClicking(true);
 
               if (!isClicking) {
+                tracking.trackBoostDisconnectManual();
                 await clickStartOn(selectNode);
               }
-
+              
               setIsClicking(false);
             }}
           />
