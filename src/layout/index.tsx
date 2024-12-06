@@ -185,6 +185,11 @@ const Layouts: React.FC = () => {
           return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
         }
 
+        // 上报埋点
+        if (value === "exit" && identifyAccelerationData()?.[0]) {
+          tracking.trackBoostDisconnectManual();
+        }
+
         await stopProxy(value); // 调用停止加速
         const game = await removeGameList("initialize"); // 更新我的游戏
 
@@ -195,9 +200,6 @@ const Layouts: React.FC = () => {
         }
 
         if (value === "exit") {
-          if (identifyAccelerationData()?.[0]) {
-            tracking.trackBoostDisconnectManual();
-          }
           (window as any).NativeApi_ExitProcess();
         }
 
@@ -240,6 +242,10 @@ const Layouts: React.FC = () => {
   // 退出登录
   const loginOut = async (event: any = "") => {
     try {
+      if (identifyAccelerationData()?.[0]) {
+        tracking.trackBoostDisconnectManual();
+      }
+
       await stopProcessReset(); // 停止加速操作
       await loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
 
@@ -255,10 +261,6 @@ const Layouts: React.FC = () => {
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
       }
       
-      if (identifyAccelerationData()?.[0]) {
-        tracking.trackBoostDisconnectManual();
-      }
-
       // if (event === 1) {
       //   setReopenLogin(true); 暂时未发现什么地方调用，先做注释
       // }

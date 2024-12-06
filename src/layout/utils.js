@@ -56,7 +56,10 @@ const stopProxy = async (t = null) => {
           console.log(t, respose);
           
           if (t >= 600) {
-            tracking.trackBoostDisconnectPassive(`client=${t}`);
+            const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
+            const clientVersion = window.versionNowRef; // 客户端版本号
+
+            tracking.trackBoostDisconnectPassive(`client=${t};version=${clientVersion + "," + webVersion}`);
           }
 
           // 加速时服务端返回703异常弹窗
@@ -78,29 +81,31 @@ const serverClientReport = (code) => {
   const reportCode = [ 803, 804 ];
   const rechargeReportCode = [ 801 ];
   const disconnecReportCode = [ 601, 602, 701, 702, 703, 704, 802 ];
+  const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
+  const clientVersion = window.versionNowRef; // 客户端版本号
 
   // 如果是上报码 只做埋点上报
   if (reportCode.includes(Number(code))) {
     console.log(code);
-    tracking.trackBoostDisconnectPassive(`server=${code}`);
+    tracking.trackBoostDisconnectPassive(`server=${code};version=${clientVersion + "," + webVersion}`);
     return;
   }
 
   // 充值到期错误码 停止加速 提示到期 上报埋点
   if (rechargeReportCode.includes(Number(code))) {
     console.log(code);
-    tracking.trackBoostDisconnectPassive(`server=${code}`);
+    tracking.trackBoostDisconnectPassive(`server=${code};version=${clientVersion + "," + webVersion}`);
     window.stopProcessReset();
-    eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+    eventBus.emit("showModal", { show: true, type: "serviceExpired" });
     return;
   }
 
   // 加速服务异常断开 停止加速 提示异常 上报埋点
   if (disconnecReportCode.includes(Number(code))) {
     console.log(code);
-    tracking.trackBoostDisconnectPassive(`server=${code}`);
+    tracking.trackBoostDisconnectPassive(`server=${code};version=${clientVersion + "," + webVersion}`);
     window.stopProcessReset();
-    eventBus.emit("showModal", { show: true, type: "serverFailure" });
+    eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
     return;
   }
 
@@ -112,7 +117,10 @@ const serverClientReport = (code) => {
 // 异常原因上报
 const exceptionReport = (value) => {
   if (value) {
-    tracking.trackBoostDisconnectPassive(`client=${value}`);
+    const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
+    const clientVersion = window.versionNowRef; // 客户端版本号
+
+    tracking.trackBoostDisconnectPassive(`client=${value};version=${clientVersion + "," + webVersion}`);
   }
 }
 
