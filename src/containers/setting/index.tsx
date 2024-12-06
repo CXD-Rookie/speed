@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { Fragment, useState, useEffect } from "react";
-import { Modal, Tabs, Switch, Radio, Card, Spin } from "antd";
+import { Modal, Tabs, Switch, Card, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -477,8 +477,17 @@ const SettingsModal: React.FC = (props) => {
               </div>
               <div className="setting-item">
                 <div className="item-title">关于</div>
-                <div className="regard-item-content">
-                  版本号: {versionNow}
+                <div className="regard-item-content">版本号: {versionNow}</div>
+              </div>
+              <div className="setting-item">
+                <div className="item-title">官网地址</div>
+                <div
+                  className="regard-item-content"
+                  style={{color: "#FF4900", cursor: "pointer"}}
+                  data-title={"http://www.accessorx.com"}
+                  onClick={handleClick}
+                >
+                  http://www.accessorx.com
                 </div>
               </div>
               <div className="protocols">
