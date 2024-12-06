@@ -360,6 +360,19 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         >
           提交
         </Button>
+        <div className="add-qq-contact">
+          如有疑问，欢迎加入客服QQ群：
+          <span
+            onClick={(event) => {
+              const target = event.currentTarget as HTMLDivElement;
+              const dataTitle = target.dataset.title;
+              (window as any).NativeApi_OpenBrowser(dataTitle);
+            }}
+            data-title="https://qm.qq.com/q/KzaRJZbj8I"
+          >
+            955852815
+          </span>
+        </div>
       </div>
     </div>
   );

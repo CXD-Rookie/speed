@@ -506,3 +506,15 @@ span.char-count-mobile {
     height: 4vh;
     line-height: 4vh;
 }
+
+.add-qq-contact {
+    width: 100%;
+    text-align: center;
+    margin-top: 1.8vh;
+    color: #999;
+
+    & span {
+        color: #F86C34;
+        cursor: pointer;
+    }
+}
