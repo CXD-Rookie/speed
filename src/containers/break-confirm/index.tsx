@@ -80,7 +80,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     takenShelves: "当前游戏已被下架，无法加速。",
     nodeDelete: "该节点已被删除，请选择其他节点",
     serviceExpired: "您的加速服务已到期，请续费继续使用。",
-    servicerechargeReport: "加速失败，请查看游戏是否限免或者您是否是 VIP",
+    servicerechargeReport:
+      "加速服务异常，当前加速已停止，请检查网络后重试或使用问题反馈联系技术支持",
   };
 
   // footer 确认按钮的文案
@@ -163,9 +164,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(false);
 
     switch (noticeType) {
-      case "servicerechargeReport":
-        dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
-        break;
       case "serviceExpired":
         tracking.trackPurchasePageShow(isPurchase ? "boostFirst" : "boostExpiry");
         cancel();

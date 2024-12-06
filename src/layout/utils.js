@@ -96,7 +96,7 @@ const serverClientReport = (code) => {
     console.log(code);
     tracking.trackBoostDisconnectPassive(`server=${code};version=${clientVersion + "," + webVersion}`);
     window.stopProcessReset();
-    eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+    eventBus.emit("showModal", { show: true, type: "serviceExpired" });
     return;
   }
 
@@ -105,7 +105,7 @@ const serverClientReport = (code) => {
     console.log(code);
     tracking.trackBoostDisconnectPassive(`server=${code};version=${clientVersion + "," + webVersion}`);
     window.stopProcessReset();
-    eventBus.emit("showModal", { show: true, type: "serverFailure" });
+    eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
     return;
   }
 
@@ -119,7 +119,7 @@ const exceptionReport = (value) => {
   if (value) {
     const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
     const clientVersion = window.versionNowRef; // 客户端版本号
-    
+
     tracking.trackBoostDisconnectPassive(`client=${value};version=${clientVersion + "," + webVersion}`);
   }
 }
