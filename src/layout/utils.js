@@ -53,19 +53,19 @@ const stopProxy = async (t = null) => {
           },
         }),
         (respose) => {
-          console.log(t, respose);
+          // console.log(t, respose);
           
-          if (t >= 600) {
-            const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
-            const clientVersion = window.versionNowRef; // 客户端版本号
+          // if (t >= 600) {
+          //   const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
+          //   const clientVersion = window.versionNowRef; // 客户端版本号
 
-            tracking.trackBoostDisconnectPassive(`client=${t};version=${clientVersion + "," + webVersion}`);
-          }
+          //   tracking.trackBoostDisconnectPassive(`client=${t};version=${clientVersion + "," + webVersion}`);
+          // }
 
-          // 加速时服务端返回703异常弹窗
-          if (t === 703) {
-            eventBus.emit("showModal", { show: true, type: "serverFailure" });
-          }
+          // // 加速时服务端返回703异常弹窗
+          // if (t === 703) {
+          //   eventBus.emit("showModal", { show: true, type: "serverFailure" });
+          // }
 
           resolve(true); // 成功
         }
@@ -117,10 +117,13 @@ const serverClientReport = (code) => {
 // 异常原因上报
 const exceptionReport = (value) => {
   if (value) {
+    const decodedString = atob(value);
+    console.log(decodedString, value);
+
     const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
     const clientVersion = window.versionNowRef; // 客户端版本号
 
-    tracking.trackBoostDisconnectPassive(`client=${value};version=${clientVersion + "," + webVersion}`);
+    tracking.trackBoostDisconnectPassive(`client=${decodedString};version=${clientVersion + "," + webVersion}`);
   }
 }
 
