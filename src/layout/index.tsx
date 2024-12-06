@@ -701,7 +701,7 @@ const Layouts: React.FC = () => {
     const clientVersion = (window as any).versionNowRef;
 
     const handleGlobalError = (event: any) => {
-      console.error("Global error handler:", event);
+      // console.log("Global error handler:", event);
       if (
         event.message === "Network Error" ||
         (event.error && event.error.message === "Network Error")
@@ -715,7 +715,7 @@ const Layouts: React.FC = () => {
     };
 
     const handleUnhandledRejection = (event: any) => {
-      console.error("Global unhandledrejection handler:", event);
+      // console.log("Global unhandledrejection handler:", event);
       if (
         event.reason.message === "Network Error" ||
         (event.reason && event.reason.message === "Network Error")
