@@ -484,10 +484,10 @@ const SettingsModal: React.FC = (props) => {
                 <div
                   className="regard-item-content"
                   style={{color: "#FF4900", cursor: "pointer"}}
-                  data-title={"http://www.accessorx.com"}
+                  data-title={"https://www.accessorx.com"}
                   onClick={handleClick}
                 >
-                  http://www.accessorx.com
+                  https://www.accessorx.com
                 </div>
               </div>
               <div className="protocols">
