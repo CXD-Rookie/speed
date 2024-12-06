@@ -76,6 +76,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     (state: any) => state?.modalOpen?.versionState
   ); // 升级弹窗开关
 
+  const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
+  const clientVersion = (window as any).versionNowRef; // 客户端版本号
+
   const {
     identifyAccelerationData,
     removeGameList,
@@ -136,7 +139,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (res?.error === 0) {
         return res?.data;
       } else {
-        tracking.trackBoostFailure(`server=${res?.error}`);
+        tracking.trackBoostFailure(
+          `server=${res?.error};version=${clientVersion + "," + webVersion}`
+        );
       }
     } catch (error) {
       console.log("获取游戏运营平台列表", "error");
@@ -151,7 +156,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (res?.error === 0) {
         return res?.data;
       } else {
-        tracking.trackBoostFailure(`server=${res?.error}`);
+        tracking.trackBoostFailure(
+          `server=${res?.error};version=${clientVersion + "," + webVersion}`
+        );
       }
     } catch (error) {
       console.log("查询黑白名单列表数据", "error");
@@ -194,7 +201,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         api_group.push(
           gameApi.gameList(param).then((response: any) => {
             if (response?.error !== 0) {
-              tracking.trackBoostFailure(`server=${response?.error}`);
+              tracking.trackBoostFailure(
+                `server=${response?.error};version=${
+                  clientVersion + "," + webVersion
+                }`
+              );
             }
 
             return { pid: key, param, list: response?.data?.list || [] };
@@ -451,7 +462,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const js_key = startInfo?.data?.js_key;
 
       if (startInfo?.error !== 0) {
-        tracking.trackBoostFailure(`server=${startInfo?.error}`);
+        tracking.trackBoostFailure(
+          `server=${startInfo?.error};version=${
+            clientVersion + "," + webVersion
+          }`
+        );
       }
 
       localStorage.setItem("StartKey", id);
@@ -607,7 +622,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             }); // 加速完后更新我的游戏
             isPre = true;
           } else {
-            tracking.trackBoostFailure(`client=${state?.code}`);
+            tracking.trackBoostFailure(
+              `client=${state?.code};version=${
+                clientVersion + "," + webVersion
+              }`
+            );
             isPre = false;
             eventBus.emit("showModal", {
               show: true,
@@ -616,7 +635,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
-          tracking.trackBoostFailure(`client=${isCheck?.status}`);
+          tracking.trackBoostFailure(
+            `client=${isCheck?.status};version=${
+              clientVersion + "," + webVersion
+            }`
+          );
           isPre = false;
           eventBus.emit("showModal", {
             show: true,

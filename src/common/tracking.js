@@ -121,8 +121,8 @@ class Tracking {
     this.trackEvent("报错", "error_frontend", `errorCode=${errorCode}`);
   }
 
-  trackServerError (errorCode) {
-    this.trackEvent("报错", "error_server", errorCode);
+  trackServerError (error) {
+    this.trackEvent("报错", "error_server", error);
   }
 
   // 是否是首次
