@@ -78,9 +78,9 @@ const stopProxy = async (t = null) => {
 
 // 服务端 客户端错误码上报
 const serverClientReport = (code) => {
-  const reportCode = [ 803, 804 ];
+  const reportCode = [ 802, 803, 804 ];
   const rechargeReportCode = [ 801 ];
-  const disconnecReportCode = [ 601, 602, 701, 702, 703, 704, 802 ];
+  const disconnecReportCode = [ 601, 602, 701, 702, 703, 704 ];
   const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
   const clientVersion = window.versionNowRef; // 客户端版本号
 
