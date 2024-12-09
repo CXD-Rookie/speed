@@ -28,6 +28,7 @@ import "./my-game.scss";
 import "./library.scss";
 import "./result.scss";
 import axios from "axios";
+import webSocketBeat from "./webSocketService";
 import tracking from "@/common/tracking";
 import RegionNodeSelector from "@/containers/region-node";
 import RealNameModal from "@/containers/real-name";
