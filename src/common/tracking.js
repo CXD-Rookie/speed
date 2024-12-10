@@ -6,6 +6,8 @@ class Tracking {
   }
 
   initEventListeners() {
+    const mchannel = localStorage.getItem("mchannel");
+
     // 前台活跃 - 任何点击、滚动、输入等操作
     document.addEventListener('click', () => {
       // 点击触发埋点上报时，查询是否是第一次，是第一次上传首次活跃，反之非首次活跃，
@@ -34,18 +36,18 @@ class Tracking {
 
         localStorage.setItem("activeTime", String(timeLock));
         this.trackEvent(
-          "活跃",
+          mchannel,
           "active_foreground",
           `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
         );
       }
     });
     
-    this.trackEvent("活跃", "active_background");
+    this.trackEvent(mchannel, "active_background");
 
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
-      this.trackEvent("活跃", "active_background");
+      this.trackEvent(mchannel, "active_background");
     }, 60 * 60 * 10 * 1000);
   }
 
