@@ -33,12 +33,25 @@ import fix_failure from "@/assets/images/fix-utils/fix_failure@2x.png";
 import loginApi from "@/api/login";
 
 const { TabPane } = Tabs;
+const signChannel = [
+  "berrygm",
+  "youxia",
+  "accessorx",
+  "dualspring",
+  "jsqali213",
+  "baidu",
+];
 
 const SettingsModal: React.FC = (props) => {
   const { settingOpen = false, type = "default" } = useSelector((state: any) => state?.modalOpen?.setting);
   const accountInfo = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const payOpen = useSelector((state: any) => state?.modalOpen?.payState?.open);
+  const localMchannel = localStorage.getItem("mchannel") ?? "";
+  const mchannel = signChannel.includes(localMchannel)
+    ? localMchannel
+    : "other";
+
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
 
@@ -483,35 +496,46 @@ const SettingsModal: React.FC = (props) => {
                 <div className="item-title">官网地址</div>
                 <div
                   className="regard-item-content"
-                  style={{color: "#FF4900", cursor: "pointer"}}
-                  data-title={"https://www.accessorx.com"}
+                  style={{ color: "#FF4900", cursor: "pointer" }}
+                  data-title={`https://www.accessorx.com?mchannel=${mchannel}`}
                   onClick={handleClick}
                 >
                   https://www.accessorx.com
                 </div>
               </div>
+              {/* <div className="setting-item">
+                <div className="item-title">官网地址</div>
+                <div
+                  className="regard-item-content"
+                  style={{ color: "#FF4900", cursor: "pointer" }}
+                  data-title={`https://www.accessorx.com?mchannel=${mchannel}`}
+                  onClick={handleClick}
+                >
+                  https://www.accessorx.com
+                </div>
+              </div> */}
               <div className="protocols">
                 <span
                   onClick={handleClick}
-                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  data-title={`https://cdn.accessorx.com/web/terms_of_service.html?mchannel=${mchannel}`}
                 >
                   用户协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://cdn.accessorx.com/web/privacy_policy.html"
+                  data-title={`https://cdn.accessorx.com/web/privacy_policy.html?mchannel=${mchannel}`}
                 >
                   隐私协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://cdn.accessorx.com/web/children's_privacy.html"
+                  data-title={`https://cdn.accessorx.com/web/children's_privacy.html?mchannel=${mchannel}`}
                 >
                   儿童保护及监护人须知
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
+                  data-title={`https://cdn.accessorx.com/web/automatic_renewal_agreement.html?mchannel=${mchannel}`}
                 >
                   自动续费协议
                 </span>
