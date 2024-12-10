@@ -2,12 +2,14 @@ import { getCouponTimeLock } from "@/layout/utils";
 import { store } from "@/redux/store";
 class Tracking {
   constructor() {
+    const signChannel = ["berrygm", "youxia", "accessorx", "dualspring", "jsqali213", "baidu"];
+    const localMchannel = localStorage.getItem("mchannel");
+
     this.initEventListeners();
+    this.mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
   }
 
   initEventListeners() {
-    const mchannel = localStorage.getItem("mchannel");
-
     // 前台活跃 - 任何点击、滚动、输入等操作
     document.addEventListener('click', () => {
       // 点击触发埋点上报时，查询是否是第一次，是第一次上传首次活跃，反之非首次活跃，
@@ -36,18 +38,18 @@ class Tracking {
 
         localStorage.setItem("activeTime", String(timeLock));
         this.trackEvent(
-          mchannel,
+          this.mchannel,
           "active_foreground",
           `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
         );
       }
     });
     
-    this.trackEvent(mchannel, "active_background");
+    this.trackEvent(this.mchannel, "active_background");
 
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
-      this.trackEvent(mchannel, "active_background");
+      this.trackEvent(this.mchannel, "active_background");
     }, 60 * 60 * 10 * 1000);
   }
 
@@ -56,15 +58,15 @@ class Tracking {
   }
 
   trackSignUpSuccess (status, firstVisit) {
-    this.trackEvent("登录注册", "signUp_success", `firstDay=${firstVisit};method=${status}`);
+    this.trackEvent(this.mchannel, "signUp_success", `firstDay=${firstVisit};method=${status}`);
   }
 
   trackLoginSuccess (status) {
-    this.trackEvent("登录注册", "login_success", `method=${status}`);
+    this.trackEvent(this.mchannel, "login_success", `method=${status}`);
   }
 
   trackBoostStart(value, firstVisit) {
-    this.trackEvent("加速", "boost_start", `firstDay=${firstVisit};entrance=${value}`);
+    this.trackEvent(this.mchannel, "boost_start", `firstDay=${firstVisit};entrance=${value}`);
   }
 
   trackBoostSuccess(gameName, firstVisit) {
@@ -76,55 +78,55 @@ class Tracking {
   }
 
   trackBoostFailure(errorCode) {
-    this.trackEvent("加速", "boost_failure", errorCode);
+    this.trackEvent(this.mchannel, "boost_failure", errorCode);
   }
  
   trackBoostDisconnectManual(time) {
-    this.trackEvent("加速", "boost_disconnect_manual");
+    this.trackEvent(this.mchannel, "boost_disconnect_manual");
   }
 
   trackBoostDisconnectPassive(reason) {
-    this.trackEvent("加速", "boost_disconnect_passive", reason);
+    this.trackEvent(this.mchannel, "boost_disconnect_passive", reason);
   }
 
   trackPurchasePageShow(value) {
-    this.trackEvent("付费页", "purchase_page_show", `entrance=${value}`);
+    this.trackEvent(this.mchannel, "purchase_page_show", `entrance=${value}`);
   }
 
   trackPurchaseFailure(buyCount) {
-    this.trackEvent("付费页", "purchase_failure", `errorCode=${buyCount}` );
+    this.trackEvent(this.mchannel, "purchase_failure", `errorCode=${buyCount}` );
   }
   
   trackPurchaseSuccess (buyCount) {
-    this.trackEvent("付费页", "purchase_success", buyCount);
+    this.trackEvent(this.mchannel, "purchase_success", buyCount);
   }
   
   trackPurchaseFirstBuy() {
-    this.trackEvent("活动页", "banner_firstBuy_show", null, null);
+    this.trackEvent(this.mchannel, "banner_firstBuy_show", null, null);
   }
 
   trackPurchaseFirstShow() {
-    this.trackEvent("活动页", "banner_firstReneWal_show", null, null);
+    this.trackEvent(this.mchannel, "banner_firstReneWal_show", null, null);
   }
 
   trackPurchaseFirstBuySuccess() {
-    this.trackEvent("活动页", "banner_firstBuy_success");
+    this.trackEvent(this.mchannel, "banner_firstBuy_success");
   }
 
   trackPurchaseFirstShowSuccess() {
-    this.trackEvent("活动页", "banner_firstReneWal_success");
+    this.trackEvent(this.mchannel, "banner_firstReneWal_success");
   }
 
   trackRedemption(value) {
-    this.trackEvent("口令码", "redemption_success", value);
+    this.trackEvent(this.mchannel, "redemption_success", value);
   }
 
   trackNetworkError(errorCode) {
-    this.trackEvent("报错", "error_frontend", `errorCode=${errorCode}`);
+    this.trackEvent(this.mchannel, "error_frontend", `errorCode=${errorCode}`);
   }
 
   trackServerError (error) {
-    this.trackEvent("报错", "error_server", error);
+    this.trackEvent(this.mchannel, "error_server", error);
   }
 
   // 是否是首次

@@ -33,14 +33,24 @@ import fix_failure from "@/assets/images/fix-utils/fix_failure@2x.png";
 import loginApi from "@/api/login";
 
 const { TabPane } = Tabs;
+const signChannel = [
+  "berrygm",
+  "youxia",
+  "accessorx",
+  "dualspring",
+  "jsqali213",
+  "baidu",
+];
 
 const SettingsModal: React.FC = (props) => {
   const { settingOpen = false, type = "default" } = useSelector((state: any) => state?.modalOpen?.setting);
   const accountInfo = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const payOpen = useSelector((state: any) => state?.modalOpen?.payState?.open);
-
-  const mchannel = localStorage.getItem("mchannel");
+  const localMchannel = localStorage.getItem("mchannel") ?? "";
+  const mchannel = signChannel.includes(localMchannel)
+    ? localMchannel
+    : "other";
 
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
