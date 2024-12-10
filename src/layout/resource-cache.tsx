@@ -79,10 +79,13 @@ import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 import toggleIcon from "@/assets/images/home/toggle.png";
 import networkIcon from "@/assets/images/common/network.png";
 import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
+import iniliteCardIcon from "@/assets/images/common/inilite-card.jpg";
 
 const ResourceCache: React.FC = () => {
   return (
     <div style={{ display: "none" }}>
+      {/* 默认断网卡片图片 */}
+      <img src={iniliteCardIcon} alt="" />
       {/* 默认断网图片 */}
       <img src={iniliteBackGIcon} alt="" />
       {/* 支付断网的图片 */}

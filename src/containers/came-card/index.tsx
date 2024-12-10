@@ -45,7 +45,8 @@ import rightArrow from "@/assets/images/common/right-arrow.svg";
 import acceleratedIcon from "@/assets/images/common/accelerated.svg";
 import cessationIcon from "@/assets/images/common/cessation.svg";
 import addThemeIcon from "@/assets/images/common/add-theme.svg";
-import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
+import iniliteCardIcon from "@/assets/images/common/inilite-card.jpg";
+
 interface GameCardProps {
   options: any;
   locationType: string;
@@ -905,11 +906,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           <div className={`game-card`} key={option?.id}>
             <img
               className="background-img"
-              src={option?.cover_img ?? iniliteBackGIcon}
-              alt={iniliteBackGIcon}
+              src={option?.cover_img ?? iniliteCardIcon}
+              alt={iniliteCardIcon}
               onError={(e: any) => {
                 e.target.onerror = null; // 防止错误循环
-                e.target.src = iniliteBackGIcon;
+                e.target.src = iniliteCardIcon;
               }}
             />
             {/* 立即加速卡片 */}
