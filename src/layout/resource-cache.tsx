@@ -77,10 +77,13 @@ import garenaIcon from "@/assets/images/common/Garena@2x.png";
 import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
 import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 import toggleIcon from "@/assets/images/home/toggle.png";
+import networkIcon from "@/assets/images/common/network.png";
 
 const ResourceCache: React.FC = () => {
   return (
     <div style={{ display: "none" }}>
+      {/* 支付断网的图片 */}
+      <img src={networkIcon} alt="" />
       {/* 游戏详情不同平台icon */}
       <img src={eaIcon} alt="" />
       {/* 游戏详情不同平台icon */}

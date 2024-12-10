@@ -134,13 +134,17 @@ const suitDom = async (num, option) => {
   console.log(num, option);
   
   if (num <= 3) {
-    const state = await window.handleSuitDomList(option); // 通知客户端进行加速
-    console.log("加速信息",state, num, option);
-    
-    if (!state?.state) {
-      num++;
-      suitDom(num, option)
-    }
+    const time = { 2: 10000, 3: 20000 };
+
+    setTimeout(async () => {
+      const state = await window.handleSuitDomList(option); // 通知客户端进行加速
+      console.log("加速信息", state, num, option);
+
+      if (!state?.state) {
+        num++;
+        suitDom(num, option)
+      }
+    }, time?.[num] || 0);
   } else {
     window.stopProcessReset();
     eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });

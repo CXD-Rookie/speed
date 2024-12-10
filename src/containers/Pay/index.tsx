@@ -14,7 +14,7 @@ import payApi from "@/api/pay";
 import PaymentModal from "../payment";
 
 import loadingGif from '@/assets/images/common/jiazai.gif';
-
+import networkIcon from "@/assets/images/common/network.png";
 interface Commodity {
   id: string;
   name: string;
@@ -87,6 +87,8 @@ const PayModal: React.FC = (props) => {
   const [arrow, setArrow] = useState(0); // 商品列表左右箭头移动的位置
   const [refresh, setRefresh] = useState(0); // 控制页面是否重新请求
   const [activeTabIndex, setActiveTabIndex] = useState(0); // 选中商品索引
+
+  const [networkState, setNetworkState] = useState(true);
 
   // 当前选中的商品是否是连续续费的
   const activePayId = ["5", "6", "7", "8"].includes(
@@ -321,7 +323,7 @@ const PayModal: React.FC = (props) => {
             }
           });
         }
-        
+
         // 2已支付 3支付失败 4手动取消 5超时取消
         if ([2, 3, 4, 5].includes(status) && res?.data?.cid) {
           const commodityRes = await payApi.getCommodityInfo(res.data?.cid);
@@ -358,6 +360,27 @@ const PayModal: React.FC = (props) => {
       console.log("error", error);
     }
   };
+
+  useEffect(() => {
+    // 定义处理网络状态变化的函数
+    const handleNetworkChange = () => {
+      console.log(navigator.onLine);
+      setNetworkState(navigator?.onLine);
+    };
+
+    // 添加事件监听器
+    window.addEventListener("online", handleNetworkChange);
+    window.addEventListener("offline", handleNetworkChange);
+
+    // 初始检查网络状态
+    handleNetworkChange();
+
+    // 清理函数，确保组件卸载时移除事件监听器
+    return () => {
+      window.removeEventListener("online", handleNetworkChange);
+      window.removeEventListener("offline", handleNetworkChange);
+    };
+  }, []); // 确保这个 effect 只运行一次
 
   // 监听二维码地址，等待二维码资源完全加载完成后，再停止loading
   useEffect(() => {
@@ -457,8 +480,15 @@ const PayModal: React.FC = (props) => {
               电竞专线/海外专线/超低延迟/动态多包/智能加速/多平台加速
             </div>
           </div>
-          {iniliteLoading ? (
-            <img className="pay-loading-img" src={loadingGif} alt="" />
+          {iniliteLoading || !networkState ? (
+            !networkState ? (
+              <div className="pay-network-img">
+                <img src={networkIcon} alt="" />
+                <div>当前无网络链接</div>
+              </div>
+            ) : (
+              <img className="pay-loading-img" src={loadingGif} alt="" />
+            )
           ) : (
             <div className="tabs-container">
               {/* 商品列表左右按钮 */}
