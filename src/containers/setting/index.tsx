@@ -503,6 +503,17 @@ const SettingsModal: React.FC = (props) => {
                   https://www.accessorx.com
                 </div>
               </div>
+              {/* <div className="setting-item">
+                <div className="item-title">官网地址</div>
+                <div
+                  className="regard-item-content"
+                  style={{ color: "#FF4900", cursor: "pointer" }}
+                  data-title={`https://www.accessorx.com?mchannel=${mchannel}`}
+                  onClick={handleClick}
+                >
+                  https://www.accessorx.com
+                </div>
+              </div> */}
               <div className="protocols">
                 <span
                   onClick={handleClick}
