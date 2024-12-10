@@ -32,9 +32,14 @@ setupInterceptors();
 instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token') || '';
+    const mchannel = localStorage.getItem("mchannel");
+
     if (token && token !== "undefined") {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
+
+    config.headers.mchannel = mchannel;
+    
     return config;
   },
   error => {
