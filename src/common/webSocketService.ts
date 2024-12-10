@@ -24,6 +24,11 @@ class WebSocketService {
   private reconnectTimeout: NodeJS.Timeout | null = null; // 用于存储重连的定时器
   private messageAttempts: number = 0; // 用于记录无token时的消息发送次数
   private readonly maxMessageAttempts: number = 10; // 最大发送次数
+  private verifyErrorCode: number = 4000; // 前端校验ws参数错误
+  private serveErrorCode: number = 4001; // 服务端未返回值ws错误
+  private reconnectErrorCode: number = 4002 // 重连次数最大后错误码
+  private normalCloseCode: number = 4004 // 正常手动关闭ws
+  private severlverifyCode: number = 4004 // 服务端返回code大于 0
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     this.url = url;
@@ -56,36 +61,55 @@ class WebSocketService {
     };
 
     this.ws.onmessage = (event: any) => {
-      let t = JSON.parse(event.data);
-      if (t.code === 110001) {
-        if (!localStorage.getItem('isClosed') && localStorage.getItem('token')) {
-          localStorage.setItem('isClosed', 'true'); // 标记为已关闭
-          const isRemote = JSON.parse(localStorage.getItem("isRemote") || "0") // 标记11001是绑定手机时出现的
-   
-          if (!Number(isRemote)) {
-            (window as any).loginOutStopWidow("remoteLogin");
-          } else {
-            localStorage.removeItem("token");
-            localStorage.removeItem("isRealName");
-            // localStorage.removeItem("is_new_user");
-            localStorage.removeItem("isModalDisplayed");
-            eventBus.emit('clearTimer');
-          }
-
-          localStorage.removeItem("isRemote")
+      const serveData = JSON.parse(event.data);
+      
+      if (serveData?.code === 110001 && !localStorage.getItem('isClosed') && localStorage.getItem('token')) {
+        localStorage.setItem('isClosed', 'true'); // 标记为已关闭
+        const isRemote = JSON.parse(localStorage.getItem("isRemote") || "0") // 标记11001是绑定手机时出现的
+  
+        if (!Number(isRemote)) {
+          (window as any).loginOutStopWidow("remoteLogin");
+        } else {
+          localStorage.removeItem("token");
+          localStorage.removeItem("isRealName");
+          localStorage.removeItem("isModalDisplayed");
+          eventBus.emit('clearTimer');
         }
+
+        localStorage.removeItem("isRemote")
+      } else if (serveData?.code > 0) {
+        // 服务端返回code不为0,直接断开
+        this.close({
+          code: serveData?.code,
+          reason: serveData?.message,
+        });
+      } else if (!serveData || !event) {
+        this.close({code: this.serveErrorCode}); // ws没有返回值
       }
+      
       onMessage(event);
     };
 
-    this.ws.onclose = () => {
-      console.log('WebSocket connection closed');
+    this.ws.onclose = (event) => {
+      console.log('WebSocket connection closed', event);
+
+      const normalCode = [this.verifyErrorCode, this.reconnectErrorCode, this.normalCloseCode,];
+      const serveCode = [this.serveErrorCode]
+
       this.stopHeartbeat();
-      this.handleReconnection();
+      
+      // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
+      if (!normalCode.includes(event?.code) || serveCode.includes(event?.code)) {
+        this.handleReconnection();
+      }
     };
 
     this.ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.log('WebSocket error:', error);
+
+      // if () {
+
+      // }
       this.stopHeartbeat();
       this.handleReconnection();
     };
@@ -96,9 +120,10 @@ class WebSocketService {
   handleReconnection() {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       const retryTimeout = this.reconnectInterval * Math.pow(2, this.reconnectAttempts);
+      
       this.reconnectAttempts++;
       console.log(`尝试第 ${this.reconnectAttempts} 次重连，等待 ${retryTimeout / 1000} 秒...`);
-      // message.warning('网络连接不稳定，正在尝试重连...',5);
+
       if (this.reconnectTimeout) {
         clearTimeout(this.reconnectTimeout); // 清除旧的定时器
       }
@@ -110,19 +135,29 @@ class WebSocketService {
       console.error('超过最大重连次数，放弃重连');
       eventBus.emit('clearTimer');
       eventBus.emit('showModal', { show: true, type: "netorkError" });
-      this.close();
+      this.close({
+        code: this.reconnectErrorCode,
+        reason: "前端校验参数失败"
+      });
     }
   }
 
   sendMessage(message: any) {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      // console.log('Sending message:发送消息',);
+    const id = message?.client_id;
+    const token = message?.client_token;
+    const platform = message?.platform;
+    const user_token = message?.user_token;
+    const isLoginTrue = id && token && platform === 3 && user_token;
+
+    if (isLoginTrue && this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     } else {
-      console.error('WebSocket is not open. Unable to send message:', message);
+      console.log('WebSocket is not open. Unable to send message:', message);
       this.messageQueue.push(message);
-      this.close();
-      this.handleReconnection();
+      // this.close({
+      //   code: this.verifyErrorCode,
+      //   reason: "前端校验参数失败"
+      // });
     }
   }
 
@@ -134,51 +169,19 @@ class WebSocketService {
     }
   }
 
-  // startHeartbeat() {
-  //   if (!this.hasToken) {
-  //     console.log('No token available, heartbeat not started');
-  //     return;
-  //   }
-  //   console.log('Starting heartbeat');
-  //   this.heartbeatInterval = setInterval(() => {
-  //     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-  //       this.sendMessage({
-  //         platform: 3,
-  //         client_token: localStorage.getItem('client_token') || '{}',
-  //         client_id: localStorage.getItem('client_id') || '{}',
-  //         user_token: JSON.parse(localStorage.getItem('token') || '{}'),
-  //       });
-  //     }
-  //   }, 5000); // 每5秒发送一次心跳
-  // }
   startHeartbeat() {
     // 如果没有 token，也允许发送消息
-    if (!this.hasToken && this.messageAttempts < this.maxMessageAttempts) {
+    if (!this.hasToken) {
       console.log('No token available, starting message attempts');
       this.heartbeatInterval = setInterval(() => {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-          this.sendMessage({
-            platform: 3,
-            client_token: localStorage.getItem('client_token') || '{}',
-            client_id: localStorage.getItem('client_id') || '{}',
-            user_token: JSON.parse(localStorage.getItem('token') || '{}'),
-          });
-  
-          this.messageAttempts++;
-  
-          // 当达到最大次数，停止发送消息
-          if (this.messageAttempts >= this.maxMessageAttempts) {
-            console.log('Reached maximum message attempts without token, stopping...');
-            //@ts-ignore
-            clearInterval(this.heartbeatInterval);
-            this.heartbeatInterval = null;
-          }
-        }
+        console.log(1111);
+        (window as any).a();
       }, 5000); // 每5秒发送一次消息
   
       return; // 无 token 时返回，避免进入有 token 的逻辑
     }
-  
+
+
     // 有 token 时的正常心跳逻辑
     if (this.hasToken) {
       console.log('Starting heartbeat');
@@ -203,19 +206,26 @@ class WebSocketService {
     }
   }
 
-  close() {
+  close(event: any = null) {
     if (this.ws) {
-      console.log('Closing WebSocket connection');
-      this.ws.close();
+      console.log('Closing WebSocket connection', event);
+      if (event && event.code) {
+        const privateCode = [this.verifyErrorCode, this.serveErrorCode, this.reconnectErrorCode, this.normalCloseCode];
+        // 不在已经定义的错误码并且是服务端返回的错误码 关闭连接时的状态码不能大于 65535
+        const isSever = !privateCode.includes(event.code) && event.code > 0;
+
+        this.ws.close(isSever ? this.severlverifyCode : event?.code, event?.reason);
+      } else {
+        this.ws.close(); // 使用默认的关闭状态码
+      }
     }
   }
 
   checkNetworkStatus() {
-    window.addEventListener('offline', () => {
-      console.log('Network disconnected, attempting reconnection...');
-      // tracking.trackNetworkError("网络断开offline");
-      this.handleReconnection();
-    }); 
+    // window.addEventListener('offline', () => {
+    //   console.log('Network disconnected, attempting reconnection...');
+    //   this.handleReconnection();
+    // });
     window.addEventListener('online', () => {
       console.log('Network reconnected, attempting to reconnect WebSocket');
       if (this.hasToken) {
@@ -229,18 +239,18 @@ class WebSocketService {
   updateTokenAndReconnect(newToken: any) {
     localStorage.removeItem("token");
     localStorage.removeItem("isRealName");
-    // localStorage.removeItem("is_new_user");
-    //@ts-ignore
+
     setTimeout(() => {
       localStorage.setItem('token', JSON.stringify(newToken)); 
       this.hasToken = true; // 更新 token 后标记 token 存在     
     }, 500);
-    this.close(); // 关闭当前 WebSocket 连接
+
+    this.close({ code: this.normalCloseCode, reason: "游侠登录后主动关闭ws"}); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
   }
 
   loginReconnect() {
-    this.close(); // 关闭当前 WebSocket 连接
+    this.close({ code: this.normalCloseCode, reason: "登录后主动关闭ws"}); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
   }
 }
