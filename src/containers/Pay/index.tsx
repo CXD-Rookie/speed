@@ -389,8 +389,6 @@ const PayModal: React.FC = (props) => {
       const iniliteData = data?.commodity;
 
       if (iniliteData?.length > 0) {
-        console.log(data?.coupon, activeCoupon, couponValue);
-        
         // 生成二维码信息
         updateQRCodesInfo({
           cid: iniliteData?.[activeTabIndex].id,
