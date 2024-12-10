@@ -880,6 +880,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       dispatch(setBoostTrack(customAccelerationData?.track));
       handleBeforeVerify(customAccelerationData);
     }
+
+    (window as any).handleSuitDomList = handleSuitDomList;
   }, [customAccelerationData]);
 
   return (

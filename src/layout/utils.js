@@ -78,9 +78,9 @@ const stopProxy = async (t = null) => {
 
 // 服务端 客户端错误码上报
 const serverClientReport = (code) => {
-  const reportCode = [ 802, 803, 804 ];
+  const reportCode = [ 803, 804 ];
   const rechargeReportCode = [ 801 ];
-  const disconnecReportCode = [ 601, 602, 701, 702, 703, 704 ];
+  const disconnecReportCode = [601, 602, 701, 702, 703, 704, 802];
   const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
   const clientVersion = window.versionNowRef; // 客户端版本号
 
@@ -97,6 +97,7 @@ const serverClientReport = (code) => {
     tracking.trackBoostDisconnectPassive(`server=${code};version=${clientVersion + "," + webVersion}`);
     window.stopProcessReset();
     eventBus.emit("showModal", { show: true, type: "serviceExpired" });
+    
     return;
   }
 
@@ -104,26 +105,68 @@ const serverClientReport = (code) => {
   if (disconnecReportCode.includes(Number(code))) {
     console.log(code);
     tracking.trackBoostDisconnectPassive(`server=${code};version=${clientVersion + "," + webVersion}`);
-    window.stopProcessReset();
-    eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+
+    // 802做展示
+    if ([601, 602, 701, 702, 703, 704].includes(Number(code))) {
+      stopProxy(); // 停止加速进程不做ui展示
+
+      const list = localStorage.getItem("speed-1.0.0.1-games");
+      const data = list ? JSON.parse(list) : [];
+      const option = data.find(item => item?.is_accelerate);
+
+      let num = 1;
+
+      suitDom(num, option);
+    } else {
+      window.stopProcessReset();
+      eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+    }
+
     return;
   }
 
   console.log(code);
   // 退出码，异常退出，只做停止加速
-  window.stopProcessReset();
+  // window.stopProcessReset();
+}
+
+const suitDom = async (num, option) => {
+  console.log(num, option);
+  
+  if (num <= 3) {
+    const state = await window.handleSuitDomList(option); // 通知客户端进行加速
+    console.log("加速信息",state, num, option);
+    
+    if (!state?.state) {
+      num++;
+      suitDom(num, option)
+    }
+  } else {
+    window.stopProcessReset();
+    eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+  }
 }
 
 // 异常原因上报
-const exceptionReport = (value) => {
+const exceptionReport = async (value) => {
   if (value) {
-    const decodedString = atob(value);
-    console.log(decodedString, value);
+    // const decodedString = atob(value);
+    // console.log(decodedString, value);
 
     const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
     const clientVersion = window.versionNowRef; // 客户端版本号
 
-    tracking.trackBoostDisconnectPassive(`client=${decodedString};version=${clientVersion + "," + webVersion}`);
+    // 无感知停止加速，再开始加速
+    tracking.trackBoostDisconnectPassive(`client=${value};version=${clientVersion + "," + webVersion}`);
+    stopProxy(); // 停止加速进程不做ui展示
+
+    const list = localStorage.getItem("speed-1.0.0.1-games");
+    const data = list ? JSON.parse(list) : [];
+    const option = data.find(item => item?.is_accelerate);
+
+    let num = 1;
+
+    suitDom(num, option);
   }
 }
 
