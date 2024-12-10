@@ -78,10 +78,13 @@ import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
 import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 import toggleIcon from "@/assets/images/home/toggle.png";
 import networkIcon from "@/assets/images/common/network.png";
+import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
 
 const ResourceCache: React.FC = () => {
   return (
     <div style={{ display: "none" }}>
+      {/* 默认断网图片 */}
+      <img src={iniliteBackGIcon} alt="" />
       {/* 支付断网的图片 */}
       <img src={networkIcon} alt="" />
       {/* 游戏详情不同平台icon */}
