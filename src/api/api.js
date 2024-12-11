@@ -32,15 +32,15 @@ setupInterceptors();
 instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token') || '';
-    const signChannel = ["berrygm", "youxia", "accessorx", "dualspring", "jsqali213", "baidu"];
-    const localMchannel = localStorage.getItem("mchannel");
-    const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other"
+    // const signChannel = ["berrygm", "youxia", "accessorx", "dualspring", "jsqali213", "baidu"];
+    // const localMchannel = localStorage.getItem("mchannel");
+    // const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other"
 
     if (token && token !== "undefined") {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
 
-    config.headers.mchannel = mchannel;
+    // config.headers.mchannel = mchannel;
     
     return config;
   },
