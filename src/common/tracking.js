@@ -2,7 +2,7 @@ import { getCouponTimeLock } from "@/layout/utils";
 import { store } from "@/redux/store";
 class Tracking {
   constructor() {
-    const signChannel = ["berrygm", "youxia", "accessorx", "dualspring", "jsqali213", "baidu"];
+    const signChannel = ["berrygm", "ali213", "accessorx", "dualspring", "jsqali213", "baidu"];
     const localMchannel = localStorage.getItem("mchannel");
 
     this.localMchannel = localMchannel;
