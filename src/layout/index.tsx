@@ -409,7 +409,7 @@ const Layouts: React.FC = () => {
   };
 
   const schedulePolling = (event: any) => {
-    console.log(event);
+    // console.log(event);
 
     if (event?.data) {
       const data = JSON.parse(event.data);

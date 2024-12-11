@@ -90,25 +90,12 @@ class WebSocketService {
       const serveCode = [this.serveErrorCode]
 
       this.stopHeartbeat();
-      this.reconnectAttempts = 0; // 只要关闭了连接就重置连接次数
 
       // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
       if (!normalCode.includes(event?.code) || serveCode.includes(event?.code)) {
         this.handleReconnection();
       }
     };
-
-    this.ws.onerror = (error) => {
-      console.log('WebSocket error:', error);
-
-      // if () {
-
-      // }
-      this.stopHeartbeat();
-      this.handleReconnection();
-    };
-
-    this.checkNetworkStatus();
   }
 
   // 重连机制
@@ -207,20 +194,6 @@ class WebSocketService {
     }
   }
 
-  checkNetworkStatus() {
-    // window.addEventListener('offline', () => {
-    //   this.handleReconnection();
-    // });
-    window.addEventListener('online', () => {
-      console.log('Network reconnected, attempting to reconnect WebSocket');
-      if (this.hasToken) {
-        this.connect(this.url, this.onMessage, this.dispatch); // 网络恢复后重连
-      } else {
-        this.handleReconnection(); // 没有 token 时也尝试重连
-      }
-    });
-  }
-
   // 游侠登录触发的更新token重新连接
   updateTokenAndReconnect(newToken: any) {
     localStorage.removeItem("token");
@@ -237,6 +210,8 @@ class WebSocketService {
 
   // 登录后重新连接
   loginReconnect() {
+    console.log(111);
+    
     this.close({ code: this.normalCloseCode, reason: "登录后主动关闭ws"}); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
   }
