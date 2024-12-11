@@ -123,7 +123,7 @@ const serverClientReport = (code) => {
       window.stopProcessReset();
 
       // 如果网络断开弹窗已经弹出
-      if (eventBuNetwork === "1") {
+      if (!(eventBuNetwork === "1")) {
         eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
       }
     }
@@ -133,7 +133,7 @@ const serverClientReport = (code) => {
 
   console.log(code);
   // 退出码，异常退出，只做停止加速
-  // window.stopProcessReset();
+  window.stopProcessReset();
 }
 
 const suitDom = async (num, option) => {
@@ -157,7 +157,7 @@ const suitDom = async (num, option) => {
     window.stopProcessReset();
 
     // 如果网络断开弹窗已经弹出
-    if (eventBuNetwork === "1") {
+    if (!(eventBuNetwork === "1")) {
       eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
     }
   }
