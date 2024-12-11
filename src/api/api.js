@@ -32,7 +32,7 @@ setupInterceptors();
 instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token') || '';
-    // const signChannel = ["berrygm", "youxia", "accessorx", "dualspring", "jsqali213", "baidu"];
+    // const signChannel = ["berrygm", "ali213", "accessorx", "dualspring", "jsqali213", "baidu"];
     // const localMchannel = localStorage.getItem("mchannel");
     // const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other"
 
