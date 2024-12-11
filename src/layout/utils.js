@@ -118,8 +118,14 @@ const serverClientReport = (code) => {
 
       suitDom(num, option);
     } else {
+      const eventBuNetwork = localStorage.getItem("EventBuNetwork");
+      
       window.stopProcessReset();
-      eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+
+      // 如果网络断开弹窗已经弹出
+      if (eventBuNetwork === "1") {
+        eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+      }
     }
 
     return;
@@ -146,8 +152,14 @@ const suitDom = async (num, option) => {
       }
     }, time?.[num] || 0);
   } else {
+    const eventBuNetwork = localStorage.getItem("EventBuNetwork");
+
     window.stopProcessReset();
-    eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+
+    // 如果网络断开弹窗已经弹出
+    if (eventBuNetwork === "1") {
+      eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
+    }
   }
 }
 

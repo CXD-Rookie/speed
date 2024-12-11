@@ -234,6 +234,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(option?.show || true);
     setNoticeType(option?.type || "");
 
+    if (option?.type === "netorkError") {
+      localStorage.setItem("eventBuNetwork", "1");
+    }
+
     if (option?.type === "newVersionFound") {
       setVersion(option?.version);
     } else if (option?.type === "issueFeedback") {
@@ -244,6 +248,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   };
 
   useEffect(() => {
+    localStorage.removeItem("EventBuNetwork");
     eventBus.on("showModal", showModal);
 
     return () => {
