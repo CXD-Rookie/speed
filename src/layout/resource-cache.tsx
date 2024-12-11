@@ -84,6 +84,8 @@ import iniliteCardIcon from "@/assets/images/common/inilite-card.jpg";
 const ResourceCache: React.FC = () => {
   const [carouselImage, setCarouselImage] = useState<any>([]);
 
+  const cdn_url = "https://cdn.accessorx.com/";
+
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
     let storedData = localStorage.getItem("all_data")
@@ -95,18 +97,10 @@ const ResourceCache: React.FC = () => {
   return (
     <div style={{ display: "none" }}>
       {/* 默认断网轮播图片 */}
-      <img
-        src={`https://cdn.accessorx.com/${carouselImage?.[0]?.image_url}`}
-        alt=""
-      />
-      <img
-        src={`https://cdn.accessorx.com/${carouselImage?.[1]?.image_url}`}
-        alt=""
-      />
-      <img
-        src={`https://cdn.accessorx.com/${carouselImage?.[2]?.image_url}`}
-        alt=""
-      />
+      {carouselImage?.length > 0 &&
+        carouselImage?.map(({ image_url }: any) => (
+          <img key={image_url} src={`${cdn_url + image_url}`} alt="" />
+        ))}
       {/* 默认断网卡片图片 */}
       <img src={iniliteCardIcon} alt="" />
       {/* 默认断网图片 */}

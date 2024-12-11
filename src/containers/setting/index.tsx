@@ -35,7 +35,7 @@ import loginApi from "@/api/login";
 const { TabPane } = Tabs;
 const signChannel = [
   "berrygm",
-  "youxia",
+  "ali213",
   "accessorx",
   "dualspring",
   "jsqali213",

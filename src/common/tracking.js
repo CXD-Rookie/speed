@@ -2,9 +2,10 @@ import { getCouponTimeLock } from "@/layout/utils";
 import { store } from "@/redux/store";
 class Tracking {
   constructor() {
-    const signChannel = ["berrygm", "youxia", "accessorx", "dualspring", "jsqali213", "baidu"];
+    const signChannel = ["berrygm", "ali213", "accessorx", "dualspring", "jsqali213", "baidu"];
     const localMchannel = localStorage.getItem("mchannel");
 
+    this.localMchannel = localMchannel;
     this.mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
     this.initEventListeners();
   }
@@ -30,7 +31,6 @@ class Tracking {
         const isReal = localStorage.getItem("isRealName") === "0" ? 1 : 0 // 实名认证 0 未认证 1 认证
         const webVersion = process.env.REACT_APP_VERSION;
         const clientVersion = window.versionNowRef;
-        console.log(webVersion);
         
         if (isVisit === 1) {
           localStorage.setItem("firstActiveTime", String(timeLock));
@@ -40,18 +40,18 @@ class Tracking {
         this.trackEvent(
           this.mchannel,
           "active_foreground",
-          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}`,
+          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion};editedChannelID=${this.localMchannel}`,
         );
       }
     });
     
     if (this.mchannel) {
-      this.trackEvent(this.mchannel, "active_background");
+      this.trackEvent(this.mchannel, "active_background", `editedChannelID=${this.localMchannel}`);
     }
 
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
-      this.trackEvent(this.mchannel, "active_background");
+      this.trackEvent(this.mchannel, "active_background", `editedChannelID=${this.localMchannel}`);
     }, 60 * 60 * 10 * 1000);
   }
 
@@ -60,84 +60,75 @@ class Tracking {
   }
 
   trackSignUpSuccess (status, firstVisit) {
-    this.trackEvent(this.mchannel, "signUp_success", `firstDay=${firstVisit};method=${status}`);
+    this.trackEvent(this.mchannel, "signUp_success", `firstDay=${firstVisit};method=${status};editedChannelID=${this.localMchannel}`);
   }
 
   trackLoginSuccess (status) {
-    this.trackEvent(this.mchannel, "login_success", `method=${status}`);
+    this.trackEvent(this.mchannel, "login_success", `method=${status};editedChannelID=${this.localMchannel}`);
   }
 
   trackBoostStart(value, firstVisit) {
-    this.trackEvent(this.mchannel, "boost_start", `firstDay=${firstVisit};entrance=${value}`);
+    this.trackEvent(this.mchannel, "boost_start", `firstDay=${firstVisit};entrance=${value};editedChannelID=${this.localMchannel}`);
   }
 
-  trackBoostSuccess(gameName, firstVisit) {
+  trackBoostSuccess(firstVisit) {
     this.trackEvent(
       this.mchannel,
       "boost_success",
-      `firstDay=${firstVisit};gameName=${gameName}`
+      `firstDay=${firstVisit};editedChannelID=${this.localMchannel}`
     );
   }
 
   trackBoostFailure(errorCode) {
-    this.trackEvent(this.mchannel, "boost_failure", errorCode);
+    this.trackEvent(this.mchannel, "boost_failure", errorCode + `;editedChannelID=${this.localMchannel}`);
   }
  
-  trackBoostDisconnectManual(time) {
-    this.trackEvent(this.mchannel, "boost_disconnect_manual");
+  trackBoostDisconnectManual() {
+    this.trackEvent(this.mchannel, "boost_disconnect_manual", `;editedChannelID=${this.localMchannel}`);
   }
 
   trackBoostDisconnectPassive(reason) {
-    this.trackEvent(this.mchannel, "boost_disconnect_passive", reason);
+    this.trackEvent(this.mchannel, "boost_disconnect_passive", reason + `;editedChannelID=${this.localMchannel}`);
   }
 
   trackPurchasePageShow(value) {
-    this.trackEvent(this.mchannel, "purchase_page_show", `entrance=${value}`);
+    this.trackEvent(this.mchannel, "purchase_page_show", `entrance=${value};editedChannelID=${this.localMchannel}`);
   }
 
   trackPurchaseFailure(buyCount) {
-    this.trackEvent(this.mchannel, "purchase_failure", `errorCode=${buyCount}` );
+    this.trackEvent(this.mchannel, "purchase_failure", `errorCode=${buyCount};editedChannelID=${this.localMchannel}` );
   }
   
   trackPurchaseSuccess (buyCount) {
-    this.trackEvent(this.mchannel, "purchase_success", buyCount);
+    this.trackEvent(this.mchannel, "purchase_success", buyCount + `;editedChannelID=${this.localMchannel}`);
   }
   
   trackPurchaseFirstBuy() {
-    this.trackEvent(this.mchannel, "banner_firstBuy_show", null, null);
+    this.trackEvent(this.mchannel, "banner_firstBuy_show", `editedChannelID=${this.localMchannel}`, null);
   }
 
   trackPurchaseFirstShow() {
-    this.trackEvent(this.mchannel, "banner_firstReneWal_show", null, null);
+    this.trackEvent(this.mchannel, "banner_firstReneWal_show", `editedChannelID=${this.localMchannel}`, null);
   }
 
   trackPurchaseFirstBuySuccess() {
-    this.trackEvent(this.mchannel, "banner_firstBuy_success");
+    this.trackEvent(this.mchannel, "banner_firstBuy_success", `editedChannelID=${this.localMchannel}`);
   }
 
   trackPurchaseFirstShowSuccess() {
-    this.trackEvent(this.mchannel, "banner_firstReneWal_success");
+    this.trackEvent(this.mchannel, "banner_firstReneWal_success", `editedChannelID=${this.localMchannel}`);
   }
 
   trackRedemption(value) {
-    this.trackEvent(this.mchannel, "redemption_success", value);
+    this.trackEvent(this.mchannel, "redemption_success", value + `;editedChannelID=${this.localMchannel}`);
   }
 
   trackNetworkError(errorCode) {
-    this.trackEvent(this.mchannel, "error_frontend", `errorCode=${errorCode}`);
+    this.trackEvent(this.mchannel, "error_frontend", `errorCode=${errorCode};editedChannelID=${this.localMchannel}`);
   }
 
   trackServerError (error) {
-    this.trackEvent(this.mchannel, "error_server", error);
-  }
-
-  // 是否是首次
-  trueOrFalseYouXia() {
-    // 根据localStorage是否存储过 activeTime 返回 0 是 非首次 或 1 是 首次
-    const foreground = localStorage.getItem("activeTime"); // 每天定时00点时间锁
-    console.log(Boolean(foreground));
-
-    return Boolean(foreground) ? 0 : 1;
+    this.trackEvent(this.mchannel, "error_server", error + `;editedChannelID=${this.localMchannel}`);
   }
 
   // 是否是首次活跃
