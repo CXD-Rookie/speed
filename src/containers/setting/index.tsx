@@ -496,19 +496,21 @@ const SettingsModal: React.FC = (props) => {
                 <div className="item-title">官网地址</div>
                 <div
                   className="regard-item-content"
-                  style={{ color: "#FF4900", cursor: "pointer" }}
+                  style={{ width: "fit-content", color: "#FF4900", cursor: "pointer" }}
                   data-title={`https://www.accessorx.com?mchannel=${mchannel}`}
                   onClick={handleClick}
                 >
                   https://www.accessorx.com
                 </div>
               </div>
-              <div
-                className="customer-item-content"
-                data-title={`https://qm.qq.com/q/KzaRJZbj8I`}
-                onClick={handleClick}
-              >
-                点击加官方客服群：955852815
+              <div className="customer-item-content">
+                点击加官方客服群：
+                <span
+                  data-title={`https://qm.qq.com/q/KzaRJZbj8I`}
+                  onClick={handleClick}
+                >
+                  955852815
+                </span>
               </div>
               <div className="protocols">
                 <span
