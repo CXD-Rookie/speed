@@ -32,13 +32,15 @@ setupInterceptors();
 instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token') || '';
-    const mchannel = localStorage.getItem("mchannel");
+    // const signChannel = ["berrygm", "youxia", "accessorx", "dualspring", "jsqali213", "baidu"];
+    // const localMchannel = localStorage.getItem("mchannel");
+    // const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other"
 
     if (token && token !== "undefined") {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
 
-    config.headers.mchannel = mchannel;
+    // config.headers.mchannel = mchannel;
     
     return config;
   },
@@ -52,13 +54,14 @@ instance.interceptors.response.use(
   response => {
     const code = response?.data?.error;
     const url = response?.config?.url
+    const message = response?.data?.message;
     
     if (code > 0) {
       let errorCode = [110001];
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;
       
-      tracking.trackServerError(`errorCode=${code};version=${clientVersion + "," + webVersion};apiName=${url}`)
+      tracking.trackServerError(`errorCode=${code};version=${clientVersion + "," + webVersion};message=${message};apiName=${url}`)
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
         // window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {

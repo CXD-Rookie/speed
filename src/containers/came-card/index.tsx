@@ -141,7 +141,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         return res?.data;
       } else {
         tracking.trackBoostFailure(
-          `server=${res?.error};version=${clientVersion + "," + webVersion}`
+          `server=${res?.error};version=${clientVersion + "," + webVersion};message=${res?.message}`
         );
       }
     } catch (error) {
@@ -158,7 +158,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         return res?.data;
       } else {
         tracking.trackBoostFailure(
-          `server=${res?.error};version=${clientVersion + "," + webVersion}`
+          `server=${res?.error};version=${
+            clientVersion + "," + webVersion
+          };message=${res?.message}`
         );
       }
     } catch (error) {
@@ -205,7 +207,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               tracking.trackBoostFailure(
                 `server=${response?.error};version=${
                   clientVersion + "," + webVersion
-                }`
+                };message=${response?.message}`
               );
             }
 
@@ -466,7 +468,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         tracking.trackBoostFailure(
           `server=${startInfo?.error};version=${
             clientVersion + "," + webVersion
-          }`
+          };message=${startInfo?.message}`
         );
       }
 

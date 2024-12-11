@@ -22,6 +22,7 @@ import logoIcon from "@/assets/images/common/logo.png";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
 import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
+import { useNavigate } from "react-router-dom";
 
 // 手机号对应错误码文案
 const phoneErrorText: any = {
@@ -38,6 +39,7 @@ const codeErrorText: any = {
 
 const Login: React.FC = () => {
   const dispatch: any = useDispatch();
+  const navigate = useNavigate();
 
   const [phoneNumber, setPhoneNumber] = useState(""); // 手机号
   const [verificationCode, setVerificationCode] = useState(""); // 验证码
@@ -133,8 +135,10 @@ const Login: React.FC = () => {
         }
 
         // 3个参数 用户信息 是否登录 是否显示登录
-        dispatch(setAccountInfo(res.data.user_info, true, false));
         webSocketService.loginReconnect();
+        dispatch(setAccountInfo(res.data.user_info, true, false));
+
+        navigate("/home");
       } else {
         setCodeError("2")
       }

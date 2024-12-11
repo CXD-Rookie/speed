@@ -107,7 +107,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   useEffect(() => {
     const iniliteFun = async () => {
-      const record: any = (await fetchRecords())?.data; // 优惠券列表
+      const record: any = (await fetchRecords())?.data || []; // 优惠券列表
       const timestamp = Number(localStorage.getItem("timestamp")); // 服务端返回的当前时间
       const isHave = record.some(
         (item: any) =>
@@ -132,7 +132,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
     const iniliteFun = async () => {
       const tiem_lock: any = getCouponTimeLock();
       const timestamp = Number(localStorage.getItem("timestamp")); // 服务端返回的当前时间
-      const record: any = (await fetchRecords())?.data;
+      const record: any = (await fetchRecords())?.data || [];
       const couponTimeLock = localStorage.getItem("couponTimeLock") || 0; // 每天00点的时间锁
       const isHave = record.some(
         (item: any) =>

@@ -214,7 +214,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
             },
             {
               key: "lose",
-              label: `已失效（${loseTotal}）`,
+              label: `已失效（${loseTotal || 0}）`,
               children: (
                 <div className="coupon-tabs-content">
                   {couponLoseData?.length > 0 ? (
