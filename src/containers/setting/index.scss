@@ -161,6 +161,13 @@
         }
       }
     }
+    
+    .customer-item-content {
+      font-weight: 400;
+      font-size: 1.2vw;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+    }
 
     .protocols {
       position: absolute;
