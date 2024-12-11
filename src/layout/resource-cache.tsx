@@ -1,5 +1,5 @@
 // 资源缓存区
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import loadingGif from "@/assets/images/common/jiazai.gif";
 import newUserIcon from "@/assets/images/home/new-user.png";
@@ -82,8 +82,31 @@ import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
 import iniliteCardIcon from "@/assets/images/common/inilite-card.jpg";
 
 const ResourceCache: React.FC = () => {
+  const [carouselImage, setCarouselImage] = useState<any>([]);
+
+  useEffect(() => {
+    // 初始化时从 localStorage 读取banner数据
+    let storedData = localStorage.getItem("all_data")
+
+    storedData = storedData ? JSON.parse(storedData) : [];
+    setCarouselImage(storedData);
+  }, []);
+
   return (
     <div style={{ display: "none" }}>
+      {/* 默认断网轮播图片 */}
+      <img
+        src={`https://cdn.accessorx.com/${carouselImage?.[0]?.image_url}`}
+        alt=""
+      />
+      <img
+        src={`https://cdn.accessorx.com/${carouselImage?.[1]?.image_url}`}
+        alt=""
+      />
+      <img
+        src={`https://cdn.accessorx.com/${carouselImage?.[2]?.image_url}`}
+        alt=""
+      />
       {/* 默认断网卡片图片 */}
       <img src={iniliteCardIcon} alt="" />
       {/* 默认断网图片 */}
