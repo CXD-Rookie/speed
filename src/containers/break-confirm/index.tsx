@@ -16,6 +16,7 @@ import { openRealNameModal } from "@/redux/actions/auth";
 import { useNavigate } from "react-router-dom";
 import { setPayState } from "@/redux/actions/modal-open";
 
+import webSocketService from "@/common/webSocketService";
 import eventBus from "@/api/eventBus";
 import tracking from "@/common/tracking";
 import "./index.scss";
@@ -86,7 +87,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
   // footer 确认按钮的文案
   const confirmObj: any = {
-    netorkError: "重启加速器",
+    netorkError: "重试",
     newVersionFound: "立即升级",
     infectedOrHijacked: "确定",
     accelerationServiceNotStarting: "好的",
@@ -189,8 +190,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         dispatch(setPayState({ open: true })); // 关闭会员充值页面
         break;
       case "netorkError":
-        stopAcceleration();
-        (window as any).native_restart();
+        webSocketService.loginReconnect();
+        // stopAcceleration();
+        // (window as any).native_restart();
         break;
       case "newVersionFound":
         stopAcceleration();
@@ -232,6 +234,10 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setIsNetworkError(option?.show || true);
     setNoticeType(option?.type || "");
 
+    if (option?.type === "netorkError") {
+      localStorage.setItem("eventBuNetwork", "1");
+    }
+
     if (option?.type === "newVersionFound") {
       setVersion(option?.version);
     } else if (option?.type === "issueFeedback") {
@@ -242,6 +248,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   };
 
   useEffect(() => {
+    localStorage.removeItem("EventBuNetwork");
     eventBus.on("showModal", showModal);
 
     return () => {
