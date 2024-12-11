@@ -133,7 +133,7 @@ class WebSocketService {
     const isLoginTrue = id && token && platform === 3 && user_token;
 
     if (isLoginTrue && this.ws && this.ws.readyState === WebSocket.OPEN) {
-      console.log('WebSocket 连接成功，发送成功，参数正确:', message);
+      // console.log('WebSocket 连接成功，发送成功，参数正确:', message);
       this.ws.send(JSON.stringify(message));
     } else {
       console.log('WebSocket 连接成功，发送失败，参数错误:', message);
@@ -148,6 +148,13 @@ class WebSocketService {
     if (!this.hasToken) {
       this.heartbeatInterval = setInterval(() => {
         (window as any).schedulePoll();
+
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          this.close({ code: this.normalCloseCode, reason: "登录后主动关闭ws"});
+          this.connect(this.url, this.onMessage, this.dispatch);
+        }
       }, 5000); // 每5秒发送一次消息
   
       return; // 无 token 时返回，避免进入有 token 的逻辑
@@ -210,8 +217,6 @@ class WebSocketService {
 
   // 登录后重新连接
   loginReconnect() {
-    console.log(111);
-    
     this.close({ code: this.normalCloseCode, reason: "登录后主动关闭ws"}); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
   }
