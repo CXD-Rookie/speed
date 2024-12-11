@@ -77,10 +77,14 @@ class WebSocketService {
       onMessage(event);
     };
 
-    this.ws.onclose = () => {
+    this.ws.onclose = (event) => {
       console.log('WebSocket connection closed');
+      
       this.stopHeartbeat();
-      this.handleReconnection();
+      
+      if (event?.code !== 4000) {
+        this.handleReconnection();
+      }
     };
 
     this.ws.onerror = (error) => {
@@ -202,10 +206,14 @@ class WebSocketService {
     }
   }
 
-  close() {
+  close(code: any = null) {
     if (this.ws) {
       console.log('Closing WebSocket connection');
-      this.ws.close();
+      if (code) {
+        this.ws.close(code);
+      } else {
+        this.ws.close();
+      }
     }
   }
 
@@ -238,8 +246,8 @@ class WebSocketService {
     this.connect(this.url, this.onMessage, this.dispatch);
   }
 
-  loginReconnect() {
-    this.close(); // 关闭当前 WebSocket 连接
+  loginReconnect(code: any = "") {
+    this.close(code); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
   }
 }

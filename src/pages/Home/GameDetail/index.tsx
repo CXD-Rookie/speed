@@ -43,6 +43,7 @@ import garenaIcon from "@/assets/images/common/Garena@2x.png";
 import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
 import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 import toggleIcon from "@/assets/images/home/toggle.png";
+// import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -388,6 +389,10 @@ const GameDetail: React.FC = () => {
             : backGameIcon
         }`}
         alt=""
+        onError={(e: any) => {
+          e.target.onerror = null; // 防止错误循环
+          e.target.src = backGameIcon;
+        }}
       />
       <img className="mask-back-icon" src={accelerateIcon} alt="" />
       <div className="cantainer">
@@ -458,7 +463,7 @@ const GameDetail: React.FC = () => {
             <div className="info-switch info-common-style" onClick={showModal}>
               <span>{regionNode}</span>
               <span>
-                <img src={toggleIcon} alt=""/>
+                <img src={toggleIcon} alt="" />
                 切换
               </span>
             </div>

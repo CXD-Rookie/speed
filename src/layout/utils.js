@@ -118,7 +118,7 @@ const serverClientReport = (code) => {
 
       suitDom(num, option);
     } else {
-      const eventBuNetwork = localStorage.getItem("EventBuNetwork");
+      const eventBuNetwork = localStorage.getItem("eventBuNetwork");
       
       window.stopProcessReset();
 
@@ -152,7 +152,7 @@ const suitDom = async (num, option) => {
       }
     }, time?.[num] || 0);
   } else {
-    const eventBuNetwork = localStorage.getItem("EventBuNetwork");
+    const eventBuNetwork = localStorage.getItem("eventBuNetwork");
 
     window.stopProcessReset();
 
