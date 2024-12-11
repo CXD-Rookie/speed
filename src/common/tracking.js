@@ -71,7 +71,7 @@ class Tracking {
 
   trackBoostSuccess(gameName, firstVisit) {
     this.trackEvent(
-      "加速",
+      this.mchannel,
       "boost_success",
       `firstDay=${firstVisit};gameName=${gameName}`
     );
