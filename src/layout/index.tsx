@@ -408,80 +408,66 @@ const Layouts: React.FC = () => {
     }
   };
 
-  const a = (event: any) => {
+  const schedulePolling = (event: any) => {
     console.log(event);
 
-    const data = JSON.parse(event.data);
-    const token = localStorage.getItem("token");
-    const isClosed = localStorage.getItem("isClosed");
-    const banner = JSON.parse(localStorage.getItem("all_data") || "[]"); // banner图数据
-    const purchase = JSON.parse(localStorage.getItem("first_purchase") || "[]"); // 首次充值
-    const renewal = JSON.parse(localStorage.getItem("first_renewal") || "[]"); // 首次续费
-    const newUser = JSON.parse(localStorage.getItem("new_user") || "[]"); //首次登录的活动
-    const isModalDisplayed =
-      localStorage.getItem("isModalDisplayed") === "true"; // 获取localStorage中是否展示过标志
-    const isNewUser = localStorage.getItem("is_new_user") === "true"; // 是否新用户
-    const {
-      version = "", // 版本
-      user_info = {}, // 用户信息
-      timestamp = 0, // 服务端时间
-      first_purchase_renewed = {}, // 是否首充首续
-    } = data?.data;
+    if (event?.data) {
+      const data = JSON.parse(event.data);
+      const token = localStorage.getItem("token");
+      const isClosed = localStorage.getItem("isClosed");
+      const banner = JSON.parse(localStorage.getItem("all_data") || "[]"); // banner图数据
+      const purchase = JSON.parse(
+        localStorage.getItem("first_purchase") || "[]"
+      ); // 首次充值
+      const renewal = JSON.parse(localStorage.getItem("first_renewal") || "[]"); // 首次续费
+      const newUser = JSON.parse(localStorage.getItem("new_user") || "[]"); //首次登录的活动
+      const isModalDisplayed =
+        localStorage.getItem("isModalDisplayed") === "true"; // 获取localStorage中是否展示过标志
+      const isNewUser = localStorage.getItem("is_new_user") === "true"; // 是否新用户
+      const {
+        version = "", // 版本
+        user_info = {}, // 用户信息
+        timestamp = 0, // 服务端时间
+        first_purchase_renewed = {}, // 是否首充首续
+      } = data?.data;
 
-    if (token) {
-      // 存储版本信息
-      localStorage.setItem("version", JSON.stringify(version));
+      if (token) {
+        // 存储版本信息
+        localStorage.setItem("version", JSON.stringify(version));
 
-      // isClosed异地登录被顶掉标记 升级版本比较
-      // 升级弹窗要在登录之后才会弹出
-      if (!isClosed && version) {
-        // 普通升级版本和客户端当前版本进行比较
-        const isInterim = compareVersions(
-          versionNowRef.current,
-          version?.now_version
-        );
-
-        // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
-        // 反之进行 else 进行版本比较
-        if (!isInterim) {
-          localStorage.removeItem("versionLock"); // 删除
-          dispatch(setVersionState({ open: false, type: "" })); // 关闭版本升级弹窗
-        } else {
-          // 版本比较信息锁
-          const versionLock = JSON.parse(
-            localStorage.getItem("versionLock") ?? JSON.stringify({})
+        // isClosed异地登录被顶掉标记 升级版本比较
+        // 升级弹窗要在登录之后才会弹出
+        if (!isClosed && version) {
+          // 普通升级版本和客户端当前版本进行比较
+          const isInterim = compareVersions(
+            versionNowRef.current,
+            version?.now_version
           );
 
-          // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
-          if (versionLock?.interimVersion) {
-            const isInterim = compareVersions(
-              versionLock?.interimVersion,
-              version?.now_version
-            );
-
-            // 如果版本有升级并且版本没有进行更新并且弹窗是未打开的情况下
-            if (isInterim && !versionOpen) {
-              // 打开升级弹窗 触发普通升级类型
-              dispatch(setVersionState({ open: true, type: "last" }));
-            }
-
-            localStorage.setItem(
-              "versionLock", // 普通升级版本信息 是否升级标记 interimMark
-              JSON.stringify({
-                interimVersion: version?.now_version,
-                interimMark: "1", // "1" 表示未升级
-              })
-            );
+          // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
+          // 反之进行 else 进行版本比较
+          if (!isInterim) {
+            localStorage.removeItem("versionLock"); // 删除
+            dispatch(setVersionState({ open: false, type: "" })); // 关闭版本升级弹窗
           } else {
-            // 当前版本存在可升级版本时 属于过渡版本判断
-            // 普通升级版本和客户端当前版本进行比较
-            const isInterim = compareVersions(
-              versionNowRef.current,
-              version?.now_version
+            // 版本比较信息锁
+            const versionLock = JSON.parse(
+              localStorage.getItem("versionLock") ?? JSON.stringify({})
             );
 
-            // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
-            if (isInterim && versionLock?.interimMark !== "1" && !versionOpen) {
+            // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
+            if (versionLock?.interimVersion) {
+              const isInterim = compareVersions(
+                versionLock?.interimVersion,
+                version?.now_version
+              );
+
+              // 如果版本有升级并且版本没有进行更新并且弹窗是未打开的情况下
+              if (isInterim && !versionOpen) {
+                // 打开升级弹窗 触发普通升级类型
+                dispatch(setVersionState({ open: true, type: "last" }));
+              }
+
               localStorage.setItem(
                 "versionLock", // 普通升级版本信息 是否升级标记 interimMark
                 JSON.stringify({
@@ -489,135 +475,159 @@ const Layouts: React.FC = () => {
                   interimMark: "1", // "1" 表示未升级
                 })
               );
-              // 打开升级弹窗 触发普通升级类型
-              dispatch(setVersionState({ open: true, type: "interim" }));
+            } else {
+              // 当前版本存在可升级版本时 属于过渡版本判断
+              // 普通升级版本和客户端当前版本进行比较
+              const isInterim = compareVersions(
+                versionNowRef.current,
+                version?.now_version
+              );
+
+              // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
+              if (
+                isInterim &&
+                versionLock?.interimMark !== "1" &&
+                !versionOpen
+              ) {
+                localStorage.setItem(
+                  "versionLock", // 普通升级版本信息 是否升级标记 interimMark
+                  JSON.stringify({
+                    interimVersion: version?.now_version,
+                    interimMark: "1", // "1" 表示未升级
+                  })
+                );
+                // 打开升级弹窗 触发普通升级类型
+                dispatch(setVersionState({ open: true, type: "interim" }));
+              }
             }
           }
         }
-      }
 
-      if (String(data?.code) === "0") {
-        const { user_ext = {} } = user_info;
-        const couponTimeLock = localStorage.getItem("couponTimeLock") || 0; // 获取刷新优惠券的时间锁
-        const {
-          first_purchase: isPurchase = false, // 是否首充
-          first_renewed: isRenewed = false, // 是否首续
-        } = first_purchase_renewed;
-        let firstPAndR = banner.filter((item: any) => {
-          return !newUser.some(
-            (newItem: any) => newItem.image_url === item.image_url
-          );
-        }); // 去除新用户数据
+        if (String(data?.code) === "0") {
+          const { user_ext = {} } = user_info;
+          const couponTimeLock = localStorage.getItem("couponTimeLock") || 0; // 获取刷新优惠券的时间锁
+          const {
+            first_purchase: isPurchase = false, // 是否首充
+            first_renewed: isRenewed = false, // 是否首续
+          } = first_purchase_renewed;
+          let firstPAndR = banner.filter((item: any) => {
+            return !newUser.some(
+              (newItem: any) => newItem.image_url === item.image_url
+            );
+          }); // 去除新用户数据
 
-        localStorage.removeItem("isClosed"); // 删除标记
-        localStorage.setItem("timestamp", timestamp); // 存储服务端时间
-        dispatch(setFirstAuth(first_purchase_renewed)); // 更新首充首续信息
+          localStorage.removeItem("isClosed"); // 删除标记
+          localStorage.setItem("timestamp", timestamp); // 存储服务端时间
+          dispatch(setFirstAuth(first_purchase_renewed)); // 更新首充首续信息
 
-        // 根据 isPurchase isRenewed 的状态进行筛选
-        if (isPurchase && !isRenewed) {
-          firstPAndR = purchase; // 赋值首充的数据
-        } else if (!isPurchase && isRenewed) {
-          firstPAndR = renewal; // 赋值首续的数据
-        } else if (!isRenewed && !isRenewed) {
-          firstPAndR = []; // 赋值 []
-        }
-
-        // 更新 localStorage 中的 all_data
-        localStorage.setItem("all_data", JSON.stringify(firstPAndR));
-        // 通过 eventBus 通知更新
-        eventBus.emit("dataUpdated", firstPAndR);
-
-        if (banner?.length > 0 && store?.getState()?.accountInfo?.isLogin) {
-          const isNewOpen = store?.getState()?.modalOpen?.drawVipActive?.open; // 新用户领取弹窗
-
-          // 是新用户 没有点击过新用户弹窗 新用户弹窗是否打开
-          if (isNewUser && !isModalDisplayed && !isNewOpen) {
-            // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
-            setTimeout(() => {
-              // dispatch(setNewUserOpen(true));
-              dispatch(setDrawVipActive({ open: true }));
-            }, 500);
+          // 根据 isPurchase isRenewed 的状态进行筛选
+          if (isPurchase && !isRenewed) {
+            firstPAndR = purchase; // 赋值首充的数据
+          } else if (!isPurchase && isRenewed) {
+            firstPAndR = renewal; // 赋值首续的数据
+          } else if (!isRenewed && !isRenewed) {
+            firstPAndR = []; // 赋值 []
           }
 
-          if (isModalDisplayed) {
-            payNewActive(renewal, purchase);
+          // 更新 localStorage 中的 all_data
+          localStorage.setItem("all_data", JSON.stringify(firstPAndR));
+          // 通过 eventBus 通知更新
+          eventBus.emit("dataUpdated", firstPAndR);
+
+          if (banner?.length > 0 && store?.getState()?.accountInfo?.isLogin) {
+            const isNewOpen = store?.getState()?.modalOpen?.drawVipActive?.open; // 新用户领取弹窗
+
+            // 是新用户 没有点击过新用户弹窗 新用户弹窗是否打开
+            if (isNewUser && !isModalDisplayed && !isNewOpen) {
+              // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
+              setTimeout(() => {
+                // dispatch(setNewUserOpen(true));
+                dispatch(setDrawVipActive({ open: true }));
+              }, 500);
+            }
+
+            if (isModalDisplayed) {
+              payNewActive(renewal, purchase);
+            }
           }
-        }
 
-        // 如果当前时间大于索时间触发优惠券弹窗
-        if (timestamp > Number(couponTimeLock)) {
-          setCouponRefreshNum(couponRefreshNum + 1);
-        }
+          // 如果当前时间大于索时间触发优惠券弹窗
+          if (timestamp > Number(couponTimeLock)) {
+            setCouponRefreshNum(couponRefreshNum + 1);
+          }
 
-        // 实名认证
-        if (!user_ext?.name && !user_ext?.idcard) {
-          localStorage.setItem("isRealName", "1");
-        } else {
-          localStorage.setItem("isRealName", "0");
-        }
+          // 实名认证
+          if (!user_ext?.name && !user_ext?.idcard) {
+            localStorage.setItem("isRealName", "1");
+          } else {
+            localStorage.setItem("isRealName", "0");
+          }
 
-        if (!!user_info?.phone) {
-          // 3个参数 用户信息 是否登录 是否显示登录
-          dispatch(setAccountInfo(user_info, true, false));
-
-          const bind_type = JSON.parse(
-            localStorage.getItem("thirdBind") || "-1"
-          );
-          const type_obj: any = {
-            "2": "thirdBind",
-            "3": "thirdUpdateBind",
-          };
-
-          if (bind_type >= 0) {
+          if (!!user_info?.phone) {
+            // 3个参数 用户信息 是否登录 是否显示登录
             dispatch(setAccountInfo(user_info, true, false));
 
-            if (isNewUser) {
-              const time = localStorage.getItem("firstActiveTime");
-              const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-              const isTrue = time && currentTime < Number(time);
+            const bind_type = JSON.parse(
+              localStorage.getItem("thirdBind") || "-1"
+            );
+            const type_obj: any = {
+              "2": "thirdBind",
+              "3": "thirdUpdateBind",
+            };
 
-              tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
-            } else {
-              tracking.trackLoginSuccess("youXia");
+            if (bind_type >= 0) {
+              dispatch(setAccountInfo(user_info, true, false));
+
+              if (isNewUser) {
+                const time = localStorage.getItem("firstActiveTime");
+                const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+                const isTrue = time && currentTime < Number(time);
+
+                tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
+              } else {
+                tracking.trackLoginSuccess("youXia");
+              }
+
+              if (isNewUser) {
+                dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
+              } else if ([2, 3].includes(Number(bind_type))) {
+                dispatch(
+                  setMinorState({
+                    open: true,
+                    type: type_obj?.[String(bind_type)],
+                  })
+                ); // 三方绑定提示
+              }
+
+              localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
+              webSocketService.loginReconnect();
             }
+          } else {
+            let bind_type = JSON.parse(
+              localStorage.getItem("thirdBind") || "-1"
+            );
 
-            if (isNewUser) {
-              dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
-            } else if ([2, 3].includes(Number(bind_type))) {
-              dispatch(
-                setMinorState({
-                  open: true,
-                  type: type_obj?.[String(bind_type)],
-                })
-              ); // 三方绑定提示
+            // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
+            if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
+              localStorage.removeItem("thirdBind");
+
+              if ((window as any).bannerTimer) {
+                (window as any).bannerTimer();
+              }
+
+              dispatch(setAccountInfo(undefined, false, false));
+              dispatch(updateBindPhoneState(true));
             }
-
-            localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
-            webSocketService.loginReconnect();
-          }
-        } else {
-          let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
-
-          // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
-          if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
-            localStorage.removeItem("thirdBind");
-
-            if ((window as any).bannerTimer) {
-              (window as any).bannerTimer();
-            }
-
-            dispatch(setAccountInfo(undefined, false, false));
-            dispatch(updateBindPhoneState(true));
           }
         }
       }
     }
-  }
+  };
 
   // webSocket 定时请求
   useEffect(() => {
     const handleWebSocket = (event: MessageEvent) => {
-      a(event);
+      schedulePolling(event);
     };
 
     webSocketService.connect(
@@ -627,6 +637,7 @@ const Layouts: React.FC = () => {
     );
 
     return () => {
+      console.log("主程序销毁主动关闭 webSocket 连接")
       webSocketService.close({ code: 4004, reason: "关闭主程序主动关闭ws" });
     };
   }, []);
@@ -672,7 +683,7 @@ const Layouts: React.FC = () => {
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
-    (window as any).a = a;
+    (window as any).schedulePoll = schedulePolling; // 定时轮询信息的方法
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
@@ -684,6 +695,7 @@ const Layouts: React.FC = () => {
       delete (window as any).loginOutStopWidow;
       delete (window as any).closeTypeNew;
       delete (window as any).showSettingsForm;
+      delete (window as any).schedulePoll;
     };
   }, []);
 

@@ -35,21 +35,15 @@ class WebSocketService {
     this.dispatch = dispatch;
     
     const token = localStorage.getItem('token');
-    this.hasToken = !!token;
-    let userToken = '';
+    const userToken = token ? JSON.parse(token) : '';
 
-    try {
-      userToken = token ? JSON.parse(token) : '';
-    } catch (e) {
-      console.log('Failed to parse token:', e);
-    }
-    
+    this.hasToken = !!token;
+
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => {
-      console.log('WebSocket connection opened');
+      console.log('连接 webSocket 服务');
       this.reconnectAttempts = 0;
-      this.flushMessageQueue(); 
       this.sendMessage({
         platform: 3,
         client_token: localStorage.getItem('client_token') || '{}',
@@ -90,13 +84,14 @@ class WebSocketService {
     };
 
     this.ws.onclose = (event) => {
-      console.log('WebSocket connection closed', event);
+      console.log('关闭连接', event);
 
       const normalCode = [this.verifyErrorCode, this.reconnectErrorCode, this.normalCloseCode,];
       const serveCode = [this.serveErrorCode]
 
       this.stopHeartbeat();
-      
+      this.reconnectAttempts = 0; // 只要关闭了连接就重置连接次数
+
       // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
       if (!normalCode.includes(event?.code) || serveCode.includes(event?.code)) {
         this.handleReconnection();
@@ -116,6 +111,7 @@ class WebSocketService {
     this.checkNetworkStatus();
   }
 
+  // 重连机制
   handleReconnection() {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       const retryTimeout = this.reconnectInterval * Math.pow(2, this.reconnectAttempts);
@@ -141,6 +137,7 @@ class WebSocketService {
     }
   }
 
+  // 发送参数
   sendMessage(message: any) {
     const id = message?.client_id;
     const token = message?.client_token;
@@ -149,41 +146,28 @@ class WebSocketService {
     const isLoginTrue = id && token && platform === 3 && user_token;
 
     if (isLoginTrue && this.ws && this.ws.readyState === WebSocket.OPEN) {
+      console.log('WebSocket 连接成功，发送成功，参数正确:', message);
       this.ws.send(JSON.stringify(message));
     } else {
-      console.log('WebSocket is not open. Unable to send message:', message);
+      console.log('WebSocket 连接成功，发送失败，参数错误:', message);
       this.messageQueue.push(message);
-      // this.close({
-      //   code: this.verifyErrorCode,
-      //   reason: "前端校验参数失败"
-      // });
     }
   }
 
-  flushMessageQueue() {
-    while (this.ws && this.ws.readyState === WebSocket.OPEN && this.messageQueue.length > 0) {
-      const message = this.messageQueue.shift();
-      console.log('Flushing message:', message);
-      this.ws.send(JSON.stringify(message));
-    }
-  }
-
+  // 心跳
   startHeartbeat() {
+    console.log("启动定时心跳", this.hasToken ? "有user_token" : "没有user_token");
     // 如果没有 token，也允许发送消息
     if (!this.hasToken) {
-      console.log('No token available, starting message attempts');
       this.heartbeatInterval = setInterval(() => {
-        console.log(1111);
-        (window as any).a();
+        (window as any).schedulePoll();
       }, 5000); // 每5秒发送一次消息
   
       return; // 无 token 时返回，避免进入有 token 的逻辑
     }
 
-
     // 有 token 时的正常心跳逻辑
     if (this.hasToken) {
-      console.log('Starting heartbeat');
       this.heartbeatInterval = setInterval(() => {
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
           this.sendMessage({
@@ -197,23 +181,26 @@ class WebSocketService {
     }
   }
 
+  // 停止心跳
   stopHeartbeat() {
     if (this.heartbeatInterval) {
-      console.log('Stopping heartbeat');
+      console.log('停止心跳');
       clearInterval(this.heartbeatInterval);
       this.heartbeatInterval = null;
     }
   }
 
+  // 断开 webSocket
   close(event: any = null) {
     if (this.ws) {
-      console.log('Closing WebSocket connection', event);
+      console.log('进行断开 WebSocket 连接', event);
+
       if (event && event.code) {
         const privateCode = [this.verifyErrorCode, this.serveErrorCode, this.reconnectErrorCode, this.normalCloseCode];
-        // 不在已经定义的错误码并且是服务端返回的错误码 关闭连接时的状态码不能大于 65535
-        const isSever = !privateCode.includes(event.code) && event.code > 0;
-
-        this.ws.close(isSever ? this.severlverifyCode : event?.code, event?.reason);
+        // 定义的错误码直接传入，服务端返回的错误码转译为特定错误码传入，因为关闭连接时的状态码不能大于 65535
+        const isSever = privateCode.includes(event.code) && event.code > 0;
+        
+        this.ws.close(isSever ? event?.code : this.severlverifyCode, event?.reason);
       } else {
         this.ws.close(); // 使用默认的关闭状态码
       }
@@ -222,7 +209,6 @@ class WebSocketService {
 
   checkNetworkStatus() {
     // window.addEventListener('offline', () => {
-    //   console.log('Network disconnected, attempting reconnection...');
     //   this.handleReconnection();
     // });
     window.addEventListener('online', () => {
@@ -235,6 +221,7 @@ class WebSocketService {
     });
   }
 
+  // 游侠登录触发的更新token重新连接
   updateTokenAndReconnect(newToken: any) {
     localStorage.removeItem("token");
     localStorage.removeItem("isRealName");
@@ -248,6 +235,7 @@ class WebSocketService {
     this.connect(this.url, this.onMessage, this.dispatch);
   }
 
+  // 登录后重新连接
   loginReconnect() {
     this.close({ code: this.normalCloseCode, reason: "登录后主动关闭ws"}); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
@@ -255,4 +243,5 @@ class WebSocketService {
 }
 
 const webSocketService = new WebSocketService();
+
 export default webSocketService;
