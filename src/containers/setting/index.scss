@@ -166,7 +166,12 @@
       font-weight: 400;
       font-size: 1.2vw;
       color: rgba(255, 255, 255, 0.5);
-      cursor: pointer;
+      text-decoration: underline;
+
+      span {
+        color: #f86c34;
+        cursor: pointer;
+      }
     }
 
     .protocols {
