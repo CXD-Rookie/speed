@@ -543,7 +543,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     const currentTime = Math.floor(Date.now() / 1000); // 当前时间
                     const isTrue = time && currentTime < Number(time);
 
-                    tracking.trackBoostSuccess(option.name, isTrue ? 1 : 0);
+                    tracking.trackBoostSuccess(isTrue ? 1 : 0);
                   } else {
                     stopAcceleration();
                     resolve({ state: false, code: responseObj?.status });
