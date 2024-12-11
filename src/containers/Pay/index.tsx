@@ -115,9 +115,11 @@ const PayModal: React.FC = (props) => {
 
   // 根据选中商品，guid，优惠折扣生成的二维码cdn地址
   const autoGenerateQRCodes = (event: any = {}) => {
+    const rid = event?.rid || activeCoupon?.rid || "";
+
     return `${env_url}/pay/qrcode?cid=${event?.cid}&user_id=${userToken}&key=${
       event?.key
-    }&platform=${3}&rid=${activeCoupon?.rid || ""}`;
+    }&platform=${3}&rid=${rid}`;
   };
 
   // 更新二维码，更新规则key，更新guid
@@ -126,6 +128,7 @@ const PayModal: React.FC = (props) => {
     const qRCodes = autoGenerateQRCodes({
       cid: code?.cid,
       key: randomKey,
+      rid: code?.rid,
     }); // 生成的二维码地址
 
     setPollingKey(randomKey); // 存储当前二维码的规则key
@@ -281,7 +284,10 @@ const PayModal: React.FC = (props) => {
         setCommodities(commodityRes?.data?.list || []);
       }
 
-      return commodityRes?.data?.list || [];
+      return {
+        commodity: commodityRes?.data?.list || [],
+        coupon: params,
+      };
     } catch (error) {
       console.log("error", error);
     } finally {
@@ -402,12 +408,14 @@ const PayModal: React.FC = (props) => {
   // 在初始化，token改变，进行刷新refresh，别的页面携带优惠券activeCoupon进入时触发逻辑刷新逻辑
   useEffect(() => {
     const inilteFun = async () => {
-      const iniliteData = await fetchInilite(); // 请求数据
+      const data = await fetchInilite(); // 请求数据
+      const iniliteData = data?.commodity;
 
       if (iniliteData?.length > 0) {
         // 生成二维码信息
         updateQRCodesInfo({
           cid: iniliteData?.[activeTabIndex].id,
+          rid: data?.coupon?.rid,
         });
       }
     };
