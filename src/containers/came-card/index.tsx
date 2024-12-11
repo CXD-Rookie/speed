@@ -136,12 +136,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const fetchPcPlatformList = async () => {
     try {
       const res = await playSuitApi.pcPlatform();
+      const url = "/api/v1/game/pc_platform/list";
 
       if (res?.error === 0) {
         return res?.data;
       } else {
         tracking.trackBoostFailure(
-          `server=${res?.error};version=${clientVersion + "," + webVersion};message=${res?.message}`
+          `server=${res?.error};message=${
+            res?.message
+          };apiName=${url};version=${clientVersion + "," + webVersion}`
         );
       }
     } catch (error) {
@@ -153,14 +156,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const fetchPcWhiteBlackList = async () => {
     try {
       const res = await playSuitApi.playSpeedBlackWhitelist();
+      const url = "/api/v1/black_white_list";
 
       if (res?.error === 0) {
         return res?.data;
       } else {
         tracking.trackBoostFailure(
-          `server=${res?.error};version=${
-            clientVersion + "," + webVersion
-          };message=${res?.message}`
+          `server=${res?.error};message=${
+            res?.message
+          };apiName=${url};version=${clientVersion + "," + webVersion}`
         );
       }
     } catch (error) {
@@ -203,11 +207,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         };
         api_group.push(
           gameApi.gameList(param).then((response: any) => {
+            const url = "/api/v1/game/list";
+
             if (response?.error !== 0) {
               tracking.trackBoostFailure(
-                `server=${response?.error};version=${
-                  clientVersion + "," + webVersion
-                };message=${response?.message}`
+                `server=${response?.error};message=${
+                  response?.message
+                };apiName=${url};version=${clientVersion + "," + webVersion}`
               );
             }
 
@@ -465,10 +471,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       const js_key = startInfo?.data?.js_key;
 
       if (startInfo?.error !== 0) {
+        const url = "/api/v1/game/speed/start";
+
         tracking.trackBoostFailure(
-          `server=${startInfo?.error};version=${
-            clientVersion + "," + webVersion
-          };message=${startInfo?.message}`
+          `server=${startInfo?.error};message=${
+            startInfo?.message
+          };apiName=${url};version=${clientVersion + "," + webVersion}`
         );
       }
 

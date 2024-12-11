@@ -61,7 +61,7 @@ instance.interceptors.response.use(
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;
       
-      tracking.trackServerError(`errorCode=${code};version=${clientVersion + "," + webVersion};message=${message};apiName=${url}`)
+      tracking.trackServerError(`errorCode=${code};message=${message};apiName=${url};version=${clientVersion + "," + webVersion}`)
       // token验证失败 退出登录
       if (errorCode.includes(code)) {
         // window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {
