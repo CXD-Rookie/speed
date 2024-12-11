@@ -5,8 +5,8 @@ class Tracking {
     const signChannel = ["berrygm", "youxia", "accessorx", "dualspring", "jsqali213", "baidu"];
     const localMchannel = localStorage.getItem("mchannel");
 
-    this.initEventListeners();
     this.mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
+    this.initEventListeners();
   }
 
   initEventListeners() {
@@ -45,7 +45,9 @@ class Tracking {
       }
     });
     
-    this.trackEvent(this.mchannel, "active_background");
+    if (this.mchannel) {
+      this.trackEvent(this.mchannel, "active_background");
+    }
 
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
