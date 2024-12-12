@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { openRealNameModal } from "@/redux/actions/auth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { setPayState } from "@/redux/actions/modal-open";
 
 import webSocketService from "@/common/webSocketService";
@@ -37,6 +37,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   } = props;
 
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const isPurchase = useSelector((state: any) => state.firstAuth)?.firstAuth
@@ -190,7 +191,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         dispatch(setPayState({ open: true })); // 关闭会员充值页面
         break;
       case "netorkError":
-        webSocketService.loginReconnect();
+        webSocketService.loginReconnect(4000);
+        navigate(location.pathname);
         // stopAcceleration();
         // (window as any).native_restart();
         break;
@@ -248,7 +250,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   };
 
   useEffect(() => {
-    localStorage.removeItem("eventBuNetwork");
     eventBus.on("showModal", showModal);
 
     return () => {

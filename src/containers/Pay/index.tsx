@@ -491,7 +491,7 @@ const PayModal: React.FC = (props) => {
             !networkState ? (
               <div className="pay-network-img">
                 <img src={networkIcon} alt="" />
-                <div>当前无网络链接</div>
+                <div>当前无网络连接</div>
               </div>
             ) : (
               <img className="pay-loading-img" src={loadingGif} alt="" />

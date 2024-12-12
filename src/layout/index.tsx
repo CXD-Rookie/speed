@@ -771,7 +771,7 @@ const Layouts: React.FC = () => {
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
         (window as any).NativeApi_RenderComplete();
-      }, 1000);
+      }, 6000);
     } else {
       // 否则监听 DOMContentLoaded 事件
       document.addEventListener(
