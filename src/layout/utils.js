@@ -126,8 +126,6 @@ const serverClientReport = (code) => {
       if (!(eventBuNetwork === "1")) {
         eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
       }
-
-      localStorage.removeItem("eventBuNetwork");
     }
 
     return;
@@ -162,8 +160,6 @@ const suitDom = async (num, option) => {
     if (!(eventBuNetwork === "1")) {
       eventBus.emit("showModal", { show: true, type: "servicerechargeReport" });
     }
-
-    localStorage.removeItem("eventBuNetwork");
   }
 }
 

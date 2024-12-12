@@ -57,32 +57,13 @@ instance.interceptors.response.use(
     const message = response?.data?.message;
     
     if (code > 0) {
-      let errorCode = [110001];
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;
+      console.log(clientVersion);
       
-      tracking.trackServerError(`errorCode=${code};message=${message};apiName=${url};version=${clientVersion + "," + webVersion}`)
-      // token验证失败 退出登录
-      if (errorCode.includes(code)) {
-        // window.NativeApi_AsynchronousRequest('NativeApi_StopProxy', '', function (response) {
-        //   console.log("Success response from 停止加速:", response);
-        //   localStorage.removeItem("token");
-        //   localStorage.removeItem("isRealName");
-
-        //   eventBus.emit('clearTimer');
-        //   default_hooks.removeGameList("initialize");
-        //   default_hooks.historyContext?.accelerateTime?.stopTimer();
-
-        //   if (window.stopDelayTimer) {
-        //     window.stopDelayTimer();
-        //   }
-
-        //   // 3个参数 用户信息 是否登录 是否显示登录
-        //   store.dispatch(setAccountInfo({}, false, true));
-        //   window.location.href = process.env.REACT_APP_CDN_URL
-        // })
-      }
+      tracking.trackServerError(`errorCode=${code};message=${message};apiName=${url};version=${clientVersion + "," + webVersion}`);
     }
+
     return response.data;
   },
   error => {

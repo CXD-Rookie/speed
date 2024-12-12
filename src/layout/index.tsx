@@ -77,6 +77,8 @@ const Layouts: React.FC = () => {
       (response: string) => {
         const parsedResponse = JSON.parse(response);
         versionNowRef.current = parsedResponse?.version;
+        console.log(parsedResponse?.version);
+        
         (window as any).versionNowRef = parsedResponse?.version; // 将版本挂载到window，强制升级处使用
       }
     );
@@ -640,7 +642,8 @@ const Layouts: React.FC = () => {
     }, 3 * 60 * 60 * 1000);
 
     localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
-
+    localStorage.removeItem("eventBuNetwork");
+    
     iniliteRenewal(); // 初始化更新游戏;
     nativeVersion(); // 读取客户端版本
     initialSetup(); // 初始设置
@@ -786,6 +789,7 @@ const Layouts: React.FC = () => {
         onMouseUp={handleMouseUp}
       >
         <LayoutHeader {...{ couponRefreshNum }} />
+        
       </Header>
       <Layout>
         <Content className="content">{routeView}</Content>
