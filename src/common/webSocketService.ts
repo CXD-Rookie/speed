@@ -30,11 +30,12 @@ class WebSocketService {
   private readonly platform: number = 3; // 当前是 window 环境
   private apiHeaderParams: ApiParamsType = {}; // 发送请求参数
   private reconnectTimeout: NodeJS.Timeout | null = null; // 用于存储重连的定时器
-  private verifyErrorCode: number = 4000; // 前端校验ws参数错误
-  private normalCloseCode: number = 4001 // 正常手动关闭ws
-  private serveErrorCode: number = 4002; // 服务端未返回值ws错误
-  private severlverifyCode: number = 4003 // 服务端返回code大于 0
-  private reconnectErrorCode: number = 4004 // 重连次数最大后错误码
+  private verifyErrorCode: number = 4000; // 前端校验 webSocket 参数错误码
+  private normalCloseCode: number = 4001 // 前端正常手动关闭 webSocket
+  private reconnectErrorCode: number = 4002 // 前端重连次数最大后错误码
+  private serveErrorCode: number = 4003; // 服务端未返回值错误码
+  private severlStopCode: number = 4004 // 服务端返回错误码位于 >= 100000 - < 200000
+  private severlverifyCode: number = 4005 // 服务端返回错误码位于 < 100000 - >= 200000
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     this.url = url;
@@ -72,46 +73,86 @@ class WebSocketService {
     this.ws.onmessage = (event: any) => {
       const serveData = JSON.parse(event.data);
       
-      if (serveData?.code === 110001 && !localStorage.getItem('isClosed') && localStorage.getItem('token')) {
-        localStorage.setItem('isClosed', 'true'); // 标记为已关闭
-        const isRemote = JSON.parse(localStorage.getItem("isRemote") || "0") // 标记11001是绑定手机时出现的
-  
-        if (!Number(isRemote)) {
-          (window as any).loginOutStopWidow("remoteLogin");
-        } else {
-          localStorage.removeItem("token");
-          localStorage.removeItem("isRealName");
-          localStorage.removeItem("isModalDisplayed");
-          eventBus.emit('clearTimer');
-        }
+      // 登录信息出现问题，退出登录，停止加速，关闭 webSocket
+      if (serveData?.code >= 100000 && serveData?.code < 200000) {
+        if (
+          serveData?.code === 110001 && 
+          !localStorage.getItem('isClosed') && 
+          localStorage.getItem('token')
+        ) {
+          localStorage.setItem('isClosed', 'true'); // 标记为已关闭
+          const isRemote = JSON.parse(localStorage.getItem("isRemote") || "0") // 标记11001是绑定手机时出现的
+    
+          if (!Number(isRemote)) {
+            (window as any).loginOutStopWidow("remoteLogin");
+          } else {
+            localStorage.removeItem("token");
+            localStorage.removeItem("isRealName");
+            localStorage.removeItem("isModalDisplayed");
+          }
 
-        localStorage.removeItem("isRemote")
-      } else if (serveData?.code > 0) {
-        // 服务端返回code不为0,直接断开
-        this.close({
-          code: serveData?.code,
-          reason: serveData?.message,
-        });
-      } else if (!serveData || !event) {
-        this.close({code: this.serveErrorCode}); // ws没有返回值
+          localStorage.removeItem("isRemote")
+        }
+        
+        this.close({code: this.severlStopCode, reason: serveData?.message})
+        onMessage(event);
+        return;
+      }
+
+      // 服务端其他错误 停止加速，关闭 webSocket
+      if (event?.code < 100000 && event?.code >= 200000) {
+        this.close({code: this.severlverifyCode, reason: serveData?.message})
+        onMessage(event);
+        return;
       }
       
+      if (!serveData) {
+        this.close({ code: this.serveErrorCode, reason: "webSocket服务端没有返回值"  });
+        onMessage(event);
+      }
+
       onMessage(event);
     };
 
     this.ws.onclose = (event) => {
       console.log('关闭连接', event);
 
-      const normalCode = [this.verifyErrorCode, this.reconnectErrorCode, this.normalCloseCode,];
-      const serveCode = [this.serveErrorCode]
-
+      const normalCode = [
+        this.normalCloseCode, // 前端正常手动关闭 4001
+        this.reconnectErrorCode, // 前端重连次数最大后关闭 4002
+      ];
+      const heartbeatCode = [
+        this.verifyErrorCode, // 前端校验参数错误 4000
+        this.severlStopCode // 服务端返回错误码位于 4004
+      ]
+      const timeCode = [
+        this.serveErrorCode,
+        this.severlverifyCode
+      ]
       this.stopHeartbeat();
 
-      // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
-      if (!normalCode.includes(event?.code) || serveCode.includes(event?.code)) {
-        this.handleReconnection();
+      // 如果登录信息清除则启动定时心跳，防止
+      if (heartbeatCode.includes(event?.code)) {
+        this.startHeartbeat();
+      } else if (timeCode.includes(event?.code)) {
+        // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
+        this.timeReconnection();
+      } else if (!normalCode.includes(event?.code)) {
+        // 5次重连
+        // this.handleReconnection();
       }
     };
+  }
+
+  // 5分钟定时重连机制
+  timeReconnection() {
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout); // 清除旧的定时器
+    }
+
+    this.reconnectTimeout = setTimeout(() => {
+      this.connect(this.url, this.onMessage, this.dispatch);
+    }, 300000);
   }
 
   // 重连机制
@@ -131,7 +172,6 @@ class WebSocketService {
       }, retryTimeout);
     } else {
       console.error('超过最大重连次数，放弃重连');
-      eventBus.emit('clearTimer');
       eventBus.emit('showModal', { show: true, type: "netorkError" });
       this.close({
         code: this.reconnectErrorCode,
@@ -143,27 +183,28 @@ class WebSocketService {
   // 发送参数
   sendMessage(message: any) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      console.log('WebSocket 连接成功，发送成功，参数正确:', message);
+      // console.log('WebSocket 连接成功，发送成功，参数正确:', message);
       this.ws.send(JSON.stringify(message));
     } else {
       console.log('WebSocket 连接失败，发送失败:', message);
-      this.close({ code: this.normalCloseCode, reason: "手动关闭连接"})
+      this.close()
     }
   }
 
   // 心跳
   startHeartbeat() {
     console.log("启动定时心跳", this.hasToken ? "有user_token" : "没有user_token");
-    // 如果没有 token，也允许发送消息
+
+    // 如果没有 token，定时读取token变化，不做webScoket连接
     if (!this.hasToken) {
       this.heartbeatInterval = setInterval(() => {
         (window as any).schedulePoll();
 
         const token = localStorage.getItem("token");
-
+        console.log("无token心跳");
         if (token) {
-          this.close({ code: this.normalCloseCode, reason: "登录后主动关闭ws"});
-          this.connect(this.url, this.onMessage, this.dispatch);
+          this.close({ code: this.normalCloseCode, reason: "登录后主动关闭"});
+          this.sendMessage(this.apiHeaderParams);
         }
       }, 5000); // 每5秒发送一次消息
   
@@ -173,13 +214,11 @@ class WebSocketService {
     // 有 token 时的正常心跳逻辑
     if (this.hasToken) {
       this.heartbeatInterval = setInterval(() => {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-          this.sendMessage({
-            platform: 3,
-            client_token: localStorage.getItem('client_token') || '{}',
-            client_id: localStorage.getItem('client_id') || '{}',
-            user_token: JSON.parse(localStorage.getItem('token') || '{}'),
-          });
+        const isLoginTrue =  Object.values(this.apiHeaderParams).every(value => value != null && value !== '');
+
+        if (this.ws && this.ws.readyState === WebSocket.OPEN && isLoginTrue) {
+          console.log("有token心跳");
+          this.sendMessage(this.apiHeaderParams);
         }
       }, 5000); // 每5秒发送一次心跳
     }
@@ -198,13 +237,8 @@ class WebSocketService {
   close(event: any = null) {
     if (this.ws) {
       console.log('进行断开 WebSocket 连接', event);
-
       if (event && event.code) {
-        const privateCode = [this.verifyErrorCode, this.serveErrorCode, this.reconnectErrorCode, this.normalCloseCode];
-        // 定义的错误码直接传入，服务端返回的错误码转译为特定错误码传入，因为关闭连接时的状态码不能大于 65535
-        const isSever = privateCode.includes(event.code) && event.code > 0;
-        
-        this.ws.close(isSever ? event?.code : this.severlverifyCode, event?.reason);
+        this.ws.close(event.code, event?.reason);
       } else {
         this.ws.close(); // 使用默认的关闭状态码
       }
@@ -221,13 +255,13 @@ class WebSocketService {
       this.hasToken = true; // 更新 token 后标记 token 存在     
     }, 500);
 
-    this.close({ code: this.normalCloseCode, reason: "游侠登录后主动关闭ws"}); // 关闭当前 WebSocket 连接
+    this.close({ code: this.normalCloseCode, reason: "游侠登录后主动关闭"}); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
   }
 
   // 登录后重新连接
   loginReconnect() {
-    this.close({ code: this.normalCloseCode, reason: "登录后主动关闭ws"}); // 关闭当前 WebSocket 连接
+    this.close({ code: this.normalCloseCode, reason: "登录后主动关闭"}); // 关闭当前 WebSocket 连接
     this.connect(this.url, this.onMessage, this.dispatch);
   }
 }
