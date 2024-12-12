@@ -4,9 +4,12 @@ class Tracking {
   constructor() {
     const signChannel = ["berrygm", "ali213", "accessorx", "dualspring", "jsqali213", "baidu"];
     const localMchannel = localStorage.getItem("mchannel");
-
+     
     this.localMchannel = localMchannel;
     this.mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
+    this.otherMchannel = (value = "befter") => {
+      return this.mchannel === "other" ? `${value === "befter" ? ";" : ""}editedChannelID=${this.localMchannel}` : "";
+    };
     this.initEventListeners();
   }
 
@@ -40,18 +43,18 @@ class Tracking {
         this.trackEvent(
           this.mchannel,
           "active_foreground",
-          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion};editedChannelID=${this.localMchannel}`,
+          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}${this.otherMchannel()}`,
         );
       }
     });
     
     if (this.mchannel) {
-      this.trackEvent(this.mchannel, "active_background", `editedChannelID=${this.localMchannel}`);
+      this.trackEvent(this.mchannel, "active_background", this.otherMchannel("after"));
     }
 
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
-      this.trackEvent(this.mchannel, "active_background", `editedChannelID=${this.localMchannel}`);
+      this.trackEvent(this.mchannel, "active_background", this.otherMchannel("after"));
     }, 60 * 60 * 10 * 1000);
   }
 
@@ -60,75 +63,75 @@ class Tracking {
   }
 
   trackSignUpSuccess (status, firstVisit) {
-    this.trackEvent(this.mchannel, "signUp_success", `firstDay=${firstVisit};method=${status};editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "signUp_success", `firstDay=${firstVisit};method=${status}${this.otherMchannel() }`);
   }
 
   trackLoginSuccess (status) {
-    this.trackEvent(this.mchannel, "login_success", `method=${status};editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "login_success", `method=${status}${this.otherMchannel() }`);
   }
 
   trackBoostStart(value, firstVisit) {
-    this.trackEvent(this.mchannel, "boost_start", `firstDay=${firstVisit};entrance=${value};editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "boost_start", `firstDay=${firstVisit};entrance=${value}${this.otherMchannel()}`);
   }
 
   trackBoostSuccess(firstVisit) {
     this.trackEvent(
       this.mchannel,
       "boost_success",
-      `firstDay=${firstVisit};editedChannelID=${this.localMchannel}`
+      `firstDay=${firstVisit}${this.otherMchannel() }`
     );
   }
 
   trackBoostFailure(errorCode) {
-    this.trackEvent(this.mchannel, "boost_failure", errorCode + `;editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "boost_failure", errorCode + this.otherMchannel());
   }
  
   trackBoostDisconnectManual() {
-    this.trackEvent(this.mchannel, "boost_disconnect_manual", `;editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "boost_disconnect_manual", this.otherMchannel("after"));
   }
 
   trackBoostDisconnectPassive(reason) {
-    this.trackEvent(this.mchannel, "boost_disconnect_passive", reason + `;editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "boost_disconnect_passive", reason + this.otherMchannel());
   }
 
   trackPurchasePageShow(value) {
-    this.trackEvent(this.mchannel, "purchase_page_show", `entrance=${value};editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "purchase_page_show", `entrance=${value}${this.otherMchannel() }`);
   }
 
   trackPurchaseFailure(buyCount) {
-    this.trackEvent(this.mchannel, "purchase_failure", `errorCode=${buyCount};editedChannelID=${this.localMchannel}` );
+    this.trackEvent(this.mchannel, "purchase_failure", `errorCode=${buyCount}${this.otherMchannel() }` );
   }
   
   trackPurchaseSuccess (buyCount) {
-    this.trackEvent(this.mchannel, "purchase_success", buyCount + `;editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "purchase_success", buyCount + this.otherMchannel());
   }
   
   trackPurchaseFirstBuy() {
-    this.trackEvent(this.mchannel, "banner_firstBuy_show", `editedChannelID=${this.localMchannel}`, null);
+    this.trackEvent(this.mchannel, "banner_firstBuy_show", this.otherMchannel("after"), null);
   }
 
   trackPurchaseFirstShow() {
-    this.trackEvent(this.mchannel, "banner_firstReneWal_show", `editedChannelID=${this.localMchannel}`, null);
+    this.trackEvent(this.mchannel, "banner_firstReneWal_show", this.otherMchannel("after"), null);
   }
 
   trackPurchaseFirstBuySuccess() {
-    this.trackEvent(this.mchannel, "banner_firstBuy_success", `editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "banner_firstBuy_success", this.otherMchannel("after"));
   }
 
   trackPurchaseFirstShowSuccess() {
-    this.trackEvent(this.mchannel, "banner_firstReneWal_success", `editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "banner_firstReneWal_success", this.otherMchannel("after"));
   }
 
   trackRedemption(value) {
-    this.trackEvent(this.mchannel, "redemption_success", value + `;editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "redemption_success", value + this.otherMchannel());
   }
 
   trackNetworkError(errorCode) {
-    this.trackEvent(this.mchannel, "error_frontend", `errorCode=${errorCode};editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "error_frontend", `errorCode=${errorCode}${this.otherMchannel() }`);
   }
 
   trackServerError (error) {
-    this.trackEvent(this.mchannel, "error_server", error + `;editedChannelID=${this.localMchannel}`);
+    this.trackEvent(this.mchannel, "error_server", error + this.otherMchannel());
   }
 
   // 是否是首次活跃
