@@ -235,7 +235,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   const showModal = (option: any = {}) => {
     setIsNetworkError(option?.show || true);
     setNoticeType(option?.type || "");
-    localStorage.removeItem("eventBuNetwork");
 
     if (option?.type === "netorkError") {
       localStorage.setItem("eventBuNetwork", "1");
