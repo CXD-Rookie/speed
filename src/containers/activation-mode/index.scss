@@ -55,7 +55,8 @@
     .quick-tabs {
       display: flex;
       column-gap: 0.8vw;
-
+      justify-content: space-between;
+      
       .tab {
         width: 17.6vw;
         height: 4.8vh;
