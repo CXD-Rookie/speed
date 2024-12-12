@@ -643,7 +643,7 @@ const Layouts: React.FC = () => {
 
     localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
     localStorage.removeItem("eventBuNetwork");
-    
+
     iniliteRenewal(); // 初始化更新游戏;
     nativeVersion(); // 读取客户端版本
     initialSetup(); // 初始设置
@@ -762,6 +762,7 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(() => {
+        tracking.trackaBackgroundActivity();
         (window as any).NativeApi_RenderComplete();
       }, 6000);
     } else {
