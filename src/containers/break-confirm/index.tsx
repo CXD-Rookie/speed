@@ -250,7 +250,6 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
   };
 
   useEffect(() => {
-    localStorage.removeItem("eventBuNetwork");
     eventBus.on("showModal", showModal);
 
     return () => {
