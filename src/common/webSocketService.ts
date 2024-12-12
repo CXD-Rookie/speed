@@ -8,7 +8,14 @@
  */
 // webSocketService.ts
 import { Dispatch } from 'redux';
-import eventBus from '../api/eventBus'; 
+import eventBus from '../api/eventBus';
+interface ApiParamsType {
+  platform?: number,
+  client_token?: string;
+  client_id?: string;
+  user_token?: string; // 可选属性
+}
+
 class WebSocketService {
   private ws: WebSocket | null = null;
   private heartbeatInterval: NodeJS.Timeout | null = null;
@@ -20,14 +27,14 @@ class WebSocketService {
   private onMessage: (event: MessageEvent) => void = () => {};
   private dispatch!: Dispatch;
   private hasToken: boolean = false;
+  private readonly platform: number = 3; // 当前是 window 环境
+  private apiHeaderParams: ApiParamsType = {}; // 发送请求参数
   private reconnectTimeout: NodeJS.Timeout | null = null; // 用于存储重连的定时器
-  private messageAttempts: number = 0; // 用于记录无token时的消息发送次数
-  private readonly maxMessageAttempts: number = 10; // 最大发送次数
   private verifyErrorCode: number = 4000; // 前端校验ws参数错误
-  private serveErrorCode: number = 4001; // 服务端未返回值ws错误
-  private reconnectErrorCode: number = 4002 // 重连次数最大后错误码
-  private normalCloseCode: number = 4004 // 正常手动关闭ws
-  private severlverifyCode: number = 4004 // 服务端返回code大于 0
+  private normalCloseCode: number = 4001 // 正常手动关闭ws
+  private serveErrorCode: number = 4002; // 服务端未返回值ws错误
+  private severlverifyCode: number = 4003 // 服务端返回code大于 0
+  private reconnectErrorCode: number = 4004 // 重连次数最大后错误码
 
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     this.url = url;
@@ -36,21 +43,30 @@ class WebSocketService {
     
     const token = localStorage.getItem('token');
     const userToken = token ? JSON.parse(token) : '';
-
+    
     this.hasToken = !!token;
+    this.apiHeaderParams = {
+      platform: this.platform,
+      client_token: localStorage.getItem('client_token') ?? "",
+      client_id: localStorage.getItem('client_id') ?? "",
+      user_token: userToken,
+    }
 
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => {
-      console.log('连接 webSocket 服务');
+      console.log('连接 webSocket 服务', console.log(this.ws));
+      const isLoginTrue =  Object.values(this.apiHeaderParams).every(value => value != null && value !== '');
+      
       this.reconnectAttempts = 0;
-      this.sendMessage({
-        platform: 3,
-        client_token: localStorage.getItem('client_token') || '{}',
-        client_id: localStorage.getItem('client_id') || '{}',
-        user_token: userToken,
-      });
-      this.startHeartbeat(); // 确保有 token 时启动心跳
+      
+      if (isLoginTrue) {
+        this.sendMessage(this.apiHeaderParams);
+      } else {
+        this.close({ code: this.verifyErrorCode, reason: "前端校验参数错误"})
+      }
+
+      this.startHeartbeat(); // 启动心跳
     };
 
     this.ws.onmessage = (event: any) => {
@@ -126,18 +142,12 @@ class WebSocketService {
 
   // 发送参数
   sendMessage(message: any) {
-    const id = message?.client_id;
-    const token = message?.client_token;
-    const platform = message?.platform;
-    const user_token = message?.user_token;
-    const isLoginTrue = id && token && platform === 3 && user_token;
-
-    if (isLoginTrue && this.ws && this.ws.readyState === WebSocket.OPEN) {
-      // console.log('WebSocket 连接成功，发送成功，参数正确:', message);
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      console.log('WebSocket 连接成功，发送成功，参数正确:', message);
       this.ws.send(JSON.stringify(message));
     } else {
-      console.log('WebSocket 连接成功，发送失败，参数错误:', message);
-      this.messageQueue.push(message);
+      console.log('WebSocket 连接失败，发送失败:', message);
+      this.close({ code: this.normalCloseCode, reason: "手动关闭连接"})
     }
   }
 

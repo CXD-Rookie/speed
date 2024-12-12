@@ -191,7 +191,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         dispatch(setPayState({ open: true })); // 关闭会员充值页面
         break;
       case "netorkError":
-        webSocketService.loginReconnect(4000);
+        // webSocketService.loginReconnect(4000);
         navigate(location.pathname);
         // stopAcceleration();
         // (window as any).native_restart();
