@@ -416,7 +416,7 @@ const Layouts: React.FC = () => {
     if (event?.data) {
       const data = JSON.parse(event.data);
       const token = localStorage.getItem("token");
-      const isClosed = localStorage.getItem("isClosed");
+      const isClosed = localStorage.getItem("isClosed"); // 做删除
       const banner = JSON.parse(localStorage.getItem("all_data") || "[]"); // banner图数据
       const purchase = JSON.parse(
         localStorage.getItem("first_purchase") || "[]"

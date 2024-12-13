@@ -8,7 +8,10 @@
  */
 // webSocketService.ts
 import { Dispatch } from 'redux';
+
 import eventBus from '../api/eventBus';
+import tracking from './tracking';
+
 interface ApiParamsType {
   platform?: number,
   client_token?: string;
@@ -18,21 +21,18 @@ interface ApiParamsType {
 
 class WebSocketService {
   private ws: WebSocket | null = null;
-  private heartbeatInterval: NodeJS.Timeout | null = null;
-  private reconnectAttempts: number = 0;
-  private readonly maxReconnectAttempts: number = 5;
-  private readonly reconnectInterval: number = 5000;
-  private messageQueue: any[] = [];
   private url: string = '';
   private onMessage: (event: MessageEvent) => void = () => {};
   private dispatch!: Dispatch;
-  private hasToken: boolean = false;
   private readonly platform: number = 3; // 当前是 window 环境
+  private heartbeatInterval: NodeJS.Timeout | null = null; // 存定时心跳计时器
+  private heartbeatNum: number = 0; // 定时心跳次数
+  private scheduleRecord: number = 0; // 断网之后的标记
   private apiHeaderParams: ApiParamsType = {}; // 发送请求参数
   private reconnectTimeout: NodeJS.Timeout | null = null; // 用于存储重连的定时器
+  private receivedTime: number = 0; // webSocket 每接收到一次消息更新一下当前时间
   private verifyErrorCode: number = 4000; // 前端校验 webSocket 参数错误码
   private normalCloseCode: number = 4001 // 前端正常手动关闭 webSocket
-  private reconnectErrorCode: number = 4002 // 前端重连次数最大后错误码
   private serveErrorCode: number = 4003; // 服务端未返回值错误码
   private severlStopCode: number = 4004 // 服务端返回错误码位于 >= 100000 - < 200000
   private severlverifyCode: number = 4005 // 服务端返回错误码位于 < 100000 - >= 200000
@@ -45,7 +45,6 @@ class WebSocketService {
     const token = localStorage.getItem('token');
     const userToken = token ? JSON.parse(token) : '';
     
-    this.hasToken = !!token;
     this.apiHeaderParams = {
       platform: this.platform,
       client_token: localStorage.getItem('client_token') ?? "",
@@ -57,70 +56,80 @@ class WebSocketService {
 
     this.ws.onopen = () => {
       console.log('连接 webSocket 服务', console.log(this.ws));
-      const isLoginTrue =  Object.values(this.apiHeaderParams).every(value => value != null && value !== '');
+      const apiHeader = this.checkMissingValues(this.apiHeaderParams); // 判断参数值为空的字段
       
-      this.reconnectAttempts = 0;
-      
-      if (isLoginTrue) {
-        this.sendMessage(this.apiHeaderParams);
-      } else {
-        this.close({ code: this.verifyErrorCode, reason: "前端校验参数错误"})
-      }
+      this.stopHeartbeat(); // 清除定时器
 
-      this.startHeartbeat(); // 启动心跳
+      // 如果参数正确，发送消息
+      if (apiHeader?.length === 0) {
+        this.scheduleHeartbeat(); // 启动定时心跳
+        this.sendMessage(this.apiHeaderParams); // 发送消息
+      } else {
+        const webVersion = process.env.REACT_APP_VERSION;
+        const version = (window as any).versionNowRef;
+
+        // 参数错误，断开 webSocket
+        this.close({ code: this.verifyErrorCode, reason: "前端校验参数错误"});
+
+        // 如果参数 client_token 错误，调用客户端方法，重新更新读取 client_token，重新进行连接
+        if (apiHeader.includes("client_token") || apiHeader.includes("client_id")) {
+          this.connect(this.url, this.onMessage, this.dispatch);
+        } else if (apiHeader.includes("user_token")) {
+          (window as any).loginOutStopWidow(); // 退出登录
+        }
+
+        tracking.trackServerError(
+          `errorCode=${this.verifyErrorCode};message=前端校验参数错误;apiName=${url};version=${version + "," + webVersion}`
+        )
+      }
     };
 
     this.ws.onmessage = (event: any) => {
       const serveData = JSON.parse(event.data);
+      const time = new Date().getTime(); // 获取当前时间
+      const diff = time - this.receivedTime;
+      const current = this.receivedTime;
       
-      // 登录信息出现问题，退出登录，停止加速，关闭 webSocket
-      if (serveData?.code >= 100000 && serveData?.code < 200000) {
-        if (
-          serveData?.code === 110001 && 
-          !localStorage.getItem('isClosed') && 
-          localStorage.getItem('token')
-        ) {
-          localStorage.setItem('isClosed', 'true'); // 标记为已关闭
-          const isRemote = JSON.parse(localStorage.getItem("isRemote") || "0") // 标记11001是绑定手机时出现的
-    
-          if (!Number(isRemote)) {
+      // 如果接收到服务端返回消息，则记录下当前时间
+      if (serveData) {
+        const webVersion = process.env.REACT_APP_VERSION;
+        const version = (window as any).versionNowRef;
+
+        this.receivedTime = time;
+
+        // 登录信息出现问题，退出登录，停止加速，关闭 webSocket
+        if (serveData?.code >= 100000 && serveData?.code < 200000) {
+          // 110001 判断为异地登录
+          if (serveData?.code === 110001) {
             (window as any).loginOutStopWidow("remoteLogin");
           } else {
-            localStorage.removeItem("token");
-            localStorage.removeItem("isRealName");
-            localStorage.removeItem("isModalDisplayed");
+            this.close({code: this.severlStopCode, reason: serveData?.message})
           }
-
-          localStorage.removeItem("isRemote")
+          
+          tracking.trackServerError(
+            `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
+          )
+        } else if (event?.code < 100000 && event?.code >= 200000) {
+          // 服务端其他错误 停止加速，关闭 webSocket
+          this.close({code: this.severlverifyCode, reason: serveData?.message});
+          tracking.trackServerError(
+            `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
+          )
         }
-        
-        this.close({code: this.severlStopCode, reason: serveData?.message})
-        onMessage(event);
-        return;
-      }
-
-      // 服务端其他错误 停止加速，关闭 webSocket
-      if (event?.code < 100000 && event?.code >= 200000) {
-        this.close({code: this.severlverifyCode, reason: serveData?.message})
-        onMessage(event);
-        return;
+      } else {
+        // 如果没接收到消息，则不记录时间，
+        // 进行消息时间 receivedTime 和当前时间比较，如果间隔 >= 30s, 断开连接，重新发送，并且记录当前时间，方便和下次对比
+        this.close({ code: this.serveErrorCode, reason: "服务端30秒没有返回消息"});
       }
       
-      if (!serveData) {
-        this.close({ code: this.serveErrorCode, reason: "webSocket服务端没有返回值"  });
+      if (current === 0 || (diff >= 0 && diff < 10000)) {
         onMessage(event);
       }
-
-      onMessage(event);
     };
 
     this.ws.onclose = (event) => {
       console.log('关闭连接', event);
 
-      const normalCode = [
-        this.normalCloseCode, // 前端正常手动关闭 4001
-        this.reconnectErrorCode, // 前端重连次数最大后关闭 4002
-      ];
       const heartbeatCode = [
         this.verifyErrorCode, // 前端校验参数错误 4000
         this.severlStopCode // 服务端返回错误码位于 4004
@@ -129,55 +138,66 @@ class WebSocketService {
         this.serveErrorCode,
         this.severlverifyCode
       ]
-      this.stopHeartbeat();
 
       // 如果登录信息清除则启动定时心跳，防止
       if (heartbeatCode.includes(event?.code)) {
-        this.startHeartbeat();
+        (window as any).loginOutStopWidow(); // 退出登录
       } else if (timeCode.includes(event?.code)) {
         // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
-        this.timeReconnection();
-      } else if (!normalCode.includes(event?.code)) {
-        // 5次重连
-        // this.handleReconnection();
+        this.connect(this.url, this.onMessage, this.dispatch);
       }
+    };
+
+    this.ws.onerror = (error) => {
+      console.error('WebSocket error observed:', error);
     };
   }
 
-  // 5分钟定时重连机制
-  timeReconnection() {
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout); // 清除旧的定时器
+  // 关闭心跳
+  stopHeartbeat() {
+    if (this.heartbeatInterval !== null) {
+      clearInterval(this.heartbeatInterval as NodeJS.Timeout);
+      this.heartbeatInterval = null;
+      this.heartbeatNum = 0; // Reset the counter when stopping the heartbeat
     }
-
-    this.reconnectTimeout = setTimeout(() => {
-      this.connect(this.url, this.onMessage, this.dispatch);
-    }, 300000);
   }
 
-  // 重连机制
-  handleReconnection() {
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      const retryTimeout = this.reconnectInterval * Math.pow(2, this.reconnectAttempts);
-      
-      this.reconnectAttempts++;
-      console.log(`尝试第 ${this.reconnectAttempts} 次重连，等待 ${retryTimeout / 1000} 秒...`);
-
-      if (this.reconnectTimeout) {
-        clearTimeout(this.reconnectTimeout); // 清除旧的定时器
-      }
-
-      this.reconnectTimeout = setTimeout(() => {
+  // 定时心跳
+  scheduleHeartbeat() {
+    this.heartbeatInterval = setInterval(() => {
+      console.log("是否断网", navigator.onLine);
+      // 检测到断网
+      if (!navigator.onLine) {
+        this.scheduleRecord = 1; // 如果断网了记录一个标记，知道正常后进行删除
+        // 如果经过10次检测还是断网，则进行弹窗无网络
+        if (this.heartbeatNum >= 1) {
+          this.stopHeartbeat();
+          eventBus.emit('showModal', { show: true, type: "netorkError" }); // 弹窗网络错误
+        } else {
+          this.heartbeatNum++
+          this.close({code: this.normalCloseCode, reason: "断网前端手动关闭连接"})
+          this.connect(this.url, this.onMessage, this.dispatch);
+        }
+      } else if (navigator.onLine && this.scheduleRecord) {
+        this.scheduleRecord = 0;
+        this.close({code: this.normalCloseCode, reason: "断网前端手动关闭连接"})
         this.connect(this.url, this.onMessage, this.dispatch);
-      }, retryTimeout);
-    } else {
-      console.error('超过最大重连次数，放弃重连');
-      eventBus.emit('showModal', { show: true, type: "netorkError" });
-      this.close({
-        code: this.reconnectErrorCode,
-        reason: "前端校验参数失败"
-      });
+      }
+    }, 60000); // 每1分钟发送一次心跳
+  }
+
+  // 查看对象的那个键是空值
+  checkMissingValues(params: any) {
+    const missingKeys = [];
+    
+    // 遍历 apiHeaderParams 对象的所有键值对
+    for (const key in params) {
+      if ([null, undefined, ''].includes(params[key])) {
+        missingKeys.push(key);
+      }
     }
+
+    return missingKeys;
   }
 
   // 发送参数
@@ -188,48 +208,6 @@ class WebSocketService {
     } else {
       console.log('WebSocket 连接失败，发送失败:', message);
       this.close()
-    }
-  }
-
-  // 心跳
-  startHeartbeat() {
-    console.log("启动定时心跳", this.hasToken ? "有user_token" : "没有user_token");
-
-    // 如果没有 token，定时读取token变化，不做webScoket连接
-    if (!this.hasToken) {
-      this.heartbeatInterval = setInterval(() => {
-        (window as any).schedulePoll();
-
-        const token = localStorage.getItem("token");
-        console.log("无token心跳");
-        if (token) {
-          this.close({ code: this.normalCloseCode, reason: "登录后主动关闭"});
-          this.sendMessage(this.apiHeaderParams);
-        }
-      }, 5000); // 每5秒发送一次消息
-  
-      return; // 无 token 时返回，避免进入有 token 的逻辑
-    }
-
-    // 有 token 时的正常心跳逻辑
-    if (this.hasToken) {
-      this.heartbeatInterval = setInterval(() => {
-        const isLoginTrue =  Object.values(this.apiHeaderParams).every(value => value != null && value !== '');
-
-        if (this.ws && this.ws.readyState === WebSocket.OPEN && isLoginTrue) {
-          console.log("有token心跳");
-          this.sendMessage(this.apiHeaderParams);
-        }
-      }, 5000); // 每5秒发送一次心跳
-    }
-  }
-
-  // 停止心跳
-  stopHeartbeat() {
-    if (this.heartbeatInterval) {
-      console.log('停止心跳');
-      clearInterval(this.heartbeatInterval);
-      this.heartbeatInterval = null;
     }
   }
 
@@ -251,8 +229,7 @@ class WebSocketService {
     localStorage.removeItem("isRealName");
 
     setTimeout(() => {
-      localStorage.setItem('token', JSON.stringify(newToken)); 
-      this.hasToken = true; // 更新 token 后标记 token 存在     
+      localStorage.setItem('token', JSON.stringify(newToken));
     }, 500);
 
     this.close({ code: this.normalCloseCode, reason: "游侠登录后主动关闭"}); // 关闭当前 WebSocket 连接
