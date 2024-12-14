@@ -71,35 +71,47 @@ const Layouts: React.FC = () => {
 
   // 读取客户端版本方法
   const nativeVersion = () => {
-    (window as any).NativeApi_AsynchronousRequest(
-      "QueryCurrentVersion",
-      "",
-      (response: string) => {
-        const parsedResponse = JSON.parse(response);
-        versionNowRef.current = parsedResponse?.version;
-        console.log(parsedResponse?.version);
-        
-        (window as any).versionNowRef = parsedResponse?.version; // 将版本挂载到window，强制升级处使用
-      }
-    );
+    return new Promise((resolve, rejects) => {
+      (window as any).NativeApi_AsynchronousRequest(
+        "QueryCurrentVersion",
+        "",
+        (response: string) => {
+          const version = JSON.parse(response)?.version;
+          
+          // 成功返回当前版本
+          if (version) {
+            versionNowRef.current = version;
+            (window as any).versionNowRef = version; // 将版本挂载到window，强制升级处使用
+            resolve({ state: true, version });
+          } else {
+            // 失败返回最低版本
+            rejects({ state: true, version: versionNowRef?.current });
+          }
+        }
+      );
+    })
   };
 
   // 初始设置
   const initialSetup = () => {
-    try {
-      let clientSetup = localStorage.getItem("client_settings");
-      let setup = clientSetup ? JSON.parse(clientSetup) : {}; // 尝试解析 client_settings
+    return new Promise((resolve, rejects) => {
+      try {
+        let clientSetup = localStorage.getItem("client_settings");
+        let setup = clientSetup ? JSON.parse(clientSetup) : {}; // 尝试解析 client_settings
 
-      // 设置 close_button_action 的值，如果不存在则添加
-      if (!setup?.close_button_action) {
-        setup.close_button_action = 0; // 1 表示关闭程序，0 表示隐藏到托盘
+        // 设置 close_button_action 的值，如果不存在则添加
+        if (!setup?.close_button_action) {
+          setup.close_button_action = 0; // 1 表示关闭程序，0 表示隐藏到托盘
+        }
+
+        // 更新或者设置 client_settings
+        localStorage.setItem("client_settings", JSON.stringify(setup));
+        resolve({state: true})
+      } catch (error) {
+        console.log("初始化设置", error);
+        rejects({ state: false });
       }
-
-      // 更新或者设置 client_settings
-      localStorage.setItem("client_settings", JSON.stringify(setup));
-    } catch (error) {
-      console.log("初始化设置", error);
-    }
+    })
   };
 
   // 进程黑名单
@@ -120,62 +132,69 @@ const Layouts: React.FC = () => {
 
   // 初始化更新游戏
   const iniliteRenewal = async () => {
-    try {
-      const [list, data]: any = await Promise.all([
-        await stopProcessReset(), // 初始化调用停止加速
-        await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
-      ]);
-      // console.log(data?.data?.list);
-      
-      (window as any).NativeApi_AsynchronousRequest(
-        "SetGameData",
-        JSON.stringify({ list: data?.data?.list ?? [] }),
-        () => {}
-      );
+    return new Promise(async (resolve, reject) => {
+      try {
+        const [list, data]: any = await Promise.all([
+          await stopProcessReset(), // 初始化调用停止加速
+          await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
+        ]);
 
-      const meGame: any = list?.data ?? [];
-      const allGame = data?.data?.list ?? [];
-      const result = meGame.map((item: any) => {
-        // 如果找到此游戏
-        const target = allGame?.find((child: any) => child?.id === item?.id);
-        
-        // 如果找到此游戏并且更新时间发生改变
-        if (target && target?.update_time !== item?.update_time) {
-          return {
-            ...item,
-            ...target,
-            cover_img: `https://cdn.accessorx.com/${
-              target?.cover_img ?? target.background_img
-            }`,
-          };
-        } else if (target) {
-          return item;
-        }
-      })
-      
-      const filteredArray = result.filter((item: any) => {
-        // 检查 item 是否为 undefined 或 null
-        if (item === undefined || item === null) {
-          return false;
-        }
-        // 检查 item 是否为空对象 {}
-        if (
-          typeof item === "object" &&
-          item !== null &&
-          Object.keys(item).length === 0
-        ) {
-          return false;
-        }
-        // 其他情况保留
-        return true;
-      });
-      
-      localStorage.setItem("speed-1.0.0.1-games", JSON.stringify(filteredArray));
-      navigate("/home");
-      return filteredArray;
-    } catch (error) {
-      console.log("初始化更新游戏", error);
-    }
+        // 传递数据给客户端，以用来进行游戏扫描
+        (window as any).NativeApi_AsynchronousRequest(
+          "SetGameData",
+          JSON.stringify({ list: data?.data?.list ?? [] }),
+          () => {}
+        );
+
+        const meGame: any = list?.data ?? [];
+        const allGame = data?.data?.list ?? [];
+        const result = meGame.map((item: any) => {
+          // 如果找到此游戏
+          const target = allGame?.find((child: any) => child?.id === item?.id);
+
+          // 如果找到此游戏并且更新时间发生改变
+          if (target && target?.update_time !== item?.update_time) {
+            return {
+              ...item,
+              ...target,
+              cover_img: `https://cdn.accessorx.com/${
+                target?.cover_img ?? target.background_img
+              }`,
+            };
+          } else if (target) {
+            return item;
+          }
+        });
+
+        const filteredArray = result.filter((item: any) => {
+          // 检查 item 是否为 undefined 或 null
+          if (item === undefined || item === null) {
+            return false;
+          }
+          // 检查 item 是否为空对象 {}
+          if (
+            typeof item === "object" &&
+            item !== null &&
+            Object.keys(item).length === 0
+          ) {
+            return false;
+          }
+          // 其他情况保留
+          return true;
+        });
+
+        localStorage.setItem(
+          "speed-1.0.0.1-games",
+          JSON.stringify(filteredArray)
+        );
+
+        navigate("/home");
+        resolve({ state: true, list: filteredArray });
+      } catch (error) {
+        console.log("初始化更新游戏", error);
+        reject({state: false, list: []});
+      }
+    })
   };
 
   // 定义停止加速应该做的操作
@@ -248,12 +267,13 @@ const Layouts: React.FC = () => {
         tracking.trackBoostDisconnectManual();
       }
 
+      webSocketService.close({
+        code: 4000,
+        reason: "退出登录后主动关闭",
+      });
+
       await stopProcessReset(); // 停止加速操作
       await loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
-
-      if ((window as any).bannerTimer) {
-        (window as any).bannerTimer(); //
-      }
 
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
@@ -613,10 +633,6 @@ const Layouts: React.FC = () => {
             if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
               localStorage.removeItem("thirdBind");
 
-              if ((window as any).bannerTimer) {
-                (window as any).bannerTimer();
-              }
-
               dispatch(setAccountInfo(undefined, false, false));
               dispatch(updateBindPhoneState(true));
             }
@@ -626,54 +642,79 @@ const Layouts: React.FC = () => {
     }
   };
 
-  // webSocket 定时请求
+  // 初始化操作
+  const iniliteAppFun = async () => {
+    return new Promise(async (resolve, reject) => {
+      const url = process.env.REACT_APP_WSAPI_URL || "";
+      const token = localStorage.getItem("token");
+
+      localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
+      localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记
+
+      if (token) {
+        webSocketService.connect(
+          url, // 请求环境
+          (event: MessageEvent) => schedulePolling(event),
+          dispatch
+        );
+      }
+
+      if (!accountInfo.isLogin) {
+        fetchBanner();
+      }
+      
+      const [renewal, version, setting]: any = await Promise.all([
+        iniliteRenewal(), // 初始化更新游戏;
+        nativeVersion(), // 读取客户端版本
+        initialSetup(), // 初始设置
+      ]);
+      
+      if (renewal?.state && version?.state && setting?.state) {
+        resolve({
+          state: true,
+          data: {
+            version: version?.version,
+          },
+        });
+      }
+    })
+  }
+  
+  // 在登录状态发生变化时
   useEffect(() => {
-    const handleWebSocket = (event: MessageEvent) => {
-      schedulePolling(event);
-    };
+    let intervalId: any = null;
+    
+    // 请求全局黑名单 清除banner图计时器
+    if (accountInfo?.isLogin) {
+      initialProcessBlack(); // 初始进程黑名单
+      clearInterval(intervalId);
 
-    webSocketService.connect(
-      `${process.env.REACT_APP_WSAPI_URL}`, // 请求环境
-      handleWebSocket,
-      dispatch
-    );
-
-    return () => {
-      console.log("主程序销毁主动关闭 webSocket 连接")
-      webSocketService.close({ code: 4004, reason: "关闭主程序主动关闭ws" });
-    };
-  }, []);
-
-  // 初始化重置状态逻辑
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchBanner(); // 获取 banner 图逻辑
-    }, 3 * 60 * 60 * 1000);
-
-    localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
-    localStorage.removeItem("eventBuNetwork");
-
-    iniliteRenewal(); // 初始化更新游戏;
-    nativeVersion(); // 读取客户端版本
-    initialSetup(); // 初始设置
-
-    (window as any).bannerTimer = () => clearInterval(intervalId);
+      if ((window as any).clearBannerTimer) {
+        (window as any).clearBannerTimer();
+      }
+    } else {
+      // 获取 banner 图逻辑 3小时定时请求一次
+      intervalId = setInterval(() => fetchBanner(), 10800000);
+      (window as any).clearBannerTimer = () => clearInterval(intervalId);
+    }
 
     // 清理函数，在组件卸载前清除定时器
     return () => {
       clearInterval(intervalId);
 
-      if ((window as any).bannerTimer) {
-        (window as any).bannerTimer();
+      if ((window as any).clearBannerTimer) {
+        (window as any).clearBannerTimer();
       }
     };
-  }, []);
-  
-  useEffect(() => {
-    if (accountInfo.isLogin) {
-      initialProcessBlack(); // 初始进程黑名单
-    }
   }, [accountInfo.isLogin]);
+
+  // 用于给api.js传递 hook,在 10001时可以做清除 hook 调用处理
+  useEffect(() => {
+    setupInterceptors({
+      historyContext,
+      removeGameList,
+    });
+  }, [historyContext, removeGameList]);
 
   // 在应用启动时挂载方法到 window 对象上
   useEffect(() => {
@@ -686,7 +727,6 @@ const Layouts: React.FC = () => {
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
-    (window as any).schedulePoll = schedulePolling; // 定时轮询信息的方法
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
@@ -698,18 +738,9 @@ const Layouts: React.FC = () => {
       delete (window as any).loginOutStopWidow;
       delete (window as any).closeTypeNew;
       delete (window as any).showSettingsForm;
-      delete (window as any).schedulePoll;
     };
   }, []);
-
-  // 用于给api.js传递 hook,在 10001时可以做清除 hook 调用处理
-  useEffect(() => {
-    setupInterceptors({
-      historyContext,
-      removeGameList,
-    });
-  }, [historyContext, removeGameList]);
-
+  
   useEffect(() => {
     const webVersion = process.env.REACT_APP_VERSION;
     const clientVersion = (window as any).versionNowRef;
@@ -772,10 +803,14 @@ const Layouts: React.FC = () => {
     ) {
       localStorage.removeItem("isAccelLoading");
       // 如果 DOM 已经加载完毕，直接执行
-      setTimeout(() => {
-        tracking.trackaBackgroundActivity();
-        (window as any).NativeApi_RenderComplete();
-      }, 6000);
+      setTimeout(async () => {
+        const state: any = await iniliteAppFun();
+        
+        if (state?.state) {
+          tracking.trackaBackgroundActivity();
+          (window as any).NativeApi_RenderComplete();
+        }
+      }, 1000);
     } else {
       // 否则监听 DOMContentLoaded 事件
       document.addEventListener(
@@ -789,6 +824,10 @@ const Layouts: React.FC = () => {
           "DOMContentLoaded",
           (window as any).NativeApi_RenderComplete()
         );
+        webSocketService.close({
+          code: 4000,
+          reason: "关闭主程序主动关闭 webSocket",
+        });
       };
     }
   }, []);
