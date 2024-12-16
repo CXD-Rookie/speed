@@ -21,7 +21,7 @@ interface ApiParamsType {
 
 class WebSocketService {
   private ws: WebSocket | null = null;
-  private url: string = '';
+  private url: string = process.env.REACT_APP_WSAPI_URL ?? "";
   private onMessage: (event: MessageEvent) => void = () => {};
   private dispatch!: Dispatch;
   private readonly platform: number = 3; // 当前是 window 环境
@@ -59,7 +59,7 @@ class WebSocketService {
       const apiHeader = this.checkMissingValues(this.apiHeaderParams); // 判断参数值为空的字段
       
       this.stopHeartbeat(); // 清除定时器
-
+      
       // 如果参数正确，发送消息
       if (apiHeader?.length === 0) {
         this.scheduleHeartbeat(); // 启动定时心跳
@@ -73,6 +73,9 @@ class WebSocketService {
 
         // 如果参数 client_token 错误，调用客户端方法，重新更新读取 client_token，重新进行连接
         if (apiHeader.includes("client_token") || apiHeader.includes("client_id")) {
+          (window as any).NativeApi_AsynchronousRequest("UpdateClientToken","", (respose: any) => {
+            console.log(respose);
+          })
           this.connect(this.url, this.onMessage, this.dispatch);
         } else if (apiHeader.includes("user_token")) {
           (window as any).loginOutStopWidow(); // 退出登录
@@ -88,7 +91,7 @@ class WebSocketService {
       const serveData = JSON.parse(event.data);
       const time = new Date().getTime(); // 获取当前时间
       const diff = time - this.receivedTime;
-      const current = this.receivedTime;
+      // const current = this.receivedTime;
       
       // 如果接收到服务端返回消息，则记录下当前时间
       if (serveData) {
@@ -119,12 +122,15 @@ class WebSocketService {
       } else {
         // 如果没接收到消息，则不记录时间，
         // 进行消息时间 receivedTime 和当前时间比较，如果间隔 >= 30s, 断开连接，重新发送，并且记录当前时间，方便和下次对比
-        this.close({ code: this.serveErrorCode, reason: "服务端30秒没有返回消息"});
+        if (diff >= 30000 && diff !== time) {
+          this.receivedTime = 0
+          this.close({ code: this.serveErrorCode, reason: "服务端30秒没有返回消息"});
+        } else if (diff === time)  {
+          this.receivedTime = time; // 如果第一次返回值就没有就保存一次当前时间，方便计时30秒
+        }
       }
       
-      if (current === 0 || (diff >= 0 && diff < 10000)) {
-        onMessage(event);
-      }
+      onMessage(event);
     };
 
     this.ws.onclose = (event) => {

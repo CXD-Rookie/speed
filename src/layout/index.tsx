@@ -600,7 +600,7 @@ const Layouts: React.FC = () => {
         "2": "thirdBind",
         "3": "thirdUpdateBind",
       };
-      
+
       if (bind_type >= 0) {
         dispatch(setAccountInfo(user, true, false));
 
