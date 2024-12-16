@@ -112,7 +112,7 @@ class WebSocketService {
           tracking.trackServerError(
             `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
           )
-        } else if (event?.code < 100000 && event?.code >= 200000) {
+        } else if (event?.code !== 0 && event?.code < 100000 && event?.code >= 200000) {
           // 服务端其他错误 停止加速，关闭 webSocket
           this.close({code: this.severlverifyCode, reason: serveData?.message});
           tracking.trackServerError(
