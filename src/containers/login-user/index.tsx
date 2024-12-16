@@ -11,6 +11,7 @@ import { Popover, Tooltip } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { getCouponTimeLock } from "@/layout/utils";
+import { validateRequiredParams } from "@/common/utils";
 import {
   setSetting,
   setPayState,
@@ -83,6 +84,12 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
     default_pagination = inilitePagination
   ) => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       const res = await payApi.redeemList({
         ...search,
         ...default_pagination,

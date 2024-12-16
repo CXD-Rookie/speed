@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setFirstPayRP } from "@/redux/actions/modal-open";
+import { validateRequiredParams } from "@/common/utils";
 
 import "./index.scss";
 import "./new.scss";
@@ -104,6 +105,12 @@ const PayModal: React.FC = (props) => {
   // 获取单价，类型列表
   const fetchData = async () => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       const [
         payTypeResponse,
         commodityResponse,
@@ -139,6 +146,12 @@ const PayModal: React.FC = (props) => {
 
   const fetchPolling = async () => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       const response = await payApi.getPolling({
         key: pollingKey,
       });
@@ -170,21 +183,15 @@ const PayModal: React.FC = (props) => {
           });
         }
 
-        // if (status === 2) {
-        //   let jsonResponse = await loginApi.userInfo();
-
-        //   // 3个参数 用户信息 是否登录 是否显示登录
-        //   dispatch(
-        //     setAccountInfo(jsonResponse.data.user_info, undefined, undefined)
-        //   );
-
-        //   localStorage.setItem(
-        //     "token",
-        //     JSON.stringify(jsonResponse.data.token)
-        //   );
-        // }
-
         if ([2, 3, 4, 5].includes(status) && response.data?.cid) {
+          const reqire = await validateRequiredParams({
+            cid: response.data?.cid,
+          });
+
+          if (!reqire) {
+            return;
+          }
+
           const res = await payApi.getCommodityInfo(response.data?.cid);
 
           setOrderInfo({ ...res.data, ...response.data });

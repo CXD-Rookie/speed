@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
 import { setAccountInfo } from "@/redux/actions/account-info";
+import { validateRequiredParams } from "@/common/utils";
 import {
   setDrawVipActive,
   setFirstPayRP,
@@ -120,6 +121,12 @@ const Layouts: React.FC = () => {
       const token = localStorage.getItem("token");
 
       if (token) {
+        const reqire = await validateRequiredParams();
+
+        if (!reqire) {
+          return;
+        }
+
         const res = await playSuitApi.playProcessblacklist();
         const data = (res?.data || []).flatMap((item: any) => item.process);
 
