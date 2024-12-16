@@ -48,8 +48,11 @@ const Swiper: React.FC<SwiperProps> = ({ onImageClick }) => {
 
   // 使用 useCallback 包装 onImageClick 以避免不必要的重新创建
   const handleClick = useCallback((params: any) => {
+    if (params === "1") {
+      (window as any).NativeApi_OpenBrowser("https://qm.qq.com/q/KzaRJZbj8I");
+    }
     onImageClick(params);
-  }, [onImageClick]);
+  }, []);
 
   return (
     <div className="swiper-box">

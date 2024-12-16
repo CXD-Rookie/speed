@@ -431,8 +431,6 @@ const Layouts: React.FC = () => {
   };
 
   const schedulePolling = (event: any) => {
-    // console.log(event);
-
     if (event?.data) {
       const data = JSON.parse(event.data);
       const token = localStorage.getItem("token");
@@ -584,60 +582,57 @@ const Layouts: React.FC = () => {
           } else {
             localStorage.setItem("isRealName", "0");
           }
-
-          if (!!user_info?.phone) {
-            // 3个参数 用户信息 是否登录 是否显示登录
-            dispatch(setAccountInfo(user_info, true, false));
-
-            const bind_type = JSON.parse(
-              localStorage.getItem("thirdBind") || "-1"
-            );
-            const type_obj: any = {
-              "2": "thirdBind",
-              "3": "thirdUpdateBind",
-            };
-
-            if (bind_type >= 0) {
-              dispatch(setAccountInfo(user_info, true, false));
-
-              if (isNewUser) {
-                const time = localStorage.getItem("firstActiveTime");
-                const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-                const isTrue = time && currentTime < Number(time);
-
-                tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
-              } else {
-                tracking.trackLoginSuccess("youXia");
-              }
-
-              if (isNewUser) {
-                dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
-              } else if ([2, 3].includes(Number(bind_type))) {
-                dispatch(
-                  setMinorState({
-                    open: true,
-                    type: type_obj?.[String(bind_type)],
-                  })
-                ); // 三方绑定提示
-              }
-
-              localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
-              webSocketService.loginReconnect();
-            }
-          } else {
-            let bind_type = JSON.parse(
-              localStorage.getItem("thirdBind") || "-1"
-            );
-
-            // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
-            if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
-              localStorage.removeItem("thirdBind");
-
-              dispatch(setAccountInfo(undefined, false, false));
-              dispatch(updateBindPhoneState(true));
-            }
-          }
         }
+      }
+    }
+  };
+
+  // 游侠登录
+  const youxiaLoginCallback = (data: any) => {
+    const isNew = data?.is_new_user; // 是否新用户
+    const user = data?.user_info; // 用户信息
+
+    if (user?.phone) {
+      // 3个参数 用户信息 是否登录 是否显示登录
+      dispatch(setAccountInfo(user, true, false));
+      const bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
+      const type_obj: any = {
+        "2": "thirdBind",
+        "3": "thirdUpdateBind",
+      };
+      
+      if (bind_type >= 0) {
+        dispatch(setAccountInfo(user, true, false));
+
+        if (isNew) {
+          const time = localStorage.getItem("firstActiveTime");
+          const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+          const isTrue = time && currentTime < Number(time);
+          tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
+        } else {
+          tracking.trackLoginSuccess("youXia");
+        }
+
+        if (isNew) {
+          dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
+        } else if ([2, 3].includes(Number(bind_type))) {
+          dispatch(
+            setMinorState({
+              open: true,
+              type: type_obj?.[String(bind_type)],
+            })
+          ); // 三方绑定提示
+        }
+        localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
+        webSocketService.loginReconnect();
+      }
+    } else {
+      let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
+      // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
+      if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
+        localStorage.removeItem("thirdBind");
+        dispatch(setAccountInfo(undefined, false, false));
+        dispatch(updateBindPhoneState(true));
       }
     }
   };
@@ -662,7 +657,7 @@ const Layouts: React.FC = () => {
       if (!accountInfo.isLogin) {
         fetchBanner();
       }
-      
+
       const [renewal, version, setting]: any = await Promise.all([
         iniliteRenewal(), // 初始化更新游戏;
         nativeVersion(), // 读取客户端版本
@@ -727,9 +722,11 @@ const Layouts: React.FC = () => {
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
+    (window as any).youxiaLoginCallback = youxiaLoginCallback; // 游侠登录回调，客户端调用
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
+      delete (window as any).youxiaLoginCallback;
       delete (window as any).speedErrorReport;
       delete (window as any).invokeLocalScan;
       delete (window as any).speedError;

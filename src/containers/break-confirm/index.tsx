@@ -238,6 +238,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setNoticeType(option?.type || "");
 
     if (option?.type === "netorkError") {
+      setAccelOpen(false);
       localStorage.setItem("eventBuNetwork", "1");
     }
 
