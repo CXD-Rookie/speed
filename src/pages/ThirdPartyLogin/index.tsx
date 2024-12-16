@@ -50,7 +50,7 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
         //   res?.data?.vip_experience_time
         // );
         (window as any).NativeApi_YouXiaAuthComplete(
-          res?.data,
+          JSON.stringify(res?.data),
           state
         );
       }

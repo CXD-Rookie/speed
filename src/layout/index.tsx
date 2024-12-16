@@ -591,7 +591,8 @@ const Layouts: React.FC = () => {
   const youxiaLoginCallback = (data: any) => {
     const isNew = data?.is_new_user; // 是否新用户
     const user = data?.user_info; // 用户信息
-
+    console.log(data);
+    
     if (user?.phone) {
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo(user, true, false));

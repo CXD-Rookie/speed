@@ -171,7 +171,7 @@ class WebSocketService {
   // 定时心跳
   scheduleHeartbeat() {
     this.heartbeatInterval = setInterval(() => {
-      console.log("是否断网", navigator.onLine);
+      console.log("是否在线", navigator.onLine);
       // 检测到断网
       if (!navigator.onLine) {
         this.scheduleRecord = 1; // 如果断网了记录一个标记，知道正常后进行删除
