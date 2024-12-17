@@ -36,9 +36,10 @@ export async function validateRequiredParams (params = {}, isToken = true) {
     const clietToken = localStorage.getItem('client_token');
     const value = isToken ? { ...params, userToken, clietToken } : params
     const missValue = checkMissingValues(value);
-    console.log(missValue);
     
     if (missValue?.length > 0) {
+      console.log("参数校验错误", missValue);
+      
       if (missValue.includes("userToken")) {
         window.loginOutStopWidow(); // 退出登录
         return false

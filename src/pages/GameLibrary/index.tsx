@@ -70,79 +70,52 @@ const gamesTitle: GamesTitleProps[] = [
 
 const GameLibrary: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
-  const [gameActiveType, setGameActiveType] = useState<string>("1");
+  const [gameActiveType, setGameActiveType] = useState<string>("");
 
   const gameListRef: any = useRef<HTMLDivElement>(null);
 
-  // 初始化时请求数据并缓存到 localStorage
-  const fetchAndCacheGames = async () => {
-    try {
-      const res = await gameApi.gameList(); // 获取全部游戏数据
-      const gamesWithFullImgUrl = res.data.list.map((game: Game) => ({
-        ...game,
-        cover_img: `https://cdn.accessorx.com/${
-          game.cover_img ?? game.background_img
-        }`,
-      }));
-      
-      // 缓存到 localStorage
-      localStorage.setItem("cachedGames", JSON.stringify(gamesWithFullImgUrl));
-      
-      // 初次渲染显示 "限时免费" 分类
-      // filterGamesByCategory("限时免费", gamesWithFullImgUrl);
-      
-    } catch (error) {
-      console.error("Error fetching games:", error);
-    }
-  };
-
   // 根据分类进行本地数据过滤
-  const filterGamesByCategory = async (category: string, gamesList: Game[] | null = null) => {
-    const allGames =
-      gamesList || JSON.parse(localStorage.getItem("cachedGames") || "[]");
-    let filteredGames = [];
-    const apiList:any = {
-      "限时免费": "free",
-      "热门游戏": "hot",
-      "最新推荐": "new",
-      "国服游戏": "china_game_server"
+  const filterGamesByCategory = async (
+    category: string,
+    gamesList: Game[] | null = null
+  ) => {
+    const cacheGame = localStorage.getItem("cacheGame");
+    const cacheAllGame = JSON.parse(cacheGame || JSON.stringify({}));
+    const allGames = gamesList || cacheAllGame?.allGame || [];
+    const apiList: any = {
+      限时免费: cacheAllGame?.freeGame,
+      热门游戏: cacheAllGame?.hotGame,
+      最新推荐: cacheAllGame?.newGame,
+      国服游戏: cacheAllGame?.chinaGame,
     };
-
+    
     // 根据tags过滤 如果是限时免费 free_time 字段必须存在
     if (apiList?.[category]) {
-      const res = await gameApi.gameList({ type: apiList?.[category] }); // 获取全部游戏数据
-      console.log(res);
-      
-      filteredGames = allGames.filter(
-        (game: Game) => game.tags.includes(category) && game?.free_time
-      );
+      setGames(apiList?.[category]);
     } else {
-      filteredGames = allGames.filter((game: Game) =>
-        game.tags.includes(category)
+      const arr = allGames.filter((value: Game) =>
+        value.tags.includes(category)
       );
-    }
 
-    setGames(filteredGames);
+      setGames(arr);
+    }
   };
 
   // 点击分类时不再请求数据，而是本地过滤
   const handleTitleClick = (item: GamesTitleProps) => {
-    gameListRef.current.scrollTop = 0
+    gameListRef.current.scrollTop = 0;
     setGameActiveType(item.key);
     filterGamesByCategory(item.t);
   };
 
   useEffect(() => {
-    // 每次激活组件时重新请求数据并更新缓存
-    fetchAndCacheGames();
-    // 强制切换回 "限时免费" 标签并设置选中状态
-    const freeTitle = gamesTitle.find(title => title.t === "限时免费");
-    if (freeTitle) {
-      setGameActiveType(freeTitle.key);
-    }
+    setGameActiveType("1"); // 切换标签为 "限时免费"
+    filterGamesByCategory("限时免费"); // 展示为 "限时免费" 的数据
     
-    filterGamesByCategory("限时免费");
-  }, [])
+    if ((window as any).cacheGameFun) {
+      (window as any).cacheGameFun(); // 激活组件更新一下当前游戏的缓存
+    }
+  }, []);
 
   return (
     <div className="game-library-module-container">
