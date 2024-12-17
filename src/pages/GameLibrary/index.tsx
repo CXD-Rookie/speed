@@ -91,7 +91,11 @@ const GameLibrary: React.FC = () => {
     
     // 根据tags过滤 如果是限时免费 free_time 字段必须存在
     if (apiList?.[category]) {
-      setGames(apiList?.[category]);
+      if (category === "最新推荐") {
+        setGames(apiList?.[category]?.slice(0, 30));
+      } else {
+        setGames(apiList?.[category]);
+      }
     } else {
       const arr = allGames.filter((value: Game) =>
         value.tags.includes(category)
