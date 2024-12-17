@@ -37,7 +37,7 @@ class WebSocketService {
   private severlStopCode: number = 4004 // 服务端返回错误码位于 >= 100000 - < 200000
   private severlverifyCode: number = 4005 // 服务端返回错误码位于 < 100000 - >= 200000
 
-  connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
+  connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch, isLogin = true) {
     this.url = url;
     this.onMessage = onMessage;
     this.dispatch = dispatch;
@@ -78,7 +78,9 @@ class WebSocketService {
           })
           this.connect(this.url, this.onMessage, this.dispatch);
         } else if (apiHeader.includes("user_token")) {
-          (window as any).loginOutStopWidow(); // 退出登录
+          if (isLogin) {
+            (window as any).loginOutStopWidow(); // 退出登录
+          }
         }
 
         tracking.trackServerError(

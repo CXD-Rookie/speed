@@ -714,14 +714,13 @@ const Layouts: React.FC = () => {
       if (!accountInfo.isLogin) {
         fetchBanner();
       }
-
-      if (token) {
-        webSocketService.connect(
-          url, // 请求环境
-          (event: MessageEvent) => schedulePolling(event),
-          dispatch
-        );
-      }
+      const isLogin = store.getState()?.accountInfo?.isLogin;
+      webSocketService.connect(
+        url, // 请求环境
+        (event: MessageEvent) => schedulePolling(event),
+        dispatch,
+        isLogin,
+      );
       
       const [renewal, version, setting]: any = await Promise.all([
         iniliteRenewal(), // 初始化更新游戏;
