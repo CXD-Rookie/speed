@@ -8,7 +8,7 @@ import {
   setDrawVipActive,
   setPayState,
 } from "@/redux/actions/modal-open";
-import { nodeDebounce } from "@/common/utils";
+import { nodeDebounce, validateRequiredParams } from "@/common/utils";
 import { validityPeriod } from "./utils";
 
 import "./index.scss";
@@ -132,6 +132,12 @@ const CurrencyExchange: React.FC = (props) => {
         return;
       }
 
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       let res = await payApi.redeemPick({
         code: currencyCode,
         ticket: captcha_verify_param.ticket,
@@ -201,6 +207,12 @@ const CurrencyExchange: React.FC = (props) => {
     }
   ) => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+      
       const res = await payApi.redeemList({
         ...default_pagination,
         ...search,

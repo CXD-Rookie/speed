@@ -11,12 +11,6 @@ import { get, post, put } from "./api";
 class LoginApi {
   url = process.env.REACT_APP_API_URL
 
-  // getPhoneCode (parmas) {
-  //   return post(
-  //     `${this.url}/send_sms/${parmas?.phone}`, { scene_id: parmas?.scene_id, captcha_verify_param: parmas?.captcha_verify_param }
-  //   );
-  // }
-
   getPhoneCode (parmas) {
     return get(
       `${this.url}/send_sms/${parmas?.phone}?ticket=${parmas.ticket}&randstr=${parmas.randstr}`
@@ -35,12 +29,11 @@ class LoginApi {
     );
   }
 
-  loginOut (params) {
-    const queryString = new URLSearchParams(params).toString();
+  loginOut () {
     return get(`${this.url}/user/loginout?platform=3`);
   }
 
-  userInfo (params) {
+  userInfo () {
     return get(`${this.url}/user/info?platform=3`);
   }
 

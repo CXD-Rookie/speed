@@ -21,6 +21,7 @@ import {
 } from "@/redux/actions/modal-open";
 import { areaStyleClass } from "./utils";
 import { compareVersions } from "@/layout/utils";
+import { validateRequiredParams } from "@/common/utils";
 
 import "./style.scss";
 import "./home.scss";
@@ -135,6 +136,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 获取游戏运营平台列表
   const fetchPcPlatformList = async () => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       const res = await playSuitApi.pcPlatform();
       const url = "/api/v1/game/pc_platform/list";
 
@@ -155,6 +162,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   //查询黑白名单列表数据
   const fetchPcWhiteBlackList = async () => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+      
       const res = await playSuitApi.playSpeedBlackWhitelist();
       const url = "/api/v1/black_white_list";
 
@@ -463,6 +476,15 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         server_v2 = [],
         id,
       } = option.serverNode.selectNode ?? {}; //目前只有一个服务器，后期增多要遍历
+      const reqire = await validateRequiredParams({
+        gid: option?.id,
+        nid: id,
+      });
+
+      if (!reqire) {
+        return;
+      }
+
       const startInfo = await playSuitApi.playSpeedStart({
         platform: 3,
         gid: option?.id,
@@ -545,19 +567,31 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     tracking.trackBoostSuccess(isTrue ? 1 : 0);
                   } else {
                     stopAcceleration();
-                    resolve({ state: false, code: responseObj?.status });
+                    resolve({ state: false, code: responseObj?.status, message: responseObj?.error_log ?? "" });
                   }
                 } catch (error) {
                   console.error("请求失败:", error);
-                  resolve({ state: false, code: responseObj?.status }); // 请求失败，返回错误信息
+                  resolve({
+                    state: false,
+                    code: responseObj?.status,
+                    message: responseObj?.error_log ?? "",
+                  }); // 请求失败，返回错误信息
                 }
               } else {
                 console.error("端口信息缺失");
-                resolve({ state: false, code: responseObj?.status });
+                resolve({
+                  state: false,
+                  code: responseObj?.status,
+                  message: responseObj?.error_log ?? "",
+                });
               }
             } else {
               console.error("响应数据缺失");
-              resolve({ state: false, code: responseObj?.status });
+              resolve({
+                state: false,
+                code: responseObj?.status,
+                message: responseObj?.error_log ?? "",
+              });
             }
           }
         );
@@ -634,7 +668,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             isPre = true;
           } else {
             tracking.trackBoostFailure(
-              `client=${state?.code};version=${
+              `client=${state?.code};message=${state?.message};version=${
                 clientVersion + "," + webVersion
               }`
             );

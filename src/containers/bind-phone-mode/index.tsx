@@ -2,6 +2,7 @@ import { useState, useEffect, Fragment } from "react";
 import { Input, Modal } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setAccountInfo } from "@/redux/actions/account-info";
+import { validateRequiredParams } from "@/common/utils";
 import {
   setMinorState,
   setBindState,
@@ -60,6 +61,12 @@ const BindPhoneMode: React.FC = (props) => {
   const codeCallback = async (captcha_verify_param: any) => {
     try {
       if (captcha_verify_param?.ret !== 0) {
+        return;
+      }
+
+      const reqire = await validateRequiredParams({ phone });
+
+      if (bindType === "newPhone" && !reqire) {
         return;
       }
 
@@ -137,10 +144,16 @@ const BindPhoneMode: React.FC = (props) => {
   // 校验用户手机号
   const verifyPhone = async () => {
     try {
-      let res = await loginApi.verifyPhone({
+      const params = {
         verification_code: code,
-      });
-      console.log(res);
+      };
+      const reqire = await validateRequiredParams(params);
+
+      if (!reqire) {
+        return;
+      }
+
+      let res = await loginApi.verifyPhone(params);
 
       return res;
     } catch (error) {
@@ -151,10 +164,17 @@ const BindPhoneMode: React.FC = (props) => {
   // 切换手机号api
   const handleUpdatePhone = async () => {
     try {
-      let res = await loginApi.updatePhone({
+      const params = {
         phone,
         verification_code: code,
-      });
+      };
+      const reqire = await validateRequiredParams(params);
+
+      if (!reqire) {
+        return;
+      }
+
+      let res = await loginApi.updatePhone(params);
 
       return res;
     } catch (error) {
@@ -165,6 +185,12 @@ const BindPhoneMode: React.FC = (props) => {
   // 解绑手机号api
   const handleUnbindPhone = async () => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+      
       let res = await loginApi.unbindPhone({
         tid: 2,
       });
@@ -179,6 +205,12 @@ const BindPhoneMode: React.FC = (props) => {
   const handlevisitorLogin = async (event: any) => {
     try {
       if (bindType === "third") {
+        const reqire = await validateRequiredParams();
+
+        if (!reqire) {
+          return;
+        }
+
         let res = await verifyPhone();
 
         if (res?.error === 0) {
@@ -198,6 +230,12 @@ const BindPhoneMode: React.FC = (props) => {
           dispatch(setMinorState({ open: true, type: "unbind" }));
         }
       } else if (bindType === "oldPhone") {
+        const reqire = await validateRequiredParams();
+
+        if (!reqire) {
+          return;
+        }
+
         let res = await verifyPhone();
 
         if (res?.error === 0) {

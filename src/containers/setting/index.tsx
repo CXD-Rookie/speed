@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import { validateRequiredParams } from "@/common/utils";
 import {
   setSetting,
   setPayState,
@@ -313,6 +314,12 @@ const SettingsModal: React.FC = (props) => {
 
   const handleBindThirdInfo = async () => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       let res = await loginApi.fetchBindThirdInfo({
         platform: 3,
       });

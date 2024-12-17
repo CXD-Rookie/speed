@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Upload, Button, Input, message } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+import { validateRequiredParams } from "@/common/utils";
 
 import axios from "axios";
 import feedbackApi from "../../api/issue";
@@ -145,6 +146,15 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         ticket: captcha_verify_param.ticket,
         randstr: captcha_verify_param.randstr,
       };
+
+      const reqire = await validateRequiredParams({
+        feedback_type: String(selectedType),
+        content: description,
+      });
+
+      if (!reqire) {
+        return;
+      }
 
       const response = await feedbackApi.feedback(JSON.stringify(params));
 

@@ -167,7 +167,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
 
     switch (noticeType) {
       case "serviceExpired":
-        tracking.trackPurchasePageShow(isPurchase ? "boostFirst" : "boostExpiry");
+        tracking.trackPurchasePageShow(
+          isPurchase ? "boostFirst" : "boostExpiry"
+        );
         cancel();
         dispatch(setPayState({ open: true, couponValue: {} })); // 会员充值页面
         break;
@@ -192,10 +194,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         break;
       case "netorkError":
         localStorage.removeItem("eventBuNetwork");
-        webSocketService.loginReconnect(4000);
+        webSocketService.scheduleHeartbeat();
         navigate(location.pathname);
-        // stopAcceleration();
-        // (window as any).native_restart();
         break;
       case "newVersionFound":
         stopAcceleration();
@@ -238,6 +238,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     setNoticeType(option?.type || "");
 
     if (option?.type === "netorkError") {
+      setAccelOpen(false);
       localStorage.setItem("eventBuNetwork", "1");
     }
 

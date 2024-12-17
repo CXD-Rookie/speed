@@ -60,6 +60,14 @@ instance.interceptors.response.use(
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;
       console.log(clientVersion);
+      const client_code = [100000, 100001];
+      const user_code = [110000];
+
+      if (client_code.includes(code)) {
+        window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
+      } else if (user_code.includes(code)) {
+        window.loginOutStopWidow(); // 退出登录
+      }
       
       tracking.trackServerError(`errorCode=${code};message=${message};apiName=${url};version=${clientVersion + "," + webVersion}`);
     }

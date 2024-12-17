@@ -9,13 +9,7 @@
 import { get } from "./api";
 
 class PlaySuit {
-
   url = process.env.REACT_APP_API_URL;
-
-  // speedInfo (params) {
-  //   const queryString = new URLSearchParams(params).toString();
-  //   return get(`${this.url}/game/speed_info?${queryString}`);
-  // }
 
   pcPlatform (params) {
     const queryString = new URLSearchParams(params).toString();
@@ -38,28 +32,23 @@ class PlaySuit {
   }
 
   playSpeedList (params) {
-    // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/game/speed/list`, params);
   }
 
   playSpeedStart (params) {
-    // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/game/speed/start`, params);
   }
 
   playSpeedEnd (params) {
-    // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/game/speed/end`, params);
   }
 
   playSpeedBlackWhitelist (params) {
-    // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/black_white_list`, params);
   }
 
   // 进程黑名单
   playProcessblacklist (params) {
-    // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/game/process/blacklist`, {
       platform: 3,
       ...params,

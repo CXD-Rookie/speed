@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "antd";
 import { setAccountInfo } from "../../redux/actions/account-info";
 import { updateBindPhoneState } from "@/redux/actions/auth";
-import { debounce } from "@/common/utils";
+import { debounce, validateRequiredParams } from "@/common/utils";
 import { setMinorState } from "@/redux/actions/modal-open";
 
 import tracking from "@/common/tracking";
@@ -70,6 +70,12 @@ const VisitorLogin: React.FC= (props) => {
     }
 
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       let res = await loginApi.updatePhone({
         phone: phoneNumber,
         verification_code: verificationCode,

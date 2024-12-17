@@ -4,6 +4,7 @@ import { Modal, Tabs } from "antd";
 import type { TabsProps } from "antd";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
+import { validateRequiredParams } from "@/common/utils";
 
 import "./index.scss";
 import playSuitApi from "@/api/speed";
@@ -229,6 +230,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     // 初始化获取所有的加速服务器列表
     const fetchAllSpeedList = async (keys: any = [], selectQu: any, data: any) => {
       try {
+        const reqire = await validateRequiredParams();
+
+        if (!reqire) {
+          return;
+        }
+        
         let res = await playSuitApi.playSpeedList({
           platform: 3,
         });
@@ -305,6 +312,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     // 游戏区服列表 qu 选中区服的 suit current 游戏的区服列表
     const fetchPlaysuit = async (qu = "", current: any = currentGameServer) => {
       try {
+        const reqire = await validateRequiredParams();
+
+        if (!reqire) {
+          return;
+        }
+
         const res = await playSuitApi.playSuitList();
         const data = res?.data || {};
         const keys = Object.keys(data).filter(
@@ -429,6 +442,12 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
     const handleSubRegions = async (event: any = options) => {
       try {
         setLoading(true);
+        
+        const reqire = await validateRequiredParams();
+
+        if (!reqire) {
+          return;
+        }
 
         let res = await playSuitApi.playSuitInfo({
           system_id: 3,

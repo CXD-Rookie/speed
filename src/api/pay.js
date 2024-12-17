@@ -13,34 +13,27 @@ import { get, post } from "./api";
 class PayApi {
   url = process.env.REACT_APP_API_URL;
 
-  getPayTypeList (params) {
-    const queryString = new URLSearchParams(params).toString();
+  getPayTypeList () {
     return get(`${this.url}/pay/type/list?platform=3`);
   }
+
   getCommodityList (params) {
-    const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/commodity/list?platform=3`, params);
   }
-  getQrCodeUrl (params) {
-    // const queryString = new URLSearchParams(params).toString();
-    return get(`${this.url}/pay/qrcode?cid=${params.cid}&user_id=${params.user_id}&key=${params.key}`);
-  }
+
   getPolling (params) {
-    // const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/pay/order/qrcode_key/polling?platform=3&key=${params.key}`);
   }
 
   getCommodityInfo (params) {
-    // const queryString = new URLSearchParams(params).toString();
-    console.log(params, "params------------")
     return get(`${this.url}/commodity/info?platform=3&cid=${params}`);
   }
-  getfirst_purchase_renewed_discount (params) {
-    const queryString = new URLSearchParams(params).toString();
+
+  getfirst_purchase_renewed_discount () {
     return get(`${this.url}/commodity/first_purchase_renewed_discount?platform=3`);
   }
-  UnpaidOrder (params) {
-    const queryString = new URLSearchParams(params).toString();
+
+  UnpaidOrder () {
     return get(`${this.url}/pay/unpaid_order?platform=3`);
   }
 

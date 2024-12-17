@@ -81,7 +81,7 @@ const useFetchBanner = () => {
   };
 
   useEffect(() => {
-    fetchAndStoreBannerData();
+    // fetchAndStoreBannerData();
   }, []); // 注意这里的依赖数组，确保每次isPayActive改变时不重新执行
 
   

@@ -15,6 +15,47 @@ export const getMyGames = () => {
   return result;
 }
 
+// 查看对象的那个键是空值
+function checkMissingValues(params) {
+  const missingKeys = [];
+
+  // 遍历 apiHeaderParams 对象的所有键值对
+  for (const key in params) {
+    if ([null, undefined, ''].includes(params[key])) {
+      missingKeys.push(key);
+    }
+  }
+
+  return missingKeys;
+}
+
+// 校验必传参数是否为空 params 参数 isToken 是否需要校验token
+export async function validateRequiredParams (params = {}, isToken = true) {
+  try {
+    const userToken = localStorage.getItem('token');
+    const clietToken = localStorage.getItem('client_token');
+    const value = isToken ? { ...params, userToken, clietToken } : params
+    const missValue = checkMissingValues(value);
+    console.log(missValue);
+    
+    if (missValue?.length > 0) {
+      if (missValue.includes("userToken")) {
+        window.loginOutStopWidow(); // 退出登录
+        return false
+      } else if ("clietToken") {
+        window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
+        validateRequiredParams(params, isToken);
+      } else {
+        return false
+      }
+    } else {
+      return true
+    }
+  } catch (error) {
+    return false
+  }
+}
+
 // 是否未成年
 export function validateAge (id) {
   const idCard = id;

@@ -8,6 +8,7 @@
  * @FilePath: \speed\src\hooks\useGamesInitialize.js
  */
 import { useHandleUserInfo } from "./useHandleUserInfo";
+import { validateRequiredParams } from "@/common/utils";
 
 import gameApi from "@/api/gamelist";
 import eventBus from "@/api/eventBus";
@@ -194,6 +195,12 @@ export const useGamesInitialize = () => {
   // 调用区服接口获取区服信息
   const fetchCallAreaService = async (gid) => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       const res = await playSuitApi.playSuitInfo({
         system_id: 3,
         gid,

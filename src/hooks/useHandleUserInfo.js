@@ -9,6 +9,8 @@
  */
 import { useDispatch } from 'react-redux';
 import { setAccountInfo } from '@/redux/actions/account-info';
+import { validateRequiredParams } from '@/common/utils';
+
 import webSocketService from "@/common/webSocketService";
 import loginApi from "@/api/login";
 
@@ -17,6 +19,12 @@ export const useHandleUserInfo = () => {
 
   const handleUserInfo = async () => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+      
       let res = await loginApi.userInfo();
 
       dispatch(setAccountInfo(res?.data?.user_info, undefined, undefined));

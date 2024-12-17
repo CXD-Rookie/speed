@@ -6,14 +6,14 @@
  * @FilePath: \speed\src\api\gamelist.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { get, post } from "./api";
+import { get } from "./api";
 
 class GameList {
   url = process.env.REACT_APP_API_URL
-  // url = `${process.env.REACT_APP_API_URL}/api/v1`
 
   gameList (parmas) {
     const queryString = new URLSearchParams(parmas).toString();
+    
     return get(`${this.url}/game/list?${queryString}`);
   }
 }

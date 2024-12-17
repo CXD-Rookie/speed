@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { validityPeriod } from "../currency-exchange/utils";
-import { nodeDebounce } from "@/common/utils";
+import { nodeDebounce, validateRequiredParams } from "@/common/utils";
 import { setPayState } from "@/redux/actions/modal-open";
 
 import "./index.scss";
@@ -116,7 +116,6 @@ const PayModal: React.FC = (props) => {
   // 根据选中商品，guid，优惠折扣生成的二维码cdn地址
   const autoGenerateQRCodes = (event: any = {}) => {
     const rid = event?.rid || activeCoupon?.rid || "";
-
     return `${env_url}/pay/qrcode?cid=${event?.cid}&user_id=${userToken}&key=${
       event?.key
     }&platform=${3}&rid=${rid}`;
@@ -219,6 +218,12 @@ const PayModal: React.FC = (props) => {
 
       // 如果是第一次初始化请求, 执行只需要第一次执行的api
       if (refresh === 0) {
+        const reqire = await validateRequiredParams();
+
+        if (!reqire) {
+          return;
+        }
+
         const [payTypeRes, firstPurchaseRes, makeCouponRes] = await Promise.all(
           [
             payApi.getPayTypeList(), // 商品支付类型api
@@ -298,6 +303,12 @@ const PayModal: React.FC = (props) => {
   // 轮询接口，不断获取支付状态
   const fetchPolling = async () => {
     try {
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       // 轮询接口
       const res = await payApi.getPolling({
         key: pollingKey,
@@ -332,6 +343,12 @@ const PayModal: React.FC = (props) => {
 
         // 2已支付 3支付失败 4手动取消 5超时取消
         if ([2, 3, 4, 5].includes(status) && res?.data?.cid) {
+          const reqire = await validateRequiredParams({ cid: res.data?.cid });
+
+          if (!reqire) {
+            return;
+          }
+      
           const commodityRes = await payApi.getCommodityInfo(res.data?.cid);
 
           setOrderInfo({ ...commodityRes.data, ...res.data });

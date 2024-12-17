@@ -132,6 +132,9 @@ const serverClientReport = (code) => {
   }
 
   console.log(code);
+  if (code > 200) {
+    tracking.trackBoostDisconnectPassive(`server=${code};version=${clientVersion + "," + webVersion}`);
+  }
   // 退出码，异常退出，只做停止加速
   window.stopProcessReset();
 }

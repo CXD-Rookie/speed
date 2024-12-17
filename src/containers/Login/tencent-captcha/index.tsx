@@ -1,3 +1,5 @@
+import { validateRequiredParams } from "@/common/utils";
+
 import "./index.scss";
 import loginApi from "@/api/login";
 
@@ -22,6 +24,12 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
   const codeCallback = async (captcha_verify_param: any) => {
     try {
       if (captcha_verify_param?.ret !== 0) {
+        return;
+      }
+
+      const reqire = await validateRequiredParams({ phone: phoneNumber });
+
+      if (!reqire) {
         return;
       }
 
