@@ -14,7 +14,7 @@ class GameList {
   gameList (parmas) {
     const queryString = new URLSearchParams(parmas).toString();
     
-    return get(`${this.url}/game/list?${queryString}`);
+    return get(`${this.url}/game/list?system_id=3${queryString ? "&" : ""}${queryString}`);
   }
 }
 

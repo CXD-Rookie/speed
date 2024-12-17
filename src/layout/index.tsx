@@ -331,6 +331,7 @@ const Layouts: React.FC = () => {
 
       await stopProcessReset(); // 停止加速操作
       await loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
+      await fetchBanner(); // 退出登录更新banner图
 
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
@@ -640,6 +641,8 @@ const Layouts: React.FC = () => {
             localStorage.setItem("isRealName", "0");
           }
         }
+
+        dispatch(setAccountInfo(undefined, true, undefined)); // 修改登录状态
       }
     }
   };
@@ -693,6 +696,10 @@ const Layouts: React.FC = () => {
         dispatch(updateBindPhoneState(true));
       }
     }
+
+    setTimeout(() => {
+      navigate("/home")
+    }, 2000);
   };
 
   // 初始化操作
@@ -703,6 +710,10 @@ const Layouts: React.FC = () => {
 
       localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
       localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记
+      
+      if (!accountInfo.isLogin) {
+        fetchBanner();
+      }
 
       if (token) {
         webSocketService.connect(
@@ -711,11 +722,7 @@ const Layouts: React.FC = () => {
           dispatch
         );
       }
-
-      if (!accountInfo.isLogin) {
-        fetchBanner();
-      }
-
+      
       const [renewal, version, setting]: any = await Promise.all([
         iniliteRenewal(), // 初始化更新游戏;
         nativeVersion(), // 读取客户端版本

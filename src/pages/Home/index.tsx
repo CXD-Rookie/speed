@@ -74,10 +74,8 @@ const Home: React.FC = () => {
 
   const handleShowModal = (type: any) => {
     if (accountInfo?.isLogin) {
-      if (type === "1") {
-        dispatch(setDrawVipActive({ open: true })); // 领取兑换码弹窗
-      } else {
-        dispatch(setFirstPayRP({ open: true, type: Number(type) }));
+      if (["2", "3"].includes(type)) {
+        dispatch(setFirstPayRP({ open: true, type: Number(type) })); // 弹出首充首续
       }
     } else {
       dispatch(setAccountInfo(undefined, undefined, true));
@@ -101,6 +99,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchImages = () => {
       const storedImages = JSON.parse(localStorage.getItem("all_data") || "[]");
+      
       setImages(storedImages);
       setIsImagesLoaded(true); // 数据加载完成
     };

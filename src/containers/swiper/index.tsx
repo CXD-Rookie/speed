@@ -32,7 +32,6 @@ const Swiper: React.FC<SwiperProps> = ({ onImageClick }) => {
     // 初始化时从 localStorage 读取banner数据
     const storedData = JSON.parse(localStorage.getItem("all_data") || "[]");
     setImages(storedData);
-    console.log(storedData);
     
     // 监听 eventBus 的 'dataUpdated' 事件
     const handleDataUpdated = (newData: ImageItem[]) => {

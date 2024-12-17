@@ -176,7 +176,7 @@ class WebSocketService {
       if (!navigator.onLine) {
         this.scheduleRecord = 1; // 如果断网了记录一个标记，知道正常后进行删除
         // 如果经过10次检测还是断网，则进行弹窗无网络
-        if (this.heartbeatNum >= 1) {
+        if (this.heartbeatNum >= 9) {
           this.stopHeartbeat();
           eventBus.emit('showModal', { show: true, type: "netorkError" }); // 弹窗网络错误
         } else {
