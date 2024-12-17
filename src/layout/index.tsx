@@ -606,7 +606,11 @@ const Layouts: React.FC = () => {
           } else if (!isRenewed && !isRenewed) {
             firstPAndR = []; // 赋值 []
           }
-
+          const isQQ = banner.find((value: any) => value?.params === "0") ?? {};
+          
+          if (isQQ?.params) {
+            firstPAndR.unshift(isQQ);
+          }
           // 更新 localStorage 中的 all_data
           localStorage.setItem("all_data", JSON.stringify(firstPAndR));
           // 通过 eventBus 通知更新
@@ -706,7 +710,6 @@ const Layouts: React.FC = () => {
   const iniliteAppFun = async () => {
     return new Promise(async (resolve, reject) => {
       const url = process.env.REACT_APP_WSAPI_URL || "";
-      const token = localStorage.getItem("token");
 
       localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
       localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记
