@@ -101,6 +101,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchImages = () => {
       const storedImages = JSON.parse(localStorage.getItem("all_data") || "[]");
+      
       setImages(storedImages);
       setIsImagesLoaded(true); // 数据加载完成
     };
