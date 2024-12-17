@@ -137,27 +137,77 @@ const Layouts: React.FC = () => {
     }
   };
 
+  // 获取游戏列表接口
+  const fetchGameList = async (params: any = {}) => {
+    try {
+      const res = await gameApi.gameList(params);
+      return res?.data?.list ?? [];
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // 缓存游戏函数
+  const cacheGameFun = async () => {
+    return new Promise(async (resolve, reject) => {
+      const filtration = (list: any) => {
+        list = list.map((value: any) => {
+          const src = value?.cover_img || value.background_img;
+          const url = "https://cdn.accessorx.com/";
+
+          return {
+            ...value,
+            cover_img: url + src,
+          };
+        });
+
+        return list || [];
+      };
+      const [allGame, freeGame, hotGame, newGame, chinaGame]: any =
+        await Promise.all([
+          await fetchGameList(), // 所有游戏
+          await fetchGameList({ type: "free" }), // 限时免费
+          await fetchGameList({ type: "hot" }), // 热门游戏
+          await fetchGameList({ type: "new" }), // 最新推荐
+          await fetchGameList({ type: "china_game_server" }), // 国服游戏
+        ]);
+      const result = {
+        allGame: filtration(allGame),
+        freeGame: filtration(freeGame),
+        hotGame: filtration(hotGame),
+        newGame: filtration(newGame),
+        chinaGame: filtration(chinaGame),
+      };
+
+      localStorage.setItem("cacheGame", JSON.stringify(result)); // 缓存到 localStorage
+      resolve(result); // 暴露游戏返回值
+    })
+  }
+
   // 初始化更新游戏
   const iniliteRenewal = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const [list, data]: any = await Promise.all([
-          await stopProcessReset(), // 初始化调用停止加速
-          await gameApi.gameList(), // 所有游戏 { page: 1, pagesize: 5000 }
-        ]);
+        const [list, data]: any =
+          await Promise.all([
+            await stopProcessReset(), // 初始化调用停止加速
+            await cacheGameFun(), // 更新缓存游戏，并且导出返回值
+          ]);
+        const allGame = data?.allGame;
 
         // 传递数据给客户端，以用来进行游戏扫描
         (window as any).NativeApi_AsynchronousRequest(
           "SetGameData",
-          JSON.stringify({ list: data?.data?.list ?? [] }),
+          JSON.stringify({ list: allGame }),
           () => {}
         );
 
         const meGame: any = list?.data ?? [];
-        const allGame = data?.data?.list ?? [];
         const result = meGame.map((item: any) => {
           // 如果找到此游戏
-          const target = allGame?.find((child: any) => child?.id === item?.id);
+          const target = allGame?.find(
+            (child: any) => child?.id === item?.id
+          );
 
           // 如果找到此游戏并且更新时间发生改变
           if (target && target?.update_time !== item?.update_time) {
@@ -731,9 +781,11 @@ const Layouts: React.FC = () => {
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
     (window as any).youxiaLoginCallback = youxiaLoginCallback; // 游侠登录回调，客户端调用
+    (window as any).cacheGameFun = cacheGameFun; // 内部使用更新缓存游戏
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
+      delete (window as any).cacheGameFun;
       delete (window as any).youxiaLoginCallback;
       delete (window as any).speedErrorReport;
       delete (window as any).invokeLocalScan;

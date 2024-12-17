@@ -32,7 +32,8 @@ const Swiper: React.FC<SwiperProps> = ({ onImageClick }) => {
     // 初始化时从 localStorage 读取banner数据
     const storedData = JSON.parse(localStorage.getItem("all_data") || "[]");
     setImages(storedData);
-
+    console.log(storedData);
+    
     // 监听 eventBus 的 'dataUpdated' 事件
     const handleDataUpdated = (newData: ImageItem[]) => {
       setImages(newData);
@@ -48,7 +49,7 @@ const Swiper: React.FC<SwiperProps> = ({ onImageClick }) => {
 
   // 使用 useCallback 包装 onImageClick 以避免不必要的重新创建
   const handleClick = useCallback((params: any) => {
-    if (params === "1") {
+    if (params === "0") {
       (window as any).NativeApi_OpenBrowser("https://qm.qq.com/q/KzaRJZbj8I");
     }
     onImageClick(params);
