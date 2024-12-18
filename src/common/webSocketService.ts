@@ -118,8 +118,13 @@ class WebSocketService {
         } else if (serveData?.code !== 0 && (serveData?.code < 100000 || serveData?.code >= 200000)) {
           if (diff >= 30000 && diff !== time) {
             this.receivedTime = 0
+
+            // if (store) {
+
+            // }
             // 服务端其他错误 停止加速，关闭 webSocket
             this.close({code: this.severlverifyCode, reason: serveData?.message});
+            (window as any).stopProcessReset();
             tracking.trackServerError(
               `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
             )
@@ -162,6 +167,7 @@ class WebSocketService {
         // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
         this.connect(this.url, this.onMessage, this.dispatch);
       } else if ([1006, 1005].includes(event?.code)) {
+        this.close({code: this.normalCloseCode, reason: "触发未知关闭"})
         this.abnormalHeartbeat();
       }
     };
@@ -183,7 +189,8 @@ class WebSocketService {
   abnormalHeartbeat() {
     this.abnormalInterval = setInterval(() => {
       console.log("检测到服务端异常关闭ws");
-      this.close({code: this.serveErrorCode, reason: "检测到服务端异常关闭, 前端进行手动关闭连接"});
+      this.stopHeartbeat();
+      this.connect(this.url, this.onMessage, this.dispatch);
     }, 30000); // 每1分钟发送一次心跳
   }
 

@@ -49,6 +49,7 @@ export async function validateRequiredParams (params = {}, isToken = true) {
         });
 
         window.loginOutStopWidow(); // 退出登录
+        return false
       } else {
         return false
       }
