@@ -59,7 +59,7 @@ class WebSocketService {
       const apiHeader = this.checkMissingValues(this.apiHeaderParams); // 判断参数值为空的字段
       
       this.stopHeartbeat(); // 清除定时器
-      
+
       // 如果参数正确，发送消息
       if (apiHeader?.length === 0) {
         this.scheduleHeartbeat(); // 启动定时心跳
@@ -114,7 +114,7 @@ class WebSocketService {
           tracking.trackServerError(
             `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
           )
-        } else if (event?.code !== 0 && event?.code < 100000 && event?.code >= 200000) {
+        } else if (event?.code !== 0 && (event?.code < 100000 || event?.code >= 200000)) {
           // 服务端其他错误 停止加速，关闭 webSocket
           this.close({code: this.severlverifyCode, reason: serveData?.message});
           tracking.trackServerError(
