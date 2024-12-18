@@ -2,6 +2,7 @@ import { validateRequiredParams } from "@/common/utils";
 
 import "./index.scss";
 import loginApi from "@/api/login";
+import { isToken } from "typescript";
 
 export interface CaptchaProps {
   isPhoneNumberValid?: boolean;
@@ -27,7 +28,10 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
         return;
       }
 
-      const reqire = await validateRequiredParams({ phone: phoneNumber });
+      const reqire = await validateRequiredParams(
+        { phone: phoneNumber },
+        false
+      );
 
       if (!reqire) {
         return;

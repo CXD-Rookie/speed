@@ -167,8 +167,8 @@ const Layouts: React.FC = () => {
         await Promise.all([
           await fetchGameList(), // 所有游戏
           await fetchGameList({ type: "free" }), // 限时免费
-          await fetchGameList({ type: "hot" }), // 热门游戏
-          await fetchGameList({ type: "new" }), // 最新推荐
+          await fetchGameList({ type: "hot", page: 1, pagesize: 30 }), // 热门游戏
+          await fetchGameList({ type: "new", page: 1, pagesize: 30 }), // 最新推荐
           await fetchGameList({ type: "china_game_server" }), // 国服游戏
         ]);
       const result = {
