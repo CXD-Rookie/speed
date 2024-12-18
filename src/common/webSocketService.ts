@@ -26,6 +26,7 @@ class WebSocketService {
   private dispatch!: Dispatch;
   private readonly platform: number = 3; // 当前是 window 环境
   private heartbeatInterval: NodeJS.Timeout | null = null; // 存定时心跳计时器
+  private abnormalInterval: NodeJS.Timeout | null = null; // 服务端断开计时器
   private heartbeatNum: number = 0; // 定时心跳次数
   private scheduleRecord: number = 0; // 断网之后的标记
   private apiHeaderParams: ApiParamsType = {}; // 发送请求参数
@@ -93,10 +94,11 @@ class WebSocketService {
       const serveData = JSON.parse(event.data);
       const time = new Date().getTime(); // 获取当前时间
       const diff = time - this.receivedTime;
-      // const current = this.receivedTime;
       
       // 如果接收到服务端返回消息，则记录下当前时间
       if (serveData) {
+        this.stopAbnormalHeartbeat(); // 如果连接上webSocket则进行清除异常断开计时器
+
         const webVersion = process.env.REACT_APP_VERSION;
         const version = (window as any).versionNowRef;
         
@@ -159,12 +161,30 @@ class WebSocketService {
       } else if (timeCode.includes(event?.code)) {
         // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
         this.connect(this.url, this.onMessage, this.dispatch);
+      } else if ([1006, 1005].includes(event?.code)) {
+        this.abnormalHeartbeat();
       }
     };
 
     this.ws.onerror = (error) => {
       console.error('WebSocket error observed:', error);
     };
+  }
+
+  // 关闭心跳
+  stopAbnormalHeartbeat() {
+    if (this.abnormalInterval !== null) {
+      clearInterval(this.abnormalInterval as NodeJS.Timeout);
+      this.abnormalInterval = null;
+    }
+  }
+
+  // 服务端没有返回值关闭ws或者异常抖动关闭ws启动定时器
+  abnormalHeartbeat() {
+    this.abnormalInterval = setInterval(() => {
+      console.log("检测到服务端异常关闭ws");
+      this.close({code: this.serveErrorCode, reason: "检测到服务端异常关闭, 前端进行手动关闭连接"});
+    }, 30000); // 每1分钟发送一次心跳
   }
 
   // 关闭心跳

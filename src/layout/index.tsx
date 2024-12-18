@@ -645,8 +645,8 @@ const Layouts: React.FC = () => {
             localStorage.setItem("isRealName", "0");
           }
         }
-
-        dispatch(setAccountInfo(undefined, true, undefined)); // 修改登录状态
+        
+        dispatch(setAccountInfo(user_info, true, false));
       }
     }
   };
