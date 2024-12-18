@@ -99,11 +99,10 @@ class WebSocketService {
       if (serveData) {
         const webVersion = process.env.REACT_APP_VERSION;
         const version = (window as any).versionNowRef;
-
-        this.receivedTime = time;
-
+        
         // 登录信息出现问题，退出登录，停止加速，关闭 webSocket
         if (serveData?.code >= 100000 && serveData?.code < 200000) {
+          this.receivedTime = 0;
           // 110001 判断为异地登录
           if (serveData?.code === 110001) {
             (window as any).loginOutStopWidow("remoteLogin");
@@ -114,12 +113,19 @@ class WebSocketService {
           tracking.trackServerError(
             `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
           )
-        } else if (event?.code !== 0 && (event?.code < 100000 || event?.code >= 200000)) {
-          // 服务端其他错误 停止加速，关闭 webSocket
-          this.close({code: this.severlverifyCode, reason: serveData?.message});
-          tracking.trackServerError(
-            `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
-          )
+        } else if (serveData?.code !== 0 && (serveData?.code < 100000 || serveData?.code >= 200000)) {
+          if (diff >= 30000 && diff !== time) {
+            this.receivedTime = 0
+            // 服务端其他错误 停止加速，关闭 webSocket
+            this.close({code: this.severlverifyCode, reason: serveData?.message});
+            tracking.trackServerError(
+              `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
+            )
+          } else if (diff === time)  {
+            this.receivedTime = time; // 如果第一次返回值就没有就保存一次当前时间，方便计时30秒
+          }
+        } else {
+          this.receivedTime = time;
         }
       } else {
         // 如果没接收到消息，则不记录时间，

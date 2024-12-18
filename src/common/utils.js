@@ -34,11 +34,11 @@ export async function validateRequiredParams (params = {}, isToken = true) {
   try {
     const userToken = localStorage.getItem('token');
     const clietToken = localStorage.getItem('client_token');
-    const value = isToken ? { ...params, userToken, clietToken } : params
+    const value = isToken ? { ...params, userToken: isToken ? userToken : true, clietToken } : params
     const missValue = checkMissingValues(value);
     
     if (missValue?.length > 0) {
-      console.log("参数校验错误", missValue);
+      console.log("接口参数校验错误", missValue);
       
       if (missValue.includes("userToken")) {
         window.loginOutStopWidow(); // 退出登录
