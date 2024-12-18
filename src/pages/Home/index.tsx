@@ -73,7 +73,7 @@ const Home: React.FC = () => {
   };
 
   const handleShowModal = (type: any) => {
-    if (accountInfo?.isLogin) {
+    if (store.getState()?.accountInfo?.isLogin) {
       if (["2", "3"].includes(type)) {
         dispatch(setFirstPayRP({ open: true, type: Number(type) })); // 弹出首充首续
       }
@@ -134,7 +134,7 @@ const Home: React.FC = () => {
         <div className="functional-areas">
           {images?.length > 0 && (
             <div className="swiper">
-              <Swiper onImageClick={handleShowModal} />
+              <Swiper onImageClick={handleShowModal} swiperData={images} />
             </div>
           )}
           <div
