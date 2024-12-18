@@ -786,10 +786,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
           // 是否是vip
           // 是否限时免费 free_time
-          if (
-            !(option?.free_time && option?.tags.includes("限时免费")) &&
-            !userInfo?.is_vip
-          ) {
+          if (!(option?.free_time) && !userInfo?.is_vip) {
             stopAnimation();
             eventBus.emit("showModal", {
               show: true,
@@ -1067,7 +1064,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 </div>
               </div>
             ) : null}
-            {isFree && option?.tags.includes("限时免费") && free && (
+            {isFree && free && (
               <div className="exemption-box">
                 <div className="exemption">限免</div>
                 {free !== "永久" && <div className="time">剩余 {free}</div>}
