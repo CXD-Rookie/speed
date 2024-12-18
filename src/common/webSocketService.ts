@@ -8,6 +8,7 @@
  */
 // webSocketService.ts
 import { Dispatch } from 'redux';
+import { store } from '@/redux/store';
 
 import eventBus from '../api/eventBus';
 import tracking from './tracking';
@@ -38,7 +39,7 @@ class WebSocketService {
   private severlStopCode: number = 4004 // 服务端返回错误码位于 >= 100000 - < 200000
   private severlverifyCode: number = 4005 // 服务端返回错误码位于 < 100000 - >= 200000
 
-  connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch, isLogin = true) {
+  connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     this.url = url;
     this.onMessage = onMessage;
     this.dispatch = dispatch;
@@ -66,27 +67,27 @@ class WebSocketService {
         this.scheduleHeartbeat(); // 启动定时心跳
         this.sendMessage(this.apiHeaderParams); // 发送消息
       } else {
-        const webVersion = process.env.REACT_APP_VERSION;
-        const version = (window as any).versionNowRef;
+        if (store?.getState()?.accountInfo?.isLogin) {
+          const webVersion = process.env.REACT_APP_VERSION;
+          const version = (window as any).versionNowRef;
 
-        // 参数错误，断开 webSocket
-        this.close({ code: this.verifyErrorCode, reason: "前端校验参数错误"});
+          // 参数错误，断开 webSocket
+          this.close({ code: this.verifyErrorCode, reason: "前端校验参数错误"});
 
-        // 如果参数 client_token 错误，调用客户端方法，重新更新读取 client_token，重新进行连接
-        if (apiHeader.includes("client_token") || apiHeader.includes("client_id")) {
-          (window as any).NativeApi_AsynchronousRequest("UpdateClientToken","", (respose: any) => {
-            console.log(respose);
-          })
-          this.connect(this.url, this.onMessage, this.dispatch);
-        } else if (apiHeader.includes("user_token")) {
-          if (isLogin) {
+          // 如果参数 client_token 错误，调用客户端方法，重新更新读取 client_token，重新进行连接
+          if (apiHeader.includes("client_token") || apiHeader.includes("client_id")) {
+            (window as any).NativeApi_AsynchronousRequest("UpdateClientToken","", (respose: any) => {
+              console.log(respose);
+            })
+            this.connect(this.url, this.onMessage, this.dispatch);
+          } else if (apiHeader.includes("user_token")) {
             (window as any).loginOutStopWidow(); // 退出登录
           }
-        }
 
-        tracking.trackServerError(
-          `errorCode=${this.verifyErrorCode};message=前端校验参数错误;apiName=${url};version=${version + "," + webVersion}`
-        )
+          tracking.trackServerError(
+            `errorCode=${this.verifyErrorCode};message=前端校验参数错误;apiName=${url};version=${version + "," + webVersion}`
+          )
+        }
       }
     };
 
@@ -118,10 +119,16 @@ class WebSocketService {
         } else if (serveData?.code !== 0 && (serveData?.code < 100000 || serveData?.code >= 200000)) {
           if (diff >= 30000 && diff !== time) {
             this.receivedTime = 0
+            
+            const eventBuNetwork = localStorage.getItem("eventBuNetwork");
+            const local_games = localStorage.getItem("speed-1.0.0.1-games");
+            const result_games = local_games ? JSON.parse(local_games) : [];
+            const isA = result_games?.find((item: any) => item?.is_accelerate)?.id
+            
+            if (store?.getState()?.accountInfo?.isLogin && !(eventBuNetwork === "1") && isA) {
+              eventBus.emit('showModal', { show: true, type: "servicerechargeReport" });
+            }
 
-            // if (store) {
-
-            // }
             // 服务端其他错误 停止加速，关闭 webSocket
             this.close({code: this.severlverifyCode, reason: serveData?.message});
             (window as any).stopProcessReset();
