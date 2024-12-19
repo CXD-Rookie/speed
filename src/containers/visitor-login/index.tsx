@@ -85,7 +85,7 @@ const VisitorLogin: React.FC= (props) => {
         localStorage.setItem("token", JSON.stringify(res.data.token));
         // localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
         // localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
-        
+
         const isNew = res.data.is_new_user;
 
         // 是新用户 上报注册成功，反之登录成功
@@ -97,7 +97,7 @@ const VisitorLogin: React.FC= (props) => {
         } else {
           tracking.trackLoginSuccess("youXia");
         }
-        
+
         if (
           res.data.user_info.user_ext === null ||
           res.data.user_info.user_ext.idcard === ""
@@ -123,6 +123,7 @@ const VisitorLogin: React.FC= (props) => {
             type: types?.[String(res?.data?.target_phone_status || 1)],
           })
         ); // 认证提示
+        localStorage.setItem("userId", res?.data?.user_info?.id); // 存储user_id
         // 3个参数 用户信息 是否登录 是否显示登录
         dispatch(setAccountInfo(res.data.user_info, true, false));
         dispatch(updateBindPhoneState(false));
