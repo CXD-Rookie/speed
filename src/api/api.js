@@ -33,9 +33,16 @@ setupInterceptors();
 instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token') || '';
-    // const signChannel = ["berrygm", "ali213", "accessorx", "dualspring", "jsqali213", "baidu"];
-    // const localMchannel = localStorage.getItem("mchannel");
-    // const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other"
+    const signChannel = [
+      "berrygm", 
+      "ali213", 
+      "accessorx", 
+      "dualspring", 
+      "jsqali213", 
+      "baidu"
+    ];
+    const localMchannel = localStorage.getItem("mchannel");
+    const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
     const noToken = ["api/v1/game/process/blacklist"];
     const isToken = noToken.some((item) => config?.url.includes(item));
     
@@ -43,7 +50,7 @@ instance.interceptors.request.use(
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
 
-    // config.headers.Mchannel = mchannel;
+    config.headers.Mchannel = mchannel;
     
     return config;
   },

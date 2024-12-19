@@ -117,6 +117,13 @@ class WebSocketService {
           // 110001 判断为异地登录
           if (serveData?.code === 110001) {
             (window as any).loginOutStopWidow("remoteLogin");
+          } else if (serveData?.code === 100001) {
+            (window as any).NativeApi_AsynchronousRequest(
+              "UpdateClientToken",
+              "", 
+              (res: any) => console.log(res)
+            )
+            (window as any).loginOutStopWidow(); // 退出登录
           } else {
             (window as any).loginOutStopWidow(); // 退出登录
             this.close({code: this.severlStopCode, reason: serveData?.message})
@@ -235,6 +242,8 @@ class WebSocketService {
           this.connect(this.url, this.onMessage, this.dispatch);
         }
       }, 5000); // 每1分钟发送一次心跳
+    } else {
+      this.close({ code: this.normalCloseCode, reason: "没有登录主动关闭"});
     }
   }
 
@@ -249,16 +258,20 @@ class WebSocketService {
 
   // 定时心跳
   scheduleHeartbeat() {
-    this.heartbeatInterval = setInterval(() => {
-      if (this.heartbeatNum >= 9) {
-        this.stopHeartbeat();
-        eventBus.emit('showModal', { show: true, type: "netorkError" }); // 弹窗网络错误
-      } else {
-        this.heartbeatNum++
-        this.close({code: this.normalCloseCode, reason: "断网前端手动关闭连接"})
-        this.connect(this.url, this.onMessage, this.dispatch);
-      }
-    }, 60000); // 每1分钟发送一次心跳
+    if (store.getState()?.accountInfo.isLogin) {
+      this.heartbeatInterval = setInterval(() => {
+        if (this.heartbeatNum >= 9) {
+          this.stopHeartbeat();
+          eventBus.emit('showModal', { show: true, type: "netorkError" }); // 弹窗网络错误
+        } else {
+          this.heartbeatNum++
+          this.close({code: this.normalCloseCode, reason: "断网前端手动关闭连接"})
+          this.connect(this.url, this.onMessage, this.dispatch);
+        }
+      }, 60000); // 每1分钟发送一次心跳
+    } else {
+      this.close({ code: this.normalCloseCode, reason: "没有登录主动关闭"});
+    }
   }
 
   // 查看对象的那个键是空值
