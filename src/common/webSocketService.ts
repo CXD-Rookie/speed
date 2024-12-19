@@ -179,8 +179,10 @@ class WebSocketService {
       // 如果登录信息清除则启动定时心跳，防止
       if (heartbeatCode.includes(event?.code)) {
         this.stopAbnormalHeartbeat();
+        this.stopHeartbeat();
       } else if (timeCode.includes(event?.code)) {
         this.stopAbnormalHeartbeat();
+        this.stopHeartbeat();
         // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
         this.connect(this.url, this.onMessage, this.dispatch);
       }

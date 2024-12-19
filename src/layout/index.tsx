@@ -178,8 +178,11 @@ const Layouts: React.FC = () => {
         newGame: filtration(newGame),
         chinaGame: filtration(chinaGame),
       };
-
-      localStorage.setItem("cacheGame", JSON.stringify(result)); // 缓存到 localStorage
+      
+      if (allGame?.length > 0) {
+        localStorage.setItem("cacheGame", JSON.stringify(result)); // 缓存到 localStorage
+      }
+      
       resolve(result); // 暴露游戏返回值
     })
   }
