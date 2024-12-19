@@ -338,12 +338,13 @@ const Layouts: React.FC = () => {
 
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
+      localStorage.removeItem("userId"); // 存储user_id
       dispatch(setAccountInfo({}, false, true)); // 修改登录状态
 
       if (event === "remoteLogin") {
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
       }
-      
+
       // if (event === 1) {
       //   setReopenLogin(true); 暂时未发现什么地方调用，先做注释
       // }
@@ -511,8 +512,9 @@ const Layouts: React.FC = () => {
         timestamp = 0, // 服务端时间
         first_purchase_renewed = {}, // 是否首充首续
       } = data?.data;
-
+      
       if (token) {
+        localStorage.setItem("userId", user_info?.id); // 存储user_id
         // 存储版本信息
         localStorage.setItem("version", JSON.stringify(version));
 
@@ -659,6 +661,8 @@ const Layouts: React.FC = () => {
     const isNew = data?.is_new_user; // 是否新用户
     const user = data?.user_info; // 用户信息
     
+    localStorage.setItem("userId", user?.id); // 存储user_id
+
     if (user?.phone) {
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo(user, true, false));
