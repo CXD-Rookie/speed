@@ -325,7 +325,7 @@ const Layouts: React.FC = () => {
       }
 
       webSocketService.close({
-        code: 4000,
+        code: 4001,
         reason: "退出登录后主动关闭",
       });
 
@@ -335,7 +335,7 @@ const Layouts: React.FC = () => {
 
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
-      dispatch(setAccountInfo({}, false, false)); // 修改登录状态
+      dispatch(setAccountInfo({}, false, true)); // 修改登录状态
 
       if (event === "remoteLogin") {
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录

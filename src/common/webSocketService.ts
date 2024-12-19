@@ -72,6 +72,7 @@ class WebSocketService {
 
           // 参数错误，断开 webSocket
           this.close({ code: this.verifyErrorCode, reason: "前端校验参数错误"});
+          (window as any).loginOutStopWidow(); // 退出登录
 
           // 如果参数 client_token 错误，调用客户端方法，重新更新读取 client_token，重新进行连接
           if (apiHeader.includes("client_token") || apiHeader.includes("client_id")) {
@@ -79,8 +80,6 @@ class WebSocketService {
               console.log(respose);
             })
             this.connect(this.url, this.onMessage, this.dispatch);
-          } else if (apiHeader.includes("user_token")) {
-            (window as any).loginOutStopWidow(); // 退出登录
           }
 
           tracking.trackServerError(
@@ -109,6 +108,7 @@ class WebSocketService {
           if (serveData?.code === 110001) {
             (window as any).loginOutStopWidow("remoteLogin");
           } else {
+            (window as any).loginOutStopWidow(); // 退出登录
             this.close({code: this.severlStopCode, reason: serveData?.message})
           }
           
@@ -172,7 +172,6 @@ class WebSocketService {
       // 如果登录信息清除则启动定时心跳，防止
       if (heartbeatCode.includes(event?.code)) {
         this.stopAbnormalHeartbeat();
-        (window as any).loginOutStopWidow(); // 退出登录
       } else if (timeCode.includes(event?.code)) {
         this.stopAbnormalHeartbeat();
         // 如果code码不属于合法关闭 或者 是没有接收到服务端返回的返回参数 进行重新连接
