@@ -17,6 +17,7 @@ const instance = axios.create({
   // baseURL: 'https://test-api.accessorx.com', // 根据实际情况设置基础 URL
   headers: {
     "Content-Type": "application/json",
+    // "ceshi": "ceshi",
   },
   timeout: 10000, // 请求超时时间（毫秒）
 });
@@ -37,13 +38,12 @@ instance.interceptors.request.use(
     // const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other"
     const noToken = ["api/v1/game/process/blacklist"];
     const isToken = noToken.some((item) => config?.url.includes(item));
-    console.log(config?.url);
     
     if (token && token !== "undefined" && !isToken) {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
 
-    // config.headers.mchannel = mchannel;
+    // config.headers.Mchannel = mchannel;
     
     return config;
   },
@@ -107,6 +107,7 @@ export const get = (url, params = {}) => {
   return new Promise((resolve, reject) => {
     instance.get(url, { params })
       .then(response => {
+        // 打印请求头信息
         resolve(response);
       })
       .catch(error => {

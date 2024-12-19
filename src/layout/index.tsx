@@ -178,7 +178,7 @@ const Layouts: React.FC = () => {
         newGame: filtration(newGame),
         chinaGame: filtration(chinaGame),
       };
-      
+
       if (allGame?.length > 0) {
         localStorage.setItem("cacheGame", JSON.stringify(result)); // 缓存到 localStorage
       }
@@ -328,7 +328,7 @@ const Layouts: React.FC = () => {
       }
 
       webSocketService.close({
-        code: 4001,
+        code: 4000,
         reason: "退出登录后主动关闭",
       });
 
