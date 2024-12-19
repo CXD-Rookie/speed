@@ -123,7 +123,6 @@ class WebSocketService {
               "", 
               (res: any) => console.log(res)
             )
-            (window as any).loginOutStopWidow(); // 退出登录
           } else {
             (window as any).loginOutStopWidow(); // 退出登录
             this.close({code: this.severlStopCode, reason: serveData?.message})

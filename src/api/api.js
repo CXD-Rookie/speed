@@ -74,7 +74,7 @@ instance.interceptors.response.use(
 
       if (client_code.includes(code)) {
         window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
-        window.loginOutStopWidow(); // 退出登录
+        // window.loginOutStopWidow(); // 退出登录
       } else if (code >= 100000 && code < 200000 && code !== 100001) {
         window.loginOutStopWidow(); // 退出登录
       }
