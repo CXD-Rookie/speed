@@ -17,6 +17,7 @@ const instance = axios.create({
   // baseURL: 'https://test-api.accessorx.com', // 根据实际情况设置基础 URL
   headers: {
     "Content-Type": "application/json",
+    // "ceshi": "ceshi",
   },
   timeout: 10000, // 请求超时时间（毫秒）
 });
@@ -42,7 +43,7 @@ instance.interceptors.request.use(
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
 
-    // config.headers.mchannel = mchannel;
+    // config.headers.Mchannel = mchannel;
     
     return config;
   },
