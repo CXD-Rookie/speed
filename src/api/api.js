@@ -35,8 +35,11 @@ instance.interceptors.request.use(
     // const signChannel = ["berrygm", "ali213", "accessorx", "dualspring", "jsqali213", "baidu"];
     // const localMchannel = localStorage.getItem("mchannel");
     // const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other"
-
-    if (token && token !== "undefined") {
+    const noToken = ["api/v1/game/process/blacklist"];
+    const isToken = noToken.some((item) => config?.url.includes(item));
+    console.log(config?.url);
+    
+    if (token && token !== "undefined" && !isToken) {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
 
@@ -59,12 +62,13 @@ instance.interceptors.response.use(
     if (code > 0) {
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;
-      console.log(clientVersion);
+
       const client_code = [100000, 100001];
       const user_code = [110000];
 
       if (client_code.includes(code)) {
         window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
+        window.loginOutStopWidow(); // 退出登录
       } else if (user_code.includes(code)) {
         window.loginOutStopWidow(); // 退出登录
       }
