@@ -240,6 +240,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     if (option?.type === "netorkError") {
       setAccelOpen(false);
       localStorage.setItem("eventBuNetwork", "1");
+    } else if (option?.type === "servicerechargeReport") {
+      setAccelOpen(false);
     }
 
     if (option?.type === "newVersionFound") {

@@ -16,6 +16,7 @@ import rightIcon from "@/assets/images/common/you@2x.png";
 import leftIcon from "@/assets/images/common/zuo@2x.png";
 
 interface SwiperProps {
+  swiperData?: any;
   onImageClick: (params: any) => void;
 }
 interface ImageItem {
@@ -23,28 +24,27 @@ interface ImageItem {
   params: any;
 }
 
-const Swiper: React.FC<SwiperProps> = ({ onImageClick }) => {
+const Swiper: React.FC<SwiperProps> = ({ onImageClick, swiperData }) => {
   const carouselRef: any = useRef(null);
   const [images, setImages] = useState<ImageItem[]>([]);
-  
 
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
     const storedData = JSON.parse(localStorage.getItem("all_data") || "[]");
     setImages(storedData);
-    
+
     // 监听 eventBus 的 'dataUpdated' 事件
     const handleDataUpdated = (newData: ImageItem[]) => {
       setImages(newData);
     };
 
-    eventBus.on('dataUpdated', handleDataUpdated);
+    eventBus.on("dataUpdated", handleDataUpdated);
 
     // 清理工作
     return () => {
-      eventBus.off('dataUpdated', handleDataUpdated);
+      eventBus.off("dataUpdated", handleDataUpdated);
     };
-  }, []);
+  }, [swiperData]);
 
   // 使用 useCallback 包装 onImageClick 以避免不必要的重新创建
   const handleClick = useCallback((params: any) => {

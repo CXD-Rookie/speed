@@ -645,7 +645,7 @@ const Layouts: React.FC = () => {
             localStorage.setItem("isRealName", "0");
           }
         }
-        
+
         dispatch(setAccountInfo(user_info, true, false));
       }
     }
@@ -655,7 +655,6 @@ const Layouts: React.FC = () => {
   const youxiaLoginCallback = (data: any) => {
     const isNew = data?.is_new_user; // 是否新用户
     const user = data?.user_info; // 用户信息
-    console.log(data);
     
     if (user?.phone) {
       // 3个参数 用户信息 是否登录 是否显示登录
@@ -701,9 +700,7 @@ const Layouts: React.FC = () => {
       }
     }
 
-    setTimeout(() => {
-      navigate("/home")
-    }, 2000);
+    navigate("/home");
   };
 
   // 初始化操作
@@ -717,12 +714,11 @@ const Layouts: React.FC = () => {
       if (!accountInfo.isLogin) {
         fetchBanner();
       }
-      const isLogin = store.getState()?.accountInfo?.isLogin;
+
       webSocketService.connect(
         url, // 请求环境
         (event: MessageEvent) => schedulePolling(event),
-        dispatch,
-        isLogin,
+        dispatch
       );
       
       const [renewal, version, setting]: any = await Promise.all([

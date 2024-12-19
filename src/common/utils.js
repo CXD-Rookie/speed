@@ -44,8 +44,12 @@ export async function validateRequiredParams (params = {}, isToken = true) {
         window.loginOutStopWidow(); // 退出登录
         return false
       } else if ("clietToken") {
-        window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
-        validateRequiredParams(params, isToken);
+        window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => {
+          console.log(res);
+        });
+
+        window.loginOutStopWidow(); // 退出登录
+        return false
       } else {
         return false
       }
