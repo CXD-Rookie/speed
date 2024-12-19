@@ -9,6 +9,7 @@
  */
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { validateRequiredParams } from "@/common/utils";
 
 import "./index.scss";
 import loginApi from "@/api/login";
@@ -26,11 +27,18 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
         platform: 3,
       });
 
+      const reqire = await validateRequiredParams();
+
+      if (!reqire) {
+        return;
+      }
+
       let res = await loginApi.thirdPartyLogin({
         ...params,
         tid: 2,
         platform: 3,
       });
+      
       // 服务端返回的绑定类型
       let state = res?.data?.user_bind_status ?? 0;
       console.log(

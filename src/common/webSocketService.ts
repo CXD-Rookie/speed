@@ -38,6 +38,15 @@ class WebSocketService {
   private severlStopCode: number = 4004 // 服务端返回错误码位于 >= 100000 - < 200000
   private severlverifyCode: number = 4005 // 服务端返回错误码位于 < 100000 - >= 200000
 
+  constructor() {
+    this.handleOnline = this.handleOnline.bind(this);
+    this.handleOffline = this.handleOffline.bind(this);
+
+    // 添加在线/离线事件监听器
+    window.addEventListener('online', this.handleOnline);
+    window.addEventListener('offline', this.handleOffline);
+  }
+
   connect(url: string, onMessage: (event: MessageEvent) => void, dispatch: Dispatch) {
     this.url = url;
     this.onMessage = onMessage;
@@ -54,7 +63,7 @@ class WebSocketService {
     }
 
     this.ws = new WebSocket(url);
-
+    
     this.ws.onopen = () => {
       console.log('连接 webSocket 服务', console.log(this.ws));
       const apiHeader = this.checkMissingValues(this.apiHeaderParams); // 判断参数值为空的字段
@@ -104,6 +113,7 @@ class WebSocketService {
         // 登录信息出现问题，退出登录，停止加速，关闭 webSocket
         if (serveData?.code >= 100000 && serveData?.code < 200000) {
           this.receivedTime = 0;
+          
           // 110001 判断为异地登录
           if (serveData?.code === 110001) {
             (window as any).loginOutStopWidow("remoteLogin");
@@ -136,9 +146,6 @@ class WebSocketService {
             )
           } else if (diff === time)  {
             this.receivedTime = time; // 如果第一次返回值就没有就保存一次当前时间，方便计时30秒
-            this.connect(this.url, this.onMessage, this.dispatch);
-          } else if (diff <= 5000) {
-            this.connect(this.url, this.onMessage, this.dispatch);
           }
         } else {
           this.receivedTime = time;
@@ -182,13 +189,6 @@ class WebSocketService {
     this.ws.onerror = (error) => {
       console.error('WebSocket error observed:', error);
     };
-
-    this.handleOnline = this.handleOnline.bind(this);
-    this.handleOffline = this.handleOffline.bind(this);
-
-    // 添加在线/离线事件监听器
-    window.addEventListener('online', this.handleOnline);
-    window.addEventListener('offline', this.handleOffline);
   }
 
   componentWillUnmount() {

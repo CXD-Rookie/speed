@@ -36,7 +36,7 @@ interface CustomDropdownProps {
 const inilitePagination = { page: 1, pagesize: 20 };
 
 const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
-  const { isCouponRefresh } = props;
+  const { isCouponRefresh = 0 } = props;
 
   const dispatch = useDispatch();
 
@@ -89,7 +89,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       if (!reqire) {
         return;
       }
-
       const res = await payApi.redeemList({
         ...search,
         ...default_pagination,
@@ -130,7 +129,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       setIsFirst(isFirst + 1);
       
       if (open) {
-        iniliteFun()
+        iniliteFun();
       }
     }
   }, [open]);
@@ -157,8 +156,11 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
       localStorage.setItem("couponTimeLock", tiem_lock);
     };
+
+    if (isCouponRefresh > 0) {
+      iniliteFun();
+    }
     
-    iniliteFun();
   }, [isCouponRefresh]);
 
   const popoverContent = (isVip: boolean) => (

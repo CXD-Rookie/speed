@@ -151,7 +151,7 @@ const Layouts: React.FC = () => {
   const cacheGameFun = async () => {
     return new Promise(async (resolve, reject) => {
       const filtration = (list: any) => {
-        list = list.map((value: any) => {
+        list = list?.map((value: any) => {
           const src = value?.cover_img || value.background_img;
           const url = "https://cdn.accessorx.com/";
 
@@ -902,7 +902,6 @@ const Layouts: React.FC = () => {
         onMouseUp={handleMouseUp}
       >
         <LayoutHeader {...{ couponRefreshNum }} />
-        
       </Header>
       <Layout>
         <Content className="content">{routeView}</Content>
