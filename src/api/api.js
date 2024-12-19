@@ -63,13 +63,12 @@ instance.interceptors.response.use(
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;
 
-      const client_code = [100000, 100001];
-      const user_code = [110000];
+      const client_code = [100001];
 
       if (client_code.includes(code)) {
         window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
         window.loginOutStopWidow(); // 退出登录
-      } else if (user_code.includes(code)) {
+      } else if (code >= 100000 && code < 200000 && code !== 100001) {
         window.loginOutStopWidow(); // 退出登录
       }
       
