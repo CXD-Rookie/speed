@@ -37,7 +37,6 @@ instance.interceptors.request.use(
     // const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other"
     const noToken = ["api/v1/game/process/blacklist"];
     const isToken = noToken.some((item) => config?.url.includes(item));
-    console.log(config?.url);
     
     if (token && token !== "undefined" && !isToken) {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
@@ -107,6 +106,7 @@ export const get = (url, params = {}) => {
   return new Promise((resolve, reject) => {
     instance.get(url, { params })
       .then(response => {
+        // 打印请求头信息
         resolve(response);
       })
       .catch(error => {

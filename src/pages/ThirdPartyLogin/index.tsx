@@ -27,7 +27,7 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
         platform: 3,
       });
 
-      const reqire = await validateRequiredParams();
+      const reqire = await validateRequiredParams({ code: params?.params });
 
       if (!reqire) {
         return;
