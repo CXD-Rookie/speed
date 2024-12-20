@@ -65,10 +65,11 @@ class WebSocketService {
     this.ws = new WebSocket(url);
     
     this.ws.onopen = () => {
-      console.log('连接 webSocket 服务', console.log(this.ws));
+      console.log(this.getTime(), '连接 webSocket 服务');
       const apiHeader = this.checkMissingValues(this.apiHeaderParams); // 判断参数值为空的字段
       
       this.stopHeartbeat(); // 清除定时器
+      this.stopAbnormalHeartbeat(); // 清除计时器
 
       // 如果参数正确，发送消息
       if (apiHeader?.length === 0) {
@@ -86,7 +87,7 @@ class WebSocketService {
           // 如果参数 client_token 错误，调用客户端方法，重新更新读取 client_token，重新进行连接
           if (apiHeader.includes("client_token") || apiHeader.includes("client_id")) {
             (window as any).NativeApi_AsynchronousRequest("UpdateClientToken","", (respose: any) => {
-              console.log(respose);
+              console.log(this.getTime(), respose);
             })
             this.connect(this.url, this.onMessage, this.dispatch);
           }
@@ -121,7 +122,7 @@ class WebSocketService {
             (window as any).NativeApi_AsynchronousRequest(
               "UpdateClientToken",
               "", 
-              (res: any) => console.log(res)
+              (res: any) => console.log(this.getTime(), res)
             )
           } else {
             (window as any).loginOutStopWidow(); // 退出登录
@@ -171,7 +172,7 @@ class WebSocketService {
     };
 
     this.ws.onclose = (event) => {
-      console.log('关闭连接', event);
+      console.log(this.getTime(), '关闭连接', event);
 
       const heartbeatCode = [
         this.verifyErrorCode, // 前端校验参数错误 4000
@@ -195,8 +196,29 @@ class WebSocketService {
     };
 
     this.ws.onerror = (error) => {
-      console.error('WebSocket error observed:', error);
+      console.log(this.getTime(), 'WebSocket error observed');
+      // this.stopAbnormalHeartbeat();
+      // this.stopHeartbeat();
+      // this.abnormalHeartbeat();
     };
+  }
+
+  getTime() {
+    // 获取当前时间戳（毫秒）
+    const now = Date.now();
+    // 创建一个日期对象
+    const date = new Date(now);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // 格式化输出
+    const formatDate = `${year}:${month}:${day} ${hours}:${minutes}:${seconds}`;
+
+    return formatDate
   }
 
   componentWillUnmount() {
@@ -206,15 +228,11 @@ class WebSocketService {
   }
 
   handleOnline() {
-    console.log('The system is now online.');
-    // 在这里你可以执行一些代码来恢复应用的功能或通知用户已重新上线
-
-    // 使用防抖或节流来限制频繁调用
-    // if (this.onlineTimeout) clearTimeout(this.onlineTimeout);
+    console.log(this.getTime(), 'The system is now online.');
   }
 
   handleOffline() {
-    console.log('The system is now offline.');
+    console.log(this.getTime(), 'The system is now offline.');
     this.stopHeartbeat();
     this.scheduleHeartbeat(); // 启动定时心跳
     this.stopAbnormalHeartbeat(); // 清除检测是否接收到数据的定时器
@@ -235,9 +253,7 @@ class WebSocketService {
         this.reconnectTime = this.reconnectTime + 5;
 
         if (this.reconnectTime >= 30) {
-          console.log("30秒没有接收到数据");
-          
-          this.stopAbnormalHeartbeat();
+          console.log(this.getTime(), "30秒没有接收到数据");
           this.connect(this.url, this.onMessage, this.dispatch);
         }
       }, 5000); // 每1分钟发送一次心跳
@@ -290,18 +306,16 @@ class WebSocketService {
   // 发送参数
   sendMessage(message: any) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      // console.log('WebSocket 连接成功，发送成功，参数正确:', message);
       this.ws.send(JSON.stringify(message));
     } else {
-      console.log('WebSocket 连接失败，发送失败:', message);
-      this.close()
+      this.close({code: this.normalCloseCode, reason: "发送消息失败"})
     }
   }
 
   // 断开 webSocket
   close(event: any = null) {
     if (this.ws) {
-      console.log('进行断开 WebSocket 连接', event);
+      console.log('进行断开 WebSocket 连接', event, this.getTime());
       if (event && event.code) {
         this.ws.close(event.code, event?.reason);
       } else {

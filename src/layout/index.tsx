@@ -402,14 +402,14 @@ const Layouts: React.FC = () => {
       ); // 存储扫描到的游戏
       const store = [...storeScanned];
 
-      console.log(
-        "已经存在的本地扫描游戏: ",
-        storeScanned,
-        "新扫描到的游戏:",
-        allowAdd,
-        "当前游戏是否允许弹出:",
-        isTootip
-      );
+      // console.log(
+      //   "已经存在的本地扫描游戏: ",
+      //   storeScanned,
+      //   "新扫描到的游戏:",
+      //   allowAdd,
+      //   "当前游戏是否允许弹出:",
+      //   isTootip
+      // );
 
       if (allowAdd?.length > 0) {
         // 从前添加，从后删除，最多只保留2个展示的扫描游戏
