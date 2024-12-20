@@ -30,7 +30,6 @@ import computerIcon from "@/assets/images/common/computer.svg";
 import computingIcon from "@/assets/images/common/computing.svg";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
 import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
-import backGameIcon from "@/assets/images/common/back-game.svg";
 import steamIcon from "@/assets/images/common/steam@2x.png";
 import rockstarIcon from "@/assets/images/common/rockstar@2x.png";
 import battleIcon from "@/assets/images/common/Battlenet@2x.png";
@@ -309,7 +308,7 @@ const GameDetail: React.FC = () => {
             params: { addr: node?.addr, server: node?.server },
           }),
           (response: any) => {
-            console.log("详情丢包信息：", response);
+            // console.log("详情丢包信息：", response);
             let delay = JSON.parse(response)?.delay; // 返回信息 delay 毫秒,9999代表超时与丢包
 
             // 如果用户是vip，并且此游戏不是限免游戏的情况下，会进行vip到期判断处理
