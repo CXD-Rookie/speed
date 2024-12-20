@@ -233,15 +233,16 @@ class WebSocketService {
 
   handleOffline() {
     console.log(this.getTime(), 'The system is now offline.');
-    this.stopHeartbeat();
-    this.scheduleHeartbeat(); // 启动定时心跳
+    this.stopHeartbeat(); // 清除超时计时器
     this.stopAbnormalHeartbeat(); // 清除检测是否接收到数据的定时器
+    this.scheduleHeartbeat(); // 启动定时心跳
   }
 
   // 关闭心跳
   stopAbnormalHeartbeat() {
     if (this.abnormalInterval !== null) {
       clearInterval(this.abnormalInterval as NodeJS.Timeout);
+      this.reconnectTime = 0;
       this.abnormalInterval = null;
     }
   }
@@ -254,6 +255,7 @@ class WebSocketService {
 
         if (this.reconnectTime >= 30) {
           console.log(this.getTime(), "30秒没有接收到数据");
+          this.reconnectTime = 0;
           this.connect(this.url, this.onMessage, this.dispatch);
         }
       }, 5000); // 每1分钟发送一次心跳
