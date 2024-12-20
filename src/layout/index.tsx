@@ -326,7 +326,8 @@ const Layouts: React.FC = () => {
       if (identifyAccelerationData()?.[0]) {
         tracking.trackBoostDisconnectManual();
       }
-
+      console.log("退出登录");
+      
       webSocketService.close({
         code: 4000,
         reason: "退出登录后主动关闭",

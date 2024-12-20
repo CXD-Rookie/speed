@@ -197,9 +197,6 @@ class WebSocketService {
 
     this.ws.onerror = (error) => {
       console.log(this.getTime(), 'WebSocket error observed');
-      // this.stopAbnormalHeartbeat();
-      // this.stopHeartbeat();
-      // this.abnormalHeartbeat();
     };
   }
 
@@ -256,6 +253,7 @@ class WebSocketService {
         if (this.reconnectTime >= 30) {
           console.log(this.getTime(), "30秒没有接收到数据");
           this.reconnectTime = 0;
+          this.close({code: this.normalCloseCode, reason: "清除计时器关闭ws"})
           this.connect(this.url, this.onMessage, this.dispatch);
         }
       }, 5000); // 每1分钟发送一次心跳
@@ -267,6 +265,7 @@ class WebSocketService {
   // 关闭心跳
   stopHeartbeat() {
     if (this.heartbeatInterval !== null) {
+      this.close({code: this.normalCloseCode, reason: "清除计时器关闭ws"})
       clearInterval(this.heartbeatInterval as NodeJS.Timeout);
       this.heartbeatInterval = null;
       this.heartbeatNum = 0; // Reset the counter when stopping the heartbeat
