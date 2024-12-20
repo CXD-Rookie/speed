@@ -78,11 +78,12 @@ instance.interceptors.response.use(
       const clientVersion = window.versionNowRef;
 
       const client_code = [100001];
-
+      const not_allowed = ["/api/v1/user/loginout"] // 不需要校验错误码的接口
+      const isAllow = not_allowed.some((item) => url.includes(item)); // 未在这些接口中找到
+      
       if (client_code.includes(code)) {
         window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
-        // window.loginOutStopWidow(); // 退出登录
-      } else if (code >= 100000 && code < 200000 && code !== 100001) {
+      } else if (code >= 100000 && code < 200000 && code !== 100001 && !isAllow) {
         window.loginOutStopWidow(); // 退出登录
       }
       
