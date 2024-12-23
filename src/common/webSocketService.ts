@@ -63,7 +63,7 @@ class WebSocketService {
     }
 
     this.ws = new WebSocket(url);
-    
+
     this.ws.onopen = () => {
       console.log(this.getTime(), '连接 webSocket 服务');
       const apiHeader = this.checkMissingValues(this.apiHeaderParams); // 判断参数值为空的字段
@@ -323,19 +323,6 @@ class WebSocketService {
         this.ws.close(); // 使用默认的关闭状态码
       }
     }
-  }
-
-  // 游侠登录触发的更新token重新连接
-  updateTokenAndReconnect(newToken: any) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("isRealName");
-
-    setTimeout(() => {
-      localStorage.setItem('token', JSON.stringify(newToken));
-    }, 500);
-
-    this.close({ code: this.normalCloseCode, reason: "游侠登录后主动关闭"}); // 关闭当前 WebSocket 连接
-    this.connect(this.url, this.onMessage, this.dispatch);
   }
 
   // 登录后重新连接

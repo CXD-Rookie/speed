@@ -46,7 +46,7 @@ const BindPhoneMode: React.FC = (props) => {
 
   const [phone, setPhone] = useState(accountInfoRedux?.userInfo?.phone);
   const [code, setCode] = useState("");
-
+  
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCodeErr, setVeryCodeErr] = useState(false);
 
@@ -54,6 +54,11 @@ const BindPhoneMode: React.FC = (props) => {
   const modalText = typeObj?.[bindType]?.text;
 
   const close = () => {
+    setBindType("");
+    setCountdown(0);
+    setCode("");
+    setVeryCodeErr(false);
+    setIsPhone(false);
     dispatch(setBindState({open: false, type: ""}));
   };
 
@@ -280,6 +285,7 @@ const BindPhoneMode: React.FC = (props) => {
 
   useEffect(() => {
     setBindType(type);
+    setPhone(accountInfoRedux?.userInfo?.phone);
   }, [type]);
 
   return (
