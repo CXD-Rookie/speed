@@ -675,14 +675,15 @@ const Layouts: React.FC = () => {
 
       if (bind_type >= 0) {
         dispatch(setAccountInfo(user, true, false));
+        
+        const time = localStorage.getItem("firstActiveTime");
+        const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+        const isTrue = time && currentTime < Number(time);
 
         if (isNew) {
-          const time = localStorage.getItem("firstActiveTime");
-          const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-          const isTrue = time && currentTime < Number(time);
           tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
         } else {
-          tracking.trackLoginSuccess("youXia");
+          tracking.trackLoginSuccess("youXia", isTrue ? 1 : 0);
         }
 
         if (isNew) {

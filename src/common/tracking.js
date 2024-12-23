@@ -70,8 +70,8 @@ class Tracking {
     this.trackEvent(this.otherMchannel()?.mchannel, "signUp_success", `firstDay=${firstVisit};method=${status}${this.otherMchannel()?.channelId }`);
   }
 
-  trackLoginSuccess (status) {
-    this.trackEvent(this.otherMchannel()?.mchannel, "login_success", `method=${status}${this.otherMchannel()?.channelId }`);
+  trackLoginSuccess (status, firstDay) {
+    this.trackEvent(this.otherMchannel()?.mchannel, "login_success", `firstDay=${firstDay};method=${status}${this.otherMchannel()?.channelId }`);
   }
 
   trackBoostStart(value, firstVisit) {
