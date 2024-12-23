@@ -1,16 +1,13 @@
 import React, { useState, useCallback, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "antd";
-import { setAccountInfo } from "../../redux/actions/account-info";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { debounce, validateRequiredParams } from "@/common/utils";
 import { setMinorState } from "@/redux/actions/modal-open";
 
-import tracking from "@/common/tracking";
 import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
 import loginApi from "@/api/login";
-import webSocketService from "@/common/webSocketService";
 
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
@@ -83,20 +80,6 @@ const VisitorLogin: React.FC= (props) => {
 
       if (res?.error === 0) {
         localStorage.setItem("token", JSON.stringify(res.data.token));
-        // localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
-        // localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
-
-        const isNew = res.data.is_new_user;
-        const time = localStorage.getItem("firstActiveTime");
-        const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-        const isTrue = time && currentTime < Number(time);
-
-        // 是新用户 上报注册成功，反之登录成功
-        if (isNew) {
-          tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
-        } else {
-          tracking.trackLoginSuccess("youXia", isTrue ? 1 : 0);
-        }
 
         if (
           res.data.user_info.user_ext === null ||
@@ -117,18 +100,16 @@ const VisitorLogin: React.FC= (props) => {
           types?.[String(res?.data?.target_phone_status || 1)]
         );
 
+        localStorage.setItem("userId", res?.data?.user_info?.id); // 存储user_id
+        dispatch(updateBindPhoneState(false));
+        localStorage.setItem("isRemote", "1"); // 标记11001是绑定手机时出现的
+        
         dispatch(
           setMinorState({
             open: true,
             type: types?.[String(res?.data?.target_phone_status || 1)],
           })
         ); // 认证提示
-        localStorage.setItem("userId", res?.data?.user_info?.id); // 存储user_id
-        // 3个参数 用户信息 是否登录 是否显示登录
-        dispatch(setAccountInfo(res.data.user_info, true, false));
-        dispatch(updateBindPhoneState(false));
-        localStorage.setItem("isRemote", "1"); // 标记11001是绑定手机时出现的
-        webSocketService.updateTokenAndReconnect(res.data.token);
       } else {
         setVeryCode(false);
         setVeryCodeErr(true);

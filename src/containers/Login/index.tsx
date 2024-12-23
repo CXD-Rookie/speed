@@ -117,7 +117,6 @@ const Login: React.FC = () => {
           JSON.stringify(res.data.vip_experience_time)
         );
         localStorage.removeItem("isClosed");
-
         if (
           res.data.user_info.user_ext === null ||
           res.data.user_info.user_ext.idcard === ""

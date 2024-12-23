@@ -61,6 +61,7 @@ const MinorModal: React.FC = () => {
 
     if (["updatePhone", "unbind"].includes(type)) {
       dispatch(setBindState({ open: false, type: "" })); // 关闭绑定类型弹窗
+      dispatch(setSetting({ settingOpen: false, type: "default" })); // 关闭设置
     }
 
     // 异地登录确定时
