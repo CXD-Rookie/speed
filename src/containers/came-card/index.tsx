@@ -149,9 +149,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         return res?.data;
       } else {
         tracking.trackBoostFailure(
-          `server=${res?.error};message=${
-            res?.message
-          };apiName=${url};version=${clientVersion + "," + webVersion}`
+          `server=${res?.error};msg=${res?.message?.slice(
+            0,
+            132
+          )};apiName=${url};version=${clientVersion + "," + webVersion}`
         );
       }
     } catch (error) {
@@ -175,9 +176,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         return res?.data;
       } else {
         tracking.trackBoostFailure(
-          `server=${res?.error};message=${
-            res?.message
-          };apiName=${url};version=${clientVersion + "," + webVersion}`
+          `server=${res?.error};msg=${res?.message?.slice(
+            0,
+            132
+          )};apiName=${url};version=${clientVersion + "," + webVersion}`
         );
       }
     } catch (error) {
@@ -224,9 +226,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
             if (response?.error !== 0) {
               tracking.trackBoostFailure(
-                `server=${response?.error};message=${
-                  response?.message
-                };apiName=${url};version=${clientVersion + "," + webVersion}`
+                `server=${response?.error};msg=${response?.message?.slice(
+                  0,
+                  132
+                )};apiName=${url};version=${clientVersion + "," + webVersion}`
               );
             }
 
@@ -496,9 +499,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         const url = "/api/v1/game/speed/start";
 
         tracking.trackBoostFailure(
-          `server=${startInfo?.error};message=${
-            startInfo?.message
-          };apiName=${url};version=${clientVersion + "," + webVersion}`
+          `server=${startInfo?.error};msg=${startInfo?.message?.slice(
+            0,
+            132
+          )};apiName=${url};version=${clientVersion + "," + webVersion}`
         );
       }
 
@@ -668,9 +672,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             isPre = true;
           } else {
             tracking.trackBoostFailure(
-              `client=${state?.code};message=${state?.message};version=${
-                clientVersion + "," + webVersion
-              }`
+              `client=${state?.code};msg=${state?.message?.slice(
+                0,
+                132
+              )};version=${clientVersion + "," + webVersion}`
             );
             isPre = false;
             eventBus.emit("showModal", {
