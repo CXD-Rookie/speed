@@ -87,15 +87,15 @@ const VisitorLogin: React.FC= (props) => {
         // localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
 
         const isNew = res.data.is_new_user;
+        const time = localStorage.getItem("firstActiveTime");
+        const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+        const isTrue = time && currentTime < Number(time);
 
         // 是新用户 上报注册成功，反之登录成功
         if (isNew) {
-          const time = localStorage.getItem("firstActiveTime");
-          const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-          const isTrue = time && currentTime < Number(time);
           tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
         } else {
-          tracking.trackLoginSuccess("youXia");
+          tracking.trackLoginSuccess("youXia", isTrue ? 1 : 0);
         }
 
         if (

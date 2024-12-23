@@ -97,15 +97,15 @@ const Login: React.FC = () => {
 
       if (res?.error === 0) {
         const isNew = res.data.is_new_user;
+        const time = localStorage.getItem("firstActiveTime");
+        const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+        const isTrue = time && currentTime < Number(time);
 
         // 是新用户 上报注册成功，反之登录成功
         if (isNew) {
-          const time = localStorage.getItem("firstActiveTime");
-          const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-          const isTrue = time && currentTime < Number(time);
           tracking.trackSignUpSuccess("phone", isTrue ? 1 : 0);
         } else {
-          tracking.trackLoginSuccess("phone");
+          tracking.trackLoginSuccess("phone", isTrue ? 1 : 0);
         }
 
         localStorage.setItem("userId", res?.data?.user_info?.id); // 存储user_id
