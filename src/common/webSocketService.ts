@@ -93,7 +93,7 @@ class WebSocketService {
           }
 
           tracking.trackServerError(
-            `errorCode=${this.verifyErrorCode};message=前端校验参数错误;apiName=${url};version=${version + "," + webVersion}`
+            `errorCode=${this.verifyErrorCode};msg=前端校验参数错误;apiName=${url};version=${version + "," + webVersion}`
           )
         }
       }
@@ -130,7 +130,7 @@ class WebSocketService {
           }
           
           tracking.trackServerError(
-            `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
+            `errorCode=${serveData?.code};msg=${serveData?.message?.slice(0, 132)};apiName=${url};version=${version + "," + webVersion}`
           )
         } else if (serveData?.code !== 0 && (serveData?.code < 100000 || serveData?.code >= 200000)) {
           if (diff >= 30000 && diff !== time) {
@@ -149,7 +149,7 @@ class WebSocketService {
             this.close({code: this.severlverifyCode, reason: serveData?.message});
             (window as any).stopProcessReset();
             tracking.trackServerError(
-              `errorCode=${serveData?.code};message=${serveData?.message};apiName=${url};version=${version + "," + webVersion}`
+              `errorCode=${serveData?.code};msg=${serveData?.message?.slice(0, 132)};apiName=${url};version=${version + "," + webVersion}`
             )
           } else if (diff === time)  {
             this.receivedTime = time; // 如果第一次返回值就没有就保存一次当前时间，方便计时30秒

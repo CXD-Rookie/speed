@@ -71,7 +71,7 @@ instance.interceptors.response.use(
   response => {
     const code = response?.data?.error;
     const url = response?.config?.url
-    const message = response?.data?.message;
+    const message = response?.data?.message?.slice(0, 132);
     
     if (code > 0) {
       const webVersion = process.env.REACT_APP_VERSION;
@@ -87,7 +87,7 @@ instance.interceptors.response.use(
         window.loginOutStopWidow(); // 退出登录
       }
       
-      tracking.trackServerError(`errorCode=${code};message=${message};apiName=${url};version=${clientVersion + "," + webVersion}`);
+      tracking.trackServerError(`errorCode=${code};msg=${message};apiName=${url};version=${clientVersion + "," + webVersion}`);
     }
 
     return response.data;
