@@ -167,16 +167,16 @@ const suitDom = async (num, option) => {
 }
 
 // 异常原因上报
-const exceptionReport = async (value) => {
-  if (value) {
-    // const decodedString = atob(value);
-    // console.log(decodedString, value);
+const exceptionReport = async (code, value) => {
+  if (code) {
+    const decodedValue = atob(value); // 解密base64字符串
+    console.log(decodedValue, value);
 
     const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
     const clientVersion = window.versionNowRef; // 客户端版本号
 
     // 无感知停止加速，再开始加速
-    tracking.trackBoostDisconnectPassive(`client=${value};version=${clientVersion + "," + webVersion}`);
+    tracking.trackBoostDisconnectPassive(`client=${code};msg=${decodedValue};version=${clientVersion + "," + webVersion}`);
     stopProxy(); // 停止加速进程不做ui展示
 
     const list = localStorage.getItem("speed-1.0.0.1-games");
