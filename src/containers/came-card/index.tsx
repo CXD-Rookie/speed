@@ -695,16 +695,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               )};version=${clientVersion + "," + webVersion}`
             );
             isPre = false;
-            
+
             eventBus.emit("showModal", {
               show: true,
               type: "infectedOrHijacked",
             });
 
-            if (["ERR_NETWORK", "kpgcore错误"].includes(state?.code)) {
-              console.log("ERR_NETWORK");
-              stopAcceleration();
-            }
+            // if (["ERR_NETWORK", "kpgcore错误"].includes(state?.code)) {
+            //   console.log("ERR_NETWORK");
+            //   stopAcceleration();
+            // }
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
