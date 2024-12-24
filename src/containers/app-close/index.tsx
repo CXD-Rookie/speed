@@ -105,7 +105,6 @@ const AppCloseModal: React.FC = (props) => {
       footer={null}
     >
       <div className="app-close-module-content">
-        <div>当关闭窗口时</div>
         <BaseRadio.Group
           className="content-radio-group"
           value={eventType}
@@ -116,7 +115,7 @@ const AppCloseModal: React.FC = (props) => {
               隐藏任务到托盘
             </span>
           </BaseRadio>
-          <BaseRadio value={"1"}>
+          <BaseRadio value={"1"} style={{ marginLeft: "1.4vw" }}>
             <span style={{ color: "#fff", fontSize: "1.4vw" }}>关闭程序</span>
           </BaseRadio>
         </BaseRadio.Group>
