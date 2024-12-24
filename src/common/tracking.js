@@ -42,6 +42,11 @@ class Tracking {
           localStorage.setItem("firstActiveTime", String(timeLock));
         }
 
+        // 首次活跃在登录状态下尝试触发引导页
+        if (store.getState().accountInfo.isLogin) {
+          window.landFirstTrigger(); // 调用引导页弹窗
+        }
+
         localStorage.setItem("activeTime", String(timeLock));
         this.trackEvent(
           this.otherMchannel()?.mchannel,

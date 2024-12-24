@@ -67,5 +67,6 @@ const validityPeriod = (record = {}, type = "default") => {
 
 export {
   validityPeriod,
-  formatDate
+  formatDate,
+  getMidnightTimestamp
 }

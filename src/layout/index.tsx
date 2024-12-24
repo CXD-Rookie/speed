@@ -13,17 +13,19 @@ import {
   setSetting,
   setVersionState,
   setLocalGameState,
+  setNewUserOpen,
 } from "@/redux/actions/modal-open";
 import { updateBindPhoneState } from "@/redux/actions/auth";
 import { setFirstAuth } from "@/redux/actions/firstAuth";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { setupInterceptors } from "@/api/api";
+import { getMidnightTimestamp } from "@/containers/currency-exchange/utils";
 import {
   compareVersions,
   stopProxy,
   serverClientReport,
-  exceptionReport,
+  exceptionReport
 } from "./utils";
 
 import "./index.scss";
@@ -51,6 +53,11 @@ const Layouts: React.FC = () => {
   const { open: versionOpen = false } = useSelector(
     (state: any) => state?.modalOpen?.versionState
   );
+  const { open: landPayOpen = false } = useSelector(
+    (state: any) => state?.modalOpen?.firstPayRP
+  ); // 首次充值引导页
+  const newUserOpen = useSelector((state: any) => state?.modalOpen?.newUserOpen); // 新用户引导页
+  
   const historyContext: any = useHistoryContext(); // 自定义传递上下文 hook
   const {
     removeGameList,
@@ -443,52 +450,33 @@ const Layouts: React.FC = () => {
     }
   }
 
-  //控制24小时展示一次的活动充值页面
-  // 控制活动充值页面在当天23:59:59后再次展示
-  const payNewActive = async (first_renewed: any, first_purchase: any) => {
-    const lastPopupTime1: any = localStorage.getItem("lastPopupTime1");
-    const isNewUser = localStorage.getItem("is_new_user") === "true";
-    const now = new Date();
+  // 判断是否弹出首续或者首充引导页
+  const landFirstTrigger = async () => {
+    const time = new Date().getTime(); // 获取当前时间
+    const mid_time = getMidnightTimestamp(time / 1000);
+    const local_time = localStorage.getItem("localTimeLock"); // 当天时间锁
+    const banner = JSON.parse(localStorage.getItem("all_data") || "[]"); // banner图数据
 
-    // 获取当前时间
-    const currentDayEnd = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      23,
-      59,
-      59,
-      999
-    );
+    console.log(time, mid_time, Number(local_time), banner);
+    if (
+      (Number(local_time) && time > Number(local_time) && !landPayOpen) ||
+      !Number(local_time)
+    ) {
+      const find = (banner || [])?.find((item: any) => ["2", "3"].includes(item?.params));
+      const renewed = find?.params === "2"; // 首充
+      const purchase = find?.params === "3"; // 首续
 
-    // 判断是否为新用户且弹窗需要展示
-    if (!lastPopupTime1 && !isNewUser) {
-      // 如果从未展示过弹窗，则直接展示
-      setTimeout(() => {
-        // 标记弹窗已展示
-        if (!first_renewed && first_purchase) {
-          dispatch(setFirstPayRP({ open: true, type: 2 }));
-        } else if (!first_purchase && first_renewed) {
-          dispatch(setFirstPayRP({ open: true, type: 3 }));
-        }
-        localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
-      }, 2000);
-    } else {
-      const lastPopupDate = new Date(lastPopupTime1);
+      localStorage.setItem("localTimeLock", String(mid_time)); // 触发弹窗记录当天0点时间锁
 
-      // 如果上次展示时间不是当天23:59:59，并且当前时间已经过了这个时间点，则展示弹窗
-      if (now >= lastPopupDate) {
-        setTimeout(() => {
-          // 更新弹窗展示时间到今天的23:59:59
-          if (!first_renewed && first_purchase) {
-            tracking.trackPurchaseFirstBuy();
-            dispatch(setFirstPayRP({ open: true, type: 2 }));
-          } else if (!first_purchase && first_renewed) {
-            tracking.trackPurchaseFirstShow();
-            dispatch(setFirstPayRP({ open: true, type: 3 }));
-          }
-          localStorage.setItem("lastPopupTime1", currentDayEnd.toISOString());
-        }, 2000);
+      // 标记弹窗已展示
+      if (!renewed && purchase) {
+        dispatch(setFirstPayRP({ open: true, type: 2 }));
+        return;
+      }
+
+      if (renewed && !purchase) {
+        dispatch(setFirstPayRP({ open: true, type: 3 }));
+        return;
       }
     }
   };
@@ -629,13 +617,8 @@ const Layouts: React.FC = () => {
             if (isNewUser && !isModalDisplayed && !isNewOpen) {
               // 判断是否为新用户且弹窗尚未展示过，并且 data.user_info 是一个非空对象
               setTimeout(() => {
-                // dispatch(setNewUserOpen(true));
                 dispatch(setDrawVipActive({ open: true }));
               }, 500);
-            }
-
-            if (isModalDisplayed) {
-              payNewActive(renewal, purchase);
             }
           }
 
@@ -658,7 +641,7 @@ const Layouts: React.FC = () => {
   };
 
   // 游侠登录
-  const youxiaLoginCallback = (data: any) => {
+  const youxiaLoginCallback = async (data: any) => {
     const isNew = data?.is_new_user; // 是否新用户
     const user = data?.user_info; // 用户信息
     
@@ -675,10 +658,11 @@ const Layouts: React.FC = () => {
 
       if (bind_type >= 0) {
         dispatch(setAccountInfo(user, true, false));
-        
+
         const time = localStorage.getItem("firstActiveTime");
         const currentTime = Math.floor(Date.now() / 1000); // 当前时间
         const isTrue = time && currentTime < Number(time);
+        const lock_time = getMidnightTimestamp(currentTime); // 当天0点时间锁
 
         if (isNew) {
           tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
@@ -696,8 +680,17 @@ const Layouts: React.FC = () => {
             })
           ); // 三方绑定提示
         }
-        localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
+
+        localStorage.setItem("newUserTimeLock", String(lock_time)); // 存储锁
         webSocketService.loginReconnect();
+        localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
+
+        // 如果是正常游侠登录触发一下首次充值或首次续期引导页
+        if (Number(bind_type) === 1) {
+          setTimeout(() => {
+            (window as any).landFirstTrigger(); // 调用引导页弹窗
+          }, 1000); // 避免ws没有处理完banner图，所有延迟一秒触发
+        }
       }
     } else {
       let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
@@ -721,7 +714,18 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记
       
       if (!accountInfo.isLogin) {
-        fetchBanner();
+        fetchBanner()
+
+        const time = new Date().getTime(); // 获取当前时间
+        const local_time = localStorage.getItem("newUserTimeLock"); // 新用户引导页当天时间锁
+
+        if (
+          !(Number(local_time) > 0) &&
+          time > Number(local_time) &&
+          !newUserOpen
+        ) {
+          dispatch(setNewUserOpen(true)); // 触发弹窗
+        }
       }
 
       webSocketService.connect(
@@ -736,6 +740,10 @@ const Layouts: React.FC = () => {
         initialSetup(), // 初始设置
       ]);
       
+      if (accountInfo.isLogin) {
+        await landFirstTrigger();
+      }
+    
       if (renewal?.state && version?.state && setting?.state) {
         resolve({
           state: true,
@@ -796,9 +804,11 @@ const Layouts: React.FC = () => {
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
     (window as any).youxiaLoginCallback = youxiaLoginCallback; // 游侠登录回调，客户端调用
     (window as any).cacheGameFun = cacheGameFun; // 内部使用更新缓存游戏
+    (window as any).landFirstTrigger = landFirstTrigger; // 调用引导页弹窗
 
     // 清理函数，在组件卸载时移除挂载
     return () => {
+      delete (window as any).landFirstTrigger;
       delete (window as any).cacheGameFun;
       delete (window as any).youxiaLoginCallback;
       delete (window as any).speedErrorReport;
