@@ -590,11 +590,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                       message: responseObj?.error_log ?? "",
                     });
                   }
-                } catch (error) {
-                  console.error("请求失败:", error);
+                } catch (error: any) {
+                  console.log("请求失败:", error);
                   resolve({
                     state: false,
-                    code: responseObj?.status,
+                    code: error?.code || "kpgcore错误",
                     message: responseObj?.error_log ?? "",
                   }); // 请求失败，返回错误信息
                 }
