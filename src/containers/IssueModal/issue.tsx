@@ -358,6 +358,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
               type="text"
               placeholder="手机/邮箱/微信"
               value={contact}
+              maxLength={50}
               onChange={handleContactChange}
             />
             <span className="char-count-mobile">{contact.length}/50</span>
