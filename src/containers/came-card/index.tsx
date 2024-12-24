@@ -592,7 +592,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   }
                 } catch (error: any) {
                   console.log("请求失败:", error);
-                  stopAcceleration();
                   resolve({
                     state: false,
                     code: error?.code || "kpgcore错误",
@@ -696,6 +695,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               )};version=${clientVersion + "," + webVersion}`
             );
             isPre = false;
+
+            if (["ERR_NETWORK", "kpgcore错误"].includes(state?.state)) {
+              await stopAcceleration();
+            }
+
             eventBus.emit("showModal", {
               show: true,
               type: "infectedOrHijacked",
