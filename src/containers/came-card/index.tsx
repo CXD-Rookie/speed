@@ -552,12 +552,25 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               // 检查解析后的 restfulData 是否包含 port
               if (restfulObj?.port) {
                 const url = `http://127.0.0.1:${restfulObj.port}/start`; // 拼接 URL
+                const user_id = localStorage.getItem("userId"); // 用户id
+                const localMchannel = localStorage.getItem("mchannel"); // mchannel 字段
+                const token = localStorage.getItem("token");
+                const client_token = localStorage.getItem("client_token");
+                const client_id = localStorage.getItem("client_id");
 
                 try {
                   // 发起 POST 请求，body 为 jsonResult
                   const result = await axios.post(url, jsonResult, {
                     headers: {
                       "Content-Type": "application/json",
+                      "Client-version": clientVersion,
+                      "Web-version": webVersion,
+                      "User-id": user_id,
+                      "User-token": token,
+                      "Client-token": client_token,
+                      "Client-id": client_id,
+                      "Gid": option?.id,
+                      Mchannel: localMchannel,
                     },
                   });
 
@@ -571,7 +584,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                     tracking.trackBoostSuccess(isTrue ? 1 : 0);
                   } else {
                     stopAcceleration();
-                    resolve({ state: false, code: responseObj?.status, message: responseObj?.error_log ?? "" });
+                    resolve({
+                      state: false,
+                      code: responseObj?.status,
+                      message: responseObj?.error_log ?? "",
+                    });
                   }
                 } catch (error) {
                   console.error("请求失败:", error);
