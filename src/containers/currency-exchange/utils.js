@@ -12,13 +12,15 @@ function getMidnightTimestamp (timestamp) {
   // 将给定的时间戳转换为 Date 对象
   const date = new Date(timestamp * 1000); // 时间戳单位是秒，需要乘以 1000 转换为毫秒
 
+  date.setDate(date.getDate() + 1);
+  
   // 将 Date 对象调整到当天的零点时刻
   date.setHours(0, 0, 0, 0); // 设置小时、分钟、秒和毫秒为 0
 
   // 将调整后的 Date 对象转换回时间戳
   const midnightTimestamp = date.getTime() / 1000; // 转换回秒单位的时间戳
 
-  return midnightTimestamp - 1;
+  return midnightTimestamp;
 }
 
 // 比较是否是同一天
