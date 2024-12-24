@@ -96,7 +96,7 @@ const AppCloseModal: React.FC = (props) => {
     <Modal
       className="app-close-module"
       open={open}
-      title="关闭窗口"
+      title="关闭窗口时"
       width={"40vw"}
       centered
       destroyOnClose
