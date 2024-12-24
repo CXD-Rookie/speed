@@ -592,6 +592,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   }
                 } catch (error: any) {
                   console.log("请求失败:", error);
+                  stopAcceleration();
                   resolve({
                     state: false,
                     code: error?.code || "kpgcore错误",
