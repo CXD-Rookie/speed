@@ -8,21 +8,22 @@
  */
 import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setAccountInfo } from "../../redux/actions/account-info";
 import { debounce } from "@/common/utils";
+import { getMidnightTimestamp } from "../currency-exchange/utils";
+
 import webSocketService from "@/common/webSocketService";
 import tracking from "@/common/tracking";
 import Captcha from "./tencent-captcha";
 import CustomInput from "./custom-input";
 import loginApi from "@/api/login";
 import "./index.scss";
-
 import clotureIcon from "@/assets/images/common/cloture.svg";
 import logoIcon from "@/assets/images/common/logo.png";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
 import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
-import { useNavigate } from "react-router-dom";
 
 // 手机号对应错误码文案
 const phoneErrorText: any = {
@@ -100,7 +101,9 @@ const Login: React.FC = () => {
         const time = localStorage.getItem("firstActiveTime");
         const currentTime = Math.floor(Date.now() / 1000); // 当前时间
         const isTrue = time && currentTime < Number(time);
+        const lock_time = getMidnightTimestamp(currentTime); // 当天0点时间锁
 
+        localStorage.setItem("newUserTimeLock", String(lock_time)); // 存储锁
         // 是新用户 上报注册成功，反之登录成功
         if (isNew) {
           tracking.trackSignUpSuccess("phone", isTrue ? 1 : 0);
@@ -117,6 +120,7 @@ const Login: React.FC = () => {
           JSON.stringify(res.data.vip_experience_time)
         );
         localStorage.removeItem("isClosed");
+
         if (
           res.data.user_info.user_ext === null ||
           res.data.user_info.user_ext.idcard === ""
@@ -136,9 +140,13 @@ const Login: React.FC = () => {
 
         // 3个参数 用户信息 是否登录 是否显示登录
         webSocketService.loginReconnect();
-        dispatch(setAccountInfo(res.data.user_info, true, false));
 
+        dispatch(setAccountInfo(res.data.user_info, true, false));
         navigate("/home");
+
+        setTimeout(() => {
+          (window as any).landFirstTrigger(); // 调用引导页弹窗
+        }, 1000); // 避免ws没有处理完banner图，所有延迟一秒触发
       } else {
         setCodeError("2")
       }
