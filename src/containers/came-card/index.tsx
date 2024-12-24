@@ -681,7 +681,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         if (isCheck?.status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
-
+          
           if (state?.state) {
             accelerateGameToList(option, {
               acc_platform: state?.platform,
@@ -696,7 +696,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             );
             isPre = false;
 
-            if (["ERR_NETWORK", "kpgcore错误"].includes(state?.state)) {
+            if (["ERR_NETWORK", "kpgcore错误"].includes(state?.code)) {
+              console.log("ERR_NETWORK");
               await stopAcceleration();
             }
 
