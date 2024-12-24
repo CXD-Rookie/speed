@@ -37,7 +37,7 @@
 }
 
 .feedback-popup .type-btn {
-    width: 8vw;
+    // width: 8vw;
     height: 5.3vh;
     font-size: 1.19vw;
     font-weight: Regular;
@@ -47,10 +47,9 @@
     line-height: 5.3vh;
     border-radius: 1vh;
     border: 0.1vw solid transparent;
-    // margin: 1.6vh 1.5vw 0 0;
+    padding: 0 1.2vw;
     cursor: pointer;
     position: relative;
-    /* 添加默认边框 */
 }
 
 .feedback-popup .type-btn.selected {
@@ -85,17 +84,18 @@
 }
 
 .feedback-popup .description-input-box {
+    width: 100%;
     color: #fff;
     margin: 1.6vh 1.05vw 0 1.05vw;
 }
 
 .feedback-popup .description {
-    width: 60vw;
+    width: 100%;
     min-height: 13vh;
     font-size: 1.3vw;
     color: #fff;
     background: rgba(255, 255, 255, 0.10);
-    padding: 1.6vh 1.8vw;
+    padding: 1.6vh 1vw;
     border: none;
     border-radius: 1vh;
     resize: none;
@@ -141,12 +141,9 @@
 .fa-plus {
     width: 4.5vw;
     height: 4.5vw;
-    font-size: 3vw;
     color: #fff;
     background-color: #52525c;
     border: 0.5px dashed #fff;
-    text-align: center;
-    line-height: 7.5vw;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -192,6 +189,8 @@
 
 .fa-plus:before {
     content: "\002b";
+    font-size: 3vw;
+    margin-bottom: 0.5vw;
 }
 
 #file-input {
@@ -231,17 +230,21 @@
 }
 
 .contact .contact-input {
-    width: 54vw;
+    width: 44vw;
     height: 4vh;
     font-size: 1.3vw;
     color: #fff;
     background: rgba(255, 255, 255, 0.1);
-    border-top-left-radius: 1vh;
-    border-bottom-left-radius: 1vh;
+    border-radius: 1vh;
     border: none;
-    padding: 1.2vh 0.6vw 1.2vh 2vw;
+    border-color: transparent;
+    padding: 1.2vh 4.5vw 1.2vh 1vw;
     margin-top: 1.4vh;
     margin-left: 1.05vw;
+
+    :active , :hover {
+        border: none;
+    }
 }
 
 .contact .contact-input::placeholder {
@@ -480,6 +483,7 @@
 }
 
 .char-count {
+    width: 100%;
     position: absolute;
     bottom: -0.5vw;
     right: 0px;
@@ -488,7 +492,6 @@
     font-size: 1vw;
     color: gray;
     height: 1.5vw;
-    width: 60vw;
     border-bottom-right-radius: 1vh;
     border-bottom-left-radius: 1vh;
     text-align: right;
@@ -498,13 +501,17 @@
 
 span.char-count-mobile {
     position: relative;
-    right: 3.8vw;
-    font-size: 1vw;
-    display: flex;
-    flex-direction: row;
-    /* height: 1vw; */
+    right: 4.5vw;
+    display: inline-block;
+    width: auto;
     height: 4vh;
+    background-color: #52525c;
+    font-size: 1vw;
+    text-align: center;
     line-height: 4vh;
+    padding: 0 1vw;
+    border-top-right-radius: 1vh;
+    border-bottom-right-radius: 1vh;
 }
 
 .add-qq-contact {
