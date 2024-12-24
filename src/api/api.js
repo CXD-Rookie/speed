@@ -33,18 +33,11 @@ setupInterceptors();
 instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token') || '';
-    const signChannel = [
-      "berrygm", 
-      "ali213", 
-      "accessorx", 
-      "dualspring", 
-      "jsqali213", 
-      "baidu"
-    ];
     const localMchannel = localStorage.getItem("mchannel");
-    const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
+
     const noToken = ["api/v1/game/process/blacklist"]; // 不需要传userToken的接口
     const isToken = noToken.some((item) => config?.url.includes(item)); // 不需要传userToken的接口
+    
     const userIdApi = ["api/v1/game/list"]
     const isUserId = userIdApi.some((item) => config?.url.includes(item)); // 需要传userid的接口
     const user_id = localStorage.getItem("userId"); // user_id
@@ -57,7 +50,7 @@ instance.interceptors.request.use(
       config.headers.user_id = user_id
     }
 
-    config.headers.Mchannel = mchannel;
+    config.headers.Mchannel = localMchannel;
     
     return config;
   },

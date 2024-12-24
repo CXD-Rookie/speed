@@ -720,10 +720,10 @@ const Layouts: React.FC = () => {
       if (!accountInfo.isLogin) {
         fetchBanner();
 
-        const time = new Date().getTime(); // 获取当前时间
+        const time = new Date().getTime() / 1000; // 获取当前时间
         const local_time = localStorage.getItem("newUserTimeLock"); // 新用户引导页当天时间锁对象
         const lock = JSON.parse(local_time || JSON.stringify({})); // 解构数据
-        const lock_time = getMidnightTimestamp(time / 1000); // 当天0点时间锁
+        const lock_time = getMidnightTimestamp(time); // 当天0点时间锁
         
         if (
           Object.keys(lock)?.length === 0 ||
