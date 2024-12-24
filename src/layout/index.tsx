@@ -452,14 +452,14 @@ const Layouts: React.FC = () => {
 
   // 判断是否弹出首续或者首充引导页
   const landFirstTrigger = async () => {
-    const time = new Date().getTime(); // 获取当前时间
-    const mid_time = getMidnightTimestamp(time / 1000);
+    const time = new Date().getTime() / 1000; // 获取当前时间
+    const mid_time = getMidnightTimestamp(time);
     const local_time = localStorage.getItem("localTimeLock"); // 当天时间锁
     const banner = JSON.parse(localStorage.getItem("all_data") || "[]"); // banner图数据
 
-    console.log(time, mid_time, Number(local_time), banner);
+    console.log("当前时间", time, "当前存储时间锁", Number(local_time), banner);
     if (
-      (Number(local_time) && time > Number(local_time) && !landPayOpen) ||
+      (time > Number(local_time) && !landPayOpen) ||
       !Number(local_time)
     ) {
       const find = (banner || [])?.find((item: any) => ["2", "3"].includes(item?.params));
@@ -469,12 +469,12 @@ const Layouts: React.FC = () => {
       localStorage.setItem("localTimeLock", String(mid_time)); // 触发弹窗记录当天0点时间锁
 
       // 标记弹窗已展示
-      if (!renewed && purchase) {
+      if (renewed && !purchase) {
         dispatch(setFirstPayRP({ open: true, type: 2 }));
         return;
       }
 
-      if (renewed && !purchase) {
+      if (!renewed && purchase) {
         dispatch(setFirstPayRP({ open: true, type: 3 }));
         return;
       }
@@ -681,7 +681,11 @@ const Layouts: React.FC = () => {
           ); // 三方绑定提示
         }
 
-        localStorage.setItem("newUserTimeLock", String(lock_time)); // 存储锁
+        localStorage.setItem(
+          "newUserTimeLock",
+          JSON.stringify({ time: lock_time, isLogin: true })
+        ); // 存储锁
+
         webSocketService.loginReconnect();
         localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
 
@@ -714,17 +718,24 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记
       
       if (!accountInfo.isLogin) {
-        fetchBanner()
+        fetchBanner();
 
         const time = new Date().getTime(); // 获取当前时间
-        const local_time = localStorage.getItem("newUserTimeLock"); // 新用户引导页当天时间锁
-
+        const local_time = localStorage.getItem("newUserTimeLock"); // 新用户引导页当天时间锁对象
+        const lock = JSON.parse(local_time || JSON.stringify({})); // 解构数据
+        const lock_time = getMidnightTimestamp(time / 1000); // 当天0点时间锁
+        
         if (
-          !(Number(local_time) > 0) &&
-          time > Number(local_time) &&
-          !newUserOpen
+          Object.keys(lock)?.length === 0 ||
+          (!lock?.isLogin && // 是否登录过
+          time > Number(lock?.time) &&
+          !newUserOpen)
         ) {
           dispatch(setNewUserOpen(true)); // 触发弹窗
+          localStorage.setItem(
+            "newUserTimeLock",
+            JSON.stringify({ ...lock, time: lock_time })
+          ); // 存储锁
         }
       }
 

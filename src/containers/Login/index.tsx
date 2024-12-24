@@ -103,7 +103,11 @@ const Login: React.FC = () => {
         const isTrue = time && currentTime < Number(time);
         const lock_time = getMidnightTimestamp(currentTime); // 当天0点时间锁
 
-        localStorage.setItem("newUserTimeLock", String(lock_time)); // 存储锁
+        localStorage.setItem(
+          "newUserTimeLock",
+          JSON.stringify({ time: lock_time, isLogin: true })
+        ); // 存储锁
+
         // 是新用户 上报注册成功，反之登录成功
         if (isNew) {
           tracking.trackSignUpSuccess("phone", isTrue ? 1 : 0);
