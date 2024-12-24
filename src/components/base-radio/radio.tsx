@@ -42,6 +42,7 @@ const CustomRadio: React.FC = React.forwardRef<HTMLSpanElement,CustomRadioProps>
     <span
       ref={ref}
       className={`speed-custom-radio-wrapper`}
+      style={props?.style}
       key={value}
       onClick={handleClick}
     >

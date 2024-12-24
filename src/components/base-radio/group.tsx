@@ -8,7 +8,7 @@ export interface GroupProps extends CustomRadioProps {
 }
 
 const CustomGroup: React.FC<GroupProps> = (props: any) => {
-  const { children, value, onChange } = props;
+  const { children, value, onChange, style } = props;
 
   const [selectedValue, setSelectedValue] = useState<string>("");
 
