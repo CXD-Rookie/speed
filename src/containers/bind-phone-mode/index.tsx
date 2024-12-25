@@ -31,6 +31,12 @@ const typeObj: any = {
     text: "请输入新手机号码，点击“获取验证码”完成验证",
   }, // 切换新手机号
 };
+
+const errorObj: any = {
+  quik: "您的操作频率太快，请稍后再试",
+  error: "验证码错误，请重新输入",
+};
+
 const submitObj: any = ["unbind", "newPhone"];
 const lockPhoneObj: any = ["unbind", "third", "oldPhone"];
 
@@ -48,7 +54,7 @@ const BindPhoneMode: React.FC = (props) => {
   const [code, setCode] = useState("");
   
   const [isPhone, setIsPhone] = useState(false);
-  const [isVeryCodeErr, setVeryCodeErr] = useState(false);
+  const [veryCodeErr, setVeryCodeErr] = useState("");
 
   const modalTitle = typeObj?.[bindType]?.title;
   const modalText = typeObj?.[bindType]?.text;
@@ -57,7 +63,7 @@ const BindPhoneMode: React.FC = (props) => {
     setBindType("");
     setCountdown(0);
     setCode("");
-    setVeryCodeErr(false);
+    setVeryCodeErr("");
     setIsPhone(false);
     dispatch(setBindState({open: false, type: ""}));
   };
@@ -98,6 +104,8 @@ const BindPhoneMode: React.FC = (props) => {
         setTimeout(() => {
           clearInterval(interval);
         }, 61000); // 120秒后清除定时器
+      } else if (res?.error === "210005") {
+        setVeryCodeErr("quik");
       }
     } catch (error) {
       console.log("验证码错误", error);
@@ -225,7 +233,7 @@ const BindPhoneMode: React.FC = (props) => {
           const dataTitle = target?.dataset?.title;
           (window as any).NativeApi_YouXiaAuth(dataTitle);
         } else {
-          setVeryCodeErr(true);
+          setVeryCodeErr("error");
         }
       } else if (bindType === "unbind") {
         let res = await handleUnbindPhone();
@@ -242,16 +250,17 @@ const BindPhoneMode: React.FC = (props) => {
         }
 
         let res = await verifyPhone();
-
+        console.log(res, res?.error);
+        
         if (res?.error === 0) {
           setBindType("newPhone");
           setCountdown(0);
           setPhone("");
           setCode("");
-          setVeryCodeErr(false);
+          setVeryCodeErr("");
           setIsPhone(false);
         } else {
-          setVeryCodeErr(true);
+          setVeryCodeErr("error");
         }
       } else if (bindType === "newPhone") {
         let res = await handleUpdatePhone();
@@ -275,7 +284,7 @@ const BindPhoneMode: React.FC = (props) => {
           dispatch(setAccountInfo(res.data.user_info, true, false));
           webSocketService.loginReconnect();
         } else {
-          setVeryCodeErr(true);
+          setVeryCodeErr("error");
         }
       }
     } catch (error) {
@@ -334,8 +343,10 @@ const BindPhoneMode: React.FC = (props) => {
                   获取验证码
                 </div>
               )}
-              {isVeryCodeErr && (
-                <div className="code-error">验证码错误，请重新输入</div>
+              {veryCodeErr && (
+                <div className="code-error">
+                  {errorObj?.[veryCodeErr]}
+                </div>
               )}
             </div>
           </div>
@@ -347,7 +358,9 @@ const BindPhoneMode: React.FC = (props) => {
               className="last-login-text"
               onClick={(e) => handlevisitorLogin(e)}
               disabled={!code || !phone}
-              data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${process.env.REACT_APP_YOUXIA_URL}?token=${JSON.parse(
+              data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${
+                process.env.REACT_APP_YOUXIA_URL
+              }?token=${JSON.parse(
                 token
               )}&response_type=code&scope=webapi_login&state=state`}
             >
