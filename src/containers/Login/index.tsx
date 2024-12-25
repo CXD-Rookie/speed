@@ -82,10 +82,13 @@ const Login: React.FC = () => {
   };
 
   const handleLogin = async () => {
+    const is_code = !verificationCode || verificationCode?.length !== 6; // 验证码错误
+    const is_phone = !isPhoneNumberValid; // 手机号错误
+    
     // 如果手机号校验不通过，验证码错误，进行错误提示
-    if (!isPhoneNumberValid || !verificationCode) {
-      !isPhoneNumberValid && setPhoneError("1");
-      !verificationCode && setCodeError("1");
+    if (is_phone || is_code) {
+      is_phone && setPhoneError("1");
+      is_code && setCodeError("1");
       return;
     }
 
@@ -191,6 +194,7 @@ const Login: React.FC = () => {
           <CustomInput
             placeholder={"请输入验证码"}
             countdown={countdown}
+            source={"verify_code"}
             prefix={
               <div className="custom-prefix-box">
                 <img src={challengeIcon} alt="" />
@@ -227,6 +231,7 @@ const Login: React.FC = () => {
             }
             value={verificationCode}
             onChange={handleVerificationCodeChange}
+            onEnter={handleLogin}
           />
           {<div className="ercode">{codeErrorText?.[codeError || "0"]}</div>}
         </div>
