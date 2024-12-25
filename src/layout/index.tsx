@@ -717,9 +717,9 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
       localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记
       
+      fetchBanner();
+      
       if (!accountInfo.isLogin) {
-        fetchBanner();
-
         const time = new Date().getTime() / 1000; // 获取当前时间
         const local_time = localStorage.getItem("newUserTimeLock"); // 新用户引导页当天时间锁对象
         const lock = JSON.parse(local_time || JSON.stringify({})); // 解构数据
