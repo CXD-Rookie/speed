@@ -116,7 +116,7 @@ class WebSocketService {
           this.receivedTime = 0;
           
           // 110001 判断为异地登录
-          if (serveData?.code === 110001) {
+          if (serveData?.code >= 110000 && serveData?.code <= 110100) {
             (window as any).loginOutStopWidow("remoteLogin");
           } else if (serveData?.code === 100001) {
             (window as any).NativeApi_AsynchronousRequest(
