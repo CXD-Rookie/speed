@@ -43,6 +43,7 @@ import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
 import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 import toggleIcon from "@/assets/images/home/toggle.png";
 import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
+import defaultLogo from "@/assets/images/common/default-details-logo.png";
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -403,6 +404,21 @@ const GameDetail: React.FC = () => {
         />
         <div className="game-detail">
           <div className="game-left">
+            <div className="default-game-logo-box">
+              <img
+                className="default-game-logo"
+                src={`${
+                  detailData?.logo
+                    ? "https://cdn.accessorx.com/" + detailData?.logo
+                    : defaultLogo
+                }`}
+                alt=""
+                onError={(e: any) => {
+                  e.target.onerror = null; // 防止错误循环
+                  e.target.src = defaultLogo;
+                }}
+              />
+            </div>
             <div className="game-text">{detailData?.name}</div>
             {detailData?.pc_platform?.length > 0 && (
               <div className="platfrom">
