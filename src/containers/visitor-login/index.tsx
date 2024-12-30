@@ -14,6 +14,11 @@ import challengeIcon from "@/assets/images/common/challenge.svg";
 
 import "./index.scss";
 
+const errorObj: any = {
+  quik: "您的操作频率太快，请稍后再试",
+  error: "验证码错误，请重新输入",
+};
+
 // 是否绑定加速器的手机号绑定登录
 const VisitorLogin: React.FC= (props) => {
   const dispatch: any = useDispatch();
@@ -27,8 +32,8 @@ const VisitorLogin: React.FC= (props) => {
   const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
   const [isVeryCode, setVeryCode] = useState(false);
-  const [isVeryCodeErr, setVeryCodeErr] = useState(false);
-  
+  const [veryCodeErr, setVeryCodeErr] = useState("");
+
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
     debounce((value: any) => {
@@ -61,7 +66,7 @@ const VisitorLogin: React.FC= (props) => {
     }
 
     if (!verificationCode) {
-      setVeryCodeErr(false);
+      setVeryCodeErr("error");
       setVeryCode(true);
       return;
     }
@@ -110,9 +115,9 @@ const VisitorLogin: React.FC= (props) => {
             type: types?.[String(res?.data?.target_phone_status || 1)],
           })
         ); // 认证提示
-      } else {
+      }else {
         setVeryCode(false);
-        setVeryCodeErr(true);
+        setVeryCodeErr("error");
       }
     } catch (error) {
       console.log(error);
@@ -182,6 +187,7 @@ const VisitorLogin: React.FC= (props) => {
                       phoneNumber={phoneNumber}
                       isPhoneNumberValid={isPhoneNumberValid}
                       setCountdown={setCountdown}
+                      setVeryCodeErr={setVeryCodeErr}
                     />
                   )}
                 </div>
@@ -190,8 +196,8 @@ const VisitorLogin: React.FC= (props) => {
               onChange={handleVerificationCodeChange}
             />
             {isVeryCode && <div className="ercode">请先获取验证码</div>}
-            {isVeryCodeErr && (
-              <div className="ercode">验证码错误，请重新输入</div>
+            {veryCodeErr && (
+              <div className="ercode">{errorObj?.[veryCodeErr]}</div>
             )}
           </div>
           <div className="login-btn-box">
