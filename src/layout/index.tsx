@@ -224,9 +224,7 @@ const Layouts: React.FC = () => {
             return {
               ...item,
               ...target,
-              cover_img: `https://cdn.accessorx.com/${
-                target?.cover_img ?? target.background_img
-              }`,
+              cover_img: `${target?.cover_img ?? target.background_img}`,
             };
           } else if (target) {
             return item;
