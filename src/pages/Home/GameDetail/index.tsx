@@ -29,7 +29,7 @@ import activateIcon from "@/assets/images/common/activate.svg";
 import cessationIcon from "@/assets/images/common/cessation.svg";
 import computerIcon from "@/assets/images/common/computer.svg";
 import computingIcon from "@/assets/images/common/computing.svg";
-import laptopsIcon from "@/assets/images/common/laptops.svg";
+import laptopsIcon from "@/assets/images/common/laptops@2x.png";
 import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 import steamIcon from "@/assets/images/common/steam@2x.png";
 import rockstarIcon from "@/assets/images/common/rockstar@2x.png";

@@ -58,7 +58,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   return (
     <div
       className={`tooltip-wrapper ${className}`}
-      style={{ width: "100%", ...style }}
+      style={{ ...style }}
       onMouseEnter={showTooltip}
       onMouseLeave={hideTooltip}
     >

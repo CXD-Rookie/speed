@@ -1,7 +1,8 @@
 .tooltip-wrapper {
   position: relative;
-  display: block;
-  width: 100%;
+  display: inline-flex;
+  width: auto;
+  vertical-align: middle;
 }
 
 .tooltip-content {
