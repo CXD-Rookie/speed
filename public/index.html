@@ -71,7 +71,7 @@
     <!-- 新的友盟埋点 -->
     <script>
       // 获取当前环境变量
-      const env = window.location.pathname.split("/").includes('cdn.accessorx.com/web/') ? 'production' : 'development';
+      const env = window.location.pathname.split("/").includes('web') ? 'production' : 'development';
       // 根据环境设置不同的 URL
       const redirectUrl = env === 'production'
       console.log(env, redirectUrl);
