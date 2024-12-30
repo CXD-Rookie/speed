@@ -18,6 +18,7 @@ import {
   setMinorState,
 } from "@/redux/actions/modal-open";
 
+import eventBus from "@/api/eventBus";
 import tracking from "@/common/tracking";
 import payApi from "@/api/pay";
 import RealNameModal from "../real-name";
@@ -224,9 +225,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
       <div className="login-suer-coupon">
         <span className="text">
           我的优惠券
-          {isShowUserT && (
-            <span className="coupon">优惠劵即将到期</span>
-          )}
+          {isShowUserT && <span className="coupon">优惠劵即将到期</span>}
         </span>
         <span
           className="num"
@@ -238,6 +237,20 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           {tableTotal}张优惠券
           <img src={fanhuiIcon} alt="" />
         </span>
+      </div>
+      <div className="login-user-line" />
+      {/* 退出登录 */}
+      <div
+        className="layout-header-login-out"
+        onClick={() => {
+          hide();
+          eventBus.emit("showModal", {
+            show: true,
+            type: "loginOut",
+          });
+        }}
+      >
+        退出登录
       </div>
     </div>
   );
@@ -281,6 +294,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           <span className="user-text"></span>
         </Tooltip>
       )}
+      
       {isRealOpen ? <RealNameModal /> : null}
       <CustonCoupon
         open={couponOpen}
