@@ -340,9 +340,27 @@ const Layouts: React.FC = () => {
         reason: "退出登录后主动关闭",
       });
 
-      await stopProcessReset(); // 停止加速操作
-      await loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
-      await fetchBanner(); // 退出登录更新banner图
+      try {
+        await stopProcessReset(); // 单独 try-catch 处理加速停止
+      } catch (error) {
+        console.error("停止加速失败:", error);
+      }
+
+      try {
+        await loginApi.loginOut(); // 单独 try-catch 处理登出请求
+      } catch (error) {
+        console.error("登出请求失败:", error);
+      }
+
+      try {
+        await fetchBanner(); // 单独 try-catch 处理 banner 更新
+      } catch (error) {
+        console.error("更新banner失败:", error);
+      }
+
+      // await stopProcessReset(); // 停止加速操作
+      // await loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
+      // await fetchBanner(); // 退出登录更新banner图
 
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
