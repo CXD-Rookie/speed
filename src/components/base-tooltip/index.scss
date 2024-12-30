@@ -1,0 +1,84 @@
+.tooltip-wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.tooltip-content {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 1.2vw;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+/* 箭头样式 */
+.tooltip-content::before {
+  content: '';
+  position: absolute;
+  border: 5px solid transparent;
+}
+
+/* 上方显示 */
+.tooltip-content.top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+.tooltip-content.top::before {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: rgba(0, 0, 0, 0.75);
+}
+
+/* 下方显示 */
+.tooltip-content.bottom {
+  top: 90%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+}
+
+.tooltip-content.bottom::before {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: rgba(0, 0, 0, 0.75);
+}
+
+/* 左侧显示 */
+.tooltip-content.left {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px);
+}
+
+.tooltip-content.left::before {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: rgba(0, 0, 0, 0.75);
+}
+
+/* 右侧显示 */
+.tooltip-content.right {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+}
+
+.tooltip-content.right::before {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: rgba(0, 0, 0, 0.75);
+}
+
+/* 可以添加禁用状态的样式 */
+.tooltip-wrapper.disabled {
+  cursor: not-allowed;
+} 

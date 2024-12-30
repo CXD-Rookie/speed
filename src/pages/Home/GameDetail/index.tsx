@@ -6,7 +6,7 @@
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, Fragment } from "react";
 import { Button } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,7 @@ import BarChart from "@/containers/BarChart/index";
 import RegionNodeSelector from "@/containers/region-node";
 import ActivationModal from "@/containers/activation-mode";
 import BreakConfirmModal from "@/containers/break-confirm";
+import BaseTooltip from "@/components/base-tooltip";
 
 import fanhuiIcon from "@/assets/images/common/fanhui.svg";
 import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
@@ -210,18 +211,54 @@ const GameDetail: React.FC = () => {
     let platform = data?.pc_platform || []; // 同步加速的游戏，平台
 
     const iconMap: any = {
-      "1": steamIcon,
-      "2": garenaIcon,
-      "3": laptopsIcon,
-      "4": epicIcon,
-      "5": microsoftIcon,
-      "6": eaIcon,
-      "7": faceitIcon,
-      "8": battleIcon,
-      "9": oculusIcon,
-      "10": rockstarIcon,
-      "11": galaxyIcon,
-      "12": primeGamIcon,
+      "1": {
+        icon: steamIcon,
+        name: "Steam",
+      },
+      "2": {
+        icon: garenaIcon,
+        name: "Garena",
+      },
+      "3": {
+        icon: laptopsIcon,
+        name: "Uplay",
+      },
+      "4": {
+        icon: epicIcon,
+        name: "Epic Games",
+      },
+      "5": {
+        icon: microsoftIcon,
+        name: "Microsoft Store",
+      },
+      "6": {
+        icon: eaIcon,
+        name: "EA app",
+      },
+      "7": {
+        icon: faceitIcon,
+        name: "FACEIT",
+      },
+      "8": {
+        icon: battleIcon,
+        name: "Battle.net",
+      },
+      "9": {
+        icon: oculusIcon,
+        name: "Oculus",
+      },
+      "10": {
+        icon: rockstarIcon,
+        name: "Rockstar games",
+      },
+      "11": {
+        icon: galaxyIcon,
+        name: "GOG Galaxy",
+      },
+      "12": {
+        icon: primeGamIcon,
+        name: "Prime Gaming",
+      },
     };
     let resultData: any = [];
 
@@ -229,8 +266,8 @@ const GameDetail: React.FC = () => {
       resultData = platform.map((child: any) => {
         if (Object.keys(iconMap).includes(String(child))) {
           return {
+            ...iconMap?.[child],
             id: child,
-            icon: iconMap?.[child],
           };
         }
 
@@ -426,7 +463,13 @@ const GameDetail: React.FC = () => {
                 <div className="icon-box">
                   {findMappingIcon(detailData)?.length > 0 &&
                     findMappingIcon(detailData)?.map((item: any) => {
-                      return <img key={item?.id} src={item?.icon} alt="" />;
+                      return (
+                        <Fragment key={item?.id}>
+                          <BaseTooltip content={item?.name}>
+                            <img src={item?.icon} alt="" />
+                          </BaseTooltip>
+                        </Fragment>
+                      );
                     })}
                 </div>
               </div>

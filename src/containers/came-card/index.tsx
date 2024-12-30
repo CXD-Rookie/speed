@@ -36,6 +36,7 @@ import BreakConfirmModal from "@/containers/break-confirm";
 import eventBus from "@/api/eventBus";
 import playSuitApi from "@/api/speed";
 import gameApi from "@/api/gamelist";
+import BaseTooltip from "@/components/base-tooltip";
 
 import addIcon from "@/assets/images/common/add.svg";
 import select from "@/assets/images/home/select@2x.png";
@@ -1099,7 +1100,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               </div>
             )}
             <div className="game-card-name">
-              <div className="card-name-zh">{option?.name}</div>
+              <BaseTooltip
+                placement={"bottom"}
+                content={option?.name}
+                disabled={locationType !== "library"}
+              >
+                <div className="card-name-zh">{option?.name}</div>
+              </BaseTooltip>
               {isSearchR && (
                 <div className="card-name-en">
                   {option.note ? option.note : `${option.name_en}`}
