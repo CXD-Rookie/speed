@@ -15,6 +15,31 @@ export const getMyGames = () => {
   return result;
 }
 
+export const copyToClipboard = async (text) => {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    const success = document.execCommand('copy');
+    textArea.remove();
+
+    return success;
+  } catch (error) {
+    console.error('复制失败:', error);
+    return false;
+  }
+};
+
 // 查看对象的那个键是空值
 function checkMissingValues(params) {
   const missingKeys = [];
