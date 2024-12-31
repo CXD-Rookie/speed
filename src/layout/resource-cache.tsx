@@ -62,7 +62,7 @@ import deAccelerateIcon from "@/assets/images/common/details-accelerate.svg";
 import activateIcon from "@/assets/images/common/activate.svg";
 import computerIcon from "@/assets/images/common/computer.svg";
 import computingIcon from "@/assets/images/common/computing.svg";
-import laptopsIcon from "@/assets/images/common/laptops.svg";
+import laptopsIcon from "@/assets/images/common/laptops@2x.png";
 import detailsCustomIcon from "@/assets/images/common/details-custom.svg";
 import backGameIcon from "@/assets/images/common/back-game.svg";
 import steamIcon from "@/assets/images/common/steam@2x.png";
@@ -80,6 +80,7 @@ import toggleIcon from "@/assets/images/home/toggle.png";
 import networkIcon from "@/assets/images/common/network.png";
 import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
 import iniliteCardIcon from "@/assets/images/common/inilite-card.jpg";
+import defaultLogo from "@/assets/images/common/default-details-logo.png";
 
 const ResourceCache: React.FC = () => {
   const [carouselImage, setCarouselImage] = useState<any>([]);
@@ -101,6 +102,8 @@ const ResourceCache: React.FC = () => {
         carouselImage?.map(({ image_url }: any) => (
           <img key={image_url} src={`${cdn_url + image_url}`} alt="" />
         ))}
+      {/* 游戏详情默认icon */}
+      <img src={defaultLogo} alt=""/>
       {/* 默认断网卡片图片 */}
       <img src={iniliteCardIcon} alt="" />
       {/* 默认断网图片 */}

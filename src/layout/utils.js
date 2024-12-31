@@ -171,12 +171,17 @@ const exceptionReport = async (code, value) => {
   if (code) {
     const decodedValue = atob(value); // 解密base64字符串
     console.log(decodedValue, value);
+    const local_games = localStorage.getItem("speed-1.0.0.1-games");
+    const game = local_games ? JSON.parse(local_games) : [];
+    const a_game = game.find((item) => item?.is_accelerate);
+    const node_istory = a_game?.serverNode?.nodeHistory || [];
+    const addr = node_istory?.find(item=> item?.is_select);
 
     const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
     const clientVersion = window.versionNowRef; // 客户端版本号
 
     // 无感知停止加速，再开始加速
-    tracking.trackBoostDisconnectPassive(`client=${code};msg=${decodedValue};version=${clientVersion + "," + webVersion}`);
+    tracking.trackBoostDisconnectPassive(`client=${code};msg=${a_game?.name}${addr}${decodedValue};version=${clientVersion + "," + webVersion}`);
     stopProxy(); // 停止加速进程不做ui展示
 
     const list = localStorage.getItem("speed-1.0.0.1-games");

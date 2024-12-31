@@ -7,10 +7,15 @@ export interface CaptchaProps {
   isPhoneNumberValid?: boolean;
   phoneNumber?: string;
   setCountdown?: React.Dispatch<React.SetStateAction<number>>;
+  setVeryCodeErr?: (value: any) => void;
 }
 
 const TencentCatcha: React.FC<CaptchaProps> = (props) => {
-  const { phoneNumber, setCountdown = () => {} } = props;
+  const {
+    phoneNumber,
+    setCountdown = () => {},
+    setVeryCodeErr = () => {},
+  } = props;
 
   const codeCallback = async (captcha_verify_param: any) => {
     try {
@@ -40,7 +45,9 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
         setTimeout(() => {
           clearInterval(interval);
         }, 121000); // 120秒后清除定时器
-      }
+      } else if (res?.error === "210005") {
+        setVeryCodeErr("quik");
+      } 
     } catch (error) {
       console.log("验证码错误", error);
     }

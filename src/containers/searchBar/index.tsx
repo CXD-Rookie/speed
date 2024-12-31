@@ -17,6 +17,7 @@ import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 
 import "./index.scss";
 import eventBus from "@/api/eventBus";
+import HotBar from "./hot-bar";
 
 import rightArrowIcon from "@/assets/images/common/right-search-arrow.svg";
 import searchIcon from "@/assets/images/common/search.svg";
@@ -42,10 +43,14 @@ const SearchBar: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
 
+  const [hotOpen, setHotOpen] = useState(false); // 热门游戏开关
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
+
     setShowDropdown(searchQuery.trim().length > 0);
-    
+    setHotOpen(false);
+
     if (searchQuery?.length <= 50) {
       dispatch(fetchSearchResults(searchQuery, undefined, 1, 10));
     }
@@ -93,10 +98,13 @@ const SearchBar: React.FC = () => {
 
             if (query.trim().length > 0) {
               setShowDropdown(true);
+            } else {
+              setHotOpen(true);
             }
           }}
           onBlur={() => {
             setTimeout(() => setShowDropdown(false), 200);
+            setTimeout(() => setHotOpen(false), 200);
             setPlaceholder("搜索游戏");
           }}
           onKeyDown={handleEnterKeyPress}
@@ -114,7 +122,6 @@ const SearchBar: React.FC = () => {
                   setIsClicking(true);
 
                   if (localStorage.getItem("isAccelLoading") !== "1") {
-                    // localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
                     if (!isClicking) {
                       handleSearchResultClick(result);
                     }
@@ -145,6 +152,14 @@ const SearchBar: React.FC = () => {
             查看更多 <img src={rightArrowIcon} alt="" />
           </div>
         </div>
+      )}
+      {hotOpen && (
+        <HotBar
+          open={hotOpen}
+          setIsClicking={setIsClicking}
+          isClicking={isClicking}
+          handleSearchResultClick={handleSearchResultClick}
+        />
       )}
     </div>
   );

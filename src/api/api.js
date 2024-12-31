@@ -65,7 +65,7 @@ instance.interceptors.response.use(
     const code = response?.data?.error;
     const url = response?.config?.url
     const message = response?.data?.message?.slice(0, 132);
-    
+
     if (code > 0) {
       const webVersion = process.env.REACT_APP_VERSION;
       const clientVersion = window.versionNowRef;

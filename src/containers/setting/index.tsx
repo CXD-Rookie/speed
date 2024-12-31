@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
-import { validateRequiredParams } from "@/common/utils";
+import { validateRequiredParams, copyToClipboard } from "@/common/utils";
 import {
   setSetting,
   setPayState,
@@ -32,6 +32,7 @@ import fixImg_6 from "@/assets/images/fix-utils/fix6@2x.png";
 import fixImg_success from "@/assets/images/fix-utils/fix_success@2x.png";
 import fix_failure from "@/assets/images/fix-utils/fix_failure@2x.png";
 import loginApi from "@/api/login";
+import copyIcon from "@/assets/images/common/copy.png";
 
 const { TabPane } = Tabs;
 const signChannel = [
@@ -52,6 +53,7 @@ const SettingsModal: React.FC = (props) => {
   const mchannel = signChannel.includes(localMchannel)
     ? localMchannel
     : "other";
+  const user_id = localStorage.getItem("userId");
 
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
@@ -503,11 +505,16 @@ const SettingsModal: React.FC = (props) => {
                 <div className="item-title">官网地址</div>
                 <div
                   className="regard-item-content"
-                  style={{ width: "fit-content", color: "#FF4900", cursor: "pointer" }}
-                  data-title={`https://www.accessorx.com?mchannel=${mchannel}`}
+                  style={{
+                    width: "fit-content",
+                    color: "#FF4900",
+                    cursor: "pointer",
+                  }}
+                  data-title={`https://jsq.ali213.net?mchannel=${mchannel}`}
                   onClick={handleClick}
                 >
-                  https://www.accessorx.com
+                  {/* https://www.accessorx.com */}
+                  https://jsq.ali213.net
                 </div>
               </div>
               <div className="customer-item-content">
@@ -573,8 +580,21 @@ const SettingsModal: React.FC = (props) => {
                       isLogin={accountInfo?.isLogin}
                       type={"setting"}
                     />
-                    <div className="avatar-name">
-                      {accountInfo?.userInfo?.nickname}
+                    <div className="avatar-box">
+                      <div className="avatar-name">
+                        {accountInfo?.userInfo?.nickname}
+                      </div>
+                      {user_id && (
+                        <div className="avatar-id">
+                          ID：{user_id}
+                          <img
+                            className="copy-icon"
+                            src={copyIcon}
+                            alt=""
+                            onClick={() => copyToClipboard(user_id)}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="info-box info-flex">

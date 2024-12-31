@@ -132,7 +132,7 @@ const CustonCoupon: React.FC<CouponProps> = (props) => {
           onChange={(key) => {
             setActiveTab(key);
             console.log(loseActiveNum, key);
-            
+
             if (key === "lose" && loseActiveNum === 0) {
               scrollRef.current.scrollTop = 0;
               setLoseActiveNum(loseActiveNum + 1);

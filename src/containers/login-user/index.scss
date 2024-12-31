@@ -153,6 +153,27 @@
     }
   }
 
+  & .layout-header-login-out {
+    width: 100%;
+    height: 6vh;
+    border-radius: 3vh;
+    margin-top: 2.4vh;
+    border: none;
+    outline: none;
+    font-size: 1.4vw;
+    color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none;
+    text-align: center;
+    line-height: 6vh;
+    cursor: pointer;
+    
+    &:hover, &:active {
+      color: rgba(255, 255, 255, 0.7);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
   &.vip-content {
     & button {
       background: linear-gradient(270deg, #ffe3b6, #d8ba90);

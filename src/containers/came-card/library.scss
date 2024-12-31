@@ -38,5 +38,11 @@
       border: 0.15vw solid #F86C34;
       border-radius: 1vw;
     }
+
+    & .game-card-name {
+      & .card-name-zh {
+        font-size: 1.6vw;
+      }
+    }
   }
 }

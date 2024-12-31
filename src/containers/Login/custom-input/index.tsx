@@ -7,7 +7,9 @@ interface InputProps {
   countdown?: number;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
+  source?: string;
   onChange?: (e: any) => void;
+  onEnter?: () => void;
 }
 
 const CustomInput: React.FC<InputProps> = (props) => {
@@ -16,9 +18,18 @@ const CustomInput: React.FC<InputProps> = (props) => {
     countdown = 0,
     prefix,
     suffix,
+    source = "",
     value = "",
     onChange,
+    onEnter = () => {},
   } = props;
+
+  // 处理回车事件
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && source === "verify_code") {
+      onEnter();
+    }
+  };
 
   return (
     <div className="custom-input-module">
@@ -30,6 +41,7 @@ const CustomInput: React.FC<InputProps> = (props) => {
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        onKeyDown={handleKeyPress}
       />
       {suffix && <div className="suffix">{suffix}</div>}
     </div>
