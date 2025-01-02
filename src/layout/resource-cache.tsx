@@ -58,7 +58,7 @@ import emptyIcon from "@/assets/images/home/empty.svg";
 import gamesIcon from "@/assets/images/home/games.svg";
 import rechargeIcon from "@/assets/images/home/recharge.svg";
 import gamesBlackIcon from "@/assets/images/home/games_black.png";
-import deAccelerateIcon from "@/assets/images/common/details-accelerate.svg";
+import deAccelerateIcon from "@/assets/images/common/details-accelerate.webp";
 import activateIcon from "@/assets/images/common/activate.svg";
 import computerIcon from "@/assets/images/common/computer.svg";
 import computingIcon from "@/assets/images/common/computing.svg";

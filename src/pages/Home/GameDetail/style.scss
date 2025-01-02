@@ -61,21 +61,22 @@
           .default-game-logo {
             width: auto;
             height: 6vh;
+            max-width: 24vw;
           }
         }
 
         .game-text {
           width: calc(100% - 1.2vw);
           height: auto;
-          font-size: 3.2vw;
+          font-size: 2.8vw;
           font-weight: Bold;
           color: #ffffff;
-          margin-top: 1.8vh;
+          margin-top: 2.8vh;
           display: flex;
           justify-content: center;
           align-items: center;
           text-align: center;
-          line-height: 6vh;
+          line-height: 5.6vh;
           word-break: break-all;
         }
 
@@ -88,6 +89,7 @@
           align-items: flex-start;
           justify-content: center;
           column-gap: 0.4vw;
+          padding-top: 3.6vh;
 
           & .text {
             min-width: 7vw;

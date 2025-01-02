@@ -45,7 +45,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
         setTimeout(() => {
           clearInterval(interval);
         }, 121000); // 120秒后清除定时器
-      } else if (res?.error === "210005") {
+      } else if (res?.error === 210005) {
         setVeryCodeErr("quik");
       } 
     } catch (error) {
