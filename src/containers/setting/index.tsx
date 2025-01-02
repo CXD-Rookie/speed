@@ -511,7 +511,7 @@ const SettingsModal: React.FC = (props) => {
                     color: "#FF4900",
                     cursor: "pointer",
                   }}
-                  data-title={`https://jsq.ali213.net?mchannel=${mchannel}`}
+                  data-title={`https://jsq.ali213.net?cid=about`}
                   onClick={handleClick}
                 >
                   {/* https://www.accessorx.com */}
