@@ -2,7 +2,7 @@
  * @Author: zhangda
  * @Date: 2024-12-30 15:09:24
  * @LastEditors: zhangda
- * @LastEditTime: 2024-12-30 15:09:51
+ * @LastEditTime: 2025-01-02 10:37:02
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: \base-code\components\Tooltip\index.tsx
@@ -57,12 +57,12 @@ const Tooltip: React.FC<TooltipProps> = ({
 
   return (
     <div
-      className={`tooltip-wrapper ${className}`}
-      style={{ ...style }}
+      className={`tooltip-container ${className}`}
+      style={style}
       onMouseEnter={showTooltip}
       onMouseLeave={hideTooltip}
     >
-      {children}
+      <div className="tooltip-children">{children}</div>
       {isVisible && !disabled && (
         <div ref={tooltipRef} className={`tooltip-content ${placement}`}>
           {content}

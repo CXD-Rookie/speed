@@ -334,7 +334,8 @@ export const useGamesInitialize = () => {
     try {
       const res = await gameApi.gameList({ s: option?.name });
       const data = res?.data?.list;
-      
+      const cover_img = `https://cdn.accessorx.com/${data?.[0]?.cover_img ?? data?.[0].background_img}`;
+
       if ((res?.error === 0 && !data) || data?.[0]?.id !== option?.id) {
         if (customFun) {
           customFun?.onTrigger();
@@ -349,8 +350,9 @@ export const useGamesInitialize = () => {
 
         return { state: true }
       } else if (
-        data?.[0]?.id === option?.id 
-        && data?.[0].update_time !== option?.update_time
+        (data?.[0]?.id === option?.id 
+        && data?.[0].update_time !== option?.update_time)
+        || cover_img !== option?.cover_img
       ) {
         const meGame = getGameList(); // 我的游戏
         const index = meGame.findIndex(item => item?.id === data?.[0]?.id);

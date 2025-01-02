@@ -680,6 +680,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
 
+        localStorage.setItem(
+          "gameErrorInfo",
+          JSON.stringify({
+            name: option?.name,
+            node_history: option?.serverNode?.nodeHistory,
+          })
+        );
+
         if (isCheck?.status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
           
@@ -799,7 +807,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsAllowAcceleration(false); // 禁用立即加速
           setIsAllowShowAccelerating(false); // 禁用显示加速中
           setIsStartAnimate(true); // 开始加速动画
-
+          
           // 是否下架
           let shelves = await checkShelves(option);
           let data = { ...option };
@@ -812,10 +820,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           if (shelves?.data) data = shelves?.data; // 如果游戏数据有更新，则进行更新
 
           data = await checkGameisFree(data, "card"); // 查询当前游戏是否限时免费并更新数据
-
+          
           // 是否是vip
           // 是否限时免费 free_time
-          if (!(option?.free_time) && !userInfo?.is_vip) {
+          if (!(data?.free_time) && !userInfo?.is_vip) {
             stopAnimation();
             eventBus.emit("showModal", {
               show: true,

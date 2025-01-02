@@ -220,14 +220,25 @@ const Layouts: React.FC = () => {
           );
 
           // 如果找到此游戏并且更新时间发生改变
-          if (target && target?.update_time !== item?.update_time) {
+          if (target?.id && target?.update_time !== item?.update_time) {
+            console.log("update_time:", target);
+            
             return {
               ...item,
               ...target,
               cover_img: `${target?.cover_img ?? target.background_img}`,
             };
-          } else if (target) {
-            return item;
+          } else if (target?.id) {
+            if (target?.cover_img !== item?.cover_img) {
+              console.log("cover_img:", target);
+
+              return {
+                ...item,
+                cover_img: `${target?.cover_img ?? target.background_img}`,
+              };
+            } else {
+              return item;
+            }
           }
         });
 
