@@ -117,7 +117,7 @@ class WebSocketService {
           
           // 110001 判断为异地登录
           if (serveData?.code >= 110000 && serveData?.code <= 110100) {
-            // (window as any).loginOutStopWidow("remoteLogin");
+            (window as any).loginOutStopWidow("remoteLogin");
           } else if (serveData?.code === 100001) {
             (window as any).NativeApi_AsynchronousRequest(
               "UpdateClientToken",
@@ -125,8 +125,8 @@ class WebSocketService {
               (res: any) => console.log(this.getTime(), res)
             )
           } else {
-            // (window as any).loginOutStopWidow(); // 退出登录
-            // this.close({code: this.severlStopCode, reason: serveData?.message})
+            (window as any).loginOutStopWidow(); // 退出登录
+            this.close({code: this.severlStopCode, reason: serveData?.message})
           }
           
           tracking.trackServerError(
