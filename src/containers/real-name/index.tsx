@@ -15,6 +15,8 @@ import { setMinorState } from "@/redux/actions/modal-open";
 
 import "./index.scss";
 import loginApi from "@/api/login";
+import loadingGif from "@/assets/images/common/jiazai.gif";
+
 interface SettingsModalProps {
   isAdult?: { is_adult: boolean; type: string };
 }
@@ -30,6 +32,8 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
     name: "",
     id: "",
   }); // 身份认证信息
+
+  const [iniliteLoading, setIniliteLoading] = useState(false); // 全局加载动画判断值
 
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const dispatch = useDispatch();
@@ -100,6 +104,8 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
   // 提交
   const handleSubmit = async () => {
     try {
+      setIniliteLoading(true); // 开启全局加载动画
+
       if (
         !validateName(rankRealInfo?.name) ||
         !validateIDCard(rankRealInfo?.id)
@@ -136,6 +142,8 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIniliteLoading(false); // 开启全局加载动画
     }
   };
 
@@ -156,33 +164,48 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           <p className="modal-content-text">
             根据国家相关法律法规要求，网络平台服务需实名认证，为了不影响您的使用体验，请尽快完善信息。此信息仅用于验证，严格保证您的隐私安全。
           </p>
-          <div className="modal-content-input-box">
-            <div>姓名</div>
-            <Input
-              placeholder="请输入您的真实姓名"
-              onChange={(e) => handleInputChange(e, "name")}
+          {iniliteLoading ? (
+            <img
+              style={{
+                position: "absolute",
+                top: "35vh",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+              src={loadingGif}
+              alt=""
             />
-            {!isRankVerify?.name && (
-              <div className="error-tootip">你输入的姓名有误！</div>
-            )}
-          </div>
-          <div className="modal-content-input-box">
-            <div>身份证号</div>
-            <Input
-              placeholder="请输入你的证件号"
-              onChange={(e) => handleInputChange(e, "id")}
-            />
-            {!isRankVerify?.id && (
-              <div className="error-tootip">你输入的身份证号有误！</div>
-            )}
-          </div>
-          <Button
-            className="modal-content-btn"
-            disabled={!rankRealInfo?.id || !rankRealInfo?.name}
-            onClick={handleSubmit}
-          >
-            立即提交
-          </Button>
+          ) : (
+            <>
+              <div className="modal-content-input-box">
+                <div>姓名</div>
+                <Input
+                  placeholder="请输入您的真实姓名"
+                  onChange={(e) => handleInputChange(e, "name")}
+                />
+                {!isRankVerify?.name && (
+                  <div className="error-tootip">你输入的姓名有误！</div>
+                )}
+              </div>
+              <div className="modal-content-input-box">
+                <div>身份证号</div>
+                <Input
+                  placeholder="请输入你的证件号"
+                  onChange={(e) => handleInputChange(e, "id")}
+                />
+                {!isRankVerify?.id && (
+                  <div className="error-tootip">你输入的身份证号有误！</div>
+                )}
+              </div>
+              <Button
+                className="modal-content-btn"
+                disabled={!rankRealInfo?.id || !rankRealInfo?.name}
+                onClick={handleSubmit}
+              >
+                立即提交
+              </Button>
+            </>
+          )}
         </div>
       </Modal>
     </Fragment>

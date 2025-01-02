@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { Fragment, useState, useEffect } from "react";
-import { Modal, Tabs, Switch, Card, Spin } from "antd";
+import { Modal, Tabs, Switch, Card } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -33,6 +33,7 @@ import fixImg_success from "@/assets/images/fix-utils/fix_success@2x.png";
 import fix_failure from "@/assets/images/fix-utils/fix_failure@2x.png";
 import loginApi from "@/api/login";
 import copyIcon from "@/assets/images/common/copy.png";
+import loadingGif from "@/assets/images/common/jiazai.gif";
 
 const { TabPane } = Tabs;
 const signChannel = [
@@ -558,18 +559,15 @@ const SettingsModal: React.FC = (props) => {
             <TabPane tab="账号设置" key="account">
               {loading ? (
                 <div style={{ position: "relative", height: "60vh" }}>
-                  <Spin
-                    size="large"
+                  <img
                     style={{
                       position: "absolute",
-                      top: "50%",
+                      top: "29vh",
                       left: "50%",
                       transform: "translate(-50%, -50%)",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "100%",
                     }}
+                    src={loadingGif}
+                    alt=""
                   />
                 </div>
               ) : (
