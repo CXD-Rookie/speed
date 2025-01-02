@@ -342,7 +342,6 @@ const Layouts: React.FC = () => {
       if (identifyAccelerationData()?.[0]) {
         tracking.trackBoostDisconnectManual();
       }
-      console.log("退出登录");
       
       webSocketService.close({
         code: 4000,
@@ -375,11 +374,17 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isRealName"); // 去掉实名认证
       localStorage.removeItem("userId"); // 存储user_id
       dispatch(setAccountInfo({}, false, true)); // 修改登录状态
-
+      
+      console.log("退出登录");
       if (event === "remoteLogin") {
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
       }
 
+      if (event === "api") {
+        setTimeout(() => {
+          navigate("/home")
+        }, 200);
+      }
       // if (event === 1) {
       //   setReopenLogin(true); 暂时未发现什么地方调用，先做注释
       // }

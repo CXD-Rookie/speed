@@ -24,7 +24,7 @@ import BreakConfirmModal from "@/containers/break-confirm";
 import BaseTooltip from "@/components/base-tooltip";
 
 import fanhuiIcon from "@/assets/images/common/fanhui.svg";
-import accelerateIcon from "@/assets/images/common/details-accelerate.svg";
+import accelerateIcon from "@/assets/images/common/details-accelerate.webp";
 import activateIcon from "@/assets/images/common/activate.svg";
 import cessationIcon from "@/assets/images/common/cessation.svg";
 import computerIcon from "@/assets/images/common/computer.svg";
