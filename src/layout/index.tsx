@@ -380,6 +380,11 @@ const Layouts: React.FC = () => {
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
       }
 
+      if (event === "api") {
+        setTimeout(() => {
+          navigate("/home")
+        }, 200);
+      }
       // if (event === 1) {
       //   setReopenLogin(true); 暂时未发现什么地方调用，先做注释
       // }

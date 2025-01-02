@@ -79,7 +79,9 @@ instance.interceptors.response.use(
       if (client_code.includes(code)) {
         window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
       } else if (code >= 100000 && code < 200000 && code !== 100001 && !isAllow) {
-        window.loginOutStopWidow(); // 退出登录
+        console.log("api");
+        
+        window.loginOutStopWidow("api"); // 退出登录
       }
       
       tracking.trackServerError(`errorCode=${code};msg=${message};apiName=${url};version=${clientVersion + "," + webVersion}`);

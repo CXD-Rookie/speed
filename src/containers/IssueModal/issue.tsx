@@ -65,7 +65,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const fetchFeedbackTypes = async () => {
     try {
       const response = await feedbackApi.feedback_type();
-      setTypes(response.data.types);
+      setTypes(response.data.types ?? []);
     } catch (error) {
       console.error("Failed to fetch feedback types:", error);
     }

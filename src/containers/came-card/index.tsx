@@ -852,6 +852,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           accelerateProcessing(data);
         } else {
           stopAnimation();
+          console.log("card");
+          
           (window as any).loginOutStopWidow(); // 退出登录
           dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
         }
