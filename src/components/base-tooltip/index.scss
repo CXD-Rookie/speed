@@ -1,8 +1,18 @@
-.tooltip-wrapper {
+.tooltip-container {
   position: relative;
-  display: inline-flex;
-  width: auto;
-  vertical-align: middle;
+  display: inline-block;
+  width: 100%;
+}
+
+.tooltip-children {
+  font-size: var(--speed-dominant-font-size);
+  color: #999;
+  text-align: center;
+  line-height: 3.9vh;
+  padding: 1.2vh 1vw 0 1vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tooltip-content {
