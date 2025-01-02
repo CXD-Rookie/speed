@@ -263,6 +263,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           ipv4_blacklist = [],
           ipv4_list = [],
           executable_blacklist = [],
+          publisher = [],
         } = item;
         const isExecutable = Array.isArray(executable) && executable.length > 0;
 
@@ -315,6 +316,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             acc.executable_blacklist.concat(executable_blacklist);
         }
 
+        if (isAarray(publisher)) {
+          acc.publisher = acc.publisher.concat(publisher);
+        }
+
         return acc;
       },
       {
@@ -326,6 +331,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ipv4_blacklist: [],
         ipv4_list: [],
         executable_blacklist: [],
+        publisher: [],
       }
     );
 
@@ -422,6 +428,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         ipv4_blacklist,
         ipv4_list,
         executable_blacklist,
+        publisher,
       } = gameFiles;
 
       const storage: any = localStorage.getItem("startAssemble"); // 读取游戏启动路径信息
@@ -473,6 +480,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       ipv4_blacklist = removalFun(ipv4_blacklist);
       ipv4_list = removalFun(ipv4_list);
       executable_blacklist = removalFun(executable_blacklist);
+      publisher = removalFun(publisher);
 
       // 假设 speedInfoRes 和 speedListRes 的格式如上述假设
       const {
@@ -510,7 +518,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       localStorage.setItem("StartKey", id);
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
-
+      console.log(option?.is_check_process_signature, publisher);
+      
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
@@ -533,14 +542,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           protocol: s.protocol,
           acc_key: js_key,
         })),
+        is_check_process_signature: option?.is_check_process_signature,
+        publisher: [...publisher],
       });
-
+      
+      const user_id = localStorage.getItem("userId"); // 用户id
       // console.log(jsonResult);
 
       return new Promise((resolve, reject) => {
         (window as any).NativeApi_AsynchronousRequest(
           "NativeApi_StartProxy",
-          "",
+          JSON.stringify({ user_id }),
           async function (response: any) {
             console.log("是否开启真实加速(0成功)", response);
             const responseObj = JSON.parse(response); // 解析外层 response
@@ -553,7 +565,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               // 检查解析后的 restfulData 是否包含 port
               if (restfulObj?.port) {
                 const url = `http://127.0.0.1:${restfulObj.port}/start`; // 拼接 URL
-                const user_id = localStorage.getItem("userId"); // 用户id
                 const localMchannel = localStorage.getItem("mchannel"); // mchannel 字段
                 const token = localStorage.getItem("token");
                 const client_token = localStorage.getItem("client_token");
@@ -570,7 +581,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                       "User-token": token,
                       "Client-token": client_token,
                       "Client-id": client_id,
-                      "Gid": option?.id,
+                      Gid: option?.id,
                       Mchannel: localMchannel,
                     },
                   });
