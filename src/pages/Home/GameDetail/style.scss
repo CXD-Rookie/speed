@@ -65,7 +65,7 @@
         }
 
         .game-text {
-          width: 100%;
+          width: calc(100% - 1.2vw);
           height: auto;
           font-size: 3.2vw;
           font-weight: Bold;
