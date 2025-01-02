@@ -465,11 +465,11 @@ const GameDetail: React.FC = () => {
                   {findMappingIcon(detailData)?.length > 0 &&
                     findMappingIcon(detailData)?.map((item: any) => {
                       return (
-                        <Fragment key={item?.id}>
-                          <BaseTooltip content={item?.name}>
+                        <span key={item?.id}>
+                          <BaseTooltip content={item?.name} style={{width: "auto"}}>
                             <img src={item?.icon} alt="" />
                           </BaseTooltip>
-                        </Fragment>
+                        </span>
                       );
                     })}
                 </div>
