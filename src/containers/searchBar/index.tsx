@@ -49,7 +49,12 @@ const SearchBar: React.FC = () => {
     const searchQuery = e.target.value;
 
     setShowDropdown(searchQuery.trim().length > 0);
-    setHotOpen(false);
+
+    if (searchQuery?.length === 0) {
+      setHotOpen(true);
+    } else {
+      setHotOpen(false);
+    }
 
     if (searchQuery?.length <= 50) {
       dispatch(fetchSearchResults(searchQuery, undefined, 1, 10));
