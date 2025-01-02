@@ -34,7 +34,7 @@ instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token') || '';
     const localMchannel = localStorage.getItem("mchannel");
-    const adid = localStorage.getItem("dvid"); // 推广adid
+    const adid = localStorage.getItem("adid"); // 推广adid
 
     const noToken = ["api/v1/game/process/blacklist"]; // 不需要传userToken的接口
     const isToken = noToken.some((item) => config?.url.includes(item)); // 不需要传userToken的接口

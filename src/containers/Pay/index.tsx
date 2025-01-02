@@ -118,7 +118,9 @@ const PayModal: React.FC = (props) => {
     const rid = event?.rid || activeCoupon?.rid || "";
     return `${env_url}/pay/qrcode?cid=${event?.cid}&user_id=${userToken}&key=${
       event?.key
-    }&platform=${3}&rid=${rid}&mchannel=${localStorage.getItem("mchannel")}`;
+    }&platform=${3}&rid=${rid}&mchannel=${localStorage.getItem(
+      "mchannel"
+    )}&adid=${localStorage.getItem("dvid")}`;
   };
 
   // 更新二维码，更新规则key，更新guid
