@@ -104,7 +104,7 @@ const BindPhoneMode: React.FC = (props) => {
         setTimeout(() => {
           clearInterval(interval);
         }, 61000); // 120秒后清除定时器
-      } else if (res?.error === "210005") {
+      } else if (res?.error === 210005) {
         setVeryCodeErr("quik");
       }
     } catch (error) {
