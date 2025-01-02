@@ -680,6 +680,14 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         console.log("Success response from 校验是否合法文件:", response);
         const isCheck = JSON.parse(response);
 
+        localStorage.setItem(
+          "gameErrorInfo",
+          JSON.stringify({
+            name: option?.name,
+            node_history: option?.serverNode?.nodeHistory,
+          })
+        );
+
         if (isCheck?.status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
           
