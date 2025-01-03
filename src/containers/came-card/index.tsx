@@ -74,7 +74,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 获取 redux 中的用户信息
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen); // 实名认证
   const accDelay = useSelector((state: any) => state.auth.delay); // 延迟毫秒数
-  
+
   const { open: versionOpen = false } = useSelector(
     (state: any) => state?.modalOpen?.versionState
   ); // 升级弹窗开关
@@ -123,7 +123,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       tracking.trackBoostDisconnectManual();
       localStorage.removeItem("stopActive");
     }
-    
+
     setSelectAccelerateOption({
       ...selectAccelerateOption,
       is_accelerate:
@@ -169,7 +169,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       if (!reqire) {
         return;
       }
-      
+
       const res = await playSuitApi.playSpeedBlackWhitelist();
       const url = "/api/v1/black_white_list";
 
@@ -412,6 +412,46 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     });
   };
 
+  // 发送 Kpgcore 启动接口
+  const startKpgcore = (data: any, num: number) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // 发起 POST 请求，body 为 jsonResult
+        const result = await axios.post(data?.url, data?.jsonResult, {
+          headers: data?.api_header,
+        });
+
+        console.log("请求成功:", result.data);
+        if (result.data === "Acceleration started") {
+          resolve({ state: true, platform: data?.pc_platform });
+          const time = localStorage.getItem("firstActiveTime");
+          const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+          const isTrue = time && currentTime < Number(time);
+
+          tracking.trackBoostSuccess(isTrue ? 1 : 0);
+        } else {
+          stopAcceleration();
+          resolve({
+            state: false,
+            code: data?.responseObj?.status,
+            message: data?.responseObj?.error_log ?? "",
+          });
+        }
+      } catch (error: any) {
+        console.log("请求失败:", error);
+        if (num < 3) {
+          startKpgcore(data, num + 1);
+        } else {
+          resolve({
+            state: false,
+            code: error?.code || "kpgcore错误",
+            message: data?.responseObj?.error_log ?? "",
+          }); // 请求失败，返回错误信息
+        }
+      }
+    })
+  };
+
   // 通知客户端进行游戏加速
   const handleSuitDomList = async (option: any) => {
     try {
@@ -519,7 +559,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
       console.log(option?.is_check_process_signature, publisher);
-      
+
       const jsonResult = JSON.stringify({
         running_status: true,
         accelerated_apps: [...uniqueExecutable],
@@ -545,7 +585,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         is_check_process_signature: option?.is_check_process_signature,
         publisher: [...publisher],
       });
-      
+
       const user_id = localStorage.getItem("userId"); // 用户id
       // console.log(jsonResult);
 
@@ -569,47 +609,29 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                 const token = localStorage.getItem("token");
                 const client_token = localStorage.getItem("client_token");
                 const client_id = localStorage.getItem("client_id");
+                const api_header = {
+                  "Content-Type": "application/json",
+                  "Client-version": clientVersion,
+                  "Web-version": webVersion,
+                  "User-id": user_id,
+                  "User-token": token,
+                  "Client-token": client_token,
+                  "Client-id": client_id,
+                  Gid: option?.id,
+                  Mchannel: localMchannel,
+                };
 
-                try {
-                  // 发起 POST 请求，body 为 jsonResult
-                  const result = await axios.post(url, jsonResult, {
-                    headers: {
-                      "Content-Type": "application/json",
-                      "Client-version": clientVersion,
-                      "Web-version": webVersion,
-                      "User-id": user_id,
-                      "User-token": token,
-                      "Client-token": client_token,
-                      "Client-id": client_id,
-                      Gid: option?.id,
-                      Mchannel: localMchannel,
-                    },
-                  });
-
-                  console.log("请求成功:", result.data);
-                  if (result.data === "Acceleration started") {
-                    resolve({ state: true, platform: pc_platform });
-                    const time = localStorage.getItem("firstActiveTime");
-                    const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-                    const isTrue = time && currentTime < Number(time);
-
-                    tracking.trackBoostSuccess(isTrue ? 1 : 0);
-                  } else {
-                    stopAcceleration();
-                    resolve({
-                      state: false,
-                      code: responseObj?.status,
-                      message: responseObj?.error_log ?? "",
-                    });
-                  }
-                } catch (error: any) {
-                  console.log("请求失败:", error);
-                  resolve({
-                    state: false,
-                    code: error?.code || "kpgcore错误",
-                    message: responseObj?.error_log ?? "",
-                  }); // 请求失败，返回错误信息
-                }
+                let kpgcore_num = 0; // 计数连接几次
+                // 发送 Kpgcore 启动接口
+                const kpgcore_res = await startKpgcore({
+                  url,
+                  api_header,
+                  jsonResult,
+                  pc_platform,
+                  responseObj
+                }, kpgcore_num);
+                
+                resolve(kpgcore_res);
               } else {
                 console.error("端口信息缺失");
                 resolve({
@@ -701,7 +723,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
         if (isCheck?.status === 0) {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
-          
+
           if (state?.state) {
             accelerateGameToList(option, {
               acc_platform: state?.platform,
@@ -818,7 +840,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           setIsAllowAcceleration(false); // 禁用立即加速
           setIsAllowShowAccelerating(false); // 禁用显示加速中
           setIsStartAnimate(true); // 开始加速动画
-          
+
           // 是否下架
           let shelves = await checkShelves(option);
           let data = { ...option };
@@ -831,10 +853,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           if (shelves?.data) data = shelves?.data; // 如果游戏数据有更新，则进行更新
 
           data = await checkGameisFree(data, "card"); // 查询当前游戏是否限时免费并更新数据
-          
+
           // 是否是vip
           // 是否限时免费 free_time
-          if (!(data?.free_time) && !userInfo?.is_vip) {
+          if (!data?.free_time && !userInfo?.is_vip) {
             stopAnimation();
             eventBus.emit("showModal", {
               show: true,
@@ -853,7 +875,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         } else {
           stopAnimation();
           console.log("card");
-          
+
           (window as any).loginOutStopWidow(); // 退出登录
           dispatch(setAccountInfo(undefined, undefined, true)); // 未登录弹出登录框
         }
@@ -968,7 +990,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     if (Object.keys(customAccelerationData)?.length > 0) {
       setIsVerifying(true);
       console.log(customAccelerationData?.track);
-      
+
       dispatch(setBoostTrack(customAccelerationData?.track));
       handleBeforeVerify(customAccelerationData);
     }
