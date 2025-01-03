@@ -120,7 +120,7 @@ const PayModal: React.FC = (props) => {
       event?.key
     }&platform=${3}&rid=${rid}&mchannel=${localStorage.getItem(
       "mchannel"
-    )}&adid=${localStorage.getItem("dvid")}`;
+    )}&adid=${localStorage.getItem("adid")}`;
   };
 
   // 更新二维码，更新规则key，更新guid
