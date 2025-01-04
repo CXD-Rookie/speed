@@ -438,10 +438,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         }
       } catch (error: any) {
-        console.log("请求失败:", error);
         if (num < 3) {
-          startKpgcore(data, num + 1);
+          console.log("请求失败:", error);
+          return new Promise((innerResolve) => {
+            setTimeout(async () => {
+              const result = await startKpgcore(data, num + 1);
+              resolve(result); // 将递归调用的结果传递给外层Promise
+            }, 1000);
+          });
         } else {
+          console.log(error?.code);
+          
           resolve({
             state: false,
             code: error?.code || "kpgcore错误",
