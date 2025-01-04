@@ -20,12 +20,12 @@ import {
   setMinorState,
   setBindState,
 } from "@/redux/actions/modal-open";
-
 import "./index.scss";
 import BaseRadio from "@/components/base-radio";
 import tracking from "@/common/tracking";
 import UserAvatarCom from "../login-user/user-avatar";
 import RealNameModal from "../real-name";
+import toast from "@/components/base-toast";
 import fixImg from "@/assets/images/fix-utils/fix@2x.png";
 import fixImg_3 from "@/assets/images/fix-utils/fix3@2x.png";
 import fixImg_6 from "@/assets/images/fix-utils/fix6@2x.png";
@@ -589,7 +589,13 @@ const SettingsModal: React.FC = (props) => {
                             className="copy-icon"
                             src={copyIcon}
                             alt=""
-                            onClick={() => copyToClipboard(user_id)}
+                            onClick={() => {
+                              copyToClipboard(user_id);
+                              toast.show({
+                                message: "复制成功",
+                                backgroundColor: "#222",
+                              });
+                            }}
                           />
                         </div>
                       )}

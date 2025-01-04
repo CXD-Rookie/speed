@@ -14,6 +14,8 @@ import { setAccountInfo } from "@/redux/actions/account-info";
 import { openRealNameModal, setBoostTrack } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { store } from "@/redux/store";
+import { stopProxy } from "@/layout/utils";
+
 import {
   setPayState,
   setMinorState,
@@ -448,7 +450,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           });
         } else {
           console.log(error?.code);
-          
+          stopProxy();
           resolve({
             state: false,
             code: error?.code || "kpgcore错误",
