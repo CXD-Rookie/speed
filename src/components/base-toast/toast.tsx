@@ -29,13 +29,13 @@ const Toast: React.FC<ToastProps> = ({
     left: "50%",
     transform: "translateX(-50%)",
     padding: "1vw 2vw",
-    borderRadius: "0.6vw",
+    borderRadius: "0.4vw",
     backgroundColor: backgroundColor,
     color: color,
     fontSize: "1.2vw",
     zIndex: 1000,
     animation: "fadeIn 0.3s ease",
-    border: "0.1vw rgba(255,255,255,0.3) solid",
+    border: "0.1vw rgba(255,255,255,0.2) solid",
   };
 
   return (
