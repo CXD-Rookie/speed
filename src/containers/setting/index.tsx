@@ -8,7 +8,7 @@
  * @FilePath: \speed\src\containers\setting\index.tsx
  */
 import React, { Fragment, useState, useEffect } from "react";
-import { Modal, Tabs, Switch, Card } from "antd";
+import { Modal, Tabs, Switch, Card, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
@@ -589,7 +589,10 @@ const SettingsModal: React.FC = (props) => {
                             className="copy-icon"
                             src={copyIcon}
                             alt=""
-                            onClick={() => copyToClipboard(user_id)}
+                            onClick={() => {
+                              copyToClipboard(user_id);
+                              message.success("复制成功")
+                            }}
                           />
                         </div>
                       )}
