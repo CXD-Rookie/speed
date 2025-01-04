@@ -287,7 +287,7 @@ const PayModal: React.FC = (props) => {
         setQrCodeUrl(
           `${env_url}/pay/qrcode?cid=${
             iniliteData?.commodity[activeTabIndex].id
-          }&user_id=${userToken}&key=${newKey}&platform=${3}`
+          }&user_id=${userToken}&key=${newKey}&platform=${3}&mchannel=${localStorage.getItem("mchannel")}&adid=${localStorage.getItem("adid")}`
         );
       }
     };
