@@ -201,6 +201,7 @@ const ActivationModal: React.FC<ActivationModalProps> = (props) => {
             value={selectPlatform}
             onChange={(e) => clickSelectPlatform(e)}
             popupClassName={"popup-select"}
+            suffixIcon={<div className={`triangle`}/>}
           >
             {platforms?.length > 0 &&
               platforms.map((item: any) => {
