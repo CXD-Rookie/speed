@@ -35,7 +35,7 @@ const Toast: React.FC<ToastProps> = ({
     fontSize: "1.2vw",
     zIndex: 1000,
     animation: "fadeIn 0.3s ease",
-    border: "0.1vw #999 solid",
+    border: "0.1vw rgba(255,255,255,0.3) solid",
   };
 
   return (
