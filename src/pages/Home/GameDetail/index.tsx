@@ -49,8 +49,8 @@ import defaultLogo from "@/assets/images/common/default-details-logo.png";
 
 const iniliteDelay = { 
   time: 0, // 时间
-  original_delay: 0, // 原始延迟
-  optimized_delay: 0, // 优化延迟
+  original_delay: 110, // 原始延迟
+  optimized_delay: 89, // 优化延迟
   network: "未知", // 本地网络类型
 };
 
@@ -607,10 +607,23 @@ const GameDetail: React.FC = () => {
               </div>
             </div>
             <div className="tendencies info-common-style">
-              <div className="title">加速趋势</div>
-              <LineChart
-                data={memoizedData}
-              />
+              <div className="header">
+                <div className="delay">
+                  <div className="public-delay original-delay">
+                    <div className="line" />
+                    <span>原始延迟</span>
+                  </div>
+                  <div className="public-delay optimized-delay">
+                    <div className="line" />
+                    <span>优化延迟</span>
+                  </div>
+                </div>
+                <div className="title">加速趋势</div>
+                <div className="time">3分钟内</div>
+              </div>
+              <div className="chart-box">
+                <LineChart data={memoizedData} />
+              </div>
             </div>
           </div>
         </div>

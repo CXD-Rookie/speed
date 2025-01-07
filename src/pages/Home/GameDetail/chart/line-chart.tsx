@@ -29,13 +29,6 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     );
 
     const option: echarts.EChartsOption = {
-      title: {
-        text: "加速趋势",
-        textStyle: {
-          color: "#fff",
-          fontSize: 16,
-        },
-      },
       tooltip: {
         trigger: "axis",
         backgroundColor: "rgba(0,0,0,0.7)",
@@ -55,14 +48,6 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           </div>`;
         },
       },
-      legend: {
-        data: ["原始延迟", "优化延迟"],
-        textStyle: {
-          color: "#fff",
-        },
-        top: 0,
-        left: 0,
-      },
       grid: {
         left: "3%",
         right: "4%",
@@ -80,12 +65,18 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           },
         },
         axisLabel: {
-          color: "#fff",
+          show: false, // 隐藏x轴标签
+        },
+        axisTick: {
+          show: false, // 显示刻度线
         },
       },
       yAxis: {
         type: "value",
-        name: "ms",
+        axisLabel: {
+          color: "#fff",
+          formatter: "{value}ms", // 在刻度值后添加ms单位
+        },
         splitLine: {
           lineStyle: {
             color: "#333",
@@ -96,9 +87,6 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             color: "#F86C34",
           },
         },
-        axisLabel: {
-          color: "#fff",
-        },
         max: allZero ? 40 : undefined,
         interval: allZero ? 20 : undefined,
       },
@@ -107,6 +95,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           name: "原始延迟",
           type: "line",
           data: originalDelayData,
+          smooth: true, // 使用平滑曲线
           lineStyle: {
             color: "#F86C34",
             width: 2,
@@ -127,6 +116,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           name: "优化延迟",
           type: "line",
           data: optimizedDelayData,
+          smooth: true, // 使用平滑曲线
           lineStyle: {
             color: "#ff7a45",
             width: 4,
@@ -156,9 +146,11 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           },
         },
       ],
-      // animation: true,
-      // animationDuration: 1000,
-      // animationDurationUpdate: 1000
+      animation: true,
+      animationDuration: 0, // 设置为0以立即显示所有数据点
+      animationDurationUpdate: 300, // 更新动画持续时间
+      animationEasing: "cubicInOut", // 使用更平滑的动画曲线
+      animationEasingUpdate: "cubicInOut",
     };
 
     chartInstance.current?.setOption(option);
