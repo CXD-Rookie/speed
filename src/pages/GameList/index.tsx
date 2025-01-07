@@ -153,7 +153,7 @@ const GameLibrary: React.FC = () => {
         />
         <span className="num-search">共{total}个搜索结果</span>
       </div>
-      {!isLoading ? (
+      {isLoading ? (
         <img style={{ margin: "38vh 43.8vw" }} src={loadingGif} alt="" />
       ) : (
         <>
