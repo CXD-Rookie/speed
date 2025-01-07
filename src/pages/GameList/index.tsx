@@ -13,6 +13,7 @@ import gameApi from "@/api/gamelist";
 
 import emptyIcon from "@/assets/images/home/empty.svg";
 import fanhuiIcon from "@/assets/images/common/fanhui.svg";
+import loadingGif from "@/assets/images/common/jiazai.gif";
 
 interface Game {
   id: string;
@@ -61,6 +62,8 @@ const GameLibrary: React.FC = () => {
   const [pagesize,] = useState(30);
   const [total, setTotal] = useState(0);
 
+  const [isLoading, setIsLoading] = useState(false); // 是否搜索中
+
   const handleGoBack = () => {
     const currentPath = window.location.pathname;
     const history = historyContext?.history;
@@ -80,6 +83,8 @@ const GameLibrary: React.FC = () => {
   // 请求游戏列表 query = {page,s}
   const fetchGameList = async (query: any) => {
     try {
+      setIsLoading(true);
+
       const res = await gameApi.gameList({
         ...query,
         pagesize,
@@ -96,6 +101,8 @@ const GameLibrary: React.FC = () => {
       setGames(query?.page > 1 ? [...games, ...data] : data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false)
     }
   };
   
@@ -146,44 +153,50 @@ const GameLibrary: React.FC = () => {
         />
         <span className="num-search">共{total}个搜索结果</span>
       </div>
-      {games?.length > 0 ? (
-        <GameCard
-          options={games}
-          locationType={"result"}
-          onScroll={nodeDebounce(handleScroll, 200)}
-        />
+      {!isLoading ? (
+        <img style={{ margin: "38vh 43.8vw" }} src={loadingGif} alt="" />
       ) : (
-        <div className="empty-page">
-          <div className="empty-content">
-            <img src={emptyIcon} alt="" />
-            <div className="empty-null-text">
-              抱歉，没有找到“{oldSearchBarValue}”的相关游戏
+        <>
+          {games?.length > 0 ? (
+            <GameCard
+              options={games}
+              locationType={"result"}
+              onScroll={nodeDebounce(handleScroll, 200)}
+            />
+          ) : (
+            <div className="empty-page">
+              <div className="empty-content">
+                <img src={emptyIcon} alt="" />
+                <div className="empty-null-text">
+                  抱歉，没有找到“{oldSearchBarValue}”的相关游戏
+                </div>
+                <div
+                  className="empty-text"
+                  onClick={() => {
+                    if (store.getState().accountInfo?.isLogin) {
+                      dispatch(
+                        setFeedbackPopup({
+                          open: true,
+                          defaultInfo: `未找到“${oldSearchBarValue}”的相关游戏`,
+                        })
+                      );
+                    } else {
+                      dispatch(setAccountInfo(undefined, undefined, true));
+                    }
+                  }}
+                >
+                  您可进行反馈，以便我们及时更新
+                </div>
+                <button
+                  className="browse-button"
+                  onClick={() => navigate("/gameLibrary")}
+                >
+                  浏览其他游戏
+                </button>
+              </div>
             </div>
-            <div
-              className="empty-text"
-              onClick={() => {
-                if (store.getState().accountInfo?.isLogin) {
-                  dispatch(
-                    setFeedbackPopup({
-                      open: true,
-                      defaultInfo: `未找到“${oldSearchBarValue}”的相关游戏`,
-                    })
-                  );
-                } else {
-                  dispatch(setAccountInfo(undefined, undefined, true));
-                }
-              }}
-            >
-              您可进行反馈，以便我们及时更新
-            </div>
-            <button
-              className="browse-button"
-              onClick={() => navigate("/gameLibrary")}
-            >
-              浏览其他游戏
-            </button>
-          </div>
-        </div>
+          )}
+        </>
       )}
     </div>
   );
