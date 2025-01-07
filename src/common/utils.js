@@ -15,6 +15,25 @@ export const getMyGames = () => {
   return result;
 }
 
+// 将毫秒时间戳只展示时分秒格式
+export function formatTimestampToTime (timestamp) {
+  // 创建一个新的 Date 对象
+  const date = new Date(timestamp);
+
+  // 获取小时、分钟和秒数
+  let hours = date.getHours();   // 使用 getUTCHours() 获取 UTC 时间，避免时区影响
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+
+  // 确保每个部分都是两位数
+  hours = String(hours).padStart(2, '0');
+  minutes = String(minutes).padStart(2, '0');
+  seconds = String(seconds).padStart(2, '0');
+  
+  // 返回格式化的字符串
+  return `${hours}:${minutes}:${seconds}`;
+}
+
 export const copyToClipboard = async (text) => {
   try {
     if (navigator.clipboard && window.isSecureContext) {

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { formatTimestampToTime } from "@/common/utils";
 
 import * as echarts from "echarts";
 import "./index.scss";
@@ -12,7 +13,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartInstance = useRef<echarts.ECharts | null>(null);
 
   useEffect(() => {
-    if (!chartRef.current) return;
+    if (!chartRef.current && chartInstance.current) return;
 
     if (chartRef.current) {
       chartInstance.current = echarts.init(chartRef.current);
@@ -32,21 +33,32 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
       tooltip: {
         trigger: "axis",
         backgroundColor: "rgba(0,0,0,0.7)",
-        borderColor: "rgba(0,0,0,0.7)",
-        textStyle: {
-          color: "#fff",
-        },
+        borderColor: "rgba(255, 255, 255,0.2)",
+        borderRadius: 6,
         renderMode: "html",
+        confine: false,
         formatter: function (params: any) {
           const dataIndex = params[0].dataIndex;
           const item = data[dataIndex];
+
           return `<div class="custom-tooltip">
-            <div>时间：${item.time}</div>
-            <div>网络类型：${item.network || "未知"}</div>
-            <div>原始延迟：${item.original_delay}ms</div>
-            <div>优化延迟：${item.optimized_delay}ms</div>
+            <div class="tooltip-time">时间：${formatTimestampToTime(
+              item.time
+            )}</div>
+            <div class="tooltip-network">本地网络类型：${
+              item.network || "未知"
+            }</div>
+            <div class="tooltip-original-delay">
+              <div class="line"></div>
+              <span>原始延迟：${item.original_delay}ms</span>
+            </div>
+            <div class="tooltip-optimized-delay">
+              <div class="line"></div>
+              <span>优化延迟：${item.optimized_delay}ms</span>
+            </div>
           </div>`;
         },
+        showDelay: 500, // 悬停0.5秒后显示tooltip
       },
       grid: {
         left: "3%",
