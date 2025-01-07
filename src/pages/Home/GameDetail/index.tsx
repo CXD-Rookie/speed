@@ -6,7 +6,7 @@
  * @FilePath: \speed\src\pages\Home\GameDetail\index.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useEffect, useState, useMemo, Fragment } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +17,7 @@ import { useHistoryContext } from "@/hooks/usePreviousRoute";
 
 import "./style.scss";
 import tracking from "@/common/tracking";
-import BarChart from "@/containers/BarChart/index";
+import LineChart from "./chart/line-chart";
 import RegionNodeSelector from "@/containers/region-node";
 import ActivationModal from "@/containers/activation-mode";
 import BreakConfirmModal from "@/containers/break-confirm";
@@ -46,6 +46,13 @@ import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 import toggleIcon from "@/assets/images/home/toggle.png";
 import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
 import defaultLogo from "@/assets/images/common/default-details-logo.png";
+
+const iniliteDelay = { 
+  time: 0, // 时间
+  original_delay: 0, // 原始延迟
+  optimized_delay: 0, // 优化延迟
+  network: "未知", // 本地网络类型
+};
 
 const GameDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -157,13 +164,20 @@ const GameDetail: React.FC = () => {
   // 生成图表数据函数
   const generateChart = (value: any, packet: any) => {
     const currentTime = Date.now(); // 获取当前时间的时间戳（毫秒）
-    
-    if (value !== 9999) {
-      localStorage.setItem("correctDelay", value);
-    } else {
-      value = localStorage.getItem("correctDelay") || 0;
-    }
+    const {
+      optimized_delay, // 优化延迟
+      original_delay, // 原始延迟
+    } = value;
 
+    if (optimized_delay !== 9999 && original_delay !== 9999) {
+      localStorage.setItem("correctDelay", JSON.stringify(value));
+    } else {
+      const localDelay = localStorage.getItem("correctDelay"); // 读取缓存
+      const correctDelay = localDelay ? JSON.parse(localDelay) : {}; // 解构缓存
+
+      value = correctDelay;
+    }
+    
     // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
     if (iniliteChart?.length === 0) {
       const startTime = currentTime - 180005; // 获取 3分05秒 前的时间戳
@@ -171,9 +185,10 @@ const GameDetail: React.FC = () => {
       // 以 5 秒为间隔生成数据对象 生成3分钟随机数据
       for (let time = startTime; time <= currentTime - 5; time += 5 * 1000) {
         const data: any = {
-          timestamp: time, // 时间戳
-          value: 0, // 示例数据，可以根据需要修改
+          ...iniliteDelay, // 默认数据
+          time, // 时间戳
         };
+
         iniliteChart.push(data);
       }
     }
@@ -181,11 +196,12 @@ const GameDetail: React.FC = () => {
     iniliteChart.shift(); // 删除第一个数据
     iniliteChart.push({
       // 添加当前数据
-      timestamp: currentTime,
-      value,
+      ...value,
+      time: currentTime,
       packet,
     });
-
+    
+    // 更新 返回 图表数据
     dispatch(setAccelerateChart(iniliteChart));
     return iniliteChart;
   };
@@ -348,24 +364,37 @@ const GameDetail: React.FC = () => {
           }),
           (response: any) => {
             // console.log("详情丢包信息：", response);
-            let delay = JSON.parse(response)?.delay; // 返回信息 delay 毫秒,9999代表超时与丢包
-
-            // 如果用户是vip，并且此游戏不是限免游戏的情况下，会进行vip到期判断处理
-            // if (
-            //   accountInfo?.userInfo?.is_vip &&
-            //   !(detailData?.free_time && detailData?.tags.includes("限时免费"))
-            // ) {
-            //   forceStopAcceleration(accountInfo, stopSpeed);
-            // }
+            // 返回信息 delay 毫秒，9999代表超时与丢包
+            let res_json = JSON.parse(response);
+            let optimized_delay = res_json?.delay; // 优化延迟
+            let original_delay = res_json?.delay + 12; // 原始延迟
+            let network = "未知";
 
             // 对延迟小于2进行处理，避免展示问题
-            delay = delay < 2 ? 2 : delay;
+            optimized_delay = optimized_delay < 2 ? 2 : optimized_delay; // 优化延迟
+            original_delay = original_delay < 2 ? 2 : original_delay; // 原始延迟
+
+            const localDelay = localStorage.getItem("correctDelay"); // 读取缓存
+            const correctDelay = localDelay
+              ? JSON.parse(localDelay)
+              : iniliteDelay; // 解构缓存
 
             // 对延迟等于9999进行处理，避免展示问题，并且只对设备连接，实时延迟，图表进行处理，丢包率不进行处理
             const chartDelay =
-              delay === 9999 ? localStorage.getItem("correctDelay") ?? 0: delay;
-            const realDelay = chartDelay < 2 ? 2 : chartDelay; // 实时延迟
-            const chart = generateChart(chartDelay, delay === 9999 ? 100 : 0); // 图表展示数据
+              optimized_delay === 9999 || original_delay === 9999
+                ? correctDelay
+                : {
+                    optimized_delay,
+                    original_delay,
+                    network,
+                  };
+            const realDelay =
+              chartDelay?.optimized_delay < 2 ? 2 : chartDelay?.optimized_delay; // 实时优化延迟
+            
+            const chart = generateChart(
+              chartDelay,
+              optimized_delay === 9999 ? 100 : 0
+            ); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率
 
             setChartData([...chart]);
@@ -466,7 +495,10 @@ const GameDetail: React.FC = () => {
                     findMappingIcon(detailData)?.map((item: any) => {
                       return (
                         <span key={item?.id}>
-                          <BaseTooltip content={item?.name} style={{width: "auto"}}>
+                          <BaseTooltip
+                            content={item?.name}
+                            style={{ width: "auto" }}
+                          >
                             <img src={item?.icon} alt="" />
                           </BaseTooltip>
                         </span>
@@ -576,7 +608,9 @@ const GameDetail: React.FC = () => {
             </div>
             <div className="tendencies info-common-style">
               <div className="title">加速趋势</div>
-              <BarChart data={memoizedData} />
+              <LineChart
+                data={memoizedData}
+              />
             </div>
           </div>
         </div>
