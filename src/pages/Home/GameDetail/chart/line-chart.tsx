@@ -13,6 +13,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartInstance = useRef<echarts.ECharts | null>(null);
 
   useEffect(() => {
+    if (!data || data?.length === 0) return;
     if (!chartRef.current && chartInstance.current) return;
 
     if (chartRef.current) {
@@ -59,6 +60,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           </div>`;
         },
         showDelay: 500, // 悬停0.5秒后显示tooltip
+        hideDelay: 100,
       },
       grid: {
         left: "3%",

@@ -44,34 +44,33 @@
     .game-detail {
       width: 100%;
       height: 76.6vh;
-      margin-top: 3.6vh;
       display: flex;
       justify-content: space-between;
 
       .game-left {
-        width: 26.2vw;
+        width: 31.2vw;
 
         & .default-game-logo-box {
           width: 100%;
-          height: 6vh;
+          height: 9vh;
           margin-top: 6.8vh;
           display: flex;
           justify-content: center;
 
           .default-game-logo {
             width: auto;
-            height: 6vh;
-            max-width: 24vw;
+            height: 9vh;
+            max-width: 25.4vw;
           }
         }
 
         .game-text {
-          width: calc(100% - 1.2vw);
+          width: 100%;
           height: auto;
           font-size: 2.8vw;
           font-weight: Bold;
           color: #ffffff;
-          margin-top: 2.8vh;
+          margin-top: 2.4vh;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -81,25 +80,23 @@
         }
 
         .platfrom {
-          width: 18vw;
-          color: #999;
-          font-size: 1.4vw;
+          width: 15.6vw;
           margin: 0 auto;
-          display: flex;
-          align-items: flex-start;
-          justify-content: center;
-          column-gap: 0.4vw;
-          padding-top: 3.6vh;
+          text-align: center;
+          padding-top: 3.2vh;
 
           & .text {
-            min-width: 7vw;
+            color: #999;
+            font-size: 1.4vw;
           }
 
           & .icon-box {
             display: flex;
+            justify-content: center;
             column-gap: 0.4vw;
             row-gap: 1vh;
             flex-wrap: wrap;
+            margin-top: 1.2vh;
 
             img {
               width: 1.6vw;
@@ -115,7 +112,7 @@
           border-radius: 3.3vh;
           border: none;
           margin-top: 6vh;
-          margin-left: 5.1vw;
+          margin-left: calc(50% - 8vw);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -169,6 +166,7 @@
         .down-game {
           color: #222;
           background-color: #fff;
+          margin-top: 3vh;
 
           img {
             width: 1.8vw;
@@ -179,7 +177,7 @@
       }
 
       .game-right {
-        width: 65.4vw;
+        width: 60.4vw;
 
         .info-common-style {
           color: #fff;
@@ -190,7 +188,7 @@
 
         .info-switch {
           width: 100%;
-          padding: 1.5vh 1.6vw;
+          padding: 1.5vh 2vw;
           cursor: pointer;
           display: flex;
           justify-content: space-between;
@@ -376,7 +374,7 @@
 
           .chart-box {
             width: 100%;
-            // overflow: hidden;
+            height: 25.2vh;
           }
         }
       }

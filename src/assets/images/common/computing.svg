@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>路由器</title>
-    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g id="游戏详情" transform="translate(-1243, -756)" stroke="#999999" stroke-width="3">
-            <g id="编组-2备份" transform="translate(630, 632)">
-                <g id="路由器" transform="translate(613, 124)">
-                    <g transform="translate(3, 7)">
-                        <path d="M8.59874175,17 L49.4012582,17 C50.3360998,17 51.1462312,17.6475954 51.3521403,18.5594783 L57.4489144,45.5594783 C57.6922079,46.6369206 57.0159966,47.7075886 55.9385542,47.950882 C55.7939871,47.9835262 55.6462394,48 55.4980324,48 L2.50196756,48 C1.39739806,48 0.501967559,47.1045695 0.501967559,46 C0.501967559,45.8517931 0.51844137,45.7040454 0.551085555,45.5594783 L6.64785975,18.5594783 C6.85376877,17.6475954 7.66390015,17 8.59874175,17 Z" id="矩形"></path>
-                        <path d="M5.5,38 L52.5,38 C54.4329966,38 56,39.5670034 56,41.5 L56,44.5 C56,46.4329966 54.4329966,48 52.5,48 L5.5,48 C3.56700338,48 2,46.4329966 2,44.5 L2,41.5 C2,39.5670034 3.56700338,38 5.5,38 Z" id="矩形"></path>
-                        <line x1="18" y1="-2.01241801e-13" x2="18" y2="17" id="路径-2"></line>
-                        <line x1="29" y1="-2.01241801e-13" x2="29" y2="17" id="路径-2备份"></line>
-                        <line x1="40" y1="-2.01241801e-13" x2="40" y2="17" id="路径-2备份-2"></line>
+    <defs>
+        <linearGradient x1="2.60000355e-12%" y1="31.7925089%" x2="100%" y2="68.2074911%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" stop-opacity="0.5" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0.8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="2.60000355e-12%" y1="48.7960761%" x2="100%" y2="51.2039239%" id="linearGradient-2">
+            <stop stop-color="#FFFFFF" stop-opacity="0.5" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0.8" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="游戏详情，无资讯" transform="translate(-1284, -688)">
+            <g id="编组-2备份" transform="translate(712, 576)">
+                <g id="编组-8" transform="translate(108, 104)">
+                    <g id="路由器" transform="translate(464, 8)">
+                        <g transform="translate(3, 7)">
+                            <path d="M38,1 C38,0.44771525 38.4477153,6.76353751e-17 39,0 C39.5522847,-1.01453063e-16 40,0.44771525 40,1 L40,12 L49.5181191,12 C50.3983891,12 51.175166,12.5755454 51.4314668,13.4176768 L58,35 L0,35 L6.56853316,13.4176768 C6.824834,12.5755454 7.60161089,12 8.48188092,12 L18,12 L18,1 C18,0.44771525 18.4477153,6.76353751e-17 19,0 C19.5522847,-1.01453063e-16 20,0.44771525 20,1 L20,12 L28,12 L28,1 C28,0.44771525 28.4477153,6.76353751e-17 29,0 C29.5522847,-1.01453063e-16 30,0.44771525 30,1 L30,12 L38,12 L38,1 Z" id="形状结合" fill="url(#linearGradient-1)"></path>
+                            <path d="M0,36 L58,36 L58,41.5 C58,43.4329966 56.4329966,45 54.5,45 L3.5,45 C1.56700338,45 1.18361906e-16,43.4329966 0,41.5 L0,36 L0,36 Z" id="矩形" fill="url(#linearGradient-2)"></path>
+                        </g>
                     </g>
                 </g>
             </g>
