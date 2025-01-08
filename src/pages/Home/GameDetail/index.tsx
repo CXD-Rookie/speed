@@ -634,13 +634,13 @@ const GameDetail: React.FC = () => {
             <div className="tendencies info-common-style">
               <div className="header">
                 <div className="delay">
-                  <div className="public-delay original-delay">
+                  {/* <div className="public-delay original-delay">
                     <div className="line" />
                     <span>原始延迟</span>
-                  </div>
+                  </div> */}
                   <div className="public-delay optimized-delay">
-                    <div className="line" />
-                    <span>优化延迟</span>
+                    {/* <div className="line" /> */}
+                    {/* <span>优化延迟</span> */}
                   </div>
                 </div>
                 <div className="title">加速趋势</div>
