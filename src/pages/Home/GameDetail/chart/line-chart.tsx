@@ -38,10 +38,18 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         borderColor: "rgba(255, 255, 255,0.2)",
         borderRadius: 6,
         renderMode: "html",
-        confine: false,
+        axisPointer: {
+          type: "line",
+          snap: true,
+        },
+        confine: true,
+        enterable: false, // 防止鼠标移入tooltip
+        showDelay: 0, // 悬停0.5秒后显示tooltip
+        hideDelay: 0, // 鼠标移出后快速隐藏
         formatter: function (params: any) {
-          const dataIndex = params[0].dataIndex;
-          const item = data[dataIndex];
+          if (!Array.isArray(params) || params.length === 0) return "";
+          const item = data[params[0].dataIndex];
+          if (!item) return "";
 
           return `<div class="custom-tooltip">
             <div class="tooltip-time">时间：${formatTimestampToTime(
@@ -60,8 +68,6 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             </div>
           </div>`;
         },
-        showDelay: 500, // 悬停0.5秒后显示tooltip
-        hideDelay: 100,
       },
       grid: {
         left: "3%",
@@ -111,20 +117,18 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           type: "line",
           data: originalDelayData,
           smooth: true, // 使用平滑曲线
+          symbolSize: [8, 8], // 设置点的大小为0.8vw
           lineStyle: {
             color: "#F86C34",
             width: 2,
           },
           itemStyle: {
-            color: "#F86C34",
+            color: "#F86C34", // 与线条颜色保持一致
           },
           showSymbol: false,
           emphasis: {
-            scale: true,
+            scale: false,
             focus: "series",
-            itemStyle: {
-              borderWidth: 0,
-            },
           },
         },
         {
@@ -132,6 +136,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           type: "line",
           data: optimizedDelayData,
           smooth: true, // 使用平滑曲线
+          symbolSize: [8, 8], // 设置点的大小为0.8vw
           lineStyle: {
             color: "#FFC57D",
             width: 4,
@@ -141,11 +146,8 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           },
           showSymbol: false,
           emphasis: {
-            scale: true,
+            scale: false,
             focus: "series",
-            itemStyle: {
-              borderWidth: 0,
-            },
           },
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
