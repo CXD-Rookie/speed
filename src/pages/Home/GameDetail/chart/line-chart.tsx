@@ -9,9 +9,9 @@ interface LineChartProps {
 }
 
 const adapter: any = {
-  unknown: "有线",
-  ethernet: "无线",
-  wireless: "未知",
+  unknown: "未知",
+  ethernet: "有线",
+  wireless: "无线",
 };
 const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartRef = useRef<HTMLDivElement>(null);
