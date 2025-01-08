@@ -8,6 +8,11 @@ interface LineChartProps {
   data: any[];
 }
 
+const adapter: any = {
+  unknown: "有线",
+  ethernet: "无线",
+  wireless: "未知",
+};
 const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
@@ -18,9 +23,11 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     if (!data || data?.length === 0) return;
     if (!chartRef.current && chartInstance.current) return;
 
+    // 重新初始化实例
     if (chartRef.current) {
       chartInstance.current = echarts.init(chartRef.current);
     }
+
 
     // 从数据中提取时间和延迟值
     const timeData = data.map((item) => item.time);
@@ -66,7 +73,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
               item.time
             )}</div>
             <div class="tooltip-network">本地网络类型：${
-              item.network || "未知"
+              adapter?.[item.network] || "未知"
             }</div>
             <div class="tooltip-original-delay">
               <div class="line"></div>
@@ -189,6 +196,8 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     chartInstance.current?.setOption(option);
     isFirstRender.current = false; // 第一次渲染完改为非第一次
 
+    const chart = chartInstance.current;
+
     // 如果有上次hover的位置,更新数据后保持tooltip显示
     if (lastHoverIndex.current !== -1) {
       chartInstance.current?.dispatchAction({
@@ -199,10 +208,10 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     }
 
     // 移除自动显示tooltip的逻辑
-    chartInstance.current?.on("globalout", function () {
+    chart?.on("globalout", function () {
       lastHoverIndex.current = -1;
     });
-    
+
     return () => {
       chartInstance.current?.dispose();
     };

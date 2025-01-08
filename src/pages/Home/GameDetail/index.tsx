@@ -393,7 +393,7 @@ const GameDetail: React.FC = () => {
             let res_json = JSON.parse(response);
             let optimized_delay = res_json?.delay; // 优化延迟
             let original_delay = res_json?.delay + random; // 原始延迟
-            let network = "未知";
+            let network = res_json?.adapter; // 本地网络类型
 
             // 对延迟小于2进行处理，避免展示问题
             optimized_delay = optimized_delay < 2 ? 2 : optimized_delay; // 优化延迟
