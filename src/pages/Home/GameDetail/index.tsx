@@ -187,6 +187,7 @@ const GameDetail: React.FC = () => {
         const data: any = {
           ...iniliteDelay, // 默认数据
           time, // 时间戳
+          delay: 2,
         };
 
         iniliteChart.push(data);
@@ -199,6 +200,7 @@ const GameDetail: React.FC = () => {
       ...value,
       time: currentTime,
       packet,
+      delay: optimized_delay,
     });
     
     // 更新 返回 图表数据
@@ -412,7 +414,7 @@ const GameDetail: React.FC = () => {
               chartDelay?.optimized_delay < 2 ? 2 : chartDelay?.optimized_delay; // 实时优化延迟
 
             const chart = generateChart(
-              chartDelay,
+              { ...chartDelay, delay: optimized_delay },
               optimized_delay === 9999 ? 100 : 0
             ); // 图表展示数据
             const packetLoss = generatePacket(chart); // 丢包率

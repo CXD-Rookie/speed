@@ -51,6 +51,8 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           const item = data[params[0].dataIndex];
           if (!item) return "";
 
+          const isDelay = item?.delay >= 9999; // 是否丢包
+
           return `<div class="custom-tooltip">
             <div class="tooltip-time">时间：${formatTimestampToTime(
               item.time
@@ -60,11 +62,15 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             }</div>
             <div class="tooltip-original-delay">
               <div class="line"></div>
-              <span>原始延迟：${item.original_delay}ms</span>
+              <span style="color: ${isDelay ? "red" : "#fff"}">原始延迟：${
+            isDelay ? "本地丢包" : item.original_delay + "ms"
+          }</span>
             </div>
             <div class="tooltip-optimized-delay">
               <div class="line"></div>
-              <span>优化延迟：${item.optimized_delay}ms</span>
+              <span style="color: ${isDelay ? "red" : "#fff"}">优化延迟：${
+            isDelay ? "本地丢包" : item.optimized_delay + "ms"
+          }</span>
             </div>
           </div>`;
         },
@@ -174,7 +180,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
 
     chartInstance.current?.setOption(option);
     isFirstRender.current = false; // 第一次渲染完改为非第一次
-    
+
     return () => {
       chartInstance.current?.dispose();
     };
