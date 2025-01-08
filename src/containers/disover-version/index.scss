@@ -14,24 +14,25 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 56vw;
-  height: 36vw;
-  background-image: url(../../assets/images/common/update-bag.png);
+  height: 40vw;
+  background-image: url(../../assets/images/common/update-bag.webp);
   background-repeat: no-repeat;
   background-size: cover;
   z-index: 999;
 
   & .close-icon {
     position: absolute;
-    right: 1.6vw;
-    top: 1.6vw;
+    right: 2.8vw;
+    top: 2.2vw;
     width: 2.4vw;
     height: 2.4vw;
     cursor: pointer;
   }
 
   & .title-box {
+    width: fit-content;
     display: flex;
-    margin: 4.8vh auto 8.9vh 11.1vh;
+    margin: 6vh auto 7.6vh 11.8vh;
 
     & .title {
       color: #ffffff;
@@ -64,12 +65,12 @@
   }
 
   & .log-box {
-    height: 18vh;
-    margin: 0 3.2vw 0 3.2vw;
+    height: 25.2vh;
+    margin: 0 3.2vw 0 4.6vw;
     overflow-y: auto;
     
     & .log-text {
-      max-width: 47.5vw;
+      max-width: 45vw;
       font-size: 1.4vw;
       font-weight: 400;
       color: rgba(255,255,255,0.50);
@@ -111,7 +112,7 @@
   & .renewal {
     width: 16vw;
     height: 5.7vh;
-    margin-top: 7.5vh;
+    margin-top: 3vh;
     font-size: 1.4vw;
     background: #ff4900;
     border-radius: 7.5vh;
