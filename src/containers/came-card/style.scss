@@ -25,7 +25,7 @@
       border-bottom-right-radius: var(--speed-dominant-border-radius);
       line-height: 2.9vh;
       display: flex;
-      
+
       .exemption {
         width: 4vw;
         height: 3vh;
@@ -42,6 +42,9 @@
         text-align: center;
         background-color: #1A1A22;
         border-bottom-right-radius: var(--speed-dominant-border-radius);
+        font-family: Source Han Sans SC, Source Han Sans SC-Regular !important;
+        font-weight: Regular;
+        font-size: 1.1vw;
       }
     }
 
