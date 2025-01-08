@@ -49,7 +49,7 @@ class Tracking {
         this.trackEvent(
           this.otherMchannel()?.mchannel,
           "active_foreground",
-          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};${this.otherMchannel()?.channelId}`,
+          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""}${this.otherMchannel()?.channelId}`,
         );
       }
     });

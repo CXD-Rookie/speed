@@ -7,7 +7,7 @@ import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
 import logoIcon from "@/assets/images/common/logo.png";
 import bannerRechargeIcon from "@/assets/images/common/banner-recharge.png";
 import bannerRenewalIcon from "@/assets/images/common/banner-renewal.png";
-import updateBagIcon from "@/assets/images/common/update-bag.png"
+import updateBagIcon from "@/assets/images/common/update-bag.webp"
 import activeIcon from "@/assets/images/home/active2@2x.png";
 import firstIcon from "@/assets/images/home/first1@2x.png";
 import humanStartOIcon from "@/assets/images/common/human-start-o.png";

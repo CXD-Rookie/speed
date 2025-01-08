@@ -133,7 +133,7 @@ const CustomRegion: React.FC<RegionProps> = (props) => {
         className="not-have-region"
         onClick={() =>
           dispatch(
-            setFeedbackPopup({ open: true, defaultInfo: value?.name + "缺少区服" })
+            setFeedbackPopup({ open: true, defaultInfo: value?.name + "，缺少区服：" })
           )
         }
       >
