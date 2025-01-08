@@ -47,6 +47,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         enterable: false, // 防止鼠标移入tooltip
         showDelay: 0, // 悬停0.5秒后显示tooltip
         hideDelay: 0, // 鼠标移出后快速隐藏
+        alwaysShowContent: false, // 确保tooltip不会一直显示
         formatter: function (params: any) {
           if (!Array.isArray(params) || params.length === 0) return "";
           // const item = data[params[0].dataIndex];
@@ -196,6 +197,11 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         dataIndex: lastHoverIndex.current,
       });
     }
+
+    // 移除自动显示tooltip的逻辑
+    chartInstance.current?.on("globalout", function () {
+      lastHoverIndex.current = -1;
+    });
     
     return () => {
       chartInstance.current?.dispose();

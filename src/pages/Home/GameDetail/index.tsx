@@ -200,7 +200,7 @@ const GameDetail: React.FC = () => {
       ...value,
       time: currentTime,
       packet,
-      delay: optimized_delay,
+      delay: packet === 100 ? 9999 : 2,
     });
     
     // 更新 返回 图表数据
