@@ -35,8 +35,6 @@ class Tracking {
               : "youXia"
             : 0; // 手机登录 | 游侠登录 | 未登录
         const isReal = localStorage.getItem("isRealName") === "0" ? 1 : 0 // 实名认证 0 未认证 1 认证
-        const webVersion = process.env.REACT_APP_VERSION;
-        const clientVersion = window.versionNowRef;
         
         if (isVisit === 1) {
           localStorage.setItem("firstActiveTime", String(timeLock));
@@ -51,7 +49,7 @@ class Tracking {
         this.trackEvent(
           this.otherMchannel()?.mchannel,
           "active_foreground",
-          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};version=${clientVersion + "," + webVersion}${this.otherMchannel()?.channelId}`,
+          `firstDay=${isVisit};method=${method}${method ? ";realName=" + isReal : ""};${this.otherMchannel()?.channelId}`,
         );
       }
     });

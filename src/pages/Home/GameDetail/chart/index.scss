@@ -1,0 +1,57 @@
+.speed-game-detailsline-chart {
+  width: 61vw;
+  height: 23.6vh;
+
+  .custom-tooltip {
+    width: 14vw;
+    font-size: 1.2vw;
+    padding: 0.6vw;
+    border-radius: 0.8vw;
+    background-color: rgba(0,0,0,0.7);
+
+    .tooltip-time {
+      color: #999;
+    }
+
+    .tooltip-network {
+      color: #999;
+      margin-top: 0.8vh;
+    }
+
+    .tooltip-original-delay {
+      display: flex;
+      margin-top: 0.8vh;
+      align-items: center;
+      column-gap: 0.4vw;
+
+      .line {
+        height: 0.15vh;
+        width: 1.2vw;
+        background-color: #F86C34;
+      }
+
+      span {
+        font-size: 1.2vw;
+        color: #fff;
+      }
+    }
+
+    .tooltip-optimized-delay {
+      display: flex;
+      margin-top: 0.8vh;
+      align-items: center;
+      column-gap: 0.4vw;
+
+      .line {
+        height: 0.3vh;
+        width: 1.2vw;
+        background-color: #FFC57D;
+      }
+
+      span {
+        font-size: 1.2vw;
+        color: #fff;
+      }
+    }
+  }
+}

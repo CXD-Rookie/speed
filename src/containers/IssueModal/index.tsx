@@ -23,7 +23,7 @@ const FeedbackPopup: React.FC = () => {
   const { open = false, defaultInfo = ""} = useSelector(
     (state: any) => state?.modalOpen?.feedbackPopup
   );
-
+  
   const [issueOpen, setIssueOpen] = useState(false);
   const [issueType, setIssueType] = useState("");
 

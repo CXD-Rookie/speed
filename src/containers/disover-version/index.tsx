@@ -47,21 +47,8 @@ const DisoverVersion: React.FC = () => {
           <div className="title">发现新版本！</div>
           <div className="version">V{version?.now_version}</div>
         </div>
-
         <div className="log-box">
-          {/* <div
-            className="log-text"
-            dangerouslySetInnerHTML={{ __html: version?.note }}
-          /> */}
           <pre className="log-text">{version?.note}</pre>
-          {/* {note.map((item, index) => (
-            <div className="log-text" key={index}>
-              <div className="dot-box">
-                <div className="dot" />
-              </div>
-              <div>{item}</div>
-            </div>
-          ))} */}
         </div>
         <Button className="renewal" type="primary" onClick={handleRenewal}>
           立即升级
