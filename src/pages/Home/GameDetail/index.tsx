@@ -46,6 +46,7 @@ import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 import toggleIcon from "@/assets/images/home/toggle.png";
 import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
 import defaultLogo from "@/assets/images/common/default-details-logo.png";
+import appliancesGit from "@/assets/images/common/appliances.gif";
 
 const iniliteDelay = { 
   time: 0, // 时间
@@ -389,7 +390,7 @@ const GameDetail: React.FC = () => {
           (response: any) => {
             // console.log("详情丢包信息：", response);
             // 返回信息 delay 毫秒，9999代表超时与丢包
-            let random = Math.floor(Math.random() * (60 - 20 + 1)) + 20;
+            let random = Math.floor(Math.random() * (30 - 20 + 1)) + 20;
             let res_json = JSON.parse(response);
             let optimized_delay = res_json?.delay; // 优化延迟
             let original_delay = res_json?.delay + random; // 原始延迟
@@ -606,10 +607,11 @@ const GameDetail: React.FC = () => {
                 </div>
 
                 <div className="line-box">
-                  {1}ms
-                  <div className="line">
+                  <div>{1}ms</div>
+                  {/* <div className="line">
                     <div className="animate-line" />
-                  </div>
+                  </div> */}
+                  <img src={appliancesGit} alt="" />
                 </div>
                 <div className="icon-box">
                   <img src={computingIcon} alt="" />
@@ -617,10 +619,11 @@ const GameDetail: React.FC = () => {
                 </div>
 
                 <div className="line-box">
-                  {lostBag - 1}ms
-                  <div className="line">
+                  <div>{lostBag - 1}ms</div>
+                  {/* <div className="line">
                     <div className="animate-line" />
-                  </div>
+                  </div> */}
+                  <img src={appliancesGit} alt="" />
                 </div>
                 <div className="icon-box">
                   <img src={computerIcon} alt="" />
