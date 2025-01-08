@@ -54,12 +54,8 @@
     column-gap: 10vw;
   }
 
-  .ant-tabs-tab,
-  :where(.css-dev-only-do-not-override-usln0u) .ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible),
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:focus:not(:focus-visible),
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:active, 
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:active {
-    font-size: 1.6vw;
+  .ant-tabs-tab {
+    font-size: 2vw;
   }
 
   .tab-content {
@@ -310,18 +306,6 @@
 .repair-tool-description {
   font-size: 1vw;
   color: #cccccc;
-}
-
-.repair-tool .ant-tabs-tab {
-  color: white;
-}
-
-.repair-tool .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: #ffa500 !important;
-}
-
-.repair-tool .ant-tabs-ink-bar {
-  background: #ffa500 !important;
 }
 
 .repair-tool .ant-card-hoverable:hover {

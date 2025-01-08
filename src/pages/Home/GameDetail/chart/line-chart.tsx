@@ -8,18 +8,26 @@ interface LineChartProps {
   data: any[];
 }
 
+const adapter: any = {
+  unknown: "有线",
+  ethernet: "无线",
+  wireless: "未知",
+};
 const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
   const isFirstRender = useRef(true); // 是否初次渲染
+  const lastHoverIndex = useRef<number>(-1); // 记录上次hover的数据索引
 
   useEffect(() => {
     if (!data || data?.length === 0) return;
     if (!chartRef.current && chartInstance.current) return;
 
+    // 重新初始化实例
     if (chartRef.current) {
       chartInstance.current = echarts.init(chartRef.current);
     }
+
 
     // 从数据中提取时间和延迟值
     const timeData = data.map((item) => item.time);
@@ -46,10 +54,17 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         enterable: false, // 防止鼠标移入tooltip
         showDelay: 0, // 悬停0.5秒后显示tooltip
         hideDelay: 0, // 鼠标移出后快速隐藏
+        alwaysShowContent: false, // 确保tooltip不会一直显示
         formatter: function (params: any) {
           if (!Array.isArray(params) || params.length === 0) return "";
-          const item = data[params[0].dataIndex];
+          // const item = data[params[0].dataIndex];
+          const dataIndex = params[0].dataIndex;
+          const item = data[dataIndex];
+
           if (!item) return "";
+
+          // 更新最后hover的索引
+          lastHoverIndex.current = dataIndex;
 
           const isDelay = item?.delay >= 9999; // 是否丢包
 
@@ -58,7 +73,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
               item.time
             )}</div>
             <div class="tooltip-network">本地网络类型：${
-              item.network || "未知"
+              adapter?.[item.network] || "未知"
             }</div>
             <div class="tooltip-original-delay">
               <div class="line"></div>
@@ -180,6 +195,22 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
 
     chartInstance.current?.setOption(option);
     isFirstRender.current = false; // 第一次渲染完改为非第一次
+
+    const chart = chartInstance.current;
+
+    // 如果有上次hover的位置,更新数据后保持tooltip显示
+    if (lastHoverIndex.current !== -1) {
+      chartInstance.current?.dispatchAction({
+        type: "showTip",
+        seriesIndex: 0,
+        dataIndex: lastHoverIndex.current,
+      });
+    }
+
+    // 移除自动显示tooltip的逻辑
+    chart?.on("globalout", function () {
+      lastHoverIndex.current = -1;
+    });
 
     return () => {
       chartInstance.current?.dispose();

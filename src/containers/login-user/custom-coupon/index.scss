@@ -53,11 +53,7 @@
     column-gap: 20vw;
   }
 
-  .ant-tabs-tab,
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible),
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:focus:not(:focus-visible),
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-btn:active, 
-  :where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-tab-remove:active {
+  .ant-tabs-tab {
     font-size: 2vw;
   }
 
