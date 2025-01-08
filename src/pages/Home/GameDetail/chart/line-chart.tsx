@@ -12,6 +12,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
   const isFirstRender = useRef(true); // 是否初次渲染
+  const lastHoverIndex = useRef<number>(-1); // 记录上次hover的数据索引
 
   useEffect(() => {
     if (!data || data?.length === 0) return;
@@ -48,8 +49,14 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         hideDelay: 0, // 鼠标移出后快速隐藏
         formatter: function (params: any) {
           if (!Array.isArray(params) || params.length === 0) return "";
-          const item = data[params[0].dataIndex];
+          // const item = data[params[0].dataIndex];
+          const dataIndex = params[0].dataIndex;
+          const item = data[dataIndex];
+
           if (!item) return "";
+
+          // 更新最后hover的索引
+          lastHoverIndex.current = dataIndex;
 
           const isDelay = item?.delay >= 9999; // 是否丢包
 
@@ -181,6 +188,15 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     chartInstance.current?.setOption(option);
     isFirstRender.current = false; // 第一次渲染完改为非第一次
 
+    // 如果有上次hover的位置,更新数据后保持tooltip显示
+    if (lastHoverIndex.current !== -1) {
+      chartInstance.current?.dispatchAction({
+        type: "showTip",
+        seriesIndex: 0,
+        dataIndex: lastHoverIndex.current,
+      });
+    }
+    
     return () => {
       chartInstance.current?.dispose();
     };
