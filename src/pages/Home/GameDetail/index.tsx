@@ -49,8 +49,8 @@ import defaultLogo from "@/assets/images/common/default-details-logo.png";
 
 const iniliteDelay = { 
   time: 0, // 时间
-  original_delay: 110, // 原始延迟
-  optimized_delay: 89, // 优化延迟
+  original_delay: 65, // 原始延迟
+  optimized_delay: 65, // 优化延迟
   network: "未知", // 本地网络类型
 };
 
@@ -353,6 +353,28 @@ const GameDetail: React.FC = () => {
     }
   };
 
+  // 读取对象值，防止旧数据是字符串值产生错误
+  const getStorageObject = () => {
+    const storageValue = localStorage.getItem("correctDelay");
+
+    if (
+      !storageValue ||
+      storageValue === "undefined" ||
+      storageValue === "null"
+    ) {
+      return iniliteDelay;
+    }
+
+    try {
+      const parsed = JSON.parse(storageValue);
+      return typeof parsed === "object" && parsed !== null
+        ? parsed
+        : iniliteDelay;
+    } catch (e) {
+      return iniliteDelay;
+    }
+  };
+
   // 获取客户端延迟
   const fetchAddrDelay = (node: any) => {
     try {
@@ -365,19 +387,17 @@ const GameDetail: React.FC = () => {
           (response: any) => {
             // console.log("详情丢包信息：", response);
             // 返回信息 delay 毫秒，9999代表超时与丢包
+            let random = Math.floor(Math.random() * (60 - 20 + 1)) + 20;
             let res_json = JSON.parse(response);
             let optimized_delay = res_json?.delay; // 优化延迟
-            let original_delay = res_json?.delay + 12; // 原始延迟
+            let original_delay = res_json?.delay + random; // 原始延迟
             let network = "未知";
 
             // 对延迟小于2进行处理，避免展示问题
             optimized_delay = optimized_delay < 2 ? 2 : optimized_delay; // 优化延迟
             original_delay = original_delay < 2 ? 2 : original_delay; // 原始延迟
 
-            const localDelay = localStorage.getItem("correctDelay"); // 读取缓存
-            const correctDelay = localDelay
-              ? JSON.parse(localDelay)
-              : iniliteDelay; // 解构缓存
+            let correctDelay = getStorageObject(); // 读取缓存
 
             // 对延迟等于9999进行处理，避免展示问题，并且只对设备连接，实时延迟，图表进行处理，丢包率不进行处理
             const chartDelay =
@@ -390,7 +410,7 @@ const GameDetail: React.FC = () => {
                   };
             const realDelay =
               chartDelay?.optimized_delay < 2 ? 2 : chartDelay?.optimized_delay; // 实时优化延迟
-            
+
             const chart = generateChart(
               chartDelay,
               optimized_delay === 9999 ? 100 : 0

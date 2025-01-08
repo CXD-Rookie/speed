@@ -11,6 +11,7 @@ interface LineChartProps {
 const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
+  const isFirstRender = useRef(true); // 是否初次渲染
 
   useEffect(() => {
     if (!data || data?.length === 0) return;
@@ -75,7 +76,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         data: timeData,
         axisLine: {
           lineStyle: {
-            color: "#F86C34",
+            color: "rgba(255, 255, 255, 0.3)", // 改为淡白色
           },
         },
         axisLabel: {
@@ -132,11 +133,11 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           data: optimizedDelayData,
           smooth: true, // 使用平滑曲线
           lineStyle: {
-            color: "#ff7a45",
+            color: "#FFC57D",
             width: 4,
           },
           itemStyle: {
-            color: "#ff7a45",
+            color: "#FFC57D",
           },
           showSymbol: false,
           emphasis: {
@@ -150,25 +151,26 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               {
                 offset: 0,
-                color: "rgba(255, 122, 69, 0.3)",
+                color: "rgba(255, 197, 125, 0.3)",
               },
               {
                 offset: 1,
-                color: "rgba(255, 122, 69, 0)",
+                color: "rgba(255, 197, 125, 0)",
               },
             ]),
           },
         },
       ],
       animation: true,
-      animationDuration: 0, // 设置为0以立即显示所有数据点
+      animationDuration: isFirstRender.current ? 1000 : 0, //第一次渲染时设置为1秒，之后设置为0
       animationDurationUpdate: 300, // 更新动画持续时间
       animationEasing: "cubicInOut", // 使用更平滑的动画曲线
       animationEasingUpdate: "cubicInOut",
     };
 
     chartInstance.current?.setOption(option);
-
+    isFirstRender.current = false; // 第一次渲染完改为非第一次
+    
     return () => {
       chartInstance.current?.dispose();
     };

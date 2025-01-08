@@ -49,6 +49,7 @@
 
       .game-left {
         width: 31.2vw;
+        margin-left: -2vw;
 
         & .default-game-logo-box {
           width: 100%;
@@ -80,7 +81,7 @@
         }
 
         .platfrom {
-          width: 15.6vw;
+          width: 22vw;
           margin: 0 auto;
           text-align: center;
           padding-top: 3.2vh;
@@ -99,8 +100,8 @@
             margin-top: 1.2vh;
 
             img {
-              width: 1.6vw;
-              height: 1.6vw;
+              width: 2.4vw;
+              height: 2.4vw;
             }
           }
         }
@@ -334,7 +335,6 @@
 
                 .line {
                   width: 1.2vw;
-                  background-color: #f86c34;
                 }
 
                 span {
@@ -346,12 +346,14 @@
               .original-delay {
                 .line {
                   height: 0.15vh;
+                  background-color: #f86c34;
                 }
               }
 
               .optimized-delay {
                 .line {
                   height: 0.3vh;
+                  background-color: #FFC57D;
                 }
               }
             }
