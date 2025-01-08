@@ -51,17 +51,12 @@ code {
   column-gap: 10vw !important;
 }
 
-.ant-tabs .ant-tabs-tab .ant-tabs-tab-active {
-  color: #fff !important;
+.ant-tabs-tab .ant-tabs-tab-btn{
+  color: #999 !important;
 }
 
-.ant-tabs-tab,
-.ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible),
-.ant-tabs .ant-tabs-tab-remove:focus:not(:focus-visible),
-.ant-tabs .ant-tabs-tab-btn:active, 
-.ant-tabs .ant-tabs-tab-remove:active {
-  font-size: 1.6vw !important;
-  color: #999 !important;
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #fff !important;
 }
 
 .ant-tabs-tab:hover,
@@ -84,14 +79,6 @@ code {
 .ant-dropdown .ant-dropdown-menu {
   background: #3E3E4A !important;
   border-radius: var(--speed-dominant-border-radius) !important;
-}
-
-.ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: #fff !important;
-}
-
-.ant-tabs-tab-btn {
-  color: #999 !important;
 }
 
 .ant-dropdown-menu-item {
