@@ -82,6 +82,7 @@ import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
 import iniliteCardIcon from "@/assets/images/common/inilite-card.jpg";
 import defaultLogo from "@/assets/images/common/default-details-logo.png";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
+import appliancesGit from "@/assets/images/common/appliances.gif";
 
 const ResourceCache: React.FC = () => {
   const [carouselImage, setCarouselImage] = useState<any>([]);
@@ -98,6 +99,8 @@ const ResourceCache: React.FC = () => {
 
   return (
     <div style={{ display: "none" }}>
+      {/* 设备连接Git */}
+      <img src={appliancesGit} alt=""/>
       {/* 默认断网轮播图片 */}
       {carouselImage?.length > 0 &&
         carouselImage?.map(({ image_url }: any) => (
