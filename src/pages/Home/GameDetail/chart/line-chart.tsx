@@ -123,7 +123,9 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             width: 2,
           },
           itemStyle: {
-            color: "#F86C34", // 与线条颜色保持一致
+            color: "#fff", // 与线条颜色保持一致
+            borderColor: "#fff",
+            borderWidth: 0,
           },
           showSymbol: false,
           emphasis: {
@@ -142,7 +144,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             width: 4,
           },
           itemStyle: {
-            color: "#FFC57D",
+            color: "#fff",
           },
           showSymbol: false,
           emphasis: {
