@@ -68,6 +68,15 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
 
           const isDelay = item?.delay >= 9999; // 是否丢包
 
+          // <div class="tooltip-original-delay">
+          //     <div class="line"></div>
+          //     <span style="color: ${isDelay ? "red" : "#fff"}">原始延迟：${
+          //   isDelay ? "本地丢包" : item.original_delay + "ms"
+          // }</span>
+          //   </div>
+
+          // 优化延迟line
+          // <div class="line"></div>;
           return `<div class="custom-tooltip">
             <div class="tooltip-time">时间：${formatTimestampToTime(
               item.time
@@ -75,15 +84,10 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             <div class="tooltip-network">本地网络类型：${
               adapter?.[item.network] || "未知"
             }</div>
-            <div class="tooltip-original-delay">
-              <div class="line"></div>
-              <span style="color: ${isDelay ? "red" : "#fff"}">原始延迟：${
-            isDelay ? "本地丢包" : item.original_delay + "ms"
-          }</span>
-            </div>
+            
             <div class="tooltip-optimized-delay">
-              <div class="line"></div>
-              <span style="color: ${isDelay ? "red" : "#fff"}">优化延迟：${
+              
+              <span style="color: ${isDelay ? "red" : "#fff"}">延迟：${
             isDelay ? "本地丢包" : item.optimized_delay + "ms"
           }</span>
             </div>
@@ -133,27 +137,27 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         interval: allZero ? 20 : undefined,
       },
       series: [
-        {
-          name: "原始延迟",
-          type: "line",
-          data: originalDelayData,
-          smooth: true, // 使用平滑曲线
-          symbolSize: [8, 8], // 设置点的大小为0.8vw
-          lineStyle: {
-            color: "#F86C34",
-            width: 2,
-          },
-          itemStyle: {
-            color: "#fff", // 与线条颜色保持一致
-            borderColor: "#fff",
-            borderWidth: 0,
-          },
-          showSymbol: false,
-          emphasis: {
-            scale: false,
-            focus: "series",
-          },
-        },
+        // {
+        //   name: "原始延迟",
+        //   type: "line",
+        //   data: originalDelayData,
+        //   smooth: true, // 使用平滑曲线
+        //   symbolSize: [8, 8], // 设置点的大小为0.8vw
+        //   lineStyle: {
+        //     color: "#F86C34",
+        //     width: 2,
+        //   },
+        //   itemStyle: {
+        //     color: "#fff", // 与线条颜色保持一致
+        //     borderColor: "#fff",
+        //     borderWidth: 0,
+        //   },
+        //   showSymbol: false,
+        //   emphasis: {
+        //     scale: false,
+        //     focus: "series",
+        //   },
+        // },
         {
           name: "优化延迟",
           type: "line",
@@ -161,7 +165,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           smooth: true, // 使用平滑曲线
           symbolSize: [8, 8], // 设置点的大小为0.8vw
           lineStyle: {
-            color: "#FFC57D",
+            color: "#F86C34",
             width: 4,
           },
           itemStyle: {
@@ -176,11 +180,11 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               {
                 offset: 0,
-                color: "rgba(255, 197, 125, 0.3)",
+                color: "rgba(248, 108, 52, 0.3)",
               },
               {
                 offset: 1,
-                color: "rgba(255, 197, 125, 0)",
+                color: "rgba(248, 108, 52, 0)",
               },
             ]),
           },
