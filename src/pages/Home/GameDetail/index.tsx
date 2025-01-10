@@ -181,21 +181,25 @@ const GameDetail: React.FC = () => {
     
     // 如果图表数据为0个则代表是第一次生成，则调用此逻辑生成3分钟的随机数据
     if (iniliteChart?.length === 0) {
-      const startTime = currentTime - 180005; // 获取 3分05秒 前的时间戳
+      const startTime = currentTime - 5000; // 获取 3分05秒 前的时间戳
 
       // 以 5 秒为间隔生成数据对象 生成3分钟随机数据
       for (let time = startTime; time <= currentTime - 5; time += 5 * 1000) {
         const data: any = {
           ...iniliteDelay, // 默认数据
+          optimized_delay,
           time, // 时间戳
-          delay: 2,
+          delay: optimized_delay,
         };
 
         iniliteChart.push(data);
       }
     }
 
-    iniliteChart.shift(); // 删除第一个数据
+    if (iniliteChart?.length > 36) {
+      iniliteChart.shift(); // 删除第一个数据
+    }
+    
     iniliteChart.push({
       // 添加当前数据
       ...value,
