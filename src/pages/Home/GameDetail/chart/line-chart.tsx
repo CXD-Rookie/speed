@@ -18,7 +18,20 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartInstance = useRef<echarts.ECharts | null>(null);
   const isFirstRender = useRef(true); // 是否初次渲染
   const lastHoverIndex = useRef<number>(-1); // 记录上次hover的数据索引
+  const mousePosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 }); // 记录鼠标位置
 
+  // 监听窗口大小变化
+  useEffect(() => {
+    const handleResize = () => {
+      if (chartInstance.current) {
+        chartInstance.current.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
   useEffect(() => {
     if (!data || data?.length === 0) return;
     if (!chartRef.current && chartInstance.current) return;
@@ -27,7 +40,6 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     if (chartRef.current) {
       chartInstance.current = echarts.init(chartRef.current);
     }
-
 
     // 从数据中提取时间和延迟值
     const timeData = data.map((item) => item.time);
@@ -49,12 +61,29 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         axisPointer: {
           type: "line",
           snap: true,
+          label: {
+            show: false,
+          },
+          lineStyle: {
+            color: "#fff",
+            width: 1,
+          },
         },
         confine: true,
         enterable: false, // 防止鼠标移入tooltip
         showDelay: 0, // 悬停0.5秒后显示tooltip
         hideDelay: 0, // 鼠标移出后快速隐藏
         alwaysShowContent: false, // 确保tooltip不会一直显示
+        position: function (
+          pos: number[],
+          params: any,
+          dom: any,
+          rect: any,
+          size: any
+        ) {
+          // 使用记录的鼠标位置
+          return [mousePosition.current.x + 10, mousePosition.current.y - 10];
+        },
         formatter: function (params: any) {
           if (!Array.isArray(params) || params.length === 0) return "";
           // const item = data[params[0].dataIndex];
@@ -201,6 +230,23 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     isFirstRender.current = false; // 第一次渲染完改为非第一次
 
     const chart = chartInstance.current;
+
+    // 监听鼠标移动事件以更新位置
+    chart?.getZr().on("mousemove", function (params: any) {
+      mousePosition.current = {
+        x: params.offsetX,
+        y: params.offsetY,
+      };
+
+      // 如果当前有高亮的数据点，则更新tooltip位置
+      if (lastHoverIndex.current !== -1) {
+        chart.dispatchAction({
+          type: "showTip",
+          seriesIndex: 0,
+          dataIndex: lastHoverIndex.current,
+        });
+      }
+    });
 
     // 如果有上次hover的位置,更新数据后保持tooltip显示
     if (lastHoverIndex.current !== -1) {
