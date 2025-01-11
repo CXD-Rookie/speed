@@ -31,7 +31,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
+
   useEffect(() => {
     if (!data || data?.length === 0) return;
     if (!chartRef.current && chartInstance.current) return;
@@ -82,7 +82,23 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           size: any
         ) {
           // 使用记录的鼠标位置
-          return [mousePosition.current.x + 10, mousePosition.current.y - 10];
+          const chartWidth = chartRef.current?.clientWidth || 0;
+          // 获取tooltip的宽度和高度
+          const tooltipWidth = size.contentSize[0];
+          const tooltipHeight = size.contentSize[1];
+
+          // 鼠标在图表右半部分时，tooltip显示在左边
+          if (mousePosition.current.x > chartWidth / 2) {
+            return [
+              mousePosition.current.x - tooltipWidth - 10,
+              mousePosition.current.y - tooltipHeight / 2,
+            ];
+          }
+          // 鼠标在图表左半部分时，tooltip显示在右边
+          return [
+            mousePosition.current.x + 10,
+            mousePosition.current.y - tooltipHeight / 2,
+          ];
         },
         formatter: function (params: any) {
           if (!Array.isArray(params) || params.length === 0) return "";
