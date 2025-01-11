@@ -83,22 +83,35 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         ) {
           // 使用记录的鼠标位置
           const chartWidth = chartRef.current?.clientWidth || 0;
+          const chartHeight = chartRef.current?.clientHeight || 0;
+
           // 获取tooltip的宽度和高度
           const tooltipWidth = size.contentSize[0];
           const tooltipHeight = size.contentSize[1];
 
-          // 鼠标在图表右半部分时，tooltip显示在左边
-          if (mousePosition.current.x > chartWidth / 2) {
-            return [
-              mousePosition.current.x - tooltipWidth - 10,
-              mousePosition.current.y - tooltipHeight / 2,
-            ];
+          const x = mousePosition.current.x;
+          const y = mousePosition.current.y;
+
+          // 根据鼠标在图表中的位置来决定tooltip的显示位置
+          if (x <= chartWidth / 2) {
+            // 左半部分
+            if (y <= chartHeight / 2) {
+              // 左上角 - tooltip显示在右下
+              return [x + 10, y + 10];
+            } else {
+              // 左下角 - tooltip显示在右上
+              return [x + 10, y - tooltipHeight - 10];
+            }
+          } else {
+            // 右半部分
+            if (y <= chartHeight / 2) {
+              // 右上角 - tooltip显示在左下
+              return [x - tooltipWidth - 10, y + 10];
+            } else {
+              // 右下角 - tooltip显示在左上
+              return [x - tooltipWidth - 10, y - tooltipHeight - 10];
+            }
           }
-          // 鼠标在图表左半部分时，tooltip显示在右边
-          return [
-            mousePosition.current.x + 10,
-            mousePosition.current.y - tooltipHeight / 2,
-          ];
         },
         formatter: function (params: any) {
           if (!Array.isArray(params) || params.length === 0) return "";
