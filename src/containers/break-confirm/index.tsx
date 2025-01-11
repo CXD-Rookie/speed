@@ -84,6 +84,14 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     serviceExpired: "您的加速服务已到期，请续费继续使用。",
     servicerechargeReport:
       "加速服务异常，当前加速已停止，请检查网络后重试或使用问题反馈联系技术支持",
+    infectedRepair: '进程目录信息丢失，点击"确定"尝试更新修复。',
+    verificationFailed: '签名验证失败，点击"确定"尝试更新修复。',
+    listeningIncorrect: '网络配置读取失败，点击"确定"尝试更新修复。',
+    processCreationFailed: '加速进程创建失败，点击"确定"尝试更新修复。',
+    systemResourcesInsufficient:
+      "系统内存不足，无法启动加速服务，请关闭部分应用后重试。",
+    driverFails: '驱动程序数字签名校验失败，点击"确定"尝试更新修复。',
+    otherReasons: '加速服务启动失败，点击"确定"尝试更新修复。',
   };
 
   // footer 确认按钮的文案
@@ -91,6 +99,13 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     netorkError: "重试",
     newVersionFound: "立即升级",
     infectedOrHijacked: "确定",
+    infectedRepair: "确定",
+    verificationFailed: "确定",
+    listeningIncorrect: "确定",
+    otherReasons: "确定",
+    systemResourcesInsufficient: "好的",
+    driverFails: "确定",
+    processCreationFailed: "确定",
     accelerationServiceNotStarting: "好的",
     delayTooHigh: "更换节点",
     renewalReminder: "立即充值",
@@ -201,11 +216,15 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         stopAcceleration();
         (window as any).native_update();
         break;
-      case "infectedOrHijacked":
-        // 打开设置
+      case "infectedOrHijacked": // 环境检查失败
+      case "infectedRepair": // 进程所在目录查询失败 系统自动下载最新版本客户端并覆盖安装
+      case "verificationFailed": // 签名验证失败
+      case "listeningIncorrect": // 监听信息错误
+      case "processCreationFailed": // 进程创建失败
+      case "driverFails": // 监听端口创建失败 驱动数字签名校验不通过
+      case "otherReasons": // 监听端口创建失败 其他原因
         stopAcceleration();
         (window as any).native_update();
-        // dispatch(setSetting({ settingOpen: true, type: "fix" }));
         break;
       case "accelerationServiceNotStarting":
         stopAcceleration();

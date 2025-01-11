@@ -462,7 +462,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   };
 
   // 通知客户端进行游戏加速
-  const handleSuitDomList = async (option: any) => {
+  const handleSuitDomList = async (option: any, retryCount = 0) => {
     try {
       let platform = await fetchPcPlatformList(); // 请求运营平台接口
       let WhiteBlackList = await fetchPcWhiteBlackList(); //请求黑白名单，加速使用数据
@@ -603,12 +603,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           "NativeApi_StartProxy",
           JSON.stringify({ user_id }),
           async function (response: any) {
-            console.log("是否开启真实加速(0成功)", response);
             const responseObj = JSON.parse(response); // 解析外层 response
             const restfulObj = responseObj?.restful
               ? JSON.parse(responseObj?.restful)
               : {}; // 解析内部 restful
-
+            
             // 检查是否有 restful 字段，并解析为 JSON
             if (responseObj?.status === 0) {
               // 检查解析后的 restfulData 是否包含 port
@@ -632,14 +631,17 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
                 let kpgcore_num = 0; // 计数连接几次
                 // 发送 Kpgcore 启动接口
-                const kpgcore_res = await startKpgcore({
-                  url,
-                  api_header,
-                  jsonResult,
-                  pc_platform,
-                  responseObj
-                }, kpgcore_num);
-                
+                const kpgcore_res = await startKpgcore(
+                  {
+                    url,
+                    api_header,
+                    jsonResult,
+                    pc_platform,
+                    responseObj,
+                  },
+                  kpgcore_num
+                );
+
                 resolve(kpgcore_res);
               } else {
                 console.error("端口信息缺失");
@@ -649,6 +651,16 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   message: responseObj?.error_log ?? "",
                 });
               }
+            } else if ([4, 5].includes(Number(responseObj?.status)) && retryCount < 3) {
+              // 如果status为4且重试次数小于3,则重试
+              setTimeout(async () => {
+                console.log(`重试第${retryCount + 1}次`);
+                const retryResult = await handleSuitDomList(
+                  option,
+                  retryCount + 1
+                );
+                resolve(retryResult);
+              }, 1000);
             } else {
               console.error("响应数据缺失");
               resolve({
@@ -746,16 +758,46 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               )};version=${clientVersion + "," + webVersion}`
             );
             isPre = false;
-
-            eventBus.emit("showModal", {
-              show: true,
-              type: "infectedOrHijacked",
-            });
-
-            // if (["ERR_NETWORK", "kpgcore错误"].includes(state?.code)) {
-            //   console.log("ERR_NETWORK");
-            //   stopAcceleration();
-            // }
+            console.log(state?.code);
+            
+            if ([2, 3, 6].includes(Number(state?.code))) {
+              const failed_map: any = {
+                2: "infectedRepair",
+                3: "verificationFailed",
+                6: "listeningIncorrect",
+              };
+              eventBus.emit("showModal", {
+                show: true,
+                type: failed_map?.[state?.code],
+              });
+            } else if (Number(state?.code) === 4) {
+              eventBus.emit("showModal", {
+                show: true,
+                type: "processCreationFailed",
+              });
+            } else if (Number(state?.code) === 5) {
+              if (state?.message?.includes("insufficient system resources")) {
+                eventBus.emit("showModal", {
+                  show: true,
+                  type: "systemResourcesInsufficient",
+                });
+              } else if (state?.message?.includes("digital signature")) {
+                eventBus.emit("showModal", {
+                  show: true,
+                  type: "driverFails",
+                });
+              } else {
+                eventBus.emit("showModal", {
+                  show: true,
+                  type: "otherReasons",
+                });
+              }
+            } else {
+              eventBus.emit("showModal", {
+                show: true,
+                type: "infectedOrHijacked",
+              });
+            }
           }
         } else {
           console.log(`不是合法文件，请重新安装加速器`);
