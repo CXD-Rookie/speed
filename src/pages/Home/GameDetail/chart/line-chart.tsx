@@ -20,6 +20,18 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const lastHoverIndex = useRef<number>(-1); // 记录上次hover的数据索引
   const mousePosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 }); // 记录鼠标位置
 
+  // 监听窗口大小变化
+  useEffect(() => {
+    const handleResize = () => {
+      if (chartInstance.current) {
+        chartInstance.current.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
   useEffect(() => {
     if (!data || data?.length === 0) return;
     if (!chartRef.current && chartInstance.current) return;
@@ -235,7 +247,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
         });
       }
     });
-    
+
     // 如果有上次hover的位置,更新数据后保持tooltip显示
     if (lastHoverIndex.current !== -1) {
       chartInstance.current?.dispatchAction({
