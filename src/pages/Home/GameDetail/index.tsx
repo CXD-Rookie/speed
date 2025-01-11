@@ -186,8 +186,7 @@ const GameDetail: React.FC = () => {
       // 以 5 秒为间隔生成数据对象 生成3分钟随机数据
       for (let time = startTime; time <= currentTime - 5; time += 5 * 1000) {
         const data: any = {
-          ...iniliteDelay, // 默认数据
-          optimized_delay,
+          ...value, // 默认数据
           time, // 时间戳
           delay: optimized_delay,
         };
