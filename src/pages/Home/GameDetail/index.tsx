@@ -135,25 +135,16 @@ const GameDetail: React.FC = () => {
         console.log(historyContext?.accelerateTime?.count, historyContext);
         
         tracking.trackBoostDisconnectManual();
-        // historyContext?.accelerateTime?.stopTimer();
+        historyContext?.accelerateTime?.stopTimer();
 
-        // if ((window as any).stopDelayTimer) {
-        //   (window as any).stopDelayTimer();
-        // }
+        if ((window as any).stopDelayTimer) {
+          (window as any).stopDelayTimer();
+        }
 
-        // removeGameList("initialize"); // 更新我的游戏
-        // navigate("/home");
+        removeGameList("initialize"); // 更新我的游戏
+        navigate("/home");
       }
     );
-
-    historyContext?.accelerateTime?.stopTimer();
-
-    if ((window as any).stopDelayTimer) {
-      (window as any).stopDelayTimer();
-    }
-
-    await removeGameList("initialize"); // 更新我的游戏
-    navigate("/home");
   };
 
   // 处理时间格式函数
