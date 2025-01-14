@@ -20,7 +20,6 @@ import ResourceCache from "./resource-cache";
 const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const state = useSelector((state: any) => state?.modalOpen);
-  // const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
 
   const {
     payState = {},
