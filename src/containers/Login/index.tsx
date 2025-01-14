@@ -20,10 +20,8 @@ import CustomInput from "./custom-input";
 import loginApi from "@/api/login";
 import "./index.scss";
 import clotureIcon from "@/assets/images/common/cloture.svg";
-import logoIcon from "@/assets/images/common/logo.png";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
-import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
 
 // 手机号对应错误码文案
 const phoneErrorText: any = {
@@ -66,13 +64,6 @@ const Login: React.FC = () => {
 
     setPhoneNumber(value);
     debouncedChangeHandler(value);
-  };
-
-  // 游侠登录 跳转浏览器
-  const handlevisitorLogin = async (event: any) => {
-    const target = event.currentTarget as HTMLDivElement;
-    const dataTitle = target.dataset.title;
-    (window as any).NativeApi_YouXiaAuth(dataTitle);
   };
 
   const handleVerificationCodeChange = (
@@ -173,7 +164,7 @@ const Login: React.FC = () => {
       </div>
       <div className="main">
         <div className="login-logo">
-          <img src={logoIcon} alt="" />
+          <img src={""} alt="" />
         </div>
         <div className="login-text">请登录</div>
         <div className="input-group public-input-group">
@@ -237,14 +228,6 @@ const Login: React.FC = () => {
         </div>
         <div className="login-btn-box">
           <button onClick={handleLogin}>登录</button>
-        </div>
-        <div
-          className="visitor-login-text"
-          onClick={handlevisitorLogin}
-          data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${process.env.REACT_APP_YOUXIA_URL}&response_type=code&scope=webapi_login&state=state`}
-        >
-          <img src={visitorLoginIcon} alt="" />
-          游侠登录
         </div>
       </div>
     </div>

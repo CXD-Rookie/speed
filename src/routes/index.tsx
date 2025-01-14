@@ -8,7 +8,7 @@
  */
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { KeepAlive } from "react-activation";
+
 import GameLibrary from "@/pages/GameLibrary";
 import GameList from "@/pages/GameList";
 import Home from "@/pages/Home";
@@ -16,19 +16,14 @@ import GameDetail from "@/pages/Home/GameDetail";
 import MyGames from "@/pages/Home/MyGames";
 import Login from "@/containers/Login";
 import PrivateRoute from "./PrivateRoute";
-import ThirdPartyLogin from "@/pages/ThirdPartyLogin";
 
 export default [
   {
-    path: "/thirdPartyLogin",
-    element: <ThirdPartyLogin />,
-  },
-  {
     path: "/gameLibrary",
     element: (
-        <PrivateRoute>
-          <GameLibrary />
-        </PrivateRoute>
+      <PrivateRoute>
+        <GameLibrary />
+      </PrivateRoute>
     ),
   },
   {

@@ -45,6 +45,7 @@
     "build": "react-app-rewired build",
     "build:dev": "yarn dotenv -e .env.development react-app-rewired build",
     "build:pro": "yarn dotenv -e .env.production react-app-rewired build",
+    "build:oem": "yarn dotenv -e .env.oem react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },

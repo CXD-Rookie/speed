@@ -55,6 +55,7 @@ const SettingsModal: React.FC = (props) => {
     ? localMchannel
     : "other";
   const user_id = localStorage.getItem("userId");
+  const website_url = process.env.REACT_APP_WEBSITE_URL;
 
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
@@ -97,8 +98,8 @@ const SettingsModal: React.FC = (props) => {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
+    
     (window as any).NativeApi_OpenBrowser(dataTitle);
-    console.log("data-title:", dataTitle);
   };
 
   const native_fixup_network_lsp = () => {
@@ -511,44 +512,34 @@ const SettingsModal: React.FC = (props) => {
                     color: "#FF4900",
                     cursor: "pointer",
                   }}
-                  data-title={`https://jsq.ali213.net?cid=about`}
+                  data-title={website_url}
                   onClick={handleClick}
                 >
-                  {/* https://www.accessorx.com */}
-                  https://jsq.ali213.net
+                  {website_url}
                 </div>
-              </div>
-              <div className="customer-item-content">
-                点击加官方客服群：
-                <span
-                  data-title={`https://qm.qq.com/q/KzaRJZbj8I`}
-                  onClick={handleClick}
-                >
-                  955852815
-                </span>
               </div>
               <div className="protocols">
                 <span
                   onClick={handleClick}
-                  data-title={`https://cdn.accessorx.com/web/terms_of_service.html?mchannel=${mchannel}`}
+                  data-title={process.env.REACT_APP_TERMS_ADDRESS}
                 >
                   用户协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={`https://cdn.accessorx.com/web/privacy_policy.html?mchannel=${mchannel}`}
+                  data-title={process.env.REACT_APP_POLICY_ADDRESS}
                 >
                   隐私协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={`https://cdn.accessorx.com/web/children's_privacy.html?mchannel=${mchannel}`}
+                  data-title={process.env.REACT_APP_CHILDREN_ADDRESS}
                 >
                   儿童保护及监护人须知
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={`https://cdn.accessorx.com/web/automatic_renewal_agreement.html?mchannel=${mchannel}`}
+                  data-title={process.env.REACT_APP_AUTOMATIC_ADDRESS}
                 >
                   自动续费协议
                 </span>
@@ -616,37 +607,6 @@ const SettingsModal: React.FC = (props) => {
                     >
                       修改
                     </div>
-                  </div>
-                  <div className="info-box info-flex">
-                    <div className="info-left">
-                      <label>游侠账号</label>
-                      <div>
-                        {thirdInfo?.some((item: any) => item?.source === 2)
-                          ? "已绑定"
-                          : "未绑定"}
-                      </div>
-                    </div>
-                    {!thirdInfo?.some((item: any) => item?.source === 2) ? (
-                      <div
-                        className="real-name-btn"
-                        onClick={() => {
-                          dispatch(setBindState({ open: true, type: "third" }));
-                        }}
-                      >
-                        绑定
-                      </div>
-                    ) : (
-                      <div
-                        className="real-name-btn"
-                        onClick={() => {
-                          dispatch(
-                            setBindState({ open: true, type: "unbind" })
-                          );
-                        }}
-                      >
-                        解绑
-                      </div>
-                    )}
                   </div>
                   <div className="info-box info-flex">
                     <div className="info-left">

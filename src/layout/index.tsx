@@ -672,75 +672,6 @@ const Layouts: React.FC = () => {
     }
   };
 
-  // 游侠登录
-  const youxiaLoginCallback = async (data: any) => {
-    const isNew = data?.is_new_user; // 是否新用户
-    const user = data?.user_info; // 用户信息
-    
-    localStorage.setItem("userId", user?.id); // 存储user_id
-
-    if (user?.phone) {
-      // 3个参数 用户信息 是否登录 是否显示登录
-      dispatch(setAccountInfo(user, true, false));
-      const bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
-      const type_obj: any = {
-        "2": "thirdBind",
-        "3": "thirdUpdateBind",
-      };
-
-      if (bind_type >= 0) {
-        dispatch(setAccountInfo(user, true, false));
-
-        const time = localStorage.getItem("firstActiveTime");
-        const currentTime = Math.floor(Date.now() / 1000); // 当前时间
-        const isTrue = time && currentTime < Number(time);
-        const lock_time = getMidnightTimestamp(currentTime); // 当天0点时间锁
-
-        if (isNew) {
-          tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
-        } else {
-          tracking.trackLoginSuccess("youXia", isTrue ? 1 : 0);
-        }
-
-        if (isNew) {
-          dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
-        } else if ([2, 3].includes(Number(bind_type))) {
-          dispatch(
-            setMinorState({
-              open: true,
-              type: type_obj?.[String(bind_type)],
-            })
-          ); // 三方绑定提示
-        }
-
-        localStorage.setItem(
-          "newUserTimeLock",
-          JSON.stringify({ time: lock_time, isLogin: true })
-        ); // 存储锁
-
-        webSocketService.loginReconnect();
-        localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
-
-        // 如果是正常游侠登录触发一下首次充值或首次续期引导页
-        if (Number(bind_type) === 1) {
-          setTimeout(() => {
-            (window as any).landFirstTrigger(); // 调用引导页弹窗
-          }, 1000); // 避免ws没有处理完banner图，所有延迟一秒触发
-        }
-      }
-    } else {
-      let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
-      // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
-      if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
-        localStorage.removeItem("thirdBind");
-        dispatch(setAccountInfo(undefined, false, false));
-        dispatch(updateBindPhoneState(true));
-      }
-    }
-
-    navigate("/home");
-  };
-
   // 初始化操作
   const iniliteAppFun = async () => {
     return new Promise(async (resolve, reject) => {
@@ -845,7 +776,6 @@ const Layouts: React.FC = () => {
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
-    (window as any).youxiaLoginCallback = youxiaLoginCallback; // 游侠登录回调，客户端调用
     (window as any).cacheGameFun = cacheGameFun; // 内部使用更新缓存游戏
     (window as any).landFirstTrigger = landFirstTrigger; // 调用引导页弹窗
 
@@ -853,7 +783,6 @@ const Layouts: React.FC = () => {
     return () => {
       delete (window as any).landFirstTrigger;
       delete (window as any).cacheGameFun;
-      delete (window as any).youxiaLoginCallback;
       delete (window as any).speedErrorReport;
       delete (window as any).invokeLocalScan;
       delete (window as any).speedError;

@@ -11,9 +11,7 @@ import { Avatar } from "antd";
 
 import "./index.scss";
 
-import defaultAvatarIcon from "@/assets/images/common/default-avatar.svg";
 import avatarVipIcon from "@/assets/images/common/avatar-vip.svg";
-import noLoginIcon from "@/assets/images/common/no-login-avatar.svg";
 
 interface UserAvatarComProps {
   isVip?: boolean;
@@ -43,7 +41,7 @@ const UserAvatarCom: React.FC<UserAvatarComProps> = (props) => {
     <div className={`user-avatar-com-module ${styleTypeObj?.[type]?.class}`}>
       <Avatar
         style={styleTypeObj?.[type]?.style}
-        src={isLogin ? defaultAvatarIcon : noLoginIcon}
+        // src={isLogin ? "" : ""}
       />
       {type === "edit" && isVip && (
         <img className="vip-icon" src={avatarVipIcon} alt="" />

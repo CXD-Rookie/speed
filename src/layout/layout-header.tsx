@@ -19,11 +19,11 @@ import eventBus from "@/api/eventBus";
 import SearchBar from "@/containers/searchBar";
 import CustomDropdown from "@/containers/login-user";
 
-import logoIcon from "@/assets/images/common/logo.png";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
 import updateIcon from "@/assets/images/common/update.png";
+
 interface CustomMenuProps {
   key: string;
   label: string;
@@ -190,7 +190,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
       {/* LOGO */}
       <img
         className="header-icon"
-        src={logoIcon}
+        // src={}
         width={40}
         height={40}
         alt=""
