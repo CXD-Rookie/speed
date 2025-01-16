@@ -610,6 +610,37 @@ const SettingsModal: React.FC = (props) => {
                   </div>
                   <div className="info-box info-flex">
                     <div className="info-left">
+                      <label>游侠账号</label>
+                      <div>
+                        {thirdInfo?.some((item: any) => item?.source === 2)
+                          ? "已绑定"
+                          : "未绑定"}
+                      </div>
+                    </div>
+                    {!thirdInfo?.some((item: any) => item?.source === 2) ? (
+                      <div
+                        className="real-name-btn"
+                        onClick={() => {
+                          dispatch(setBindState({ open: true, type: "third" }));
+                        }}
+                      >
+                        绑定
+                      </div>
+                    ) : (
+                      <div
+                        className="real-name-btn"
+                        onClick={() => {
+                          dispatch(
+                            setBindState({ open: true, type: "unbind" })
+                          );
+                        }}
+                      >
+                        解绑
+                      </div>
+                    )}
+                  </div>
+                  <div className="info-box info-flex">
+                    <div className="info-left">
                       <label>实名认证</label>
                       {isRealNameTag === "1" ? (
                         <div>未认证</div>
