@@ -56,8 +56,10 @@ const Layouts: React.FC = () => {
   const { open: landPayOpen = false } = useSelector(
     (state: any) => state?.modalOpen?.firstPayRP
   ); // 首次充值引导页
-  const newUserOpen = useSelector((state: any) => state?.modalOpen?.newUserOpen); // 新用户引导页
-  
+  const newUserOpen = useSelector(
+    (state: any) => state?.modalOpen?.newUserOpen
+  ); // 新用户引导页
+
   const historyContext: any = useHistoryContext(); // 自定义传递上下文 hook
   const {
     removeGameList,
@@ -85,7 +87,7 @@ const Layouts: React.FC = () => {
         "",
         (response: string) => {
           const version = JSON.parse(response)?.version;
-          
+
           // 成功返回当前版本
           if (version) {
             versionNowRef.current = version;
@@ -97,7 +99,7 @@ const Layouts: React.FC = () => {
           }
         }
       );
-    })
+    });
   };
 
   // 初始设置
@@ -114,12 +116,12 @@ const Layouts: React.FC = () => {
 
         // 更新或者设置 client_settings
         localStorage.setItem("client_settings", JSON.stringify(setup));
-        resolve({state: true})
+        resolve({ state: true });
       } catch (error) {
         console.log("初始化设置", error);
         rejects({ state: false });
       }
-    })
+    });
   };
 
   // 进程黑名单
@@ -152,7 +154,7 @@ const Layouts: React.FC = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   // 缓存游戏函数
   const cacheGameFun = async () => {
@@ -189,20 +191,19 @@ const Layouts: React.FC = () => {
       if (allGame?.length > 0) {
         localStorage.setItem("cacheGame", JSON.stringify(result)); // 缓存到 localStorage
       }
-      
+
       resolve(result); // 暴露游戏返回值
-    })
-  }
+    });
+  };
 
   // 初始化更新游戏
   const iniliteRenewal = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const [list, data]: any =
-          await Promise.all([
-            await stopProcessReset(), // 初始化调用停止加速
-            await cacheGameFun(), // 更新缓存游戏，并且导出返回值
-          ]);
+        const [list, data]: any = await Promise.all([
+          await stopProcessReset(), // 初始化调用停止加速
+          await cacheGameFun(), // 更新缓存游戏，并且导出返回值
+        ]);
         const allGame = data?.allGame;
 
         // 传递数据给客户端，以用来进行游戏扫描
@@ -215,14 +216,12 @@ const Layouts: React.FC = () => {
         const meGame: any = list?.data ?? [];
         const result = meGame.map((item: any) => {
           // 如果找到此游戏
-          const target = allGame?.find(
-            (child: any) => child?.id === item?.id
-          );
+          const target = allGame?.find((child: any) => child?.id === item?.id);
 
           // 如果找到此游戏并且更新时间发生改变
           if (target?.id && target?.update_time !== item?.update_time) {
             console.log("update_time:", target);
-            
+
             return {
               ...item,
               ...target,
@@ -268,9 +267,9 @@ const Layouts: React.FC = () => {
         resolve({ state: true, list: filteredArray });
       } catch (error) {
         console.log("初始化更新游戏", error);
-        reject({state: false, list: []});
+        reject({ state: false, list: [] });
       }
-    })
+    });
   };
 
   // 定义停止加速应该做的操作
@@ -303,7 +302,7 @@ const Layouts: React.FC = () => {
         navigate("/home");
         resolve({ state: true, data: game });
       } catch (error) {
-        reject({state: false}); // 失败
+        reject({ state: false }); // 失败
       }
     });
   };
@@ -342,7 +341,7 @@ const Layouts: React.FC = () => {
       if (identifyAccelerationData()?.[0]) {
         tracking.trackBoostDisconnectManual();
       }
-      
+
       webSocketService.close({
         code: 4000,
         reason: "退出登录后主动关闭",
@@ -374,7 +373,7 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("isRealName"); // 去掉实名认证
       localStorage.removeItem("userId"); // 存储user_id
       dispatch(setAccountInfo({}, false, true)); // 修改登录状态
-      
+
       console.log("退出登录");
       if (event === "remoteLogin") {
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
@@ -382,7 +381,7 @@ const Layouts: React.FC = () => {
 
       if (event === "api") {
         setTimeout(() => {
-          navigate("/home")
+          navigate("/home");
         }, 200);
       }
       // if (event === 1) {
@@ -394,7 +393,10 @@ const Layouts: React.FC = () => {
   };
 
   // 本地扫描游戏方法
-  const invokeLocalScan = async (option: any = [], isTootip: boolean = true) => {
+  const invokeLocalScan = async (
+    option: any = [],
+    isTootip: boolean = true
+  ) => {
     try {
       let all = []; // 扫描到的游戏
 
@@ -461,14 +463,14 @@ const Layouts: React.FC = () => {
             store.slice(2, store?.length);
           }
         });
-        
+
         const localStore = store.slice(0, 2); // 只允许展示2个，且本地应用存储最多2个
         const path = window?.location?.hash.split("#");
-        
+
         console.log("展示的扫描游戏:", localStore, path);
         navigate(path?.[1]);
         localStorage.setItem("storeScanned", JSON.stringify(localStore)); // 本地储存用于展示扫描弹出的数据
-        
+
         // 在首页并且允许弹出的情况下弹出提醒游戏弹窗
         if (isTootip) {
           // 弹出扫描游戏弹窗
@@ -480,7 +482,7 @@ const Layouts: React.FC = () => {
     } catch (error) {
       console.log("本地扫描游戏方法", error);
     }
-  }
+  };
 
   // 判断是否弹出首续或者首充引导页
   const landFirstTrigger = async () => {
@@ -490,11 +492,10 @@ const Layouts: React.FC = () => {
     const banner = JSON.parse(localStorage.getItem("all_data") || "[]"); // banner图数据
 
     console.log("当前时间", time, "当前存储时间锁", Number(local_time), banner);
-    if (
-      (time > Number(local_time) && !landPayOpen) ||
-      !Number(local_time)
-    ) {
-      const find = (banner || [])?.find((item: any) => ["2", "3"].includes(item?.params));
+    if ((time > Number(local_time) && !landPayOpen) || !Number(local_time)) {
+      const find = (banner || [])?.find((item: any) =>
+        ["2", "3"].includes(item?.params)
+      );
       const renewed = find?.params === "2"; // 首充
       const purchase = find?.params === "3"; // 首续
 
@@ -533,7 +534,7 @@ const Layouts: React.FC = () => {
         timestamp = 0, // 服务端时间
         first_purchase_renewed = {}, // 是否首充首续
       } = data?.data;
-      
+
       if (token) {
         localStorage.setItem("userId", user_info?.id); // 存储user_id
         // 存储版本信息
@@ -633,7 +634,7 @@ const Layouts: React.FC = () => {
             firstPAndR = []; // 赋值 []
           }
           const isQQ = banner.find((value: any) => value?.params === "0") ?? {};
-          
+
           if (isQQ?.params) {
             firstPAndR.unshift(isQQ);
           }
@@ -672,6 +673,75 @@ const Layouts: React.FC = () => {
     }
   };
 
+  // 游侠登录
+  const youxiaLoginCallback = async (data: any) => {
+    const isNew = data?.is_new_user; // 是否新用户
+    const user = data?.user_info; // 用户信息
+
+    localStorage.setItem("userId", user?.id); // 存储user_id
+
+    if (user?.phone) {
+      // 3个参数 用户信息 是否登录 是否显示登录
+      dispatch(setAccountInfo(user, true, false));
+      const bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
+      const type_obj: any = {
+        "2": "thirdBind",
+        "3": "thirdUpdateBind",
+      };
+
+      if (bind_type >= 0) {
+        dispatch(setAccountInfo(user, true, false));
+
+        const time = localStorage.getItem("firstActiveTime");
+        const currentTime = Math.floor(Date.now() / 1000); // 当前时间
+        const isTrue = time && currentTime < Number(time);
+        const lock_time = getMidnightTimestamp(currentTime); // 当天0点时间锁
+
+        if (isNew) {
+          tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
+        } else {
+          tracking.trackLoginSuccess("youXia", isTrue ? 1 : 0);
+        }
+
+        if (isNew) {
+          dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
+        } else if ([2, 3].includes(Number(bind_type))) {
+          dispatch(
+            setMinorState({
+              open: true,
+              type: type_obj?.[String(bind_type)],
+            })
+          ); // 三方绑定提示
+        }
+
+        localStorage.setItem(
+          "newUserTimeLock",
+          JSON.stringify({ time: lock_time, isLogin: true })
+        ); // 存储锁
+
+        webSocketService.loginReconnect();
+        localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
+
+        // 如果是正常游侠登录触发一下首次充值或首次续期引导页
+        if (Number(bind_type) === 1) {
+          setTimeout(() => {
+            (window as any).landFirstTrigger(); // 调用引导页弹窗
+          }, 1000); // 避免ws没有处理完banner图，所有延迟一秒触发
+        }
+      }
+    } else {
+      let bind_type = JSON.parse(localStorage.getItem("thirdBind") || "-1");
+      // 第三方登录没有返回手机号的情况下，弹窗手机号绑定逻辑
+      if (!store.getState().auth?.isBindPhone && bind_type >= 0) {
+        localStorage.removeItem("thirdBind");
+        dispatch(setAccountInfo(undefined, false, false));
+        dispatch(updateBindPhoneState(true));
+      }
+    }
+
+    navigate("/home");
+  };
+
   // 初始化操作
   const iniliteAppFun = async () => {
     return new Promise(async (resolve, reject) => {
@@ -679,20 +749,20 @@ const Layouts: React.FC = () => {
 
       localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
       localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记
-      
+
       fetchBanner();
-      
+
       if (!accountInfo.isLogin) {
         const time = new Date().getTime() / 1000; // 获取当前时间
         const local_time = localStorage.getItem("newUserTimeLock"); // 新用户引导页当天时间锁对象
         const lock = JSON.parse(local_time || JSON.stringify({})); // 解构数据
         const lock_time = getMidnightTimestamp(time); // 当天0点时间锁
-        
+
         if (
           Object.keys(lock)?.length === 0 ||
           (!lock?.isLogin && // 是否登录过
-          time > Number(lock?.time) &&
-          !newUserOpen)
+            time > Number(lock?.time) &&
+            !newUserOpen)
         ) {
           dispatch(setNewUserOpen(true)); // 触发弹窗
           localStorage.setItem(
@@ -707,17 +777,17 @@ const Layouts: React.FC = () => {
         (event: MessageEvent) => schedulePolling(event),
         dispatch
       );
-      
+
       const [renewal, version, setting]: any = await Promise.all([
         iniliteRenewal(), // 初始化更新游戏;
         nativeVersion(), // 读取客户端版本
         initialSetup(), // 初始设置
       ]);
-      
+
       if (accountInfo.isLogin) {
         await landFirstTrigger();
       }
-    
+
       if (renewal?.state && version?.state && setting?.state) {
         resolve({
           state: true,
@@ -726,13 +796,13 @@ const Layouts: React.FC = () => {
           },
         });
       }
-    })
-  }
-  
+    });
+  };
+
   // 在登录状态发生变化时
   useEffect(() => {
     let intervalId: any = null;
-    
+
     // 请求全局黑名单 清除banner图计时器
     if (accountInfo?.isLogin) {
       initialProcessBlack(); // 初始进程黑名单
@@ -776,6 +846,7 @@ const Layouts: React.FC = () => {
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
+    (window as any).youxiaLoginCallback = youxiaLoginCallback; // 游侠登录回调，客户端调用
     (window as any).cacheGameFun = cacheGameFun; // 内部使用更新缓存游戏
     (window as any).landFirstTrigger = landFirstTrigger; // 调用引导页弹窗
 
@@ -783,6 +854,7 @@ const Layouts: React.FC = () => {
     return () => {
       delete (window as any).landFirstTrigger;
       delete (window as any).cacheGameFun;
+      delete (window as any).youxiaLoginCallback;
       delete (window as any).speedErrorReport;
       delete (window as any).invokeLocalScan;
       delete (window as any).speedError;
@@ -793,7 +865,7 @@ const Layouts: React.FC = () => {
       delete (window as any).showSettingsForm;
     };
   }, []);
-  
+
   useEffect(() => {
     const webVersion = process.env.REACT_APP_VERSION;
     const clientVersion = (window as any).versionNowRef;
@@ -858,7 +930,7 @@ const Layouts: React.FC = () => {
       // 如果 DOM 已经加载完毕，直接执行
       setTimeout(async () => {
         const state: any = await iniliteAppFun();
-        
+
         if (state?.state) {
           tracking.trackaBackgroundActivity();
           (window as any).NativeApi_RenderComplete();
