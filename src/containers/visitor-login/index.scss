@@ -1,0 +1,125 @@
+.bind-visitor-login {
+  .ant-modal-content {
+    width: 32vw;
+    height: 57vh;
+    background-color: #3e3e4a;
+    padding: 1.8vh 1.8vw;
+    overflow: hidden;
+  }
+
+  .ant-modal-header {
+    color: #fff;
+    background-color: #3e3e4a;
+  }
+
+  .ant-modal-close {
+    width: 1.2vw;
+    height: 1.2vw;
+    opacity: 0.5;
+    font-size: 1.2vw;
+    color: #ffffff;
+    position: absolute;
+    top: 1.2vw;
+    right: 1.6vw;
+  }
+
+  .ant-modal-title {
+    opacity: 0.5;
+    font-size: 1.2vw;
+    font-weight: 500 !important;
+    color: #ffffff;
+  }
+
+  .bind-main {
+    .login-text {
+      text-align: left;
+      font-size: 2vw;
+      color: #fff;
+      margin: 6vh 0 0.6vh 0.4vw;
+    }
+
+    .bind-text {
+      font-size: 1vw;
+      color: #999999;
+      margin: 0 0 4.8vh 0.4vw;
+    }
+
+    /* 自定义输入框外层样式 */
+    .public-input-group {
+      background-color: transparent !important;
+      border-radius: 0.75vh;
+      position: relative;
+    }
+
+    .input-group,
+    .computing-input-group {
+      margin-bottom: 3vh;
+    }
+
+    .custom-prefix-box {
+      height: 100%;
+      color: #999999;
+      display: flex;
+      align-items: center;
+      margin-right: 1vw;
+      padding-left: 1.2vw;
+    }
+
+    .custom-prefix-box img {
+      width: 1.8vw;
+      height: 2.4vh;
+      margin-right: 1vw;
+    }
+
+    .custom-prefix-box span {
+      font-size: 1.4vw;
+    }
+
+    .old-verification-code {
+      font-size: 1.4vw;
+      font-weight: Regular;
+      text-align: right;
+      color: #f86c34;
+      line-height: 6.6vh;
+      cursor: pointer;
+    }
+
+    .ercode {
+      color: #FF0000;
+      font-size: 1vw;
+      margin-top: 0.75vh;
+      margin-left: 0.4vw;
+    }
+
+    .send-verification-code {
+      color: #ff4500;
+      cursor: not-allowed;
+    }
+
+    .login-btn-box {
+      text-align: center;
+      margin-top: 6vh;
+    }
+
+    .login-btn-box button {
+      width: 25.6vw;
+      height: 6.6vh;
+      font-size: 1.6vw;
+      color: #ffffff;
+      background: #f86c34;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border-radius: 3.3vh;
+      border: none;
+    }
+
+    .login-btn-box button:hover {
+      background-color: #e03e00;
+    }
+
+    .custom-input::placeholder {
+      color: #bbbcc4;
+      // background-color: rgba(255,255,255,0.1);
+    }
+  }
+}
