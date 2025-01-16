@@ -66,6 +66,13 @@ const Login: React.FC = () => {
     debouncedChangeHandler(value);
   };
 
+  // 游侠登录 跳转浏览器
+  const handlevisitorLogin = async (event: any) => {
+    const target = event.currentTarget as HTMLDivElement;
+    const dataTitle = target.dataset.title;
+    (window as any).NativeApi_YouXiaAuth(dataTitle);
+  };
+
   const handleVerificationCodeChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -75,7 +82,7 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     const is_code = !verificationCode || verificationCode?.length !== 6; // 验证码错误
     const is_phone = !isPhoneNumberValid; // 手机号错误
-    
+
     // 如果手机号校验不通过，验证码错误，进行错误提示
     if (is_phone || is_code) {
       is_phone && setPhoneError("1");
@@ -146,7 +153,7 @@ const Login: React.FC = () => {
           (window as any).landFirstTrigger(); // 调用引导页弹窗
         }, 1000); // 避免ws没有处理完banner图，所有延迟一秒触发
       } else {
-        setCodeError("2")
+        setCodeError("2");
       }
     } catch (error) {
       console.log(error);
@@ -228,6 +235,14 @@ const Login: React.FC = () => {
         </div>
         <div className="login-btn-box">
           <button onClick={handleLogin}>登录</button>
+        </div>
+        <div
+          className="visitor-login-text"
+          onClick={handlevisitorLogin}
+          data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${process.env.REACT_APP_YOUXIA_URL}&response_type=code&scope=webapi_login&state=state`}
+        >
+          {/* <img src={""} alt="" /> */}
+          游侠登录
         </div>
       </div>
     </div>

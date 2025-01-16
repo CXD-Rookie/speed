@@ -30,8 +30,11 @@ class Tracking {
         const isLogin = store.getState()?.accountInfo?.isLogin;// 是否登录
         const method = 
           isLogin
-            ? "phone"
-            : 0; // 手机登录 | 未登录
+            ? localStorage.getItem("loginMethod") === "phone"
+              ? "phone"
+              : "youXia"
+            : 0; // 手机登录 | 游侠登录 | 未登录
+
         const isReal = localStorage.getItem("isRealName") === "0" ? 1 : 0 // 实名认证 0 未认证 1 认证
         
         if (isVisit === 1) {
