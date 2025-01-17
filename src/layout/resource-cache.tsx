@@ -85,6 +85,15 @@ const ResourceCache: React.FC = () => {
 
   const cdn_url = "https://cdn.accessorx.com/";
 
+  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
+  // 动态导入图片
+  const defaultAvatarUrl = is_local
+    ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
+    : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT;
+  const empryUrl = is_local
+    ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
+    : process.env.REACT_APP_IMAGE_AVATAR_EMPTY;
+
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
     let storedData = localStorage.getItem("all_data")
@@ -96,7 +105,7 @@ const ResourceCache: React.FC = () => {
   return (
     <div style={{ display: "none" }}>
       {/* 设备连接Git */}
-      <img src={appliancesGit} alt=""/>
+      <img src={appliancesGit} alt="" />
       {/* 默认断网轮播图片 */}
       {carouselImage?.length > 0 &&
         carouselImage?.map(({ image_url }: any) => (
@@ -191,11 +200,11 @@ const ResourceCache: React.FC = () => {
       {/* 实名认证失败icon */}
       <img src={exclErrorIcon} alt="" />
       {/* 用户头像默认icon */}
-      <img src={""} alt="" />
+      <img src={defaultAvatarUrl} alt="" />
+      {/* 用户头像未登录icon */}
+      <img src={empryUrl} alt="" />
       {/* 用户头像vipicon */}
       <img src={avatarVipIcon} alt="" />
-      {/* 用户头像未登录icon */}
-      <img src={""} alt="" />
       {/* 优惠券页面已过期icon */}
       <img src={loseIcon} alt="" />
       {/* 优惠券页面未过期icon */}

@@ -21,6 +21,14 @@ interface UserAvatarComProps {
 
 const UserAvatarCom: React.FC<UserAvatarComProps> = (props) => {
   const { isVip = false, isLogin = false, type = "default" } = props;
+  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
+  // 动态导入图片
+  const defaultAvatarUrl = is_local
+    ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
+    : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT;
+  const empryUrl = is_local
+    ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
+    : process.env.REACT_APP_IMAGE_AVATAR_EMPTY;
 
   const styleTypeObj: any = {
     default: {
@@ -36,12 +44,12 @@ const UserAvatarCom: React.FC<UserAvatarComProps> = (props) => {
       class: "setting-user-avatar-com-module",
     },
   };
-
+  
   return (
     <div className={`user-avatar-com-module ${styleTypeObj?.[type]?.class}`}>
       <Avatar
         style={styleTypeObj?.[type]?.style}
-        // src={isLogin ? "" : ""}
+        src={isLogin ? defaultAvatarUrl : empryUrl}
       />
       {type === "edit" && isVip && (
         <img className="vip-icon" src={avatarVipIcon} alt="" />
