@@ -85,14 +85,17 @@ const ResourceCache: React.FC = () => {
 
   const cdn_url = "https://cdn.accessorx.com/";
 
+  // 是否是本地图片地址
   const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
   // 动态导入图片
-  const defaultAvatarUrl = is_local
-    ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
-    : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT;
-  const empryUrl = is_local
-    ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
-    : process.env.REACT_APP_IMAGE_AVATAR_EMPTY;
+  const defaultAvatarUrl =
+    is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
+      ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT;
+  const empryUrl =
+    is_local && process.env.REACT_APP_IMAGE_AVATAR_EMPTY
+      ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_EMPTY;
 
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
