@@ -371,6 +371,19 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         >
           提交
         </Button>
+        <div className="add-qq-contact">
+          如有疑问，欢迎加入客服QQ群：
+          <span
+            onClick={(event) => {
+              const target = event.currentTarget as HTMLDivElement;
+              const dataTitle = target.dataset.title;
+              (window as any).NativeApi_OpenBrowser(dataTitle);
+            }}
+            data-title={process.env.REACT_APP_QQ_LINk}
+          >
+            {process.env.REACT_APP_QQ}
+          </span>
+        </div>
       </div>
     </div>
   );
