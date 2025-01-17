@@ -75,7 +75,7 @@ const Login: React.FC = () => {
     debouncedChangeHandler(value);
   };
 
-  // 游侠登录 跳转浏览器
+  // 三方登录 跳转浏览器
   const handlevisitorLogin = async (event: any) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
@@ -248,10 +248,10 @@ const Login: React.FC = () => {
         <div
           className="visitor-login-text"
           onClick={handlevisitorLogin}
-          data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${process.env.REACT_APP_YOUXIA_URL}&response_type=code&scope=webapi_login&state=state`}
+          data-title={process.env.REACT_APP_THIRD_URL}
         >
           <img src={defaultAvatarUrl} alt="" />
-          游侠登录
+          {process.env.REACT_APP_TID_NAME}登录
         </div>
       </div>
     </div>

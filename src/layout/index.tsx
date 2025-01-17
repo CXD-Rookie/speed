@@ -673,7 +673,7 @@ const Layouts: React.FC = () => {
     }
   };
 
-  // 游侠登录
+  // 三方登录
   const youxiaLoginCallback = async (data: any) => {
     const isNew = data?.is_new_user; // 是否新用户
     const user = data?.user_info; // 用户信息
@@ -698,9 +698,15 @@ const Layouts: React.FC = () => {
         const lock_time = getMidnightTimestamp(currentTime); // 当天0点时间锁
 
         if (isNew) {
-          tracking.trackSignUpSuccess("youXia", isTrue ? 1 : 0);
+          tracking.trackSignUpSuccess(
+            process.env.REACT_APP_TID_SIGN,
+            isTrue ? 1 : 0
+          );
         } else {
-          tracking.trackLoginSuccess("youXia", isTrue ? 1 : 0);
+          tracking.trackLoginSuccess(
+            process.env.REACT_APP_TID_SIGN,
+            isTrue ? 1 : 0
+          );
         }
 
         if (isNew) {
@@ -722,7 +728,7 @@ const Layouts: React.FC = () => {
         webSocketService.loginReconnect();
         localStorage.removeItem("thirdBind"); // 删除第三方绑定的这个存储操作
 
-        // 如果是正常游侠登录触发一下首次充值或首次续期引导页
+        // 如果是正常三方登录触发一下首次充值或首次续期引导页
         if (Number(bind_type) === 1) {
           setTimeout(() => {
             (window as any).landFirstTrigger(); // 调用引导页弹窗
@@ -846,7 +852,7 @@ const Layouts: React.FC = () => {
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
-    (window as any).youxiaLoginCallback = youxiaLoginCallback; // 游侠登录回调，客户端调用
+    (window as any).youxiaLoginCallback = youxiaLoginCallback; // 三方登录回调，客户端调用
     (window as any).cacheGameFun = cacheGameFun; // 内部使用更新缓存游戏
     (window as any).landFirstTrigger = landFirstTrigger; // 调用引导页弹窗
 
