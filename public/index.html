@@ -25,7 +25,7 @@
     <script type="text/javascript" src="https://o.alicdn.com/captcha-frontend/aliyunCaptcha/AliyunCaptcha.js"></script>
     <script src="https://turing.captcha.qcloud.com/TCaptcha.js"></script>
     <script>
-      window.VERSION = ''; // 添加版本号
+      window.um_src = `%REACT_APP_UM_SRC%`; // 添加版本号
     </script>
   </head>
   <body>
@@ -33,14 +33,17 @@
     <!-- 浏览器不支持js脚本则展示标签中的内容 -->
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!-- 新的友盟埋点 -->
+    <!-- 友盟埋点 -->
     <script>
       var _czc = _czc || [];
-
+      
       (function () {
         var um = document.createElement("script");
         
+        um.src = window.um_src;
+
         var s = document.getElementsByTagName("script")[0];
+        
         s.parentNode.insertBefore(um, s);
       })();
     </script>

@@ -1,0 +1,33 @@
+<!--
+ * @Author: zhangda
+ * @Date: 2024-06-24 15:31:12
+ * @LastEditors: steven libo@rongma.com
+ * @LastEditTime: 2024-08-15 10:47:07
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: \speed\public\user_login.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第三方登录页面</title>
+    <script>
+      window.cdn_url = `%REACT_APP_CDN_URL%`; // 添加版本号
+    </script>
+    <script>
+      // 根据环境设置不同的 URL 指向cdn地址下的三方登录页面路由 hash路由 thirdPartyLogin
+      const redirectUrl = `${window.cdn_url}#/thirdPartyLogin`;
+
+      // 添加查询参数
+      window.location.href = `${redirectUrl}${window.location.search}`;
+    </script>
+</head>
+
+<body>
+  <div class="login-container">
+  </div>
+</body>
+</html>
