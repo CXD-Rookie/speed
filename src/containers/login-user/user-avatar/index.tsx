@@ -8,7 +8,6 @@
  */
 import React from "react";
 import { Avatar } from "antd";
-
 import "./index.scss";
 
 import avatarVipIcon from "@/assets/images/common/avatar-vip.svg";
@@ -19,17 +18,27 @@ interface UserAvatarComProps {
   type?: string;
 }
 
+// 接收一个图片路径作为参数，图片进行webpack字符化
+
+
 const UserAvatarCom: React.FC<UserAvatarComProps> = (props) => {
   const { isVip = false, isLogin = false, type = "default" } = props;
   const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
-  // 动态导入图片
-  const defaultAvatarUrl = is_local
-    ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
-    : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT;
-  const empryUrl = is_local
-    ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
-    : process.env.REACT_APP_IMAGE_AVATAR_EMPTY;
-
+  const defaultAvatarUrl =
+    is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
+      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string) ===
+        "string"
+        ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string)
+        : require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT || "";
+  const empryUrl =
+    is_local && process.env.REACT_APP_IMAGE_AVATAR_EMPTY
+      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string) ===
+        "string"
+        ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string)
+        : require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_EMPTY || "";
+  
   const styleTypeObj: any = {
     default: {
       style: { border: isVip ? "0.2vw solid #ffe3b6" : "none" },

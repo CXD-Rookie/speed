@@ -48,6 +48,15 @@ const Login: React.FC = () => {
 
   const [phoneError, setPhoneError] = useState<string>("0"); // 手机号错误状态码 "0" 正常状态
   const [codeError, setCodeError] = useState("0"); // 手机号验证码状态码 "0" 正常状态
+  // 是否是本地图片地址
+  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
+  const defaultAvatarUrl =
+    is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
+      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string) ===
+        "string"
+        ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string)
+        : require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT || "";
 
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
@@ -241,7 +250,7 @@ const Login: React.FC = () => {
           onClick={handlevisitorLogin}
           data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${process.env.REACT_APP_YOUXIA_URL}&response_type=code&scope=webapi_login&state=state`}
         >
-          {/* <img src={""} alt="" /> */}
+          <img src={defaultAvatarUrl} alt="" />
           游侠登录
         </div>
       </div>

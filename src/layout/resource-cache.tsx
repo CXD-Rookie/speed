@@ -90,13 +90,24 @@ const ResourceCache: React.FC = () => {
   // 动态导入图片
   const defaultAvatarUrl =
     is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
-      ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
-      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT;
+      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string) ===
+        "string"
+        ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string)
+        : require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT || "";
   const empryUrl =
     is_local && process.env.REACT_APP_IMAGE_AVATAR_EMPTY
-      ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
-      : process.env.REACT_APP_IMAGE_AVATAR_EMPTY;
-
+      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string) ===
+        "string"
+        ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string)
+        : require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_EMPTY || "";
+  const logoUrl =
+    is_local && process.env.REACT_APP_IMAGE_LOGO
+      ? typeof require(process.env.REACT_APP_IMAGE_LOGO as string) === "string"
+        ? require(process.env.REACT_APP_IMAGE_LOGO as string)
+        : require(process.env.REACT_APP_IMAGE_LOGO as string).default
+      : process.env.REACT_APP_IMAGE_LOGO || "";
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
     let storedData = localStorage.getItem("all_data")
@@ -251,7 +262,7 @@ const ResourceCache: React.FC = () => {
       {/* 新用户弹窗 */}
       <img src={newUserIcon} alt="" />
       {/* 登录logo */}
-      <img src={""} alt="" />
+      <img src={logoUrl} alt="" />
       {/* 用户信息充值图片 */}
       <img src={bannerRenewalIcon} alt="" />
       {/* 用户信息续费图片 */}
