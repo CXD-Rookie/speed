@@ -143,8 +143,12 @@ const VisitorLogin: React.FC = (props) => {
         footer={null}
       >
         <div className="bind-main">
-          <div className="login-text">游侠登录绑定手机号</div>
-          <div className="bind-text">游侠登录绑定手机号</div>
+          <div className="login-text">
+            {process.env.REACT_APP_TID_NAME}登录绑定手机号
+          </div>
+          <div className="bind-text">
+            {process.env.REACT_APP_TID_NAME}登录绑定手机号
+          </div>
           <div className="input-group public-input-group">
             <CustomInput
               placeholder={"请输入手机号码"}

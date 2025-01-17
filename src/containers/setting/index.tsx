@@ -55,7 +55,6 @@ const SettingsModal: React.FC = (props) => {
     ? localMchannel
     : "other";
   const user_id = localStorage.getItem("userId");
-  const website_url = process.env.REACT_APP_WEBSITE_URL;
 
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
@@ -512,34 +511,43 @@ const SettingsModal: React.FC = (props) => {
                     color: "#FF4900",
                     cursor: "pointer",
                   }}
-                  data-title={website_url}
+                  data-title={process.env.REACT_APP_WEBSITE_CHANNEL_URL}
                   onClick={handleClick}
                 >
-                  {website_url}
+                  {process.env.REACT_APP_WEBSITE_URL}
                 </div>
+              </div>
+              <div className="customer-item-content">
+                点击加官方客服群：
+                <span
+                  data-title={process.env.REACT_APP_QQ_LINk}
+                  onClick={handleClick}
+                >
+                  {process.env.REACT_APP_QQ}
+                </span>
               </div>
               <div className="protocols">
                 <span
                   onClick={handleClick}
-                  data-title={process.env.REACT_APP_TERMS_ADDRESS}
+                  data-title={`${process.env.REACT_APP_TERMS_ADDRESS}?mchannel=${mchannel}`}
                 >
                   用户协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={process.env.REACT_APP_POLICY_ADDRESS}
+                  data-title={`${process.env.REACT_APP_POLICY_ADDRESS}?mchannel=${mchannel}`}
                 >
                   隐私协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={process.env.REACT_APP_CHILDREN_ADDRESS}
+                  data-title={`${process.env.REACT_APP_CHILDREN_ADDRESS}?mchannel=${mchannel}`}
                 >
                   儿童保护及监护人须知
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={process.env.REACT_APP_AUTOMATIC_ADDRESS}
+                  data-title={`${process.env.REACT_APP_AUTOMATIC_ADDRESS}?mchannel=${mchannel}`}
                 >
                   自动续费协议
                 </span>
@@ -610,7 +618,7 @@ const SettingsModal: React.FC = (props) => {
                   </div>
                   <div className="info-box info-flex">
                     <div className="info-left">
-                      <label>游侠账号</label>
+                      <label>{process.env.REACT_APP_TID_NAME}账号</label>
                       <div>
                         {thirdInfo?.some((item: any) => item?.source === 2)
                           ? "已绑定"

@@ -15,12 +15,16 @@ import loginApi from "@/api/login";
 
 const typeObj: any = {
   unbind: {
-    title: "解除绑定游侠账号",
-    text: "解除绑定游侠账号需先验证已绑定手机号码，点击“获取验证码”完成验证",
+    title: `解除绑定${process.env.REACT_APP_TID_NAME || ""}账号`,
+    text: `解除绑定${
+      process.env.REACT_APP_TID_NAME || ""
+    }账号需先验证已绑定手机号码，点击“获取验证码”完成验证`,
   }, // 三方解绑
   third: {
-    title: "绑定游侠账号",
-    text: "绑定游侠账号需先验证已绑定手机号码，点击“获取验证码”完成验证",
+    title: `绑定${process.env.REACT_APP_TID_NAME || ""}账号`,
+    text: `绑定${
+      process.env.REACT_APP_TID_NAME || ""
+    }账号需先验证已绑定手机号码，点击“获取验证码”完成验证`,
   }, // 三方绑定
   oldPhone: {
     title: "更换手机号码",
@@ -207,7 +211,7 @@ const BindPhoneMode: React.FC = (props) => {
       }
 
       let res = await loginApi.unbindPhone({
-        tid: 2,
+        tid: process.env.REACT_APP_TID,
       });
 
       return res;

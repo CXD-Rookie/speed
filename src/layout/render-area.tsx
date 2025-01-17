@@ -13,6 +13,8 @@ import Active from "@/containers/active";
 import PayModalNew from "@/containers/Pay/new";
 import PayModal from "@/containers/Pay";
 import MinorModal from "@/containers/minor";
+import BindPhoneMode from "@/containers/bind-phone-mode";
+import VisitorLogin from "@/containers/visitor-login";
 import DisoverVersion from "@/containers/disover-version";
 import LocalGame from "@/containers/local-game";
 import ResourceCache from "./resource-cache";
@@ -20,6 +22,7 @@ import ResourceCache from "./resource-cache";
 const RenderSrea:React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const state = useSelector((state: any) => state?.modalOpen);
+  const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
 
   const {
     payState = {},
@@ -63,6 +66,10 @@ const RenderSrea:React.FC = () => {
       {payState?.open && <PayModal />}
       {/* 实名认证等UI确定弹窗 */}
       <MinorModal />
+      {/* 第三方手机绑定类型弹窗 */}
+      <BindPhoneMode />
+      {/* 三方登录绑定手机号登录 */}
+      {isBindPhone && <VisitorLogin />}
       {/* 发现新版本弹窗 */}
       {versionState?.open && <DisoverVersion />}
       {/* 发现本地扫描到的游戏弹窗 */}
