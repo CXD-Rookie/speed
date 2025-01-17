@@ -50,6 +50,12 @@ const Login: React.FC = () => {
   const [codeError, setCodeError] = useState("0"); // 手机号验证码状态码 "0" 正常状态
   // 是否是本地图片地址
   const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
+  const logoUrl =
+    is_local && process.env.REACT_APP_IMAGE_LOGO
+      ? typeof require(process.env.REACT_APP_IMAGE_LOGO as string) === "string"
+        ? require(process.env.REACT_APP_IMAGE_LOGO as string)
+        : require(process.env.REACT_APP_IMAGE_LOGO as string).default
+      : process.env.REACT_APP_IMAGE_LOGO || "";
   const defaultAvatarUrl =
     is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
       ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string) ===
@@ -180,7 +186,7 @@ const Login: React.FC = () => {
       </div>
       <div className="main">
         <div className="login-logo">
-          <img src={""} alt="" />
+          <img src={logoUrl} alt="" />
         </div>
         <div className="login-text">请登录</div>
         <div className="input-group public-input-group">
