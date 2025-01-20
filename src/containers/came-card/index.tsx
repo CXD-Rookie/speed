@@ -1188,7 +1188,12 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               </div>
             ) : null}
             {isFree && free && (
-              <div className="exemption-box">
+              <div
+                className="exemption-box"
+                style={{
+                  background: free === "永久" ? "transparent" : "#1A1A22",
+                }}
+              >
                 <div className="exemption">限免</div>
                 {free !== "永久" && <div className="time">剩余 {free}</div>}
               </div>

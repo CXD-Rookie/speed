@@ -39,11 +39,11 @@ const PayErrorModal: React.FC<SettingsModalProps> = (props) => {
       >
         <img className="real-error-icon" src={realErrorQuan} alt="" />
         <div className="box" />
-        <div className="accelerate-modal">很抱歉，您的支付未成功</div>
+        <div className="accelerate-modal">很抱歉，支付未成功</div>
         <div className="accelerate-modal">
-          请检查网络连接或更换支付方式后在试一次。
+          请检查网络连接或更换支付方式后重试。
         </div>
-        <div className="accelerate-modal">如有疑问，请联系客服</div>
+        <div className="accelerate-modal">如需帮助，请联系客服</div>
       </Modal>
     </Fragment>
   );
