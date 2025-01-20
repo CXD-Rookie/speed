@@ -14,10 +14,8 @@ import tracking from "@/common/tracking";
 import eventBus from './eventBus';
 
 const instance = axios.create({
-  // baseURL: 'https://test-api.accessorx.com', // 根据实际情况设置基础 URL
   headers: {
     "Content-Type": "application/json",
-    // "ceshi": "ceshi",
   },
   timeout: 10000, // 请求超时时间（毫秒）
 });

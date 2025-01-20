@@ -478,7 +478,7 @@ const GameDetail: React.FC = () => {
         className="back-icon"
         src={`${
           detailData?.background_img
-            ? "https://cdn.accessorx.com/" + detailData?.background_img
+            ? process.env.REACT_APP_SHEER_API_URL + detailData?.background_img
             : iniliteBackGIcon
         }`}
         alt=""
@@ -502,7 +502,7 @@ const GameDetail: React.FC = () => {
                 className="default-game-logo"
                 src={`${
                   detailData?.logo
-                    ? "https://cdn.accessorx.com/" + detailData?.logo
+                    ? process.env.REACT_APP_SHEER_API_URL + detailData?.logo
                     : defaultLogo
                 }`}
                 alt=""

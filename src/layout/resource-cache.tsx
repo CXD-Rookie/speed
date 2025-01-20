@@ -83,7 +83,7 @@ import appliancesGit from "@/assets/images/common/appliances.gif";
 const ResourceCache: React.FC = () => {
   const [carouselImage, setCarouselImage] = useState<any>([]);
 
-  const cdn_url = "https://cdn.accessorx.com/";
+  const cdn_url = process.env.REACT_APP_SHEER_API_URL;
 
   // 是否是本地图片地址
   const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";

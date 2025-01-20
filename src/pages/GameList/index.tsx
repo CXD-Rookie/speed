@@ -91,7 +91,7 @@ const GameLibrary: React.FC = () => {
       });
       const data = (res?.data?.list || []).map((game: Game) => ({
         ...game,
-        cover_img: `https://cdn.accessorx.com/${
+        cover_img: `${process.env.REACT_APP_SHEER_API_URL}${
           game.cover_img || game.background_img
         }`,
       }));

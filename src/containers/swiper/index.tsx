@@ -68,7 +68,7 @@ const Swiper: React.FC<SwiperProps> = ({ onImageClick, swiperData }) => {
           <div key={index} onClick={() => handleClick(params)}>
             <img
               className="imgalt"
-              src={"https://cdn.accessorx.com/" + image_url}
+              src={process.env.REACT_APP_SHEER_API_URL + image_url}
               alt={`活动 ${index + 1}`}
             />
           </div>

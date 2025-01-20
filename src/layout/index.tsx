@@ -162,7 +162,7 @@ const Layouts: React.FC = () => {
       const filtration = (list: any) => {
         list = list?.map((value: any) => {
           const src = value?.cover_img || value.background_img;
-          const url = "https://cdn.accessorx.com/";
+          const url = process.env.REACT_APP_SHEER_API_URL;
 
           return {
             ...value,
@@ -414,7 +414,7 @@ const Layouts: React.FC = () => {
                     ...result,
                     mark: "local", // 标记这个游戏是本地扫描到的
                     scan_path: element?.path, // 扫描到的本地游戏路径
-                    cover_img: `https://cdn.accessorx.com/${
+                    cover_img: `${process.env.REACT_APP_SHEER_API_URL}${
                       result.cover_img
                         ? result.cover_img
                         : result.background_img

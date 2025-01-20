@@ -134,7 +134,10 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       const imagesArr: string[] = [];
 
       images.forEach((image) => {
-        let filteredSrc = image.url.replace("https://cdn.accessorx.com/", "");
+        let filteredSrc = image.url.replace(
+          process.env.REACT_APP_SHEER_API_URL,
+          ""
+        );
         imagesArr.push(filteredSrc);
       });
 
@@ -207,7 +210,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       console.log("上传成功：", response.data.data.url);
       // message.success('上传成功');
       const imageUrl =
-        `${"https://cdn.accessorx.com/"}` + response.data.data.url; // 获取服务器返回的图片 URL
+        process.env.REACT_APP_SHEER_API_URL + response.data.data.url; // 获取服务器返回的图片 URL
       setImages((prevImages) => [
         ...prevImages,
         { url: imageUrl, uid: file.uid },
