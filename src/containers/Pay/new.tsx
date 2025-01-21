@@ -376,22 +376,15 @@ const PayModal: React.FC = (props) => {
                     display: index === activeTabIndex ? "block" : "none",
                   }}
                 >
-                  {
-                    console.log(
-                      firstPayRenewedTypes,
-                      item,
-                      firstPayTypes
-                    ) as any
-                  }
                   <p className="highlight">
                     月卡
                     {!firstAuth.firstAuth.first_purchase && (
                       <span>
-                        {Number(firstPayRenewedTypes[item.type]) / 10}
+                        {Number(firstPayRenewedTypes?.[item?.type]) / 10}
                       </span>
                     )}
                     {!firstAuth.firstAuth.first_renewed && (
-                      <span>{Number(firstPayTypes[item.type]) / 10}</span>
+                      <span>{Number(firstPayTypes?.[item?.type]) / 10}</span>
                     )}
                     折
                   </p>
