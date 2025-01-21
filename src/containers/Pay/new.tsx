@@ -128,10 +128,10 @@ const PayModal: React.FC = (props) => {
         commodityResponse.error === 0 &&
         unpaidOrder?.data
       ) {
-        setPayTypes(payTypeResponse.data);
-        setCommodities(commodityResponse.data.list);
-        setFirstPayTypes(firstPurchaseResponse.data.first_purchase);
-        setFirstPayRenewedTypes(firstPurchaseResponse.data.first_renewed);
+        setPayTypes(payTypeResponse?.data || {});
+        setCommodities(commodityResponse?.data?.list || {});
+        setFirstPayTypes(firstPurchaseResponse?.data?.first_purchase || {});
+        setFirstPayRenewedTypes(firstPurchaseResponse?.data?.first_renewed || {});
 
         return {
           commodity: commodityResponse.data.list || [],
@@ -376,6 +376,13 @@ const PayModal: React.FC = (props) => {
                     display: index === activeTabIndex ? "block" : "none",
                   }}
                 >
+                  {
+                    console.log(
+                      firstPayRenewedTypes,
+                      item,
+                      firstPayTypes
+                    ) as any
+                  }
                   <p className="highlight">
                     月卡
                     {!firstAuth.firstAuth.first_purchase && (
