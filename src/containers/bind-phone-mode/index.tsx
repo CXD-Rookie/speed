@@ -237,7 +237,7 @@ const BindPhoneMode: React.FC = (props) => {
           dispatch(setSetting({ settingOpen: false, type: "default" }));
           const target = document.querySelector(".last-login-text") as any;
           const dataTitle = target?.dataset?.title;
-          (window as any).NativeApi_YouXiaAuth(dataTitle);
+          (window as any).NativeApi_PartnerAuth(dataTitle);
         } else {
           setVeryCodeErr("error");
         }

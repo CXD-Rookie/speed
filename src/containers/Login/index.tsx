@@ -85,7 +85,7 @@ const Login: React.FC = () => {
   const handlevisitorLogin = async (event: any) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
-    (window as any).NativeApi_YouXiaAuth(dataTitle);
+    (window as any).NativeApi_PartnerAuth(dataTitle);
   };
 
   const handleVerificationCodeChange = (
