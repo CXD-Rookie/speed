@@ -254,7 +254,7 @@ const Login: React.FC = () => {
         <div
           className="visitor-login-text"
           onClick={handlevisitorLogin}
-          data-title={process.env.REACT_APP_THIRD_URL}
+          data-title={process.env.REACT_APP_PARTNER_URL}
         >
           <img src={defaultAvatarUrl} alt="" />
           {process.env.REACT_APP_TID_NAME}登录

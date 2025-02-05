@@ -368,8 +368,8 @@ const BindPhoneMode: React.FC = (props) => {
               className="last-login-text"
               onClick={(e) => handlevisitorLogin(e)}
               disabled={!code || !phone}
-              data-title={`${process.env.REACT_APP_THIRD_HTML_URL}${
-                process.env.REACT_APP_YOUXIA_URL
+              data-title={`${process.env.REACT_APP_PARTNER_HTML_URL}${
+                process.env.REACT_APP_PARTNER_URL
               }?token=${JSON.parse(
                 token
               )}&response_type=code&scope=webapi_login&state=state`}

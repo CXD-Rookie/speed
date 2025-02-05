@@ -674,7 +674,7 @@ const Layouts: React.FC = () => {
   };
 
   // 三方登录
-  const youxiaLoginCallback = async (data: any) => {
+  const partnerLoginCallback = async (data: any) => {
     const isNew = data?.is_new_user; // 是否新用户
     const user = data?.user_info; // 用户信息
 
@@ -852,7 +852,7 @@ const Layouts: React.FC = () => {
     (window as any).showSettingsForm = () =>
       dispatch(setSetting({ settingOpen: true, type: "default" })); // 客户端调用设置方法
     (window as any).invokeLocalScan = invokeLocalScan; // 客户端调用扫描本地游戏方法
-    (window as any).youxiaLoginCallback = youxiaLoginCallback; // 三方登录回调，客户端调用
+    (window as any).partnerLoginCallback = partnerLoginCallback; // 三方登录回调，客户端调用
     (window as any).cacheGameFun = cacheGameFun; // 内部使用更新缓存游戏
     (window as any).landFirstTrigger = landFirstTrigger; // 调用引导页弹窗
 
@@ -860,7 +860,7 @@ const Layouts: React.FC = () => {
     return () => {
       delete (window as any).landFirstTrigger;
       delete (window as any).cacheGameFun;
-      delete (window as any).youxiaLoginCallback;
+      delete (window as any).partnerLoginCallback;
       delete (window as any).speedErrorReport;
       delete (window as any).invokeLocalScan;
       delete (window as any).speedError;
