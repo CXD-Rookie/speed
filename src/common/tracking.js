@@ -3,7 +3,7 @@ import { store } from "@/redux/store";
 class Tracking {
   constructor() {
     this.otherMchannel = (value = "befter") => {
-      const signChannel = ["berrygm", "ali213", "accessorx", "dualspring", "jsqali213", "baidu"];
+      const signChannel = JSON.parse(process.env.REACT_APP_PARTNER_CHANNEL || JSON.stringify([]));
       const localMchannel = localStorage.getItem("mchannel");
       const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
       const channelId = mchannel === "other" ? `${value === "befter" ? ";" : ""}editedChannelID=${localMchannel}` : "";

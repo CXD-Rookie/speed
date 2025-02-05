@@ -36,14 +36,7 @@ import copyIcon from "@/assets/images/common/copy.png";
 import loadingGif from "@/assets/images/common/jiazai.gif";
 
 const { TabPane } = Tabs;
-const signChannel = [
-  "berrygm",
-  "ali213",
-  "accessorx",
-  "dualspring",
-  "jsqali213",
-  "baidu",
-];
+const signChannel = JSON.parse(process.env.REACT_APP_PARTNER_CHANNEL || JSON.stringify([]));
 
 const SettingsModal: React.FC = (props) => {
   const { settingOpen = false, type = "default" } = useSelector((state: any) => state?.modalOpen?.setting);
