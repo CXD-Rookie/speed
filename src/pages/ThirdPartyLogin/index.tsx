@@ -38,26 +38,20 @@ const ThirdPartyLogin: React.FC<ThirdPartyLoginProps> = () => {
         tid: 2,
         platform: 3,
       });
-      
+
       // 服务端返回的绑定类型
       let state = res?.data?.user_bind_status ?? 0;
       console.log(
         searchParams.get("token"),
         state,
         window.location,
-        process.env.REACT_APP_YOUXIA_URL,
+        process.env.REACT_APP_PARTNER_URL,
         process.env.REACT_APP_API_URL
       );
 
       if (String(state)) {
-        // 关闭第三方登录 并且将token 是否第三方登录 是否新用户 3个参数存储在 加速器项目中
-        // (window as any).NativeApi_YouXiaAuthComplete(
-        //   res?.data?.token,
-        //   state,
-        //   res?.data?.is_new_user,
-        //   res?.data?.vip_experience_time
-        // );
-        (window as any).NativeApi_YouXiaAuthComplete(
+        // 关闭第三方登录 并且将（用户信息）token 是否第三方登录 是否新用户 3个参数存储在 加速器项目中
+        (window as any).NativeApi_PartnerAuthComplete(
           JSON.stringify(res?.data),
           state
         );

@@ -20,10 +20,8 @@ import CustomInput from "./custom-input";
 import loginApi from "@/api/login";
 import "./index.scss";
 import clotureIcon from "@/assets/images/common/cloture.svg";
-import logoIcon from "@/assets/images/common/logo.png";
 import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
-import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
 
 // 手机号对应错误码文案
 const phoneErrorText: any = {
@@ -50,6 +48,21 @@ const Login: React.FC = () => {
 
   const [phoneError, setPhoneError] = useState<string>("0"); // 手机号错误状态码 "0" 正常状态
   const [codeError, setCodeError] = useState("0"); // 手机号验证码状态码 "0" 正常状态
+  // 是否是本地图片地址
+  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
+  const logoUrl =
+    is_local && process.env.REACT_APP_IMAGE_LOGO
+      ? typeof require(process.env.REACT_APP_IMAGE_LOGO as string) === "string"
+        ? require(process.env.REACT_APP_IMAGE_LOGO as string)
+        : require(process.env.REACT_APP_IMAGE_LOGO as string).default
+      : process.env.REACT_APP_IMAGE_LOGO || "";
+  const defaultAvatarUrl =
+    is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
+      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string) ===
+        "string"
+        ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string)
+        : require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT || "";
 
   // 使用 useCallback 包装 debounced 函数
   const debouncedChangeHandler = useCallback(
@@ -68,11 +81,11 @@ const Login: React.FC = () => {
     debouncedChangeHandler(value);
   };
 
-  // 游侠登录 跳转浏览器
+  // 三方登录 跳转浏览器
   const handlevisitorLogin = async (event: any) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
-    (window as any).NativeApi_YouXiaAuth(dataTitle);
+    (window as any).NativeApi_PartnerAuth(dataTitle);
   };
 
   const handleVerificationCodeChange = (
@@ -84,7 +97,7 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     const is_code = !verificationCode || verificationCode?.length !== 6; // 验证码错误
     const is_phone = !isPhoneNumberValid; // 手机号错误
-    
+
     // 如果手机号校验不通过，验证码错误，进行错误提示
     if (is_phone || is_code) {
       is_phone && setPhoneError("1");
@@ -155,7 +168,7 @@ const Login: React.FC = () => {
           (window as any).landFirstTrigger(); // 调用引导页弹窗
         }, 1000); // 避免ws没有处理完banner图，所有延迟一秒触发
       } else {
-        setCodeError("2")
+        setCodeError("2");
       }
     } catch (error) {
       console.log(error);
@@ -173,7 +186,7 @@ const Login: React.FC = () => {
       </div>
       <div className="main">
         <div className="login-logo">
-          <img src={logoIcon} alt="" />
+          <img src={logoUrl} alt="" />
         </div>
         <div className="login-text">请登录</div>
         <div className="input-group public-input-group">
@@ -241,10 +254,10 @@ const Login: React.FC = () => {
         <div
           className="visitor-login-text"
           onClick={handlevisitorLogin}
-          data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${process.env.REACT_APP_YOUXIA_URL}&response_type=code&scope=webapi_login&state=state`}
+          data-title={process.env.REACT_APP_PARTNER_URL}
         >
-          <img src={visitorLoginIcon} alt="" />
-          游侠登录
+          <img src={defaultAvatarUrl} alt="" />
+          {process.env.REACT_APP_TID_NAME}登录
         </div>
       </div>
     </div>

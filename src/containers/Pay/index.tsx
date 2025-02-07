@@ -655,7 +655,7 @@ const PayModal: React.FC = (props) => {
                         className="txt"
                         ref={divRef}
                         onClick={handleClick}
-                        data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                        data-title={process.env.REACT_APP_TERMS_ADDRESS}
                       >
                         用户协议
                       </span>
@@ -665,7 +665,7 @@ const PayModal: React.FC = (props) => {
                           className="txt"
                           ref={divRef}
                           onClick={handleClick}
-                          data-title="https://cdn.accessorx.com/web/automatic_renewal_agreement.html"
+                          data-title={process.env.REACT_APP_AUTOMATIC_ADDRESS}
                         >
                           自动续费协议
                         </span>

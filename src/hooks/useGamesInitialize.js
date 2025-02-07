@@ -334,7 +334,7 @@ export const useGamesInitialize = () => {
     try {
       const res = await gameApi.gameList({ s: option?.name });
       const data = res?.data?.list;
-      const cover_img = `https://cdn.accessorx.com/${data?.[0]?.cover_img ?? data?.[0].background_img}`;
+      const cover_img = `${process.env.REACT_APP_SHEER_API_URL}${data?.[0]?.cover_img ?? data?.[0].background_img}`;
 
       if ((res?.error === 0 && !data) || data?.[0]?.id !== option?.id) {
         if (customFun) {
@@ -360,7 +360,7 @@ export const useGamesInitialize = () => {
           ...option,
           ...data?.[0],
           cover_img:
-            `https://cdn.accessorx.com/${data?.[0]?.cover_img ?? data?.[0].background_img}`
+            `${process.env.REACT_APP_SHEER_API_URL}${data?.[0]?.cover_img ?? data?.[0].background_img}`
         }
 
         meGame[index] = obj;

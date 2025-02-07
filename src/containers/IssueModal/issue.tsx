@@ -107,7 +107,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
   // 定义验证码js加载错误处理函数
   const loadErrorCallback = () => {
-    let appid = "190613711"; // 生成容灾票据或自行做其它处理
+    let appid = process.env.REACT_APP_CAPTCHA_APPID_ISSUE; // 生成容灾票据或自行做其它处理
     let ticket =
       "terror_1001_" + appid + Math.floor(new Date().getTime() / 1000);
 
@@ -134,7 +134,10 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       const imagesArr: string[] = [];
 
       images.forEach((image) => {
-        let filteredSrc = image.url.replace("https://cdn.accessorx.com/", "");
+        let filteredSrc = image.url.replace(
+          process.env.REACT_APP_SHEER_API_URL,
+          ""
+        );
         imagesArr.push(filteredSrc);
       });
 
@@ -173,7 +176,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const handleSubmit = async () => {
     try {
       let captcha = new (window as any).TencentCaptcha(
-        "190613711",
+        process.env.REACT_APP_CAPTCHA_APPID_ISSUE,
         codeCallback,
         {
           userLanguage: "zh",
@@ -207,7 +210,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       console.log("上传成功：", response.data.data.url);
       // message.success('上传成功');
       const imageUrl =
-        `${"https://cdn.accessorx.com/"}` + response.data.data.url; // 获取服务器返回的图片 URL
+        process.env.REACT_APP_SHEER_API_URL + response.data.data.url; // 获取服务器返回的图片 URL
       setImages((prevImages) => [
         ...prevImages,
         { url: imageUrl, uid: file.uid },
@@ -379,9 +382,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
               const dataTitle = target.dataset.title;
               (window as any).NativeApi_OpenBrowser(dataTitle);
             }}
-            data-title="https://qm.qq.com/q/KzaRJZbj8I"
+            data-title={process.env.REACT_APP_QQ_LINk}
           >
-            955852815
+            {process.env.REACT_APP_QQ}
           </span>
         </div>
       </div>

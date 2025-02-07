@@ -3,7 +3,7 @@ import { store } from "@/redux/store";
 class Tracking {
   constructor() {
     this.otherMchannel = (value = "befter") => {
-      const signChannel = ["berrygm", "ali213", "accessorx", "dualspring", "jsqali213", "baidu"];
+      const signChannel = JSON.parse(process.env.REACT_APP_PARTNER_CHANNEL || JSON.stringify([]));
       const localMchannel = localStorage.getItem("mchannel");
       const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
       const channelId = mchannel === "other" ? `${value === "befter" ? ";" : ""}editedChannelID=${localMchannel}` : "";
@@ -30,10 +30,11 @@ class Tracking {
         const isLogin = store.getState()?.accountInfo?.isLogin;// 是否登录
         const method = 
           isLogin
-            ? localStorage.getItem("loginMethod") === "phone" 
-              ? "phone" 
-              : "youXia"
-            : 0; // 手机登录 | 游侠登录 | 未登录
+            ? localStorage.getItem("loginMethod") === "phone"
+              ? "phone"
+              : process.env.REACT_APP_TID_SIGN
+            : 0; // 手机登录 | 三方登录 | 未登录
+
         const isReal = localStorage.getItem("isRealName") === "0" ? 1 : 0 // 实名认证 0 未认证 1 认证
         
         if (isVisit === 1) {

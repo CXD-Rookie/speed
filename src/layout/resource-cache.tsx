@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 
 import loadingGif from "@/assets/images/common/jiazai.gif";
 import newUserIcon from "@/assets/images/home/new-user.png";
-import visitorLoginIcon from "@/assets/images/common/visitor-login.svg";
-import logoIcon from "@/assets/images/common/logo.png";
 import bannerRechargeIcon from "@/assets/images/common/banner-recharge.png";
 import bannerRenewalIcon from "@/assets/images/common/banner-renewal.png";
 import updateBagIcon from "@/assets/images/common/update-bag.webp"
@@ -35,9 +33,7 @@ import phoneIcon from "@/assets/images/common/phone.svg";
 import challengeIcon from "@/assets/images/common/challenge.svg";
 import loseIcon from "@/assets/images/common/yishiyong.svg";
 import expiresIcon from "@/assets/images/common/yiguoqi.svg";
-import defaultAvatarIcon from "@/assets/images/common/default-avatar.svg";
 import avatarVipIcon from "@/assets/images/common/avatar-vip.svg";
-import noLoginIcon from "@/assets/images/common/no-login-avatar.svg";
 import realErrorIcon from "@/assets/images/common/real_error_quan.svg";
 import realSucessIcon from "@/assets/images/common/real-sucess.svg";
 import exclErrorIcon from "@/assets/images/common/excl.svg";
@@ -87,8 +83,31 @@ import appliancesGit from "@/assets/images/common/appliances.gif";
 const ResourceCache: React.FC = () => {
   const [carouselImage, setCarouselImage] = useState<any>([]);
 
-  const cdn_url = "https://cdn.accessorx.com/";
+  const cdn_url = process.env.REACT_APP_SHEER_API_URL;
 
+  // 是否是本地图片地址
+  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
+  // 动态导入图片
+  const defaultAvatarUrl =
+    is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
+      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string) ===
+        "string"
+        ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string)
+        : require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT || "";
+  const empryUrl =
+    is_local && process.env.REACT_APP_IMAGE_AVATAR_EMPTY
+      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string) ===
+        "string"
+        ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string)
+        : require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
+      : process.env.REACT_APP_IMAGE_AVATAR_EMPTY || "";
+  const logoUrl =
+    is_local && process.env.REACT_APP_IMAGE_LOGO
+      ? typeof require(process.env.REACT_APP_IMAGE_LOGO as string) === "string"
+        ? require(process.env.REACT_APP_IMAGE_LOGO as string)
+        : require(process.env.REACT_APP_IMAGE_LOGO as string).default
+      : process.env.REACT_APP_IMAGE_LOGO || "";
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
     let storedData = localStorage.getItem("all_data")
@@ -100,7 +119,7 @@ const ResourceCache: React.FC = () => {
   return (
     <div style={{ display: "none" }}>
       {/* 设备连接Git */}
-      <img src={appliancesGit} alt=""/>
+      <img src={appliancesGit} alt="" />
       {/* 默认断网轮播图片 */}
       {carouselImage?.length > 0 &&
         carouselImage?.map(({ image_url }: any) => (
@@ -195,11 +214,11 @@ const ResourceCache: React.FC = () => {
       {/* 实名认证失败icon */}
       <img src={exclErrorIcon} alt="" />
       {/* 用户头像默认icon */}
-      <img src={defaultAvatarIcon} alt="" />
+      <img src={defaultAvatarUrl} alt="" />
+      {/* 用户头像未登录icon */}
+      <img src={empryUrl} alt="" />
       {/* 用户头像vipicon */}
       <img src={avatarVipIcon} alt="" />
-      {/* 用户头像未登录icon */}
-      <img src={noLoginIcon} alt="" />
       {/* 优惠券页面已过期icon */}
       <img src={loseIcon} alt="" />
       {/* 优惠券页面未过期icon */}
@@ -242,10 +261,8 @@ const ResourceCache: React.FC = () => {
       <img src={loadingGif} alt="" />
       {/* 新用户弹窗 */}
       <img src={newUserIcon} alt="" />
-      {/* 游侠图标 */}
-      <img src={visitorLoginIcon} alt="" />
       {/* 登录logo */}
-      <img src={logoIcon} alt="" />
+      <img src={logoUrl} alt="" />
       {/* 用户信息充值图片 */}
       <img src={bannerRenewalIcon} alt="" />
       {/* 用户信息续费图片 */}

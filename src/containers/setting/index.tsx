@@ -36,14 +36,7 @@ import copyIcon from "@/assets/images/common/copy.png";
 import loadingGif from "@/assets/images/common/jiazai.gif";
 
 const { TabPane } = Tabs;
-const signChannel = [
-  "berrygm",
-  "ali213",
-  "accessorx",
-  "dualspring",
-  "jsqali213",
-  "baidu",
-];
+const signChannel = JSON.parse(process.env.REACT_APP_PARTNER_CHANNEL || JSON.stringify([]));
 
 const SettingsModal: React.FC = (props) => {
   const { settingOpen = false, type = "default" } = useSelector((state: any) => state?.modalOpen?.setting);
@@ -97,8 +90,8 @@ const SettingsModal: React.FC = (props) => {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
+    
     (window as any).NativeApi_OpenBrowser(dataTitle);
-    console.log("data-title:", dataTitle);
   };
 
   const native_fixup_network_lsp = () => {
@@ -511,44 +504,43 @@ const SettingsModal: React.FC = (props) => {
                     color: "#FF4900",
                     cursor: "pointer",
                   }}
-                  data-title={`https://jsq.ali213.net?cid=about`}
+                  data-title={process.env.REACT_APP_WEBSITE_CHANNEL_URL}
                   onClick={handleClick}
                 >
-                  {/* https://www.accessorx.com */}
-                  https://jsq.ali213.net
+                  {process.env.REACT_APP_WEBSITE_URL}
                 </div>
               </div>
               <div className="customer-item-content">
                 点击加官方客服群：
                 <span
-                  data-title={`https://qm.qq.com/q/KzaRJZbj8I`}
+                  data-title={process.env.REACT_APP_QQ_LINk}
                   onClick={handleClick}
                 >
-                  955852815
+                  {process.env.REACT_APP_QQ}
                 </span>
               </div>
               <div className="protocols">
                 <span
                   onClick={handleClick}
-                  data-title={`https://cdn.accessorx.com/web/terms_of_service.html?mchannel=${mchannel}`}
+                  data-title={`${process.env.REACT_APP_TERMS_ADDRESS}?mchannel=${mchannel}`}
                 >
                   用户协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={`https://cdn.accessorx.com/web/privacy_policy.html?mchannel=${mchannel}`}
+                  data-title={`${process.env.REACT_APP_POLICY_ADDRESS}?mchannel=${mchannel}`}
                 >
                   隐私协议
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={`https://cdn.accessorx.com/web/children's_privacy.html?mchannel=${mchannel}`}
+                  data-title={`${process.env.REACT_APP_CHILDREN_ADDRESS}?mchannel=${mchannel}`}
                 >
                   儿童保护及监护人须知
                 </span>
                 <span
                   onClick={handleClick}
-                  data-title={`https://cdn.accessorx.com/web/automatic_renewal_agreement.html?mchannel=${mchannel}`}
+                  data-title={`${process.env.REACT_APP_AUTOMATIC_ADDRESS}?mchannel=${mchannel}`}
                 >
                   自动续费协议
                 </span>
@@ -619,7 +611,7 @@ const SettingsModal: React.FC = (props) => {
                   </div>
                   <div className="info-box info-flex">
                     <div className="info-left">
-                      <label>游侠账号</label>
+                      <label>{process.env.REACT_APP_TID_NAME}账号</label>
                       <div>
                         {thirdInfo?.some((item: any) => item?.source === 2)
                           ? "已绑定"

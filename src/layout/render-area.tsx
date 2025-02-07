@@ -64,7 +64,7 @@ const RenderSrea:React.FC = () => {
       {firstPayRP?.open && <PayModalNew />}
       {/* 正常支付页面 */}
       {payState?.open && <PayModal />}
-      {/* 三方登录 实名认证等UI确定弹窗 */}
+      {/* 实名认证等UI确定弹窗 */}
       <MinorModal />
       {/* 第三方手机绑定类型弹窗 */}
       <BindPhoneMode />

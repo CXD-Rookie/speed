@@ -20,7 +20,7 @@ const errorObj: any = {
 };
 
 // 是否绑定加速器的手机号绑定登录
-const VisitorLogin: React.FC= (props) => {
+const VisitorLogin: React.FC = (props) => {
   const dispatch: any = useDispatch();
   const isBindPhone = useSelector((state: any) => state.auth.isBindPhone);
 
@@ -108,14 +108,14 @@ const VisitorLogin: React.FC= (props) => {
         localStorage.setItem("userId", res?.data?.user_info?.id); // 存储user_id
         dispatch(updateBindPhoneState(false));
         localStorage.setItem("isRemote", "1"); // 标记11001是绑定手机时出现的
-        
+
         dispatch(
           setMinorState({
             open: true,
             type: types?.[String(res?.data?.target_phone_status || 1)],
           })
         ); // 认证提示
-      }else {
+      } else {
         setVeryCode(false);
         setVeryCodeErr("error");
       }
@@ -128,7 +128,7 @@ const VisitorLogin: React.FC= (props) => {
     dispatch(updateBindPhoneState(false));
     (window as any).loginOutStopWidow();
   };
-  
+
   return (
     <Fragment>
       <Modal
@@ -143,8 +143,12 @@ const VisitorLogin: React.FC= (props) => {
         footer={null}
       >
         <div className="bind-main">
-          <div className="login-text">游侠登录绑定手机号</div>
-          <div className="bind-text">游侠登录绑定手机号</div>
+          <div className="login-text">
+            {process.env.REACT_APP_TID_NAME}登录绑定手机号
+          </div>
+          <div className="bind-text">
+            {process.env.REACT_APP_TID_NAME}登录绑定手机号
+          </div>
           <div className="input-group public-input-group">
             <CustomInput
               placeholder={"请输入手机号码"}

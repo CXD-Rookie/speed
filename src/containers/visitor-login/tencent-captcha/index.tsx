@@ -47,7 +47,7 @@ const TencentCatcha: React.FC<CaptchaProps> = (props) => {
         }, 121000); // 120秒后清除定时器
       } else if (res?.error === 210005) {
         setVeryCodeErr("quik");
-      } 
+      }
     } catch (error) {
       console.log("验证码错误", error);
     }

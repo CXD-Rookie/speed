@@ -15,12 +15,16 @@ import loginApi from "@/api/login";
 
 const typeObj: any = {
   unbind: {
-    title: "解除绑定游侠账号",
-    text: "解除绑定游侠账号需先验证已绑定手机号码，点击“获取验证码”完成验证",
+    title: `解除绑定${process.env.REACT_APP_TID_NAME || ""}账号`,
+    text: `解除绑定${
+      process.env.REACT_APP_TID_NAME || ""
+    }账号需先验证已绑定手机号码，点击“获取验证码”完成验证`,
   }, // 三方解绑
   third: {
-    title: "绑定游侠账号",
-    text: "绑定游侠账号需先验证已绑定手机号码，点击“获取验证码”完成验证",
+    title: `绑定${process.env.REACT_APP_TID_NAME || ""}账号`,
+    text: `绑定${
+      process.env.REACT_APP_TID_NAME || ""
+    }账号需先验证已绑定手机号码，点击“获取验证码”完成验证`,
   }, // 三方绑定
   oldPhone: {
     title: "更换手机号码",
@@ -45,14 +49,16 @@ const BindPhoneMode: React.FC = (props) => {
 
   const dispatch: any = useDispatch();
   const accountInfoRedux: any = useSelector((state: any) => state.accountInfo);
-  const { open = false, type = ""} = useSelector((state: any) => state?.modalOpen?.bindState);
+  const { open = false, type = "" } = useSelector(
+    (state: any) => state?.modalOpen?.bindState
+  );
 
   const [bindType, setBindType] = useState(""); // third oldPhone newPhone
   const [countdown, setCountdown] = useState(0);
 
   const [phone, setPhone] = useState(accountInfoRedux?.userInfo?.phone);
   const [code, setCode] = useState("");
-  
+
   const [isPhone, setIsPhone] = useState(false);
   const [veryCodeErr, setVeryCodeErr] = useState("");
 
@@ -65,7 +71,7 @@ const BindPhoneMode: React.FC = (props) => {
     setCode("");
     setVeryCodeErr("");
     setIsPhone(false);
-    dispatch(setBindState({open: false, type: ""}));
+    dispatch(setBindState({ open: false, type: "" }));
   };
 
   // 获取短信验证码
@@ -203,9 +209,9 @@ const BindPhoneMode: React.FC = (props) => {
       if (!reqire) {
         return;
       }
-      
+
       let res = await loginApi.unbindPhone({
-        tid: 2,
+        tid: process.env.REACT_APP_TID,
       });
 
       return res;
@@ -231,7 +237,7 @@ const BindPhoneMode: React.FC = (props) => {
           dispatch(setSetting({ settingOpen: false, type: "default" }));
           const target = document.querySelector(".last-login-text") as any;
           const dataTitle = target?.dataset?.title;
-          (window as any).NativeApi_YouXiaAuth(dataTitle);
+          (window as any).NativeApi_PartnerAuth(dataTitle);
         } else {
           setVeryCodeErr("error");
         }
@@ -251,7 +257,7 @@ const BindPhoneMode: React.FC = (props) => {
 
         let res = await verifyPhone();
         console.log(res, res?.error);
-        
+
         if (res?.error === 0) {
           setBindType("newPhone");
           setCountdown(0);
@@ -270,8 +276,14 @@ const BindPhoneMode: React.FC = (props) => {
           dispatch(setMinorState({ open: true, type: "updatePhone" }));
 
           localStorage.setItem("token", JSON.stringify(res.data.token));
-          localStorage.setItem("is_new_user", JSON.stringify(res.data.is_new_user));
-          localStorage.setItem("vip_experience_time", JSON.stringify(res.data.vip_experience_time));
+          localStorage.setItem(
+            "is_new_user",
+            JSON.stringify(res.data.is_new_user)
+          );
+          localStorage.setItem(
+            "vip_experience_time",
+            JSON.stringify(res.data.vip_experience_time)
+          );
           if (
             res.data.user_info.user_ext === null ||
             res.data.user_info.user_ext.idcard === ""
@@ -344,9 +356,7 @@ const BindPhoneMode: React.FC = (props) => {
                 </div>
               )}
               {veryCodeErr && (
-                <div className="code-error">
-                  {errorObj?.[veryCodeErr]}
-                </div>
+                <div className="code-error">{errorObj?.[veryCodeErr]}</div>
               )}
             </div>
           </div>
@@ -358,8 +368,8 @@ const BindPhoneMode: React.FC = (props) => {
               className="last-login-text"
               onClick={(e) => handlevisitorLogin(e)}
               disabled={!code || !phone}
-              data-title={`https://i.ali213.net/oauth.html?appid=yxjsqaccelerator&redirect_uri=${
-                process.env.REACT_APP_YOUXIA_URL
+              data-title={`${process.env.REACT_APP_PARTNER_HTML_URL}${
+                process.env.REACT_APP_PARTNER_URL
               }?token=${JSON.parse(
                 token
               )}&response_type=code&scope=webapi_login&state=state`}

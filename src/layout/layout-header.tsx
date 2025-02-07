@@ -19,11 +19,11 @@ import eventBus from "@/api/eventBus";
 import SearchBar from "@/containers/searchBar";
 import CustomDropdown from "@/containers/login-user";
 
-import logoIcon from "@/assets/images/common/logo.png";
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
 import closeIcon from "@/assets/images/common/cloture.svg";
 import updateIcon from "@/assets/images/common/update.png";
+
 interface CustomMenuProps {
   key: string;
   label: string;
@@ -57,6 +57,14 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch: any = useDispatch();
+  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
+  // 动态导入图片
+  const logoUrl =
+    is_local && process.env.REACT_APP_IMAGE_LOGO
+      ? typeof require(process.env.REACT_APP_IMAGE_LOGO as string) === "string"
+        ? require(process.env.REACT_APP_IMAGE_LOGO as string)
+        : require(process.env.REACT_APP_IMAGE_LOGO as string).default
+      : process.env.REACT_APP_IMAGE_LOGO || "";
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
   const { type: versionType = "" } = useSelector(
@@ -190,7 +198,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
       {/* LOGO */}
       <img
         className="header-icon"
-        src={logoIcon}
+        src={logoUrl}
         width={40}
         height={40}
         alt=""

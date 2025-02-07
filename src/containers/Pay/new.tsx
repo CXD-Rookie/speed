@@ -434,7 +434,7 @@ const PayModal: React.FC = (props) => {
                   className="user-text"
                   onClick={handleClick}
                   ref={divRef}
-                  data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  data-title={process.env.REACT_APP_TERMS_ADDRESS}
                 >
                   用户协议
                 </div>
