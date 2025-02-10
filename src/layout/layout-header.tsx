@@ -18,6 +18,7 @@ import "./index.scss";
 import eventBus from "@/api/eventBus";
 import SearchBar from "@/containers/searchBar";
 import CustomDropdown from "@/containers/login-user";
+import tracking from "@/common/tracking";
 
 import menuIcon from "@/assets/images/common/menu.svg";
 import minIcon from "@/assets/images/common/min.svg";
@@ -108,6 +109,8 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
           action === 1 &&
           localStorage.getItem("isAccelLoading") !== "1" // 加速中点击无效
         ) {
+          // 关闭客户端上报埋点上报
+          tracking.trackBoostActiveCloseClient();
           (window as any).NativeApi_ExitProcess(); //关闭主程序
         }
       }

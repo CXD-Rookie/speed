@@ -94,8 +94,19 @@ class Tracking {
     this.trackEvent(this.otherMchannel()?.mchannel, "boost_failure", errorCode + this.otherMchannel()?.channelId);
   }
  
+  // 停止加速上报
   trackBoostDisconnectManual() {
     this.trackEvent(this.otherMchannel()?.mchannel, "boost_disconnect_manual", this.otherMchannel("after")?.channelId);
+  }
+
+  // 关闭客户端上报
+  trackBoostActiveCloseClient () {
+    this.trackEvent(this.otherMchannel()?.mchannel, "active_close_client", this.otherMchannel("after")?.channelId);
+  }
+
+  // 退出登录上报
+  trackBoostlogoutSuccess () {
+    this.trackEvent(this.otherMchannel()?.mchannel, "logout_success", this.otherMchannel("after")?.channelId);
   }
 
   trackBoostDisconnectPassive(reason) {

@@ -296,6 +296,8 @@ const Layouts: React.FC = () => {
         }
 
         if (value === "exit") {
+          // 关闭客户端上报埋点上报
+          tracking.trackBoostActiveCloseClient();
           (window as any).NativeApi_ExitProcess();
         }
 
@@ -315,7 +317,6 @@ const Layouts: React.FC = () => {
     } else {
       if (localStorage.getItem("isAccelLoading") !== "1") {
         stopProcessReset("exit"); // 关闭主程序
-        (window as any).NativeApi_ExitProcess();
       }
     }
   };
@@ -355,6 +356,7 @@ const Layouts: React.FC = () => {
 
       try {
         await loginApi.loginOut(); // 单独 try-catch 处理登出请求
+        tracking.trackBoostlogoutSuccess(); // 退出登录上报
       } catch (error) {
         console.error("登出请求失败:", error);
       }
@@ -365,17 +367,14 @@ const Layouts: React.FC = () => {
         console.error("更新banner失败:", error);
       }
 
-      // await stopProcessReset(); // 停止加速操作
-      // await loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
-      // await fetchBanner(); // 退出登录更新banner图
-
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
       localStorage.removeItem("userId"); // 存储user_id
       dispatch(setAccountInfo({}, false, true)); // 修改登录状态
 
-      console.log("退出登录");
       if (event === "remoteLogin") {
+        // 触发异地登录后退出登录，调用异地登录端口埋点上报
+        tracking.trackBoostDisconnectManual();
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
       }
 
@@ -384,9 +383,6 @@ const Layouts: React.FC = () => {
           navigate("/home");
         }, 200);
       }
-      // if (event === 1) {
-      //   setReopenLogin(true); 暂时未发现什么地方调用，先做注释
-      // }
     } catch (error) {
       console.log("退出登录", error);
     }

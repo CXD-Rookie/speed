@@ -176,6 +176,8 @@ const SettingsModal: React.FC = (props) => {
         }
 
         if (list?.length >= 0) {
+          // 关闭客户端上报埋点上报
+          tracking.trackBoostActiveCloseClient();
           (window as any).NativeApi_ExitProcess();
         }
       }
