@@ -14,6 +14,7 @@ import { openRealNameModal } from "@/redux/actions/auth";
 import { useGamesInitialize } from "@/hooks/useGamesInitialize";
 import { useHistoryContext } from "@/hooks/usePreviousRoute";
 import { validateRequiredParams, copyToClipboard } from "@/common/utils";
+import { compareVersions } from "@/layout/utils";
 import {
   setSetting,
   setPayState,
@@ -351,7 +352,18 @@ const SettingsModal: React.FC = (props) => {
         "",
         (response: string) => {
           const parsedResponse = JSON.parse(response);
-          setVersionNow(parsedResponse.version);
+          // 前端版本是否需要升级 WS返回的前端版本和打包往环境变量中配置的当前前端版本
+          const envWebVersion = process.env.REACT_APP_WEB_VERSION;
+          const isWebInterim = compareVersions(
+            envWebVersion || "1.0.0.1001",
+            parsedResponse?.version
+          );
+          // isWebInterim = true 则代表前者小
+          const now_version = isWebInterim
+            ? parsedResponse?.version
+            : envWebVersion;
+
+          setVersionNow(now_version);
         }
       );
     });
