@@ -813,11 +813,11 @@ const Layouts: React.FC = () => {
       if ((window as any).clearBannerTimer) {
         (window as any).clearBannerTimer();
       }
-    } else {
-      // 获取 banner 图逻辑 3小时定时请求一次
-      intervalId = setInterval(() => fetchBanner(), 10800000);
-      (window as any).clearBannerTimer = () => clearInterval(intervalId);
     }
+
+    // 获取 banner 图逻辑 3小时定时请求一次
+    intervalId = setInterval(() => fetchBanner(), 18000);
+    (window as any).clearBannerTimer = () => clearInterval(intervalId);
 
     // 清理函数，在组件卸载前清除定时器
     return () => {
