@@ -815,8 +815,13 @@ const Layouts: React.FC = () => {
       }
     }
 
-    // 获取 banner 图逻辑 3小时定时请求一次
-    intervalId = setInterval(() => fetchBanner(), 18000);
+    // 定时调用前先进行清除操作
+    if ((window as any).clearBannerTimer) {
+      (window as any).clearBannerTimer();
+    }
+    // 获取 banner 图逻辑 不区分是否登录半小时定时请求一次
+    intervalId = setInterval(() => fetchBanner(), 1800000);
+    // 定义清除 banner 图定时器逻辑
     (window as any).clearBannerTimer = () => clearInterval(intervalId);
 
     // 清理函数，在组件卸载前清除定时器
