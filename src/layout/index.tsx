@@ -544,19 +544,26 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.now_version
           );
-          
+
+          // 前端版本是否需要升级 WS返回的前端版本和打包往环境变量中配置的当前前端版本
+          const envWebVersion = process.env.REACT_APP_WEB_VERSION;
+          const isWebInterim = compareVersions(
+            envWebVersion,
+            version?.web_version
+          );
+
           // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
           // 反之进行 else 进行版本比较
-          if (!isInterim) {
+          if (!isInterim && !isWebInterim) {
             localStorage.removeItem("versionLock"); // 删除
             dispatch(setVersionState({ open: false, type: "" })); // 关闭版本升级弹窗
           } else {
+            console.log("前端打包生成版本", process.env.REACT_APP_WEB_VERSION);
             // 版本比较信息锁
             const versionLock = JSON.parse(
               localStorage.getItem("versionLock") ?? JSON.stringify({})
             );
-            console.log("前端打包生成版本", process.env.REACT_APP_WEB_VERSION);
-            
+
             // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
             if (versionLock?.interimVersion) {
               const isInterim = compareVersions(
@@ -584,13 +591,7 @@ const Layouts: React.FC = () => {
                 versionNowRef.current,
                 version?.now_version
               );
-              // 前端版本是否需要升级 WS返回的前端版本和打包往环境变量中配置的当前前端版本
-              const envWebVersion = process.env.REACT_APP_WEB_VERSION;
-              const isWebInterim = compareVersions(
-                envWebVersion,
-                version?.web_version
-              );
-              
+
               // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
               if (
                 (isInterim || (isWebInterim && envWebVersion)) &&
@@ -614,8 +615,6 @@ const Layouts: React.FC = () => {
                 // 打开升级弹窗 触发普通升级类型
                 dispatch(setVersionState({ open: true, type: "interim" }));
               }
-
-
             }
           }
         }
