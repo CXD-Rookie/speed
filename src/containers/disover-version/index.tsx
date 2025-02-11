@@ -29,13 +29,15 @@ const DisoverVersion: React.FC = () => {
   useEffect(() => {
     if (open) {
       let version = JSON.parse(localStorage.getItem("version") ?? JSON.stringify({}));
-      const envWebVersion = process.env.REACT_APP_WEB_VERSION;
       const isWebInterim = compareVersions(
-        envWebVersion || "1.0.0.1001",
+        version?.web_version || "1.0.0.1001",
         version?.now_version
       );
+      
       // isWebInterim = true 则代表前者小
-      version.now_version = isWebInterim ? version?.now_version : envWebVersion;
+      version.max_version = isWebInterim
+        ? version?.now_version
+        : version?.web_version;
       
       setVersion(version);
     }
@@ -53,7 +55,7 @@ const DisoverVersion: React.FC = () => {
         />
         <div className="title-box">
           <div className="title">发现新版本！</div>
-          <div className="version">V{version?.now_version}</div>
+          <div className="version">V{version?.max_version}</div>
         </div>
         <div className="log-box">
           <pre className="log-text">{version?.note}</pre>
