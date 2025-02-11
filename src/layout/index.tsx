@@ -564,18 +564,23 @@ const Layouts: React.FC = () => {
             );
 
             // 普通客户端版本升级和前端版本升级那个大
-            const isMax = compareVersions(envWebVersion, version?.now_version);
-            const maxVersion = isMax ? version?.now_version : envWebVersion;
+            const isMax = compareVersions(
+              version?.web_version,
+              version?.now_version
+            );
+            const maxVersion = isMax
+              ? version?.now_version
+              : version?.web_version;
 
             // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
             if (versionLock?.interimVersion) {
               const isInterim = compareVersions(
                 versionLock?.interimVersion,
-                version?.now_version
+                maxVersion
               );
 
               // 如果版本有升级并且版本没有进行更新并且弹窗是未打开的情况下
-              if ((isInterim || isWebInterim) && !versionOpen) {
+              if (isInterim && !versionOpen) {
                 // 打开升级弹窗 触发普通升级类型
                 dispatch(setVersionState({ open: true, type: "last" }));
               }

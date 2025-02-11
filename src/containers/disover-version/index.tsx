@@ -23,8 +23,21 @@ const DisoverVersion: React.FC = () => {
   // 点击更新进行重启升级
   const handleRenewal = () => {
     (window as any).stopProcessReset(); // 停止加速方法
-    // (window as any).native_update(); // 客户端方法重启更新
-    (window as any).native_restart(); // 客户端方法重启
+
+    // 当前客户端版本
+    const versionNowRef = (window as any).versionNowRef;
+    // 客户端版本是否进行更新
+    const isClientInterim = compareVersions(
+      versionNowRef || "1.0.0.1001",
+      version?.now_version
+    );
+    console.log(versionNowRef, isClientInterim);
+    
+    if (isClientInterim) {
+      (window as any).native_update(); // 客户端方法重启更新
+    } else {
+      (window as any).native_restart(); // 客户端方法重启
+    }
   };
 
   useEffect(() => {
