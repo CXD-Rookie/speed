@@ -296,6 +296,8 @@ const Layouts: React.FC = () => {
         }
 
         if (value === "exit") {
+          // 关闭客户端上报埋点上报
+          tracking.trackBoostActiveCloseClient();
           (window as any).NativeApi_ExitProcess();
         }
 
@@ -315,7 +317,6 @@ const Layouts: React.FC = () => {
     } else {
       if (localStorage.getItem("isAccelLoading") !== "1") {
         stopProcessReset("exit"); // 关闭主程序
-        (window as any).NativeApi_ExitProcess();
       }
     }
   };
@@ -355,6 +356,7 @@ const Layouts: React.FC = () => {
 
       try {
         await loginApi.loginOut(); // 单独 try-catch 处理登出请求
+        tracking.trackBoostlogoutSuccess(); // 退出登录上报
       } catch (error) {
         console.error("登出请求失败:", error);
       }
@@ -365,17 +367,14 @@ const Layouts: React.FC = () => {
         console.error("更新banner失败:", error);
       }
 
-      // await stopProcessReset(); // 停止加速操作
-      // await loginApi.loginOut(); // 调用退出登录接口，不需要等待返回值
-      // await fetchBanner(); // 退出登录更新banner图
-
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
       localStorage.removeItem("userId"); // 存储user_id
       dispatch(setAccountInfo({}, false, true)); // 修改登录状态
 
-      console.log("退出登录");
       if (event === "remoteLogin") {
+        // 触发异地登录后退出登录，调用异地登录端口埋点上报
+        tracking.trackBoostDisconnectManual();
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
       }
 
@@ -384,9 +383,6 @@ const Layouts: React.FC = () => {
           navigate("/home");
         }, 200);
       }
-      // if (event === 1) {
-      //   setReopenLogin(true); 暂时未发现什么地方调用，先做注释
-      // }
     } catch (error) {
       console.log("退出登录", error);
     }
@@ -539,7 +535,7 @@ const Layouts: React.FC = () => {
         localStorage.setItem("userId", user_info?.id); // 存储user_id
         // 存储版本信息
         localStorage.setItem("version", JSON.stringify(version));
-
+        
         // isClosed异地登录被顶掉标记 升级版本比较
         // 升级弹窗要在登录之后才会弹出
         if (!isClosed && version) {
@@ -548,7 +544,7 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             version?.now_version
           );
-
+          
           // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
           // 反之进行 else 进行版本比较
           if (!isInterim) {
@@ -559,7 +555,7 @@ const Layouts: React.FC = () => {
             const versionLock = JSON.parse(
               localStorage.getItem("versionLock") ?? JSON.stringify({})
             );
-
+            
             // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
             if (versionLock?.interimVersion) {
               const isInterim = compareVersions(
@@ -587,23 +583,38 @@ const Layouts: React.FC = () => {
                 versionNowRef.current,
                 version?.now_version
               );
-
+              // 前端版本是否需要升级 WS返回的前端版本和打包往环境变量中配置的当前前端版本
+              const envWebVersion = process.env.REACT_APP_WEB_VERSION;
+              const isWebInterim = compareVersions(
+                envWebVersion,
+                version?.web_version
+              );
+              
               // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
               if (
-                isInterim &&
+                (isInterim || (isWebInterim && envWebVersion)) &&
                 versionLock?.interimMark !== "1" &&
                 !versionOpen
               ) {
+                // 普通客户端版本升级和前端版本升级那个大
+                const isMax = compareVersions(
+                  envWebVersion,
+                  version?.now_version
+                );
+                const maxVersion = isMax ? version?.now_version : envWebVersion;
+
                 localStorage.setItem(
                   "versionLock", // 普通升级版本信息 是否升级标记 interimMark
                   JSON.stringify({
-                    interimVersion: version?.now_version,
+                    interimVersion: maxVersion,
                     interimMark: "1", // "1" 表示未升级
                   })
                 );
                 // 打开升级弹窗 触发普通升级类型
                 dispatch(setVersionState({ open: true, type: "interim" }));
               }
+
+
             }
           }
         }
@@ -817,11 +828,16 @@ const Layouts: React.FC = () => {
       if ((window as any).clearBannerTimer) {
         (window as any).clearBannerTimer();
       }
-    } else {
-      // 获取 banner 图逻辑 3小时定时请求一次
-      intervalId = setInterval(() => fetchBanner(), 10800000);
-      (window as any).clearBannerTimer = () => clearInterval(intervalId);
     }
+
+    // 定时调用前先进行清除操作
+    if ((window as any).clearBannerTimer) {
+      (window as any).clearBannerTimer();
+    }
+    // 获取 banner 图逻辑 不区分是否登录半小时定时请求一次
+    intervalId = setInterval(() => fetchBanner(), 1800000);
+    // 定义清除 banner 图定时器逻辑
+    (window as any).clearBannerTimer = () => clearInterval(intervalId);
 
     // 清理函数，在组件卸载前清除定时器
     return () => {

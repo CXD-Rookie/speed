@@ -12,6 +12,7 @@ import { setAccountInfo } from '@/redux/actions/account-info';
 import axios from 'axios';
 import tracking from "@/common/tracking";
 import eventBus from './eventBus';
+import toast from '@/components/base-toast';
 
 const instance = axios.create({
   headers: {
@@ -77,8 +78,6 @@ instance.interceptors.response.use(
       if (client_code.includes(code)) {
         window.NativeApi_AsynchronousRequest("UpdateClientToken", "", (res) => console.log(res))
       } else if (code >= 100000 && code < 200000 && code !== 100001 && !isAllow) {
-        console.log("api");
-        
         window.loginOutStopWidow("api"); // 退出登录
       }
       
@@ -91,6 +90,21 @@ instance.interceptors.response.use(
     const webVersion = process.env.REACT_APP_VERSION;
     const clientVersion = window.versionNowRef;
     
+    if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
+      let time = 0;
+
+      if (time === 0) {
+        toast.show({
+          message: "接口超时",
+          backgroundColor: "#222",
+        });
+      }
+
+      setTimeout(() => {
+        time = 0;
+      }, 3000);
+    }
+
     if (error.response) {
       const errorCode = error.response.status;
 

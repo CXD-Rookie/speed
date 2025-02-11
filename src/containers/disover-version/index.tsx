@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setVersionState } from "@/redux/actions/modal-open";
 import { Button } from "antd";
+import { compareVersions } from "@/layout/utils";
 
 import "./index.scss";
 import versionCloseIcon from "@/assets/images/common/version-close.svg";
@@ -27,7 +28,14 @@ const DisoverVersion: React.FC = () => {
 
   useEffect(() => {
     if (open) {
-      const version = JSON.parse(localStorage.getItem("version") ?? JSON.stringify({}));
+      let version = JSON.parse(localStorage.getItem("version") ?? JSON.stringify({}));
+      const envWebVersion = process.env.REACT_APP_WEB_VERSION;
+      const isWebInterim = compareVersions(
+        envWebVersion || "1.0.0.1001",
+        version?.now_version
+      );
+      // isWebInterim = true 则代表前者小
+      version.now_version = isWebInterim ? version?.now_version : envWebVersion;
       
       setVersion(version);
     }
