@@ -23,7 +23,8 @@ const DisoverVersion: React.FC = () => {
   // 点击更新进行重启升级
   const handleRenewal = () => {
     (window as any).stopProcessReset(); // 停止加速方法
-    (window as any).native_update(); // 客户端方法重启更新
+    // (window as any).native_update(); // 客户端方法重启更新
+    (window as any).native_restart(); // 客户端方法重启
   };
 
   useEffect(() => {
