@@ -59,7 +59,7 @@ const GameLibrary: React.FC = () => {
   const [enterQuery, setEnterQuery] = useState("");
 
   const [page, setPage] = useState(1);
-  const [pagesize,] = useState(30);
+  const [pagesize,] = useState(5000);
   const [total, setTotal] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false); // 是否搜索中
