@@ -555,6 +555,7 @@ const Layouts: React.FC = () => {
             const versionLock = JSON.parse(
               localStorage.getItem("versionLock") ?? JSON.stringify({})
             );
+            console.log("前端打包生成版本", process.env.REACT_APP_WEB_VERSION);
             
             // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
             if (versionLock?.interimVersion) {
