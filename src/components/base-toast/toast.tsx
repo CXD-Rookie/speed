@@ -25,7 +25,7 @@ const Toast: React.FC<ToastProps> = ({
 
   const toastStyle: React.CSSProperties = {
     position: "fixed",
-    top: "10%",
+    top: "50%",
     left: "50%",
     transform: "translateX(-50%)",
     padding: "1vw 2vw",

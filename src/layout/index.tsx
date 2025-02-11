@@ -284,6 +284,8 @@ const Layouts: React.FC = () => {
         // 上报埋点
         if (value === "exit" && identifyAccelerationData()?.[0]) {
           tracking.trackBoostDisconnectManual();
+          // 关闭客户端上报埋点上报
+          tracking.trackBoostActiveCloseClient();
         }
 
         await stopProxy(value); // 调用停止加速
@@ -296,8 +298,6 @@ const Layouts: React.FC = () => {
         }
 
         if (value === "exit") {
-          // 关闭客户端上报埋点上报
-          tracking.trackBoostActiveCloseClient();
           (window as any).NativeApi_ExitProcess();
         }
 
@@ -374,7 +374,6 @@ const Layouts: React.FC = () => {
 
       if (event === "remoteLogin") {
         // 触发异地登录后退出登录，调用异地登录端口埋点上报
-        tracking.trackBoostDisconnectManual();
         dispatch(setMinorState({ open: true, type: "remoteLogin" })); // 异地登录
       }
 
@@ -564,6 +563,10 @@ const Layouts: React.FC = () => {
               localStorage.getItem("versionLock") ?? JSON.stringify({})
             );
 
+            // 普通客户端版本升级和前端版本升级那个大
+            const isMax = compareVersions(envWebVersion, version?.now_version);
+            const maxVersion = isMax ? version?.now_version : envWebVersion;
+
             // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
             if (versionLock?.interimVersion) {
               const isInterim = compareVersions(
@@ -572,7 +575,7 @@ const Layouts: React.FC = () => {
               );
 
               // 如果版本有升级并且版本没有进行更新并且弹窗是未打开的情况下
-              if (isInterim && !versionOpen) {
+              if ((isInterim || isWebInterim) && !versionOpen) {
                 // 打开升级弹窗 触发普通升级类型
                 dispatch(setVersionState({ open: true, type: "last" }));
               }
@@ -580,7 +583,7 @@ const Layouts: React.FC = () => {
               localStorage.setItem(
                 "versionLock", // 普通升级版本信息 是否升级标记 interimMark
                 JSON.stringify({
-                  interimVersion: version?.now_version,
+                  interimVersion: maxVersion,
                   interimMark: "1", // "1" 表示未升级
                 })
               );
@@ -598,13 +601,6 @@ const Layouts: React.FC = () => {
                 versionLock?.interimMark !== "1" &&
                 !versionOpen
               ) {
-                // 普通客户端版本升级和前端版本升级那个大
-                const isMax = compareVersions(
-                  envWebVersion,
-                  version?.now_version
-                );
-                const maxVersion = isMax ? version?.now_version : envWebVersion;
-
                 localStorage.setItem(
                   "versionLock", // 普通升级版本信息 是否升级标记 interimMark
                   JSON.stringify({

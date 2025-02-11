@@ -17,6 +17,7 @@ import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import "./index.scss";
 import eventBus from "@/api/eventBus";
 import BaseRadio from "@/components/base-radio";
+import tracking from "@/common/tracking";
 
 const AppCloseModal: React.FC = (props) => {
   const dispatch = useDispatch();
