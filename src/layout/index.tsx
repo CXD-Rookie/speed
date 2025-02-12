@@ -581,8 +581,8 @@ const Layouts: React.FC = () => {
 
               // 如果版本有升级并且版本没有进行更新并且弹窗是未打开的情况下
               if (isInterim && !versionOpen) {
-                // 打开升级弹窗 触发普通升级类型
-                dispatch(setVersionState({ open: true, type: "last" }));
+                // 不打开升级弹窗 只触发普通升级类型 以便头部可以展示出发现新版本按钮
+                dispatch(setVersionState({ open: false, type: "last" }));
               }
 
               localStorage.setItem(
@@ -613,8 +613,8 @@ const Layouts: React.FC = () => {
                     interimMark: "1", // "1" 表示未升级
                   })
                 );
-                // 打开升级弹窗 触发普通升级类型
-                dispatch(setVersionState({ open: true, type: "interim" }));
+                // 不打开升级弹窗 只触发普通升级类型 以便头部可以展示出发现新版本按钮
+                dispatch(setVersionState({ open: false, type: "interim" }));
               }
             }
           }
