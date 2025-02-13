@@ -27,13 +27,12 @@ const DisoverVersion: React.FC = () => {
     // 当前客户端版本
     const versionNowRef = (window as any).versionNowRef;
     // 客户端版本是否进行更新
-    const isClientInterim = compareVersions(
+    const interim: any = compareVersions(
       versionNowRef || "1.0.0.1001",
       version?.now_version
     );
-    console.log(versionNowRef, isClientInterim);
     
-    if (isClientInterim) {
+    if (interim?.relation === 2) {
       (window as any).native_update(); // 客户端方法重启更新
     } else {
       (window as any).native_restart(); // 客户端方法重启
@@ -43,16 +42,13 @@ const DisoverVersion: React.FC = () => {
   useEffect(() => {
     if (open) {
       let version = JSON.parse(localStorage.getItem("version") ?? JSON.stringify({}));
-      const isWebInterim = compareVersions(
+      const webInterim: any = compareVersions(
         version?.web_version || "1.0.0.1001",
         version?.now_version
       );
+      console.log(version);
       
-      // isWebInterim = true 则代表前者小
-      version.max_version = isWebInterim
-        ? version?.now_version
-        : version?.web_version;
-      
+      version.max_version = webInterim?.max;
       setVersion(version);
     }
   }, [open]);

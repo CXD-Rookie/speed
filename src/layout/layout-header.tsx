@@ -240,7 +240,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
           onMouseUp={stopPropagation}
         >
           {/* 发现新版本 */}
-          {versionType && (
+          {accountInfo?.isLogin && versionType && (
             <div
               className="find-version"
               onClick={() =>

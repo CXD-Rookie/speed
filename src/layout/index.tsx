@@ -50,7 +50,7 @@ const Layouts: React.FC = () => {
   const versionNowRef = useRef("1.0.0.1002"); // 客户端版本绑定
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
-  const { open: versionOpen = false } = useSelector(
+  const { open: versionOpen = false, versionType = ""} = useSelector(
     (state: any) => state?.modalOpen?.versionState
   );
   const { open: landPayOpen = false } = useSelector(
@@ -339,6 +339,10 @@ const Layouts: React.FC = () => {
   // 退出登录
   const loginOut = async (event: any = "") => {
     try {
+      // 清除升级按钮信息
+      dispatch(setVersionState({ open: false, type: "" }));
+      localStorage.removeItem("versionLock");
+
       if (identifyAccelerationData()?.[0]) {
         tracking.trackBoostDisconnectManual();
       }
@@ -366,7 +370,7 @@ const Layouts: React.FC = () => {
       } catch (error) {
         console.error("更新banner失败:", error);
       }
-
+      
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
       localStorage.removeItem("userId"); // 存储user_id
@@ -524,7 +528,7 @@ const Layouts: React.FC = () => {
         localStorage.getItem("isModalDisplayed") === "true"; // 获取localStorage中是否展示过标志
       const isNewUser = localStorage.getItem("is_new_user") === "true"; // 是否新用户
       const {
-        version = "", // 版本
+        version = {}, // 版本
         user_info = {}, // 用户信息
         timestamp = 0, // 服务端时间
         first_purchase_renewed = {}, // 是否首充首续
@@ -538,85 +542,66 @@ const Layouts: React.FC = () => {
         // isClosed异地登录被顶掉标记 升级版本比较
         // 升级弹窗要在登录之后才会弹出
         if (!isClosed && version) {
-          // 普通升级版本和客户端当前版本进行比较
-          const isInterim = compareVersions(
+          // 期望普通客户端升级版本和客户端当前版本进行比较
+          const interim: any = compareVersions(
             versionNowRef.current,
             version?.now_version
           );
 
-          // 前端版本是否需要升级 WS返回的前端版本和打包往环境变量中配置的当前前端版本
+          // 期望前端升级版本和当前前端版本进行比较
           const envWebVersion = process.env.REACT_APP_WEB_VERSION;
-          const isWebInterim = compareVersions(
+          const webInterim: any = compareVersions(
             envWebVersion,
             version?.web_version
           );
 
-          // 如果普通版本升级没有更新，删除版本比较信息锁，避免导致后续比较信息读取错误
-          // 反之进行 else 进行版本比较
-          if (!isInterim && !isWebInterim) {
-            localStorage.removeItem("versionLock"); // 删除
-            dispatch(setVersionState({ open: false, type: "" })); // 关闭版本升级弹窗
-          } else {
-            console.log("前端打包生成版本", process.env.REACT_APP_WEB_VERSION);
+          // 期望普通客户端升级版本和期望前端升级版本进行比较
+          const maxVersion: any = compareVersions(
+            version?.web_version,
+            version?.now_version
+          );
+          
+          // 如果客户端或者前端触发升级
+          if (
+            (interim?.relation === 2 && maxVersion?.relation === 2) ||
+            (webInterim?.relation === 2 && maxVersion?.relation === 1)
+          ) {
             // 版本比较信息锁
             const versionLock = JSON.parse(
               localStorage.getItem("versionLock") ?? JSON.stringify({})
             );
-
-            // 普通客户端版本升级和前端版本升级那个大
-            const isMax = compareVersions(
-              version?.web_version,
-              version?.now_version
+            // 比较存储的临时版本和期望的最大版本进行比较
+            const temporary: any = compareVersions(
+              versionLock?.interimVersion,
+              maxVersion?.max
             );
-            const maxVersion = isMax
-              ? version?.now_version
-              : version?.web_version;
 
             // 由于当前版本存在可升级版本时，但是没有选择升级，此时又更新了一个版本进入此判断逻辑
-            if (versionLock?.interimVersion) {
-              const isInterim = compareVersions(
-                versionLock?.interimVersion,
-                maxVersion
-              );
+            if (
+              versionLock?.interimVersion &&
+              temporary?.relation === 2 &&
+              versionType
+            ) {
+              // 不打开升级弹窗 只触发普通升级类型 以便头部可以展示出发现新版本按钮
+              dispatch(setVersionState({ open: false, type: "last" }));
+            } else if (versionLock?.interimMark !== "1") {
+              // 当前版本存在可升级版本
+              // 不打开升级弹窗 只触发普通升级类型 以便头部可以展示出发现新版本按钮
+              dispatch(setVersionState({ open: false, type: "interim" }));
+            }
 
-              // 如果版本有升级并且版本没有进行更新并且弹窗是未打开的情况下
-              if (isInterim && !versionOpen) {
-                // 打开升级弹窗 触发普通升级类型
-                dispatch(setVersionState({ open: true, type: "last" }));
-              }
-
+            if (temporary?.relation === 2) {
               localStorage.setItem(
                 "versionLock", // 普通升级版本信息 是否升级标记 interimMark
                 JSON.stringify({
-                  interimVersion: maxVersion,
+                  interimVersion: maxVersion?.max,
                   interimMark: "1", // "1" 表示未升级
                 })
               );
-            } else {
-              // 当前版本存在可升级版本时 属于过渡版本判断
-              // 普通升级版本和客户端当前版本进行比较
-              const isInterim = compareVersions(
-                versionNowRef.current,
-                version?.now_version
-              );
-
-              // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打卡的情况下
-              if (
-                (isInterim || (isWebInterim && envWebVersion)) &&
-                versionLock?.interimMark !== "1" &&
-                !versionOpen
-              ) {
-                localStorage.setItem(
-                  "versionLock", // 普通升级版本信息 是否升级标记 interimMark
-                  JSON.stringify({
-                    interimVersion: maxVersion,
-                    interimMark: "1", // "1" 表示未升级
-                  })
-                );
-                // 打开升级弹窗 触发普通升级类型
-                dispatch(setVersionState({ open: true, type: "interim" }));
-              }
             }
+          } else {
+            localStorage.removeItem("versionLock"); // 删除
+            dispatch(setVersionState({ open: false, type: "" })); // 关闭版本升级弹窗
           }
         }
 

@@ -15,30 +15,33 @@ const getCouponTimeLock = () => {
   return Math.floor(now.getTime() / 1000);
 }
 
-// 比较版本大小
-const compareVersions = (version1 = "", version2 = "") => {
-  // 将版本号按点号分割成数组
-  const parts1 = version1.split(".").map(Number);
-  const parts2 = version2.split(".").map(Number);
+/**
+ * 比较两个版本号的大小
+ * @param {string} version1 - 第一个版本号，格式如 "1.0.0.1024"
+ * @param {string} version2 - 第二个版本号，格式如 "1.0.0.1024"
+ * @returns {Object} 返回一个对象，包含比较结果的关系（1 表示 version1 大于 version2，2 表示 version1 小于 version2，3 表示 version1 等于 version2），以及 max 和 min 字段分别表示大的版本号和小的版本号
+ */
+function compareVersions (version1 = "1.0.0.1", version2 = "1.0.0.1") {
+  // 将版本号字符串按点号分割成数组
+  const v1Parts = version1.split('.').map(Number);
+  const v2Parts = version2.split('.').map(Number);
+  const maxLength = Math.max(v1Parts.length, v2Parts.length);
 
-  // 获取最长的版本号长度
-  const maxLength = Math.max(parts1.length, parts2.length);
-
-  // 循环比较每个部分
   for (let i = 0; i < maxLength; i++) {
-    const num1 = parts1[i] || 0;
-    const num2 = parts2[i] || 0;
+    // 处理版本号位数不同的情况，缺少的部分默认为 0
+    const num1 = i < v1Parts.length ? v1Parts[i] : 0;
+    const num2 = i < v2Parts.length ? v2Parts[i] : 0;
 
     if (num1 > num2) {
-      return false; // 如果前者大于后者版本，返回 false
+      return { relation: 1, max: version1, min: version2 };
     } else if (num1 < num2) {
-      return true; // 如果前者小于后者版本，返回 true
+      return { relation: 2, max: version2, min: version1 };
     }
   }
 
-  // 如果版本号完全相等，返回 false
-  return false;
-}
+  // 如果前面的部分都相等，则两个版本号相等
+  return { relation: 3, max: version1, min: version1 };
+}; 
 
 // 调用停止加速客户端方法
 const stopProxy = async (t = null) => {
