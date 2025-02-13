@@ -1,6 +1,6 @@
 // src/redux/actions/search.ts
 import { Dispatch } from 'redux';
-import searchApi from "@/api/search";
+import gameApi from "@/api/gamelist"
 
 export const FETCH_SEARCH_RESULTS = 'FETCH_SEARCH_RESULTS';
 export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
@@ -24,12 +24,11 @@ export const fetchSearchResults = (query: string, tag?: string, page: number = 1
     try {
       const params = {
         s: query,
-        t: tag || '',
         page,
         pagesize: pageSize,
       };
       
-      let response = await searchApi.search(params);
+      let response = await gameApi.gameList(params);
       let results = response.data.list || []; // 如果 data.list 为 null，则使用空数组
       
       results = results.map((item: any) => ({...item, 
