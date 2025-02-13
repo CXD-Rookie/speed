@@ -4,6 +4,7 @@ import searchApi from "@/api/search";
 
 export const FETCH_SEARCH_RESULTS = 'FETCH_SEARCH_RESULTS';
 export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
+export const SEARCH_LOADING = 'SEARCH_LOADING';
 
 interface SearchResult {
   id: string;
@@ -14,7 +15,8 @@ interface SearchResult {
 export const fetchSearchResults = (query: string, tag?: string, page: number = 1, pageSize: number = 5000) => {
   return async (dispatch: Dispatch, getState: any) => {
     dispatch({ type: SET_SEARCH_QUERY, payload: query });
-    
+    dispatch({ type: SEARCH_LOADING, payload: true });
+
     if (!(query?.length > 0)) {
       return
     }
@@ -26,10 +28,6 @@ export const fetchSearchResults = (query: string, tag?: string, page: number = 1
         page,
         pagesize: pageSize,
       };
-      // const state = getState();
-      // const results_state = state.search.results;
-
-      // console.log('Fetching search results with params:', params);
       
       let response = await searchApi.search(params);
       let results = response.data.list || []; // 如果 data.list 为 null，则使用空数组
@@ -38,6 +36,7 @@ export const fetchSearchResults = (query: string, tag?: string, page: number = 1
         cover_img: `${process.env.REACT_APP_SHEER_API_URL}${item.cover_img ? item.cover_img : item.background_img}`,
       }))
 
+      dispatch({ type: SEARCH_LOADING, payload: false });
       dispatch({
         type: FETCH_SEARCH_RESULTS,
         payload: results as SearchResult[],
