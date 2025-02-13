@@ -284,9 +284,10 @@ const Layouts: React.FC = () => {
         // 上报埋点
         if (value === "exit" && identifyAccelerationData()?.[0]) {
           tracking.trackBoostDisconnectManual();
-          // 关闭客户端上报埋点上报
-          tracking.trackBoostActiveCloseClient();
         }
+
+        // 关闭客户端上报埋点上报
+        tracking.trackBoostActiveCloseClient();
 
         await stopProxy(value); // 调用停止加速
         const game = await removeGameList("initialize"); // 更新我的游戏
