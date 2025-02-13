@@ -391,6 +391,10 @@ const PayModal: React.FC = (props) => {
     const handleNetworkChange = () => {
       console.log(navigator.onLine);
       setNetworkState(navigator?.onLine);
+      
+      if (navigator.onLine) {
+        setRefresh(refresh + 1);
+      }
     };
 
     // 添加事件监听器
