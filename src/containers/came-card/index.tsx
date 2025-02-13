@@ -875,13 +875,13 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           const clientVersion = (window as any).versionNowRef;
 
           // 比较版本是否需要升级
-          const isInterim = compareVersions(
+          const interim: any = compareVersions(
             clientVersion,
             version?.min_version
           );
 
           // 如果版本有升级并且 版本没有选择更新 并且弹窗是未打开的情况下
-          if (isInterim && !versionOpen) {
+          if (interim?.relation === 2 && !versionOpen) {
             // 打开升级弹窗 触发普通升级类型
             dispatch(setVersionState({ open: true, type: "force" }));
             stopAnimation(); // 停止加速动画
