@@ -339,6 +339,10 @@ const Layouts: React.FC = () => {
   // 退出登录
   const loginOut = async (event: any = "") => {
     try {
+      // 清除升级按钮信息
+      dispatch(setVersionState({ open: false, type: "" }));
+      localStorage.removeItem("versionLock");
+
       if (identifyAccelerationData()?.[0]) {
         tracking.trackBoostDisconnectManual();
       }
@@ -366,7 +370,7 @@ const Layouts: React.FC = () => {
       } catch (error) {
         console.error("更新banner失败:", error);
       }
-
+      
       localStorage.removeItem("token");
       localStorage.removeItem("isRealName"); // 去掉实名认证
       localStorage.removeItem("userId"); // 存储user_id
@@ -524,7 +528,7 @@ const Layouts: React.FC = () => {
         localStorage.getItem("isModalDisplayed") === "true"; // 获取localStorage中是否展示过标志
       const isNewUser = localStorage.getItem("is_new_user") === "true"; // 是否新用户
       const {
-        version = "", // 版本
+        version = {}, // 版本
         user_info = {}, // 用户信息
         timestamp = 0, // 服务端时间
         first_purchase_renewed = {}, // 是否首充首续
