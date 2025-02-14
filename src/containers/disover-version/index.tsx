@@ -46,7 +46,6 @@ const DisoverVersion: React.FC = () => {
         version?.web_version || "1.0.0.1001",
         version?.now_version
       );
-      console.log(version);
       
       version.max_version = webInterim?.max;
       setVersion(version);

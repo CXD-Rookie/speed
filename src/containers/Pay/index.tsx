@@ -458,9 +458,12 @@ const PayModal: React.FC = (props) => {
     }
 
     return () => {
-      if (paymentStatus !== 1 || QRCodeState === "timeout") {
-        clearInterval(intervalIdRef?.current);
-      }
+      // if (paymentStatus !== 1 || QRCodeState === "timeout") {
+      //   clearInterval(intervalIdRef?.current);
+      // }
+      
+      // 尝试修改支付关闭未清除轮询
+      clearInterval(intervalIdRef?.current);
     };
   }, [pollingKey, QRCodeState]);
 
