@@ -567,11 +567,23 @@ const Layouts: React.FC = () => {
             versionNowRef.current,
             envWebVersion
           );
-          
+
+          // 期望普通客户端升级版本和当前最大升级版本进行比较
+          const maxInterimVersion: any = compareVersions(
+            maxLocalVersion?.max,
+            version?.now_version
+          );
+
+          // 当前最大升级版本和期望前端升级版本进行比较
+          const maxWebInterimVersion: any = compareVersions(
+            maxLocalVersion?.max,
+            version?.web_version
+          );
+
           // 如果客户端或者前端触发升级
           if (
-            (interim?.relation === 2 && maxLocalVersion?.relation === 1) ||
-            (webInterim?.relation === 2 && maxLocalVersion?.relation === 2)
+            (interim?.relation === 2 && maxInterimVersion?.relation === 2) ||
+            (webInterim?.relation === 2 && maxWebInterimVersion?.relation === 2)
           ) {
             // 版本比较信息锁
             const versionLock = JSON.parse(
@@ -760,7 +772,7 @@ const Layouts: React.FC = () => {
       localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
       localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记
 
-      fetchBanner();
+      await fetchBanner();
 
       if (!accountInfo.isLogin) {
         const time = new Date().getTime() / 1000; // 获取当前时间
