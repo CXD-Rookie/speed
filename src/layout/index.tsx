@@ -284,9 +284,10 @@ const Layouts: React.FC = () => {
         // 上报埋点
         if (value === "exit" && identifyAccelerationData()?.[0]) {
           tracking.trackBoostDisconnectManual();
-          // 关闭客户端上报埋点上报
-          tracking.trackBoostActiveCloseClient();
         }
+
+        // 关闭客户端上报埋点上报
+        tracking.trackBoostActiveCloseClient();
 
         await stopProxy(value); // 调用停止加速
         const game = await removeGameList("initialize"); // 更新我的游戏
@@ -560,11 +561,17 @@ const Layouts: React.FC = () => {
             version?.web_version,
             version?.now_version
           );
+
+          // 当前普通客户端升级版本和当前前端升级版本进行比较
+          const maxLocalVersion: any = compareVersions(
+            versionNowRef.current,
+            envWebVersion
+          );
           
           // 如果客户端或者前端触发升级
           if (
-            (interim?.relation === 2 && maxVersion?.relation === 2) ||
-            (webInterim?.relation === 2 && maxVersion?.relation === 1)
+            (interim?.relation === 2 && maxLocalVersion?.relation === 1) ||
+            (webInterim?.relation === 2 && maxLocalVersion?.relation === 2)
           ) {
             // 版本比较信息锁
             const versionLock = JSON.parse(
@@ -786,8 +793,8 @@ const Layouts: React.FC = () => {
         nativeVersion(), // 读取客户端版本
         initialSetup(), // 初始设置
       ]);
-
-      if (accountInfo.isLogin) {
+      
+      if (store.getState().accountInfo?.isLogin) {
         await landFirstTrigger();
       }
 

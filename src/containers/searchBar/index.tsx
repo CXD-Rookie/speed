@@ -37,8 +37,9 @@ const SearchBar: React.FC = () => {
   const [placeholder, setPlaceholder] = useState('搜索游戏');
   
   const enterSign = useSelector((state: any) => state.searchEnter);
-  const query = useSelector((state: RootState) => state.search.query);
-  const results = useSelector((state: RootState) => state.search.results) || [];
+  const { query, results, isSearchLoading }: any = useSelector(
+    (state: RootState) => state.search
+  );
   
   const [showDropdown, setShowDropdown] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
@@ -80,7 +81,7 @@ const SearchBar: React.FC = () => {
   };
 
   const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && query?.length > 0) {
+    if (e.key === "Enter" && query?.length > 0 && !isSearchLoading) {
       e.currentTarget.blur(); // 失去焦点
       setShowDropdown(false);
       dispatch(setEnterSign(enterSign));
@@ -119,7 +120,7 @@ const SearchBar: React.FC = () => {
       {showDropdown && results.length > 0 && (
         <div className="search-dropdown-box">
           <div className="search-dropdown">
-            {results.slice(0, 4).map((result, index) => (
+            {results.slice(0, 4).map((result: any, index: number) => (
               <div
                 key={index}
                 className="search-item"
