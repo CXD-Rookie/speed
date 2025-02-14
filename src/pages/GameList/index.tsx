@@ -59,7 +59,7 @@ const GameLibrary: React.FC = () => {
   const [enterQuery, setEnterQuery] = useState("");
 
   const [page, setPage] = useState(1);
-  const [pagesize,] = useState(5000);
+  const [pagesize,] = useState(30);
   const [total, setTotal] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false); // 是否搜索中
@@ -83,7 +83,9 @@ const GameLibrary: React.FC = () => {
   // 请求游戏列表 query = {page,s}
   const fetchGameList = async (query: any) => {
     try {
-      setIsLoading(true);
+      if (query?.page <= 1) {
+        setIsLoading(true);
+      }
 
       const res = await gameApi.gameList({
         ...query,
