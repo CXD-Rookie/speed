@@ -787,8 +787,9 @@ const Layouts: React.FC = () => {
         nativeVersion(), // 读取客户端版本
         initialSetup(), // 初始设置
       ]);
-
-      if (accountInfo.isLogin) {
+      console.log(store?.getState());
+      
+      if (store.getState().accountInfo?.isLogin) {
         await landFirstTrigger();
       }
 
