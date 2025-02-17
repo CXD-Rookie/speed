@@ -96,10 +96,41 @@ const PayModal: React.FC = (props) => {
   );
 
   // 计算折扣
-  const isInteger = (value: number | string) => {
-    const num = Number(value);
-    return Number.isInteger(num / 10) ? num / 10 : num;
-  };
+  function isInteger(
+    discountedPrice: string | number, // 折扣价
+    originalPrice: string | number // 原价
+  ): number {
+    // 将传入的参数转换为数字类型
+    const discounted =
+      typeof discountedPrice === "string"
+        ? parseFloat(discountedPrice)
+        : discountedPrice;
+    const original =
+      typeof originalPrice === "string"
+        ? parseFloat(originalPrice)
+        : originalPrice;
+
+    // 检查原价是否为零，避免除零错误
+    if (original === 0) {
+      return 10;
+    }
+
+    // 计算折扣率
+    let discountRate = (discounted / original) * 10;
+
+    // 获取折扣率的小数部分
+    const decimalPart = discountRate % 1;
+
+    // 根据小数部分的值进行处理
+    if (decimalPart > 0 && decimalPart <= 0.5) {
+      discountRate = Math.floor(discountRate) + 0.5;
+    } else if (decimalPart > 0.5) {
+      discountRate = Math.ceil(discountRate);
+    }
+
+    // 保留一位小数
+    return parseFloat(discountRate.toFixed(1));
+  }
 
   // 根据规则随机生成的guid
   const randomlyGenerateGuid = () => {
@@ -350,7 +381,7 @@ const PayModal: React.FC = (props) => {
           if (!reqire) {
             return;
           }
-      
+
           const commodityRes = await payApi.getCommodityInfo(res.data?.cid);
 
           setOrderInfo({ ...commodityRes.data, ...res.data });
@@ -391,7 +422,7 @@ const PayModal: React.FC = (props) => {
     const handleNetworkChange = () => {
       console.log(navigator.onLine);
       setNetworkState(navigator?.onLine);
-      
+
       if (navigator.onLine) {
         setRefresh(refresh + 1);
       }
@@ -461,7 +492,7 @@ const PayModal: React.FC = (props) => {
       // if (paymentStatus !== 1 || QRCodeState === "timeout") {
       //   clearInterval(intervalIdRef?.current);
       // }
-      
+
       // 尝试修改支付关闭未清除轮询
       clearInterval(intervalIdRef?.current);
     };
@@ -554,11 +585,13 @@ const PayModal: React.FC = (props) => {
               )}
               {/* 商品列表 */}
               <div className="tabs">
-                {commodities.map((item, index) => {
+                {commodities.map((item: any, index) => {
                   // 是否首充或者首续存在
                   const isPurchase =
                     images?.length > 0 &&
                     ["purchase", "renewed"].includes(purchaseState);
+                  // 折扣
+                  const integer = isInteger(item?.price, item?.scribing_price);
 
                   return (
                     <div
@@ -574,33 +607,32 @@ const PayModal: React.FC = (props) => {
                         <div className="discount">
                           {activeCoupon?.redeem_code?.content}折
                         </div>
-                      ) : isPurchase ? (
+                      ) : integer < 10 ? (
                         <div
                           className={`${
                             purchaseState === "none" ? "" : "discount"
                           }`}
                         >
-                          {purchaseState === "purchase"
-                            ? `首充${isInteger(purchaseTypes[item.type])}`
-                            : `续费${isInteger(purchaseTypes[item.type])}`}
-                          折
+                          {purchaseState === "purchase" && "首充"}
+                          {purchaseState === "renewed" && "续费"}
+                          {integer}折
                         </div>
                       ) : null}
-                      <div className="term">{item.name}</div>
+                      <div className="term">{item?.name}</div>
                       <div className="price">
-                        ¥<span className="price-text">{item.month_price}</span>
-                        /月
+                        ¥<span className="price-text">{item?.day_price}</span>
+                        /天
                         {(activeCoupon?.id || isPurchase) && (
                           <span className="text">
-                            ¥{item.scribing_month_price}
+                            ¥{item?.scribing_day_price}
                           </span>
                         )}
                       </div>
                       <div className="amount">
-                        总价：¥<span>{item.price}</span>
+                        总价：¥<span>{item?.price}</span>
                         {(activeCoupon?.id || isPurchase) && (
                           <span className="text">
-                            原价: ¥{item.scribing_price}
+                            原价: ¥{item?.scribing_price}
                           </span>
                         )}
                       </div>
