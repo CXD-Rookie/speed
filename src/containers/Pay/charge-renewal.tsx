@@ -396,7 +396,7 @@ const ChargeRenewal: React.FC = (props) => {
             <img src={closeIcon} alt="" />
           </div>
           <div className="main">
-            <div className="activity-box">
+            <div className="activity-box" style={{marginTop: String(type) === "2" ? "31vh" : "34vh"}}>
               {commodities?.length > 0 &&
                 commodities?.map((item: any, index: number) => {
                   return (
@@ -415,22 +415,20 @@ const ChargeRenewal: React.FC = (props) => {
                           String(type) === "3" ? "renewal-img" : "charge-img"
                         }
                         src={
-                          commodTypeMap?.[type]?.[item?.type]?.[
-                            hoverCommod?.is_hover &&
-                            hoverCommod?.type === item?.type
-                              ? "hover_src"
-                              : "src"
-                          ]
+                          String(type) === "2" && hitCommod?.type === item?.type
+                            ? commodTypeMap?.[type]?.[item?.type]?.hover_src
+                            : commodTypeMap?.[type]?.[item?.type]?.[
+                                hoverCommod?.is_hover &&
+                                hoverCommod?.type === item?.type
+                                  ? "hover_src"
+                                  : "src"
+                              ]
                         }
                         alt=""
                         onClick={() => {
                           setHitCommod(item);
                           setActiveTabIndex(index);
-                          setHoverCommod({
-                            is_hover: true,
-                            type: item?.type,
-                          });
-                          
+
                           // 如果商品在支付中保持轮询不变
                           if (QRCodeState !== "incoming") {
                             setQrCodeUrl(""); // 存储二维码地址
