@@ -423,8 +423,8 @@ const PayModal: React.FC = (props) => {
       // console.log(navigator.onLine);
       setNetworkState(navigator?.onLine);
 
-      if (navigator.onLine) {
-        setRefresh(refresh + 1);
+      if (navigator.onLine && refresh <= 1) {
+        setRefresh(0);
       }
     };
 
@@ -475,6 +475,8 @@ const PayModal: React.FC = (props) => {
     };
 
     if (userToken && refresh >= 0) {
+      console.log(userToken, refresh);
+      
       inilteFun();
     }
   }, [userToken, refresh]);
