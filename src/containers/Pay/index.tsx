@@ -46,6 +46,7 @@ interface ImageItem {
 
 const PayModal: React.FC = (props) => {
   const dispatch = useDispatch();
+  const networkNumRef = useRef(0); // 触发断网次数
 
   const { open = false, couponValue = {} } = useSelector(
     (state: any) => state?.modalOpen?.payState
@@ -88,7 +89,7 @@ const PayModal: React.FC = (props) => {
   const [refresh, setRefresh] = useState(0); // 控制页面是否重新请求
   const [activeTabIndex, setActiveTabIndex] = useState(0); // 选中商品索引
 
-  const [networkState, setNetworkState] = useState(true);
+  const [networkState, setNetworkState] = useState(true); // 网络状态
 
   // 当前选中的商品是否是连续续费的
   const activePayId = ["5", "6", "7", "8"].includes(
@@ -248,9 +249,9 @@ const PayModal: React.FC = (props) => {
 
       // 首次充值 首充续购
       const { first_purchase, first_renewed } = firstAuth?.firstAuth;
-
+      
       // 如果是第一次初始化请求, 执行只需要第一次执行的api
-      if (refresh === 0) {
+      if (refresh === 0 || (networkNumRef?.current > 0 && refresh === 1)) {
         const reqire = await validateRequiredParams();
 
         if (!reqire) {
@@ -423,8 +424,10 @@ const PayModal: React.FC = (props) => {
       // console.log(navigator.onLine);
       setNetworkState(navigator?.onLine);
 
-      if (navigator.onLine && refresh <= 1) {
-        setRefresh(0);
+      if (navigator.onLine && networkNumRef?.current > 0) {
+        setRefresh(refresh + 1);
+      } else if (!navigator.onLine) {
+        networkNumRef.current = networkNumRef?.current + 1;
       }
     };
 
@@ -475,8 +478,6 @@ const PayModal: React.FC = (props) => {
     };
 
     if (userToken && refresh >= 0) {
-      console.log(userToken, refresh);
-      
       inilteFun();
     }
   }, [userToken, refresh]);
