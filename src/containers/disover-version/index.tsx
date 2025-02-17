@@ -64,7 +64,7 @@ const DisoverVersion: React.FC = () => {
         />
         <div className="title-box">
           <div className="title">发现新版本！</div>
-          <div className="version">V{version?.max_version}</div>
+          {/* <div className="version">V{version?.max_version}</div> */}
         </div>
         <div className="log-box">
           <pre className="log-text">{version?.note}</pre>

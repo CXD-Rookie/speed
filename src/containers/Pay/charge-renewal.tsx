@@ -382,9 +382,7 @@ const ChargeRenewal: React.FC = (props) => {
 
   return open ? (
     <Fragment>
-      <div
-        className={`charge-renewal-module ${modalUrl?.[type]}`}
-      >
+      <div className={`charge-renewal-module ${modalUrl?.[type]}`}>
         <div>
           <div
             className="activity-close-icon"
@@ -396,7 +394,10 @@ const ChargeRenewal: React.FC = (props) => {
             <img src={closeIcon} alt="" />
           </div>
           <div className="main">
-            <div className="activity-box" style={{marginTop: String(type) === "2" ? "31vh" : "34vh"}}>
+            <div
+              className="activity-box"
+              style={{ marginTop: String(type) === "2" ? "31vh" : "34vh" }}
+            >
               {commodities?.length > 0 &&
                 commodities?.map((item: any, index: number) => {
                   return (
@@ -415,14 +416,13 @@ const ChargeRenewal: React.FC = (props) => {
                           String(type) === "3" ? "renewal-img" : "charge-img"
                         }
                         src={
-                          String(type) === "2" && hitCommod?.type === item?.type
-                            ? commodTypeMap?.[type]?.[item?.type]?.hover_src
-                            : commodTypeMap?.[type]?.[item?.type]?.[
-                                hoverCommod?.is_hover &&
-                                hoverCommod?.type === item?.type
-                                  ? "hover_src"
-                                  : "src"
-                              ]
+                          commodTypeMap?.[type]?.[item?.type]?.[
+                            (hoverCommod?.is_hover &&
+                              hoverCommod?.type === item?.type) ||
+                            hitCommod?.type === item?.type
+                              ? "hover_src"
+                              : "src"
+                          ]
                         }
                         alt=""
                         onClick={() => {
@@ -493,7 +493,7 @@ const ChargeRenewal: React.FC = (props) => {
                     className="user-text"
                     onClick={handleClick}
                     ref={divRef}
-                    data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                    data-title={process.env.REACT_APP_TERMS_ADDRESS}
                   >
                     用户协议
                   </div>

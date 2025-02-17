@@ -420,7 +420,7 @@ const PayModal: React.FC = (props) => {
   useEffect(() => {
     // 定义处理网络状态变化的函数
     const handleNetworkChange = () => {
-      console.log(navigator.onLine);
+      // console.log(navigator.onLine);
       setNetworkState(navigator?.onLine);
 
       if (navigator.onLine) {
