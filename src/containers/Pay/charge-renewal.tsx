@@ -1,28 +1,35 @@
 import React, { useState, useEffect, useRef, Fragment } from "react";
-import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setFirstPayRP } from "@/redux/actions/modal-open";
 import { validateRequiredParams } from "@/common/utils";
 
-import "./index.scss";
-import "./new.scss";
+import "./charge-renewal.scss";
 
 import PayErrorModal from "../pay-error";
 import PaymentModal from "../payment";
 import payApi from "@/api/pay";
 import eventBus from "@/api/eventBus";
 import tracking from "@/common/tracking";
+
 import closeIcon from "@/assets/images/common/cloture.svg";
 
-interface Commodity {
-  id: string;
-  name: string;
-  type: number;
-  price: string;
-  month_price: string;
-  scribing_price: string;
-  scribing_month_price: string;
-}
+import cMonthIcon from "@/assets/images/pay/charge/month.webp";
+import cMonthHoverIcon from "@/assets/images/pay/charge/month-hover.webp";
+import cQuarterIcon from "@/assets/images/pay/charge/quarter.webp";
+import cQuarterHoverIcon from "@/assets/images/pay/charge/quarter-hover.webp";
+import cHalfIcon from "@/assets/images/pay/charge/half.webp";
+import cHalfHoverIcon from "@/assets/images/pay/charge/half-hover.webp";
+import cYearIcon from "@/assets/images/pay/charge/year.webp";
+import cYearHoverIcon from "@/assets/images/pay/charge/year-hover.webp";
+
+import rMonthIcon from "@/assets/images/pay/renewal/month.webp";
+import rMonthHoverIcon from "@/assets/images/pay/renewal/month-hover.webp";
+import rQuarterIcon from "@/assets/images/pay/renewal/quarter.webp";
+import rQuarterHoverIcon from "@/assets/images/pay/renewal/quarter-hover.webp";
+import rHalfIcon from "@/assets/images/pay/renewal/half.webp";
+import rHalfHoverIcon from "@/assets/images/pay/renewal/half-hover.webp";
+import rYearIcon from "@/assets/images/pay/renewal/year.webp";
+import rYearHoverIcon from "@/assets/images/pay/renewal/year-hover.webp";
 
 interface OrderInfo {
   id: string;
@@ -38,7 +45,51 @@ interface OrderInfo {
   update_time: number;
 }
 
-const PayModal: React.FC = (props) => {
+const modalUrl: any = {
+  2: "charge-pay-module",
+  3: "renewal-pay-module",
+};
+
+const commodTypeMap: any = {
+  2: {
+    1: {
+      src: cMonthIcon,
+      hover_src: cMonthHoverIcon,
+    },
+    2: {
+      src: cQuarterIcon,
+      hover_src: cQuarterHoverIcon,
+    },
+    3: {
+      src: cHalfIcon,
+      hover_src: cHalfHoverIcon,
+    },
+    4: {
+      src: cYearIcon,
+      hover_src: cYearHoverIcon,
+    },
+  },
+  3: {
+    1: {
+      src: rMonthIcon,
+      hover_src: rMonthHoverIcon,
+    },
+    2: {
+      src: rQuarterIcon,
+      hover_src: rQuarterHoverIcon,
+    },
+    3: {
+      src: rHalfIcon,
+      hover_src: rHalfHoverIcon,
+    },
+    4: {
+      src: rYearIcon,
+      hover_src: rYearHoverIcon,
+    },
+  },
+};
+
+const ChargeRenewal: React.FC = (props) => {
   const dispatch: any = useDispatch();
   const divRef = useRef<HTMLDivElement>(null);
   const intervalIdRef: any = useRef(null); // 用于存储interval的引用
@@ -49,15 +100,15 @@ const PayModal: React.FC = (props) => {
     (state: any) => state?.modalOpen?.firstPayRP
   );
 
-  const [commodities, setCommodities] = useState<Commodity[]>([]);
-  const [, setPayTypes] = useState<{ [key: string]: string }>({});
-  const [firstPayTypes, setFirstPayTypes] = useState<{ [key: string]: string }>(
-    {}
-  );
-  const [firstPayRenewedTypes, setFirstPayRenewedTypes] = useState<{
-    [key: string]: string;
-  }>({});
-  const [activeTabIndex] = useState(0);
+  const [commodities, setCommodities] = useState<any>([]);
+  const [hitCommod, setHitCommod] = useState<any>({}); // 选中的商品类型
+  const [hoverCommod, setHoverCommod] = useState({
+    is_hover: false,
+    type: "",
+  }); // 是否经过
+  const [, setPayTypes] = useState<any>({});
+
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   //@ts-ignore
   const [userToken] = useState(accountInfo.userInfo.id);
@@ -75,12 +126,13 @@ const PayModal: React.FC = (props) => {
   const [pollingKey, setPollingKey] = useState<string>("");
   const env_url = process.env.REACT_APP_API_URL;
 
-  const guid = () => {
+  // 根据规则随机生成的guid
+  const randomlyGenerateGuid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
       function (c) {
         var r = (Math.random() * 16) | 0,
-          v = c == "x" ? r : (r & 0x3) | 0x8;
+          v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       }
     );
@@ -88,18 +140,36 @@ const PayModal: React.FC = (props) => {
 
   const iniliteReset = () => {
     clearInterval(intervalIdRef?.current);
-    // setQRCodeState("normal");
     setPollingTime(5000);
     setPollingTimeNum(0);
-
     setRefresh(refresh + 1);
+  };
+
+  // 根据选中商品，guid，优惠折扣生成的二维码cdn地址
+  const autoGenerateQRCodes = (event: any = {}) => {
+    return `${env_url}/pay/qrcode?cid=${event?.cid}&user_id=${userToken}&key=${
+      event?.key
+    }&platform=${3}&mchannel=${localStorage.getItem(
+      "mchannel"
+    )}&adid=${localStorage.getItem("adid")}`;
+  };
+
+  // 更新二维码，更新规则key，更新guid
+  const updateQRCodesInfo = (code: any) => {
+    const randomKey = randomlyGenerateGuid(); // 根据规则随机生成的guid
+    const qRCodes = autoGenerateQRCodes({
+      cid: code?.cid,
+      key: randomKey,
+    }); // 生成的二维码地址
+
+    setPollingKey(randomKey); // 存储当前二维码的规则key
+    setQrCodeUrl(qRCodes); // 存储二维码地址
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
     (window as any).NativeApi_OpenBrowser(dataTitle);
-    console.log("data-title:", dataTitle);
   };
 
   // 获取单价，类型列表
@@ -111,30 +181,26 @@ const PayModal: React.FC = (props) => {
         return;
       }
 
-      const [
-        payTypeResponse,
-        commodityResponse,
-        firstPurchaseResponse,
-        unpaidOrder,
-      ] = await Promise.all([
-        payApi.getPayTypeList(),
-        payApi.getCommodityList(),
-        payApi.getfirst_purchase_renewed_discount(),
-        payApi.UnpaidOrder(),
-      ]);
+      const [payTypeResponse, commodityResponse, unpaidOrder] =
+        await Promise.all([
+          payApi.getPayTypeList(),
+          payApi.getCommodityList(),
+          payApi.UnpaidOrder(),
+        ]);
 
       if (
         payTypeResponse.error === 0 &&
         commodityResponse.error === 0 &&
         unpaidOrder?.data
       ) {
-        setPayTypes(payTypeResponse?.data || {});
-        setCommodities(commodityResponse?.data?.list || {});
-        setFirstPayTypes(firstPurchaseResponse?.data?.first_purchase || {});
-        setFirstPayRenewedTypes(firstPurchaseResponse?.data?.first_renewed || {});
+        const data = [...(commodityResponse?.data?.list || [])].reverse();
+
+        setPayTypes(payTypeResponse.data);
+        setCommodities([...data]);
+        setHitCommod(data?.[activeTabIndex]);
 
         return {
-          commodity: commodityResponse.data.list || [],
+          commodity: data,
         };
       } else {
         eventBus.emit("showModal", { show: true, type: "connectionPay" }); //发现重复订单继续支付
@@ -208,13 +274,11 @@ const PayModal: React.FC = (props) => {
             const currentTime = Math.floor(Date.now() / 1000); // 当前时间
             const isTrue = time && currentTime < Number(time);
             const firstVisit = isTrue ? 1 : 0;
+            const goods = res?.data?.name;
 
             tracking.trackPurchaseSuccess(
-              `buy=${buy};firstDay=${firstVisit};goods=月卡`
+              `buy=${buy};firstDay=${firstVisit};goods=${goods}`
             );
-            buy === 1
-              ? tracking.trackPurchaseFirstBuySuccess()
-              : tracking.trackPurchaseFirstShowSuccess();
             localStorage.setItem("isBuyFirstVisit", "1");
             setShowPopup("支付成功");
           }
@@ -277,18 +341,14 @@ const PayModal: React.FC = (props) => {
 
   useEffect(() => {
     const inilteFun = async () => {
-      const iniliteData = await fetchData();
+      const iniliteData: any = await fetchData();
 
       if (iniliteData?.commodity?.length > 0) {
-        const newKey = guid();
-
+        // 生成二维码信息
+        updateQRCodesInfo({
+          cid: iniliteData?.commodity[activeTabIndex].id,
+        });
         setQRCodeState("normal");
-        setPollingKey(newKey);
-        setQrCodeUrl(
-          `${env_url}/pay/qrcode?cid=${
-            iniliteData?.commodity[activeTabIndex].id
-          }&user_id=${userToken}&key=${newKey}&platform=${3}&mchannel=${localStorage.getItem("mchannel")}&adid=${localStorage.getItem("adid")}`
-        );
       }
     };
 
@@ -320,41 +380,14 @@ const PayModal: React.FC = (props) => {
     }
   }, [paymentStatus, QRCodeState, refresh]);
 
-  useEffect(() => {
-    if (open) {
-      const isFirst = firstAuth?.firstAuth?.first_purchase;
-
-      if (isFirst) {
-        // 首次购买埋点
-        tracking.trackPurchaseFirstBuy();
-      } else {
-        // 首次续费埋点
-        tracking.trackPurchaseFirstShow();
-      }
-    }
-  }, [open]);
-
-  return (
+  return open ? (
     <Fragment>
-      <Modal
-        wrapClassName="pay-wrap-module"
-        className="pay-module pay-module-new"
-        open={open}
-        onCancel={() => {
-          iniliteReset();
-          dispatch(setFirstPayRP({ open: false, type: "" }));
-        }}
-        title=""
-        destroyOnClose
-        width={"92vw"}
-        centered
-        closeIcon={null}
-        maskClosable={false}
-        footer={null}
+      <div
+        className={`charge-renewal-module ${modalUrl?.[type]}`}
       >
-        <div className="pay-modal">
+        <div>
           <div
-            className="close-icon"
+            className="activity-close-icon"
             onClick={() => {
               iniliteReset();
               dispatch(setFirstPayRP({ open: false, type: "" }));
@@ -362,87 +395,116 @@ const PayModal: React.FC = (props) => {
           >
             <img src={closeIcon} alt="" />
           </div>
-          <div
-            className={
-              type === 2 ? "new-design" : type === 3 ? "new-design2" : ""
-            }
-          >
-            <div className="newMain">
-              {commodities.map((item, index) => (
-                <div
-                  key={index}
-                  className="carousel-item dl"
-                  style={{
-                    display: index === activeTabIndex ? "block" : "none",
-                  }}
-                >
-                  <p className="highlight">
-                    月卡
-                    {!firstAuth.firstAuth.first_purchase && (
-                      <span>
-                        {Number(firstPayRenewedTypes?.[item?.type]) / 10}
-                      </span>
-                    )}
-                    {!firstAuth.firstAuth.first_renewed && (
-                      <span>{Number(firstPayTypes?.[item?.type]) / 10}</span>
-                    )}
-                    折
-                  </p>
-                  <div className="price" data-price={item.price}>
-                    ¥<span className="priceBigNew">{item.price}</span>/月
+          <div className="main">
+            <div className="activity-box">
+              {commodities?.length > 0 &&
+                commodities?.map((item: any, index: number) => {
+                  return (
+                    <div
+                      className={`activity-img-box ${
+                        String(type) === "3"
+                          ? hitCommod?.type === item?.type
+                            ? "activity-img-box-active"
+                            : "activity-img-box-normal"
+                          : "null"
+                      }`}
+                      key={item?.type}
+                    >
+                      <img
+                        className={
+                          String(type) === "3" ? "renewal-img" : "charge-img"
+                        }
+                        src={
+                          commodTypeMap?.[type]?.[item?.type]?.[
+                            hoverCommod?.is_hover &&
+                            hoverCommod?.type === item?.type
+                              ? "hover_src"
+                              : "src"
+                          ]
+                        }
+                        alt=""
+                        onClick={() => {
+                          setHitCommod(item);
+                          setActiveTabIndex(index);
+                          setHoverCommod({
+                            is_hover: true,
+                            type: item?.type,
+                          });
+                          
+                          // 如果商品在支付中保持轮询不变
+                          if (QRCodeState !== "incoming") {
+                            setQrCodeUrl(""); // 存储二维码地址
+                            clearInterval(intervalIdRef?.current);
+                            setQRCodeState("normal"); // 重置二维码状态
+                            setPollingTimeNum(0); // 清空轮询计时器当前累计时长
+
+                            // 生成二维码信息
+                            updateQRCodesInfo({
+                              cid: item?.id,
+                            });
+                          }
+                        }}
+                        onMouseMove={() =>
+                          setHoverCommod({
+                            is_hover: true,
+                            type: item?.type,
+                          })
+                        }
+                        onMouseLeave={() =>
+                          setHoverCommod({
+                            is_hover: false,
+                            type: "",
+                          })
+                        }
+                      />
+                    </div>
+                  );
+                })}
+            </div>
+            <div className="activity-footer">
+              {qrCodeUrl && (
+                <div className="qrcode">
+                  <img className="header-icon" src={qrCodeUrl} alt="" />
+                  {QRCodeState !== "normal" && (
+                    <div className="pay-mask">
+                      <div className="title">
+                        {QRCodeState === "incoming" && "手机支付中"}
+                        {QRCodeState === "timeout" && "二维码已超时"}
+                      </div>
+                      <div className="text">
+                        {QRCodeState === "incoming" && "如遇问题"}
+                        <span onClick={() => iniliteReset()}>点击刷新</span>
+                      </div>
+                      <div>
+                        {QRCodeState === "timeout" && "二维码"}
+                        {QRCodeState === "incoming" && "二维码重试"}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              {commodities?.[activeTabIndex] ? (
+                <div className="first-carousel">
+                  <div className="carousel-price">
+                    <span className="text">扫码支付：</span>
+                    <span className="icon">¥</span>
+                    <span className="price">{hitCommod?.price}</span>
                   </div>
-                  <div className="term">
-                    原价：￥{item.scribing_month_price}
+                  <div className="carousel-text">请使用[微信/支付宝]扫码</div>
+                  <div
+                    className="user-text"
+                    onClick={handleClick}
+                    ref={divRef}
+                    data-title="https://cdn.accessorx.com/web/terms_of_service.html"
+                  >
+                    用户协议
                   </div>
                 </div>
-              ))}
+              ) : null}
             </div>
           </div>
-          <div className="main">
-            {qrCodeUrl && (
-              <div className="qrcode">
-                <img className="header-icon" src={qrCodeUrl} alt="" />
-                {QRCodeState !== "normal" && (
-                  <div className="pay-mask">
-                    <div className="title">
-                      {QRCodeState === "incoming" && "手机支付中"}
-                      {QRCodeState === "timeout" && "二维码已超时"}
-                    </div>
-                    <div className="text">
-                      {QRCodeState === "incoming" && "如遇问题"}
-                      <span onClick={() => iniliteReset()}>点击刷新</span>
-                    </div>
-                    <div>
-                      {QRCodeState === "timeout" && "二维码"}
-                      {QRCodeState === "incoming" && "二维码重试"}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            {commodities?.[activeTabIndex] ? (
-              <div className="first-carousel">
-                <div className="carousel-price">
-                  <span className="text">扫码支付：</span>
-                  <span className="icon">¥</span>
-                  <span className="price">
-                    {commodities?.[activeTabIndex]?.price}
-                  </span>
-                </div>
-                <div className="carousel-text">请使用[微信/支付宝]扫码</div>
-                <div
-                  className="user-text"
-                  onClick={handleClick}
-                  ref={divRef}
-                  data-title={process.env.REACT_APP_TERMS_ADDRESS}
-                >
-                  用户协议
-                </div>
-              </div>
-            ) : null}
-          </div>
         </div>
-      </Modal>
+      </div>
       <PaymentModal
         open={!!showPopup}
         info={orderInfo}
@@ -468,7 +530,7 @@ const PayModal: React.FC = (props) => {
         />
       ) : null}
     </Fragment>
-  );
+  ) : null;
 };
 
-export default PayModal;
+export default ChargeRenewal;
