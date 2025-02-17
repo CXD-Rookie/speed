@@ -92,6 +92,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
       "系统内存不足，无法启动加速服务，请关闭部分应用后重试。",
     driverFails: '驱动程序数字签名校验失败，点击"确定"尝试更新修复。',
     otherReasons: '加速服务启动失败，点击"确定"尝试更新修复。',
+    runCaretakers:
+      "加速服务启动失败，访问被拒绝。请尝试以管理员身份运行加速器，并检查防火墙或杀毒软件设置，确保加速器未被阻止。",
   };
 
   // footer 确认按钮的文案
@@ -107,6 +109,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     driverFails: "确定",
     processCreationFailed: "确定",
     accelerationServiceNotStarting: "好的",
+    runCaretakers: "好的",
     delayTooHigh: "更换节点",
     renewalReminder: "立即充值",
     serverDisconnected: "重启客户端",
