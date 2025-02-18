@@ -149,7 +149,11 @@ const PayModal: React.FC = (props) => {
   // 根据选中商品，guid，优惠折扣生成的二维码cdn地址
   const autoGenerateQRCodes = (event: any = {}) => {
     const rid = event?.rid || activeCoupon?.rid || "";
-    return `${env_url}/pay/qrcode?cid=${event?.cid}&user_id=${userToken}&key=${
+    const payment = process.env.REACT_APP_PARTNER_PAY_PLATFORM;
+
+    return `${env_url}/pay/qrcode?payment_platform=${payment}&cid=${
+      event?.cid
+    }&user_id=${userToken}&key=${
       event?.key
     }&platform=${3}&rid=${rid}&mchannel=${localStorage.getItem(
       "mchannel"
