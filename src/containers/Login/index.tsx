@@ -110,6 +110,7 @@ const Login: React.FC = () => {
         phone: phoneNumber,
         verification_code: verificationCode,
         platform: 3,
+        qinglong_keji_jump_phone_code: 1, // 生成环境删除，测试环境调试用
       });
 
       if (res?.error === 0) {
