@@ -561,12 +561,9 @@ const Layouts: React.FC = () => {
             version?.web_version,
             version?.now_version
           );
-
+          
           // 如果客户端或者前端触发升级
-          if (
-            (interim?.relation === 2 || webInterim?.relation === 2) &&
-            versionType
-          ) {
+          if (interim?.relation === 2 || webInterim?.relation === 2) {
             // 版本比较信息锁
             const versionLock = JSON.parse(
               localStorage.getItem("versionLock") ?? JSON.stringify({})
@@ -585,7 +582,7 @@ const Layouts: React.FC = () => {
             ) {
               // 不打开升级弹窗 只触发普通升级类型 以便头部可以展示出发现新版本按钮
               dispatch(setVersionState({ open: false, type: "last" }));
-            } else if (versionLock?.interimMark !== "1") {
+            } else if (versionLock?.interimMark !== "1" && !versionType) {
               // 当前版本存在可升级版本
               // 不打开升级弹窗 只触发普通升级类型 以便头部可以展示出发现新版本按钮
               dispatch(setVersionState({ open: false, type: "interim" }));
