@@ -73,7 +73,7 @@ class Tracking {
 
   // user_id上报
   trackaUserIDActivity () {
-    this.trackEvent(this.otherMchannel()?.mchannel, "active_userID", `userID=${localStorage.getItem("userId")};${this.otherMchannel()?.channelId}`);
+    this.trackEvent(this.otherMchannel()?.mchannel, "active_userID", `userID=${localStorage.getItem("userId")}${this.otherMchannel()?.channelId}`);
   }
 
   trackSignUpSuccess (status, firstVisit) {
