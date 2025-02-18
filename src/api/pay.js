@@ -30,7 +30,7 @@ class PayApi {
   }
 
   getfirst_purchase_renewed_discount () {
-    return get(`${this.url}/commodity/first_purchase_renewed_discount?platform=3`);
+    return get(`${this.url}/commodity/first_purchase_renewed_price?platform=3`);
   }
 
   UnpaidOrder () {

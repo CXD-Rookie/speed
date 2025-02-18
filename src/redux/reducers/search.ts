@@ -2,19 +2,22 @@
 
 import {
   FETCH_SEARCH_RESULTS, SET_SEARCH_QUERY,
-  SEARCH_LOADING
+  SEARCH_LOADING,
+  FETCH_TOTAL
  } from '../actions/search';
 
 interface SearchState {
   query: string;
   results: { id: string; name: string; name_en: string }[];
+  total: number,
   isSearchLoading: boolean;
 }
 
 const initialState: SearchState = {
   query: '',
   results: [],
-  isSearchLoading: false
+  total: 0,
+  isSearchLoading: false,
 };
 
 const searchReducer = (state = initialState, action: any) => {
@@ -33,6 +36,11 @@ const searchReducer = (state = initialState, action: any) => {
       return {
         ...state,
         results: action.payload,
+      };
+    case FETCH_TOTAL:
+      return {
+        ...state,
+        total: action.payload,
       };
     default:
       return state;
