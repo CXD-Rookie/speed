@@ -120,7 +120,7 @@ const PayModal: React.FC = (props) => {
     let discountRate = (discounted / original) * 10;
 
     // 获取折扣率的小数部分
-    const decimalPart = discountRate % 1;
+    // const decimalPart = discountRate % 1;
 
     // 根据小数部分的值进行处理
     discountRate = Math.floor(discountRate);
@@ -598,9 +598,23 @@ const PayModal: React.FC = (props) => {
                   const isPurchase =
                     images?.length > 0 &&
                     ["purchase", "renewed"].includes(purchaseState);
+                  // console.log(purchaseTypes);
+
+                  // 首充价格(单位：分) | 首续价格(单位：分) | 商品现价(单位：元)
+                  let purchasePrice =
+                    purchaseTypes?.first_purchase?.[String(item?.type)];
+                  let renewedPrice =
+                    purchaseTypes?.first_renewed?.[String(item?.type)];
+                  let price =
+                    purchaseState === "purchase" && purchasePrice
+                      ? purchasePrice / 100
+                      : purchaseState === "renewed" && renewedPrice
+                      ? renewedPrice / 100
+                      : item?.price;
+
                   // 折扣
-                  const integer = isInteger(item?.price, item?.scribing_price);
-                  
+                  const integer = isInteger(price, item?.scribing_price);
+
                   return (
                     <div
                       key={index}

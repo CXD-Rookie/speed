@@ -58,6 +58,7 @@ class Tracking {
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
       this.trackEvent(this.otherMchannel()?.mchannel, "active_background", this.otherMchannel("after")?.channelId);
+      this.trackEvent(this.otherMchannel()?.mchannel, "active_userID", `userID=${localStorage.getItem("userId")};${this.otherMchannel()?.channelId}`);
     }, 60 * 60 * 10 * 1000);
   }
 
@@ -68,6 +69,11 @@ class Tracking {
   // 后台活跃
   trackaBackgroundActivity () {
     this.trackEvent(this.otherMchannel()?.mchannel, "active_background", this.otherMchannel("after")?.channelId);
+  }
+
+  // user_id上报
+  trackaUserIDActivity () {
+    this.trackEvent(this.otherMchannel()?.mchannel, "active_userID", `userID=${localStorage.getItem("userId")};${this.otherMchannel()?.channelId}`);
   }
 
   trackSignUpSuccess (status, firstVisit) {

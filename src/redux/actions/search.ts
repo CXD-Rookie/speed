@@ -5,7 +5,7 @@ import gameApi from "@/api/gamelist"
 export const FETCH_SEARCH_RESULTS = 'FETCH_SEARCH_RESULTS';
 export const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
 export const SEARCH_LOADING = 'SEARCH_LOADING';
-
+export const FETCH_TOTAL = 'FETCH_TOTAL';
 interface SearchResult {
   id: string;
   name: string;
@@ -39,6 +39,10 @@ export const fetchSearchResults = (query: string, tag?: string, page: number = 1
       dispatch({
         type: FETCH_SEARCH_RESULTS,
         payload: results as SearchResult[],
+      });
+      dispatch({
+        type: FETCH_TOTAL,
+        payload: response?.data?.total,
       });
     } catch (error) {
       console.error('Error fetching search results:', error);

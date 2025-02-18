@@ -58,7 +58,7 @@ const SearchBar: React.FC = () => {
     }
 
     if (searchQuery?.length <= 50) {
-      dispatch(fetchSearchResults(searchQuery, undefined, 1, 10));
+      dispatch(fetchSearchResults(searchQuery, undefined, 1, 30));
     }
   };
 
