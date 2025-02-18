@@ -50,8 +50,10 @@ const GameLibrary: React.FC = () => {
 
   const historyContext: any = useHistoryContext();
 
-  const searchBarValue = useSelector((state: any) => state.search.query);
-  const searchResults = useSelector((state: any) => state.search.results);
+  // redux中存储的搜索参数，搜索结果，搜索结果数量
+  const { query: searchBarValue, results: searchResults, total: fetchTotal } = useSelector(
+    (state: any) => state.search
+  );
   const enterSign = useSelector((state: any) => state.searchEnter);
 
   const [oldSearchBarValue, setOldSearchBarValue] = useState();
@@ -59,7 +61,7 @@ const GameLibrary: React.FC = () => {
   const [enterQuery, setEnterQuery] = useState("");
 
   const [page, setPage] = useState(1);
-  const [pagesize,] = useState(30);
+  const [pagesize] = useState(30);
   const [total, setTotal] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false); // 是否搜索中
@@ -71,8 +73,8 @@ const GameLibrary: React.FC = () => {
       .slice(0, -1)
       .reverse()
       .find((path: any) => path !== currentPath);
-    
-    // 处理在游戏详情中到结果页点击返回的情况 
+
+    // 处理在游戏详情中到结果页点击返回的情况
     if (previousPath && previousPath !== "/gameDetail") {
       navigate(previousPath);
     } else {
@@ -81,33 +83,38 @@ const GameLibrary: React.FC = () => {
   };
 
   // 请求游戏列表 query = {page,s}
-  const fetchGameList = async (query: any) => {
+  const fetchGameList = async (query: any, cache: any = { isFetch: true }) => {
     try {
       if (query?.page <= 1) {
         setIsLoading(true);
       }
 
-      const res = await gameApi.gameList({
-        ...query,
-        pagesize,
-      });
-      const data = (res?.data?.list || []).map((game: Game) => ({
-        ...game,
-        cover_img: `${process.env.REACT_APP_SHEER_API_URL}${
-          game.cover_img || game.background_img
-        }`,
-      }));
+      const res = cache?.isFetch
+        ? await gameApi.gameList({
+            ...query,
+            pagesize,
+          })
+        : cache?.data;
+      const sheer_url = process.env.REACT_APP_SHEER_API_URL;
+      const data = (res?.data?.list || []).map((game: Game) => {
+        const cover = game.cover_img || game.background_img;
 
+        return {
+          ...game,
+          cover_img: cache?.isFetch ? sheer_url + cover : cover,
+        };
+      });
+      
       setPage(query?.page);
       setTotal(res?.data?.total || 0);
       setGames(query?.page > 1 ? [...games, ...data] : data);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
-  
+
   // 表格滚动
   function handleScroll(e: any) {
     if (
@@ -129,14 +136,25 @@ const GameLibrary: React.FC = () => {
 
   useEffect(() => {
     let result_game: Game[] = [];
-    
+
     if (searchResults.length === 0) {
       setPage(1);
       setTotal(0);
       setGames([]); // 清空游戏列表
     } else {
       setEnterQuery(searchBarValue);
-      fetchGameList({page: 1, s: searchBarValue});
+      fetchGameList(
+        { page: 1, s: searchBarValue },
+        {
+          isFetch: false,
+          data: {
+            data: {
+              list: [...searchResults],
+              total: fetchTotal || 0,
+            },
+          },
+        }
+      );
     }
 
     if (result_game?.length === 0) {
