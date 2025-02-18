@@ -939,6 +939,7 @@ const Layouts: React.FC = () => {
 
         if (state?.state) {
           tracking.trackaBackgroundActivity();
+          tracking.trackaUserIDActivity();
           (window as any).NativeApi_RenderComplete();
         }
       }, 1000);
