@@ -600,7 +600,7 @@ const PayModal: React.FC = (props) => {
                     ["purchase", "renewed"].includes(purchaseState);
                   // 折扣
                   const integer = isInteger(item?.price, item?.scribing_price);
-
+                  
                   return (
                     <div
                       key={index}
@@ -616,11 +616,7 @@ const PayModal: React.FC = (props) => {
                           {activeCoupon?.redeem_code?.content}折
                         </div>
                       ) : integer < 10 ? (
-                        <div
-                          className={`${
-                            purchaseState === "none" ? "" : "discount"
-                          }`}
-                        >
+                        <div className={"discount"}>
                           {purchaseState === "purchase" && "首充"}
                           {purchaseState === "renewed" && "续费"}
                           {integer}折
