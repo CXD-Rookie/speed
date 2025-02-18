@@ -1,0 +1,198 @@
+.charge-pay-module {
+  background-image: url("../../assets/images/pay/charge/background-img.webp");
+}
+
+.renewal-pay-module {
+  background-image: url("../../assets/images/pay/renewal/background-img.webp");
+}
+
+.charge-renewal-module {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 99;
+
+  .activity-close-icon {
+    position: absolute;
+    right: 4vw;
+    top: 9vh;
+    width: 2.8vw;
+    height: 2.8vw;
+    background-color: #333;
+    border-radius: 2.8vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    img {
+      width: 1.1vw;
+      height: 1.1vw;
+      filter: brightness(90%);
+    }
+  }
+
+  .main {
+    width: fit-content;
+    margin: 0 auto;
+
+    .activity-box {
+      width: auto;
+      height: auto;
+      display: flex;
+      cursor: pointer;
+
+      & .activity-img-box {
+        & .charge-img {
+          width: 17vw;
+          height: 32vh;
+        }
+
+        & .renewal-img {
+          width: 12.5vw;
+          height: 24.1vh;
+        }
+      }
+
+      .activity-img-box-active {
+        border: 0.2vw solid #F86C34;
+        border-radius: 1.2vw;
+      }
+
+      .activity-img-box-normal {
+        border: 0.2vw solid transparent;
+        border-radius: 1.2vw;
+      }
+    }
+
+    .activity-footer {
+      width: fit-content;
+      display: flex;
+      margin: 5vh 0 0 50%;
+      transform: translateX(-50%);
+
+      .qrcode {
+        width: 13vw;
+        height: 13vw;
+        display: inline-block;
+        margin-left: 15px;
+        background-color: #fff;
+        position: relative;
+        border-radius: 1.2vw;
+        
+        .header-icon {
+          width: 11vw;
+          height: 11vw;
+          margin: 1vw;
+        }
+
+        .QR-loading-mask {
+          width: 13vw;
+          height: 13vw;
+          position: absolute;
+          top: 0;
+          left: 0;
+          color: #fff;
+          text-align: center;
+
+          .qrcode-loading-img {
+            width: 2.4vw;
+            height: 2.4vw;
+            margin: 0 auto;
+            margin-top: 5.3vw;
+          }
+        }
+
+        .qrcode canvas,
+        img {
+          width: 12vw;
+          height: 12vw;
+          display: block;
+          margin: 0.5vw 0 0 0.5vw;
+        }
+
+        .pay-mask {
+          width: 13vw;
+          height: 13vw;
+          position: absolute;
+          top: 0;
+          left: 0;
+          color: #fff;
+          background-color: rgba(0, 0, 0, 0.8);
+          text-align: center;
+
+          & .title {
+            height: 1.75vw;
+            font-size: 1.2vw;
+            font-weight: bold;
+            line-height: 1.75vw;
+            margin-top: 3.6vw;
+          }
+
+          & .text {
+            font-size: 1vw;
+            padding-top: 1.6vw;
+            margin: 0 auto;
+
+            & span {
+              color: #e16534;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+
+      .first-carousel {
+        width: max-content;
+        margin-left: 1.6vw;
+
+        .carousel-price {
+          width: 100%;
+          font-family: Roboto, Roboto-Bold;
+          margin-top: 0.8vw;
+
+          .text {
+            font-size: 1.6vw;
+            color: #fff;
+          }
+
+          .icon {
+            font-size: 1.6vw;
+            color: #f86c34;
+            font-family: Arial !important;
+          }
+
+          .price {
+            font-size: 2.6vw;
+            color: #f86c34;
+            font-weight: Bold;
+            margin-left: 0.4vw;
+            font-family: Arial !important;
+          }
+        }
+
+        .carousel-text {
+          font-size: 1.2vw;
+          color: #ffffff;
+          opacity: 0.5;
+          margin-top: 1.2vw;
+        }
+
+        .user-text {
+          font-size: 1.2vw;
+          color: #ffffff;
+          opacity: 0.5;
+          margin-top: 1.2vw;
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

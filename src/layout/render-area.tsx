@@ -10,7 +10,7 @@ import BreakConfirmModal from "@/containers/break-confirm";
 import ActiveNew from "@/containers/active/newOpen";
 import AppCloseModal from "@/containers/app-close";
 import Active from "@/containers/active";
-import PayModalNew from "@/containers/Pay/new";
+import PayModalNew from "@/containers/Pay/charge-renewal";
 import PayModal from "@/containers/Pay";
 import MinorModal from "@/containers/minor";
 import BindPhoneMode from "@/containers/bind-phone-mode";
