@@ -123,11 +123,12 @@ const PayModal: React.FC = (props) => {
     const decimalPart = discountRate % 1;
 
     // 根据小数部分的值进行处理
-    if (decimalPart > 0 && decimalPart <= 0.5) {
-      discountRate = Math.floor(discountRate) + 0.5;
-    } else if (decimalPart > 0.5) {
-      discountRate = Math.ceil(discountRate);
-    }
+    discountRate = Math.floor(discountRate);
+    // if (decimalPart > 0 && decimalPart <= 0.5) {
+    //   discountRate = Math.floor(discountRate) + 0.5;
+    // } else if (decimalPart > 0.5) {
+    //   discountRate = Math.ceil(discountRate);
+    // }
 
     // 保留一位小数
     return parseFloat(discountRate.toFixed(1));
