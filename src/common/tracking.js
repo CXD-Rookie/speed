@@ -58,7 +58,7 @@ class Tracking {
     // 定时每10小时发送一次后台活跃
     setInterval(() => {
       this.trackEvent(this.otherMchannel()?.mchannel, "active_background", this.otherMchannel("after")?.channelId);
-      this.trackEvent(this.otherMchannel()?.mchannel, "active_userID", `userID=${localStorage.getItem("userId")};${this.otherMchannel()?.channelId}`);
+      this.trackEvent(this.otherMchannel()?.mchannel, "active_userID", `userID=${localStorage.getItem("userId")};clientID=${localStorage.getItem('client_id')}${this.otherMchannel()?.channelId}`);
     }, 60 * 60 * 10 * 1000);
   }
 
@@ -71,15 +71,16 @@ class Tracking {
     this.trackEvent(this.otherMchannel()?.mchannel, "active_background", this.otherMchannel("after")?.channelId);
   }
 
-  // user_id上报
+  // user_id client_id 上报
   trackaUserIDActivity () {
-    this.trackEvent(this.otherMchannel()?.mchannel, "active_userID", `userID=${localStorage.getItem("userId")};${this.otherMchannel()?.channelId}`);
+    this.trackEvent(this.otherMchannel()?.mchannel, "active_userID", `userID=${localStorage.getItem("userId")};clientID=${localStorage.getItem('client_id')}${this.otherMchannel()?.channelId}`);
   }
 
   trackSignUpSuccess (status, firstVisit) {
     this.trackEvent(this.otherMchannel()?.mchannel, "signUp_success", `firstDay=${firstVisit};method=${status}${this.otherMchannel()?.channelId }`);
   }
 
+  // 登录成功
   trackLoginSuccess (status, firstDay) {
     this.trackEvent(this.otherMchannel()?.mchannel, "login_success", `firstDay=${firstDay};method=${status}${this.otherMchannel()?.channelId }`);
   }
