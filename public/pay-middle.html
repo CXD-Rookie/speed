@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付中间页</title>
+    <script>
+      window.middle_wxappid = "wx203b43bc34560cf1"; // 微信appid
+      window.middle_aliappid = "ali123a456b789cd0"; // 支付宝appid
+    </script>
+    <script>
+      // 检测应用
+      const detectApp = () => {
+        const userAgent = navigator.userAgent.toLowerCase();
+
+        if (userAgent.indexOf('micromessenger') !== -1) {
+          return "wechat"; // 微信
+        } else if (userAgent.indexOf('alipayclient')!== -1) {
+          return 'alipay'; // 支付宝
+        } else {
+          return 'other'; // 其他
+        }
+      }
+
+      const iniliteFun = () => {
+        const href = window.location.href;
+        const url = new URL(href);
+
+        const searchParams = url.searchParams;
+        const allParams = {};
+
+        searchParams.forEach((value, key) => {
+          allParams[key] = value;
+        });
+
+        const userAgent = detectApp();
+
+        // 如果进入此页面未携带 openid 参数
+        if (!allParams?.openid || [undefined, "undefined", "null", null, ""].includes(allParams?.openid)) {
+          console.log("openid", userAgent);
+          
+          if (userAgent === "wechat") {
+            
+            const redirect_uri = encodeURIComponent(url?.origin + "/h5/pay/authorization.html");
+            const scope = "snsapi_base"; // 网页授权
+            const state = encodeURIComponent(url?.search.slice(1));
+            const to_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${window.middle_wxappid}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=${state}#wechat_redirect`;
+            console.log(redirect_uri, "state", state, to_url);
+            
+            window.location.href = to_url
+          }
+        }
+        
+        localStorage.setItem("pay-search-params", JSON.stringify(allParams));
+        console.log(allParams);
+        console.log(url, searchParams);
+      }
+      
+      iniliteFun();
+    </script>
+</head>
+<body>
+  <div class="login-container">
+  </div>
+</body>
+</html>

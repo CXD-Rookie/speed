@@ -285,7 +285,7 @@ const Layouts: React.FC = () => {
         if (value === "exit" && identifyAccelerationData()?.[0]) {
           tracking.trackBoostDisconnectManual();
         }
-
+        
         // 关闭客户端上报埋点上报
         tracking.trackBoostActiveCloseClient();
 
