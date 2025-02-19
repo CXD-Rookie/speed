@@ -131,6 +131,8 @@ const Login: React.FC = () => {
           tracking.trackLoginSuccess("phone", isTrue ? 1 : 0);
         }
 
+        tracking.trackaUserIDActivity();
+        
         localStorage.setItem("userId", res?.data?.user_info?.id); // 存储user_id
         localStorage.setItem("loginMethod", "phone");
         localStorage.setItem("token", JSON.stringify(res.data.token));
