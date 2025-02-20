@@ -281,13 +281,15 @@ const Layouts: React.FC = () => {
           return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
         }
 
+        if (value === "exit") {
+          // 关闭客户端上报埋点上报
+          tracking.trackBoostActiveCloseClient();
+        }
+
         // 上报埋点
         if (value === "exit" && identifyAccelerationData()?.[0]) {
           tracking.trackBoostDisconnectManual();
         }
-        
-        // 关闭客户端上报埋点上报
-        tracking.trackBoostActiveCloseClient();
 
         await stopProxy(value); // 调用停止加速
         const game = await removeGameList("initialize"); // 更新我的游戏
@@ -704,6 +706,8 @@ const Layouts: React.FC = () => {
           );
         }
 
+        tracking.trackaUserIDActivity();
+        
         if (isNew) {
           dispatch(setMinorState({ open: true, type: "bind" })); // 三方绑定提示
         } else if ([2, 3].includes(Number(bind_type))) {
