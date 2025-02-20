@@ -29,7 +29,7 @@
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({...query, platform: Number(query?.platform)}),
+            body: JSON.stringify({...query, platform: Number(query?.platform), key: query?.qrcode_key}),
           }
         );
         const data = await response?.json();
@@ -51,14 +51,41 @@
         );
         const data = await response?.json();
         
-        alert(data)
-        if (data?.error === 0) {
-          if (data) {
+        // alert(JSON.stringify(data) + `/api/v1/pay/order/qrcode_key/polling?key=${String(query?.qrcode_key)}`);
 
+        if (data?.error === 0) {
+          const status = Number(data?.data?.status); // 订单状态
+
+          if ([2, 3, 4, 5].includes(status)) {
+            const href = window.location.href;
+            const url = new URL(href);
+
+            if (status === 2) {
+              window.location.href = url?.origin + "/h5/pay/pay-success.html";
+            } else if (status === 3) {
+              window.location.href = url?.origin + "/h5/pay/pay-error.html";
+            } else if (status === 4) {
+              window.location.href = url?.origin + "/h5/pay/pay-cancel.html";
+            } else if (status === 5) {
+              window.location.href = url?.origin + "/h5/pay/pay-timeout.html";
+            }
+
+            // 清除定时器
+            if (window.wxPollingTimer) {
+              clearInterval(window.wxPollingTimer);
+              delete window.wxPollingTimer;
+              // alert("清除定时器")
+            }
           }
         }
-
-        return {};
+        
+        // 清除定时器
+        // if (window.wxPollingTimer) {
+        //   clearInterval(window.wxPollingTimer);
+        //   delete window.wxPollingTimer;
+        //   alert("清除定时器")
+        // }
+        return;
       };
 
       const onBridgeReady = async (params) => {
@@ -73,7 +100,7 @@
             paySign: params?.pay_sign, // 微信签名
           },
           function (res) {
-            window.wxPollingTimer = setInterval(fetchPoliing, 3000);
+            window.wxPollingTimer = setInterval(() => fetchPoliing(params), 3000);
             if (res.err_msg == "get_brand_wcpay_request:ok") {
               // 使用以上方式判断前端返回,微信团队郑重提示：
               //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠，商户需进一步调用后端查单确认支付结果。
@@ -90,20 +117,22 @@
         const appid = allParams?.appid;
         const data = await fetchOpenid({ ...allParams, code });
 
+        localStorage.removeItem("pay-search-params");
+
         if (data?.prepay_id) {
           if (typeof WeixinJSBridge == "undefined") {
             if (document.addEventListener) {
               document.addEventListener(
                 "WeixinJSBridgeReady",
-                onBridgeReady,
+                () => onBridgeReady({ ...allParams, ...data, appid }),
                 false
               );
             } else if (document.attachEvent) {
-              document.attachEvent("WeixinJSBridgeReady", onBridgeReady);
-              document.attachEvent("onWeixinJSBridgeReady", onBridgeReady);
+              document.attachEvent("WeixinJSBridgeReady", () => onBridgeReady({ ...allParams, ...data, appid }));
+              document.attachEvent("onWeixinJSBridgeReady", () => onBridgeReady({ ...allParams, ...data, appid }));
             }
           } else {
-            await onBridgeReady({ ...data, appid });
+            onBridgeReady({ ...allParams, ...data, appid });
           }
         }
       };

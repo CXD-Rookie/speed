@@ -41,7 +41,7 @@
             const redirect_uri = encodeURIComponent(url?.origin + "/h5/pay/wx-authorization.html");
             const scope = "snsapi_base"; // 网页授权
             const to_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${window.middle_wxappid}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=#wechat_redirect`;
-                        
+            
             localStorage.setItem("pay-search-params", JSON.stringify({...allParams, appid: window.middle_wxappid}));
             window.location.href = to_url
           }
