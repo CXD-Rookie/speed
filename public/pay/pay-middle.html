@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>支付中间页</title>
     <script>
       window.middle_wxappid = "wx203b43bc34560cf1"; // 微信appid
       window.middle_aliappid = "ali123a456b789cd0"; // 支付宝appid
@@ -44,6 +43,12 @@
             
             localStorage.setItem("pay-search-params", JSON.stringify({...allParams, appid: window.middle_wxappid}));
             window.location.href = to_url
+          } else if (userAgent === 'alipay') {
+            const redirect_uri = url?.origin + "/h5/pay/pay-error.html";
+            window.location.href = redirect_uri
+          } else {
+            const redirect_uri = url?.origin + "/h5/pay/pay-support-system.html";
+            window.location.href = redirect_uri
           }
         }
       }
