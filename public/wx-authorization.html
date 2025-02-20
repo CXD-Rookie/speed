@@ -20,6 +20,7 @@
         return result;
       };
 
+      // 获取下单信息
       const fetchOpenid = async (query) => {
         const response = await fetch(
           wx_authorization_api + "/api/v1/pay/weixin/place_order",
@@ -37,7 +38,26 @@
           return data?.data || {};
         }
 
-        alert(data?.message);
+        return {};
+      };
+
+      // 轮询订单状态
+      const fetchPoliing = async (query) => {
+        const response = await fetch(
+          wx_authorization_api + `/api/v1/pay/order/qrcode_key/polling?key=${String(query?.qrcode_key)}`,
+          {
+            method: "GET",
+          }
+        );
+        const data = await response?.json();
+        
+        alert(data)
+        if (data?.error === 0) {
+          if (data) {
+
+          }
+        }
+
         return {};
       };
 
@@ -53,7 +73,7 @@
             paySign: params?.pay_sign, // 微信签名
           },
           function (res) {
-            alert(JSON.stringify(res));
+            window.wxPollingTimer = setInterval(fetchPoliing, 3000);
             if (res.err_msg == "get_brand_wcpay_request:ok") {
               // 使用以上方式判断前端返回,微信团队郑重提示：
               //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠，商户需进一步调用后端查单确认支付结果。
@@ -83,7 +103,6 @@
               document.attachEvent("onWeixinJSBridgeReady", onBridgeReady);
             }
           } else {
-            alert(JSON.stringify({ ...data, appid }))
             await onBridgeReady({ ...data, appid });
           }
         }

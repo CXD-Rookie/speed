@@ -38,7 +38,7 @@
         // 如果进入此页面未携带 openid 参数
         if (!allParams?.openid || [undefined, "undefined", "null", null, ""].includes(allParams?.openid)) {
           if (userAgent === "wechat") {
-            const redirect_uri = encodeURIComponent(url?.origin + "/h5/pay/authorization.html");
+            const redirect_uri = encodeURIComponent(url?.origin + "/h5/pay/wx-authorization.html");
             const scope = "snsapi_base"; // 网页授权
             const to_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${window.middle_wxappid}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=#wechat_redirect`;
                         
