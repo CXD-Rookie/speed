@@ -277,6 +277,10 @@ const Layouts: React.FC = () => {
   const stopProcessReset = async (value: any = "") => {
     return new Promise(async (resolve, reject) => {
       try {
+        if ((window as any).stopkeepAliveTimer) {
+          (window as any).stopkeepAliveTimer();
+        }
+
         if (localStorage.getItem("isAccelLoading") === "1") {
           return; // 如果退出时游戏还在加速中，则暂不处理，停止向下执行
         }

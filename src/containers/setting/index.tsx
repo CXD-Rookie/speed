@@ -176,6 +176,10 @@ const SettingsModal: React.FC = (props) => {
           (window as any).stopDelayTimer();
         }
 
+        if ((window as any).stopkeepAliveTimer) {
+          (window as any).stopkeepAliveTimer();
+        }
+        
         if (list?.length >= 0) {
           // 关闭客户端上报埋点上报
           tracking.trackBoostActiveCloseClient();
