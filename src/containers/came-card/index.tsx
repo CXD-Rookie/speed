@@ -692,7 +692,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   const keepAliveHeartbeat = async () => {
     try {
       // 立即发送一次请求
-      await playSuitApi.speedHeartbeat();
+      await playSuitApi.speedHeartbeat({ platform: 3 });
     } catch (error) {
       console.log(error);
     }
