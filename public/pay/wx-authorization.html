@@ -44,28 +44,30 @@
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({...query, platform: Number(query?.platform), key: query?.qrcode_key}),
+            body: JSON.stringify({
+              ...query,
+              platform: Number(query?.platform),
+              key: query?.qrcode_key,
+            }),
           }
         );
-        const data = await response?.json();
 
-        if (data?.error === 0) {
-          return data?.data || {};
-        }
-
-        return {};
+        return (await response?.json());
       };
 
       // 轮询订单状态
       const fetchPoliing = async (query) => {
         const response = await fetch(
-          wx_authorization_api + `/api/v1/pay/order/qrcode_key/polling?key=${String(query?.qrcode_key)}`,
+          wx_authorization_api +
+            `/api/v1/pay/order/qrcode_key/polling?key=${String(
+              query?.qrcode_key
+            )}`,
           {
             method: "GET",
           }
         );
         const data = await response?.json();
-        
+
         // alert(JSON.stringify(data) + `/api/v1/pay/order/qrcode_key/polling?key=${String(query?.qrcode_key)}`);
 
         if (data?.error === 0) {
@@ -107,14 +109,24 @@
             paySign: params?.pay_sign, // 微信签名
           },
           function (res) {
-            window.wxPollingTimer = setInterval(() => fetchPoliing(params), 3000);
+            fetchPoliing(params);
+            
+            window.wxPollingTimer = setInterval(
+              () => fetchPoliing(params),
+              3000
+            );
 
             if (res.err_msg == "get_brand_wcpay_request:ok") {
               // 使用以上方式判断前端返回,微信团队郑重提示：
               //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠，商户需进一步调用后端查单确认支付结果。
             }
 
-            if (["get_brand_wcpay_request:cancel", "get_brand_wcpay_request:fail"].includes(res?.err_msg)) {
+            if (
+              [
+                "get_brand_wcpay_request:cancel",
+                "get_brand_wcpay_request:fail",
+              ].includes(res?.err_msg)
+            ) {
               const href = window.location.href;
               const url = new URL(href);
 
@@ -135,26 +147,45 @@
         const url = new URL(href);
         const allParams = JSON.parse(localStorage.getItem("pay-search-params"));
         const code = url.searchParams.get("code");
+        const wx_openid = url.searchParams.get("wx_openid");
         const appid = allParams?.appid;
-        const data = await fetchOpenid({ ...allParams, code });
+        const data = await fetchOpenid({
+          ...allParams,
+          wx_openid: wx_openid ?? "",
+          code: code ?? "",
+        });
 
         localStorage.removeItem("pay-search-params");
 
-        if (data?.prepay_id) {
+        if (data?.error === 0 && data?.data?.prepay_id) {
+          const params = { ...allParams, ...data?.data, appid };
+
           if (typeof WeixinJSBridge == "undefined") {
             if (document.addEventListener) {
               document.addEventListener(
                 "WeixinJSBridgeReady",
-                () => onBridgeReady({ ...allParams, ...data, appid }),
+                () => onBridgeReady(params),
                 false
               );
             } else if (document.attachEvent) {
-              document.attachEvent("WeixinJSBridgeReady", () => onBridgeReady({ ...allParams, ...data, appid }));
-              document.attachEvent("onWeixinJSBridgeReady", () => onBridgeReady({ ...allParams, ...data, appid }));
+              document.attachEvent("WeixinJSBridgeReady", () =>
+                onBridgeReady(params)
+              );
+              document.attachEvent("onWeixinJSBridgeReady", () =>
+                onBridgeReady(params)
+              );
             }
           } else {
-            onBridgeReady({ ...allParams, ...data, appid });
+            onBridgeReady(params);
           }
+        } else {
+          if (data?.error === 210203) {
+            window.location.href = url?.origin + "";
+          } else if (data?.error === 210204) {
+            window.location.href = url?.origin + "";
+          } else if (data?.error === 250001) {
+            window.location.href = url?.origin + "";
+          } 
         }
       };
 
@@ -163,8 +194,6 @@
   </head>
 
   <body>
-    <div class="wx-authorization">
-      订单处理中
-    </div>
+    <div class="wx-authorization">订单处理中</div>
   </body>
 </html>
