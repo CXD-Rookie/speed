@@ -10,13 +10,29 @@
         margin: 0;
       }
 
-      /* 为 pay-success 类添加样式 */
-      .pay-success {
+      .pay-success img {
         position: absolute;
-        top: 50%;
+        top: 27%;
         left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
+        transform: translateX(-50%);
+      }
+
+      .pay-success .pay-success-text1 {
+        position: absolute;
+        top: calc(41%);
+        left: 50%;
+        font-size: 16px;
+        color: #999;
+        transform: translateX(-50%);
+      }
+
+      .pay-success .pay-success-text2 {
+        position: absolute;
+        top: calc(41% + 22px);
+        left: 50%;
+        font-size: 16px;
+        color: #999;
+        transform: translateX(-50%);
       }
     </style>
     <script>
@@ -25,6 +41,10 @@
     </script>
   </head>
   <body>
-    <div class="pay-success">支付成功</div>
+    <div class="pay-success">
+      <img src="./image/success.png" width="80" height="80" alt=""/>
+      <div class="pay-success-text1">恭喜您</div>
+      <div class="pay-success-text2">本次交易支付成功</div>
+    </div>
   </body>
 </html>
