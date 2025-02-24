@@ -35,23 +35,34 @@ instance.interceptors.request.use(
     const localMchannel = localStorage.getItem("mchannel");
     const adid = localStorage.getItem("adid"); // 推广adid
 
-    const noToken = ["api/v1/game/process/blacklist"]; // 不需要传userToken的接口
+    const noToken = [
+      "api/v1/game/process/blacklist",
+      "api/v1/pay/order/qrcode_key/polling",
+    ]; // 不需要传userToken的接口
     const isToken = noToken.some((item) => config?.url.includes(item)); // 不需要传userToken的接口
-    
-    const userIdApi = ["api/v1/game/list"]
-    const isUserId = userIdApi.some((item) => config?.url.includes(item)); // 需要传userid的接口
-    const user_id = localStorage.getItem("userId"); // user_id
 
     if (token && token !== "undefined" && !isToken) {
       config.headers.user_token = JSON.parse(localStorage.getItem("token")) || ""
     }
 
+    const userIdApi = ["api/v1/game/list"]
+    const isUserId = userIdApi.some((item) => config?.url.includes(item)); // 需要传userid的接口
+    const user_id = localStorage.getItem("userId"); // user_id
+
     if (token && isUserId) {
       config.headers.user_id = user_id
     }
 
-    config.headers.Mchannel = localMchannel;
-    config.headers.Adid = adid; // 
+    // 不需要传渠道信息的接口
+    const noChannel = [
+      "api/v1/pay/order/qrcode_key/polling",
+    ]
+    const isChannel = noChannel.some((item) => config?.url.includes(item));
+
+    if (!isChannel) {
+      config.headers.Mchannel = localMchannel;
+      config.headers.Adid = adid;
+    }
 
     return config;
   },
