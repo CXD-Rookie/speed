@@ -760,7 +760,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             isPre = false;
             console.log(state?.code);
             const state_str = state?.message.toUpperCase();
-
+            
             if ([2, 3, 6].includes(Number(state?.code))) {
               const failed_map: any = {
                 2: "infectedRepair",

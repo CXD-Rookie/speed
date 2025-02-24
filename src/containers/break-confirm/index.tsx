@@ -93,7 +93,7 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     driverFails: '驱动程序数字签名校验失败，点击"确定"尝试更新修复。',
     otherReasons: '加速服务启动失败，点击"确定"尝试更新修复。',
     runCaretakers:
-      "加速服务启动失败，访问被拒绝。请尝试以管理员身份运行加速器，并检查防火墙或杀毒软件设置，确保加速器未被阻止。",
+      "加速服务启动失败，请检查防火墙或杀毒软件设置，确保加速器未被阻止。",
   };
 
   // footer 确认按钮的文案
@@ -138,6 +138,8 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
     "nodeDelete", // 在节点历史记录中，当用户选择一个已被删除的节点
     "serviceExpired", // 加速校验是vip的时候
     "servicerechargeReport", // 客户端充值到期错误码 停止加速 提示到期 上报埋点
+    "runCaretakers", // 客户端加速错误5的情况下的一种可能
+    "systemResourcesInsufficient", // 客户端加速错误5的情况下的一种可能
   ];
 
   // 不显示右上角关闭的类型
