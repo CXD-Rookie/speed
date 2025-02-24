@@ -36,8 +36,29 @@
       }
     </style>
     <script>
-      location.replace(window.location.href);
-      window.history.replaceState({}, document.title, window.location.href);
+      // 支付失败页面加载完成后的操作
+      window.addEventListener("DOMContentLoaded", (event) => {
+        // 监听popstate事件，以便捕获返回按钮点击
+        window.addEventListener(
+          "popstate",
+          function (event) {
+            // 使用WeixinJSBridge在微信环境中关闭当前窗口
+            if (typeof WeixinJSBridge == "undefined") {
+              document.addEventListener("WeixinJSBridgeReady", function () {
+                WeixinJSBridge.call("closeWindow");
+              });
+            } else {
+              WeixinJSBridge.call("closeWindow");
+            }
+          },
+          false
+        );
+
+        // 为了确保用户第一次点击返回时不会立即触发popstate事件，
+        // 可以在页面加载时向历史堆栈添加一个状态
+        // 使用replaceState替换当前历史记录条目，避免用户能够返回到上一页
+        history.replaceState(null, null, document.URL);
+      });
     </script>
   </head>
   <body>

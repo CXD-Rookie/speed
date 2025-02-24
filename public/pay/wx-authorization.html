@@ -20,21 +20,6 @@
       }
     </style>
     <script>
-      window.wx_authorization_api = "https://api-test.wincare365.com"; // 微信请求api地址
-    </script>
-    <script>
-      // 生成随机字符串
-      const generateRandomString = (length) => {
-        const characters =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        let result = "";
-        for (let i = 0; i < length; i++) {
-          const randomIndex = Math.floor(Math.random() * characters.length);
-          result += characters.charAt(randomIndex);
-        }
-        return result;
-      };
-
       // 获取下单信息
       const fetchOpenid = async (query) => {
         const response = await fetch(
@@ -68,14 +53,14 @@
         );
         const data = await response?.json();
 
-        // alert(JSON.stringify(data) + `/api/v1/pay/order/qrcode_key/polling?key=${String(query?.qrcode_key)}`);
-
         if (data?.error === 0) {
           const status = Number(data?.data?.status); // 订单状态
 
           if ([2, 3, 4, 5].includes(status)) {
             const href = window.location.href;
             const url = new URL(href);
+            const regex = /^(.*\/)/;
+            const match = href.match(regex);
 
             if (status === 2) {
               window.location.href = match?.[1] + "pay-success.html";
@@ -129,7 +114,9 @@
             ) {
               const href = window.location.href;
               const url = new URL(href);
-
+              const regex = /^(.*\/)/;
+              const match = href.match(regex);
+        
               // 清除定时器
               if (window.wxPollingTimer) {
                 clearInterval(window.wxPollingTimer);
@@ -156,6 +143,15 @@
           wx_openid: wx_openid ?? "",
           code: code ?? "",
         });
+        const pathname = window.location.pathname;
+        // 使用正则表达式判断路径的第一个目录是否为 'web'
+        const isFirstSegmentWeb = /^\/web\//.test(pathname);
+
+        if (isFirstSegmentWeb) {
+          window.wx_authorization_api = "https://api.wincare365.com"
+        } else {
+          window.wx_authorization_api = "https://api-test.wincare365.com"
+        }
 
         localStorage.removeItem("pay-search-params");
 

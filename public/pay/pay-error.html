@@ -35,35 +35,6 @@
         transform: translateX(-50%);
       }
     </style>
-    <script>
-      // 支付失败页面加载完成后的操作
-      window.addEventListener("DOMContentLoaded", (event) => {
-        alert("111")
-        // 监听popstate事件，以便捕获返回按钮点击
-        window.addEventListener(
-          "popstate",
-          function (event) {
-            alert("222")
-            // 使用WeixinJSBridge在微信环境中关闭当前窗口
-            if (typeof WeixinJSBridge == "undefined") {
-              alert("444")
-              document.addEventListener("WeixinJSBridgeReady", function () {
-                alert("555")
-                WeixinJSBridge.call("closeWindow");
-              });
-            } else {
-              alert("333")
-              WeixinJSBridge.call("closeWindow");
-            }
-          },
-          false
-        );
-
-        // 为了确保用户第一次点击返回时不会立即触发popstate事件，
-        // 可以在页面加载时向历史堆栈添加一个状态
-        history.pushState(null, null, document.URL);
-      });
-    </script>
   </head>
   <body>
     <div class="pay-error">
@@ -72,4 +43,50 @@
       <div class="pay-error-text2">请重新扫码支付</div>
     </div>
   </body>
+  <script>
+    // ============== 统一关闭逻辑 ==============
+    function closeWindow() {
+      // 微信环境优先调用原生关闭
+      if (typeof WeixinJSBridge !== 'undefined') {
+        WeixinJSBridge.invoke('closeWindow', {}, function(res) {
+          // 关闭失败时降级处理
+          if (res.err_msg !== 'closeWindow:ok') {
+            location.href = 'about:blank'
+            window.close()
+          }
+        }, false)
+      } else {
+        // 非微信环境兜底方案
+        try {
+          window.open('', '_self', '')
+          window.close()
+        } catch (e) {
+          location.href = 'https://your-domain.com/exit' // 替换为实际退出页
+        }
+      }
+    }
+
+    // ============== 事件绑定 ==============
+    // 监听所有可能的返回方式
+    window.addEventListener('popstate', closeWindow)
+    
+    // 处理Android物理返回键
+    document.addEventListener('backbutton', closeWindow, false)
+    
+    // 处理iOS右滑返回（额外添加触摸检测）
+    let touchStartX = 0
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX
+    })
+    document.addEventListener('touchend', e => {
+      const deltaX = e.changedTouches[0].clientX - touchStartX
+      if (deltaX > 60) closeWindow()
+    })
+
+    // ============== 微信环境优化 ==============
+    // 确保JSBridge加载完成
+    if (/MicroMessenger/i.test(navigator.userAgent)) {
+      document.addEventListener('WeixinJSBridgeReady', closeWindow, false)
+    }
+  </script>
 </html>
