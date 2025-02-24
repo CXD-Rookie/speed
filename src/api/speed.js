@@ -9,7 +9,7 @@
 import { get } from "./api";
 
 class PlaySuit {
-  url = process.env.REACT_APP_API_URL;
+  url = process.env.REACT_APP_API_URL + "api/v1";
 
   pcPlatform (params) {
     const queryString = new URLSearchParams(params).toString();

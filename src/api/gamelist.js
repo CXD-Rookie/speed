@@ -9,7 +9,7 @@
 import { get } from "./api";
 
 class GameList {
-  url = process.env.REACT_APP_API_URL
+  url = process.env.REACT_APP_API_URL + "api/v1"
 
   gameList (parmas) {
     const queryString = new URLSearchParams(parmas).toString();

@@ -147,7 +147,9 @@ const ChargeRenewal: React.FC = (props) => {
 
   // 根据选中商品，guid，优惠折扣生成的二维码cdn地址
   const autoGenerateQRCodes = (event: any = {}) => {
-    return `${env_url}/pay/qrcode?cid=${event?.cid}&user_id=${userToken}&key=${
+    return `${env_url}api/v1/pay/qrcode?cid=${
+      event?.cid
+    }&user_id=${userToken}&key=${
       event?.key
     }&platform=${3}&mchannel=${localStorage.getItem(
       "mchannel"

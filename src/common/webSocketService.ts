@@ -22,7 +22,7 @@ interface ApiParamsType {
 
 class WebSocketService {
   private ws: WebSocket | null = null;
-  private url: string = process.env.REACT_APP_WSAPI_URL ?? "";
+  private url: string = process.env.REACT_APP_WSAPI_URL + "ws/v1/user/info";
   private onMessage: (event: MessageEvent) => void = () => {};
   private dispatch!: Dispatch;
   private readonly platform: number = 3; // 当前是 window 环境

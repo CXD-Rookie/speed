@@ -11,7 +11,7 @@
 import { get, post } from "./api";
 
 class PayApi {
-  url = process.env.REACT_APP_API_URL;
+  url = process.env.REACT_APP_API_URL + "api/v1";
 
   getPayTypeList () {
     return get(`${this.url}/pay/type/list?platform=3`);

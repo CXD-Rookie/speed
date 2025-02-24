@@ -151,7 +151,7 @@ const PayModal: React.FC = (props) => {
     const rid = event?.rid || activeCoupon?.rid || "";
     const payment = process.env.REACT_APP_PARTNER_PAY_PLATFORM;
 
-    return `${env_url}/pay/qrcode?payment_platform=${payment}&cid=${
+    return `${env_url}api/v1/pay/qrcode?payment_platform=${payment}&cid=${
       event?.cid
     }&user_id=${userToken}&key=${
       event?.key

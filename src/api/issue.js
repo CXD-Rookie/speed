@@ -9,8 +9,7 @@
 import { get, post } from "./api";
 
 class Feedback {
-
-  url = process.env.REACT_APP_API_URL;
+  url = process.env.REACT_APP_API_URL + "api/v1";
 
   feedback_type () {
     return get(`${this.url}/feedback_type?platform=3`);

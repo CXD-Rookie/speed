@@ -750,7 +750,7 @@ const Layouts: React.FC = () => {
   // 初始化操作
   const iniliteAppFun = async () => {
     return new Promise(async (resolve, reject) => {
-      const url = process.env.REACT_APP_WSAPI_URL || "";
+      const url = process.env.REACT_APP_WSAPI_URL + "ws/v1/user/info";
 
       localStorage.removeItem("storeScanned"); // 关闭时清除扫描游戏存储
       localStorage.removeItem("eventBuNetwork"); // 删除网络错误弹窗标记

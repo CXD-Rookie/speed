@@ -9,7 +9,7 @@
 import { get, post, put } from "./api";
 
 class LoginApi {
-  url = process.env.REACT_APP_API_URL
+  url = process.env.REACT_APP_API_URL + "api/v1"
 
   getPhoneCode (parmas) {
     return get(

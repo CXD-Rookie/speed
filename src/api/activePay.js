@@ -11,7 +11,7 @@
 import { get } from "./api";
 
 class PayApi {
-  url = process.env.REACT_APP_API_URL;
+  url = process.env.REACT_APP_API_URL + "api/v1";
   
   getBanner () {
     return get(`${this.url}/banner/list?platform=3`);
