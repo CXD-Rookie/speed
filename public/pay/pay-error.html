@@ -36,13 +36,38 @@
       }
     </style>
     <script>
-      location.replace(window.location.href);
-      window.history.replaceState({}, document.title, window.location.href);
+      // 支付失败页面加载完成后的操作
+      window.addEventListener("DOMContentLoaded", (event) => {
+        alert("111")
+        // 监听popstate事件，以便捕获返回按钮点击
+        window.addEventListener(
+          "popstate",
+          function (event) {
+            alert("222")
+            // 使用WeixinJSBridge在微信环境中关闭当前窗口
+            if (typeof WeixinJSBridge == "undefined") {
+              alert("444")
+              document.addEventListener("WeixinJSBridgeReady", function () {
+                alert("555")
+                WeixinJSBridge.call("closeWindow");
+              });
+            } else {
+              alert("333")
+              WeixinJSBridge.call("closeWindow");
+            }
+          },
+          false
+        );
+
+        // 为了确保用户第一次点击返回时不会立即触发popstate事件，
+        // 可以在页面加载时向历史堆栈添加一个状态
+        history.pushState(null, null, document.URL);
+      });
     </script>
   </head>
   <body>
     <div class="pay-error">
-      <img src="./image/error.png" width="80" height="80" alt=""/>
+      <img src="./image/error.png" width="80" height="80" alt="" />
       <div class="pay-error-text1">支付失败</div>
       <div class="pay-error-text2">请重新扫码支付</div>
     </div>

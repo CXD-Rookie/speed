@@ -78,13 +78,13 @@
             const url = new URL(href);
 
             if (status === 2) {
-              window.location.href = url?.origin + "/h5/pay/pay-success.html";
+              window.location.href = match?.[1] + "pay-success.html";
             } else if (status === 3) {
-              window.location.href = url?.origin + "/h5/pay/pay-error.html";
+              window.location.href = match?.[1] + "pay-error.html";
             } else if (status === 4) {
-              window.location.href = url?.origin + "/h5/pay/pay-cancel.html";
+              window.location.href = match?.[1] + "pay-cancel.html";
             } else if (status === 5) {
-              window.location.href = url?.origin + "/h5/pay/pay-timeout.html";
+              window.location.href = match?.[1] + "pay-timeout.html";
             }
 
             // 清除定时器
@@ -110,7 +110,7 @@
           },
           function (res) {
             fetchPoliing(params);
-            
+
             window.wxPollingTimer = setInterval(
               () => fetchPoliing(params),
               3000
@@ -136,7 +136,7 @@
                 delete window.wxPollingTimer;
               }
 
-              window.location.href = url?.origin + "/h5/pay/pay-error.html";
+              window.location.href = match?.[1] + "pay-error.html";
             }
           }
         );
@@ -145,6 +145,8 @@
       const iniliteFun = async () => {
         const href = window.location.href;
         const url = new URL(href);
+        const regex = /^(.*\/)/;
+        const match = href.match(regex);
         const allParams = JSON.parse(localStorage.getItem("pay-search-params"));
         const code = url.searchParams.get("code");
         const wx_openid = url.searchParams.get("wx_openid");
@@ -180,11 +182,11 @@
           }
         } else {
           if (data?.error === 210203) {
-            window.location.href = url?.origin + "";
+            window.location.href = match?.[1] + "pay-real-error.html";
           } else if (data?.error === 210204) {
-            window.location.href = url?.origin + "";
+            window.location.href = match?.[1] + "pay-underage-error.html";
           } else if (data?.error === 250001) {
-            window.location.href = url?.origin + "";
+            window.location.href = match?.[1] + "pay-unfinish-order-error.html";
           } 
         }
       };

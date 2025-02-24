@@ -24,6 +24,8 @@
       const iniliteFun = () => {
         const href = window.location.href;
         const url = new URL(href);
+        const regex = /^(.*\/)/;
+        const match = href.match(regex);
 
         const searchParams = url.searchParams;
         const allParams = {};
@@ -31,7 +33,7 @@
         searchParams.forEach((value, key) => {
           allParams[key] = value;
         });
-
+        
         const userAgent = detectApp();
 
         // 判断是微信，支付宝扫码
@@ -44,20 +46,20 @@
             // 成功回调地址
             // 网页授权
             // 获取 code
-            const redirect_uri = encodeURIComponent(url?.origin + "/h5/pay/wx-authorization.html");
+            const redirect_uri = encodeURIComponent(match?.[1] + "wx-authorization.html");
             const scope = "snsapi_base";
             const to_url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${window.middle_wxappid}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=#wechat_redirect`;
-            alert("无wx_openid:" + allParams?.wx_openid);
+
             window.location.href = to_url
           } else {
-            alert("有wx_openid:" + allParams?.wx_openid);
-            window.location.href = url?.origin + `/h5/pay/wx-authorization.html?wx_openid=${allParams?.wx_openid}`;
+
+            window.location.href = match?.[1] + `wx-authorization.html?wx_openid=${allParams?.wx_openid}`;
           }
         } else if (userAgent === 'alipay') {
-          const redirect_uri = url?.origin + "/h5/pay/pay-error.html";
+          const redirect_uri = match?.[1] + "pay-error.html";
           window.location.href = redirect_uri
         } else {
-          const redirect_uri = url?.origin + "/h5/pay/pay-support-system.html";
+          const redirect_uri = match?.[1] + "pay-support-system.html";
           window.location.href = redirect_uri
         }
       }
