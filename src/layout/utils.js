@@ -46,12 +46,14 @@ function compareVersions (version1 = "1.0.0.1", version2 = "1.0.0.1") {
 // 调用停止加速客户端方法
 const stopProxy = async (t = null) => {
   return new Promise((resolve, reject) => {
+    const user_token = localStorage.getItem("token");
+
     try {
       window.NativeApi_AsynchronousRequest(
         "NativeApi_StopProxy",
         JSON.stringify({
           params: {
-            user_token: localStorage.getItem("token"),
+            user_token: user_token ? JSON.parse(user_token) : "",
             js_key: localStorage.getItem("StartKey"),
           },
         }),

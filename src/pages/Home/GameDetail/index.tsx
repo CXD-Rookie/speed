@@ -92,7 +92,7 @@ const GameDetail: React.FC = () => {
   };
 
   // 当前选择的区服，节点
-  const handleSelectServer = (serverNode: any) => {
+  const handleSelectServer = (serverNode: any = {}) => {
     const { selectRegion = {}, nodeHistory = [] } = serverNode; // 解构选中区服 节点列表
     const node = nodeHistory.filter((item: any) => item?.is_select)?.[0] || {}; // 选中节点
 

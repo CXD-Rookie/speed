@@ -127,7 +127,7 @@ const Layouts: React.FC = () => {
   // 进程黑名单
   const initialProcessBlack = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = JSON.parse(localStorage.getItem("token") || "");
 
       if (token) {
         const reqire = await validateRequiredParams();
@@ -523,7 +523,7 @@ const Layouts: React.FC = () => {
   const schedulePolling = (event: any) => {
     if (event?.data) {
       const data = JSON.parse(event.data);
-      const token = localStorage.getItem("token");
+      const token = JSON.parse(localStorage.getItem("token") || "");
       const isClosed = localStorage.getItem("isClosed"); // 做删除
       const banner = JSON.parse(localStorage.getItem("all_data") || "[]"); // banner图数据
       const purchase = JSON.parse(

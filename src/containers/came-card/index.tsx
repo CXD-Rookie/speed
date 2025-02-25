@@ -614,7 +614,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               if (restfulObj?.port) {
                 const url = `http://127.0.0.1:${restfulObj.port}/start`; // 拼接 URL
                 const localMchannel = localStorage.getItem("mchannel"); // mchannel 字段
-                const token = localStorage.getItem("token");
+                const token = JSON.parse(localStorage.getItem("token") || "");
                 const client_token = localStorage.getItem("client_token");
                 const client_id = localStorage.getItem("client_id");
                 const api_header = {
