@@ -702,9 +702,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速key保活接口
   const keepAlivePollingHeartbeat = async () => {
     try {
-      // 立即发送一次请求
-      keepAliveHeartbeat();
-
       // 设置定时器，每 10 分钟（600000 毫秒）发送一次请求
       const intervalId = setInterval(() => {
         keepAliveHeartbeat();
