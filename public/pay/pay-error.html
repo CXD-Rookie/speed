@@ -44,41 +44,13 @@
     </div>
   </body>
   <script>
-    // ============== 统一关闭逻辑 ==============
-    function closeWindow() {
-      // 微信环境优先调用原生关闭
-      if (typeof WeixinJSBridge !== 'undefined') {
-        WeixinJSBridge.invoke('closeWindow', {}, function(res) {
-          // 关闭失败时降级处理
-          if (res.err_msg !== 'closeWindow:ok') {
-            location.href = 'about:blank'
-            window.close()
-          }
-        }, false)
+    // ================= 核心路由控制逻辑 =================
+    (function initHistory() {
+      // Step 1: 清理所有历史记录
+      if (window.history?.replaceState) {
+        // 关键：替换当前历史记录为空白状态
+        history.replaceState({ type: 'final-page' }, '', window.location.href)
       }
-    }
-
-    // ============== 事件绑定 ==============
-    // 监听所有可能的返回方式
-    window.addEventListener('popstate', closeWindow)
-    
-    // 处理Android物理返回键
-    document.addEventListener('backbutton', closeWindow, false)
-    
-    // 处理iOS右滑返回（额外添加触摸检测）
-    let touchStartX = 0
-    document.addEventListener('touchstart', e => {
-      touchStartX = e.touches[0].clientX
-    })
-    document.addEventListener('touchend', e => {
-      const deltaX = e.changedTouches[0].clientX - touchStartX
-      if (deltaX > 60) closeWindow()
-    })
-
-    // ============== 微信环境优化 ==============
-    // 确保JSBridge加载完成
-    if (/MicroMessenger/i.test(navigator.userAgent)) {
-      document.addEventListener('WeixinJSBridgeReady', closeWindow, false)
-    }
+    })()
   </script>
 </html>
