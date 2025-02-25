@@ -141,6 +141,10 @@ const GameDetail: React.FC = () => {
           (window as any).stopDelayTimer();
         }
 
+        if ((window as any).stopkeepAliveTimer) {
+          (window as any).stopkeepAliveTimer();
+        }
+        
         removeGameList("initialize"); // 更新我的游戏
         navigate("/home");
       }
