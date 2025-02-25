@@ -36,8 +36,7 @@
       }
     </style>
     <script>
-      location.replace(window.location.href);
-      window.history.replaceState({}, document.title, window.location.href);
+      sessionStorage.setItem("pay_state", "pay-unfinish-order-error");
     </script>
   </head>
   <body>

@@ -36,9 +36,8 @@
       }
     </style>
     <script>
-      location.replace(window.location.href);
-      window.history.replaceState({}, document.title, window.location.href);
-    </script>
+  sessionStorage.setItem("pay_state", "pay-timeout");
+</script>
   </head>
   <body>
     <div class="pay-timeout">

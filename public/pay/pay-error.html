@@ -1,56 +1,52 @@
 <!DOCTYPE html>
 <html lang="zh">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      body {
-        position: relative;
-        min-height: 100vh;
-        margin: 0;
-      }
 
-      .pay-error img {
-        position: absolute;
-        top: 27%;
-        left: 50%;
-        transform: translateX(-50%);
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+    }
 
-      .pay-error .pay-error-text1 {
-        position: absolute;
-        top: calc(41%);
-        left: 50%;
-        font-size: 16px;
-        color: #999;
-        transform: translateX(-50%);
-      }
+    .pay-error img {
+      position: absolute;
+      top: 27%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
-      .pay-error .pay-error-text2 {
-        position: absolute;
-        top: calc(41% + 22px);
-        left: 50%;
-        font-size: 16px;
-        color: #999;
-        transform: translateX(-50%);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="pay-error">
-      <img src="./image/error.png" width="80" height="80" alt="" />
-      <div class="pay-error-text1">支付失败</div>
-      <div class="pay-error-text2">请重新扫码支付</div>
-    </div>
-  </body>
-  <script>
-    // ================= 核心路由控制逻辑 =================
-    (function initHistory() {
-      // Step 1: 清理所有历史记录
-      if (window.history?.replaceState) {
-        // 关键：替换当前历史记录为空白状态
-        history.replaceState({ type: 'final-page' }, '', window.location.href)
-      }
-    })()
-  </script>
+    .pay-error .pay-error-text1 {
+      position: absolute;
+      top: calc(41%);
+      left: 50%;
+      font-size: 16px;
+      color: #999;
+      transform: translateX(-50%);
+    }
+
+    .pay-error .pay-error-text2 {
+      position: absolute;
+      top: calc(41% + 22px);
+      left: 50%;
+      font-size: 16px;
+      color: #999;
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="pay-error">
+    <img src="./image/error.png" width="80" height="80" alt="" />
+    <div class="pay-error-text1">支付失败</div>
+    <div class="pay-error-text2">请重新扫码支付</div>
+  </div>
+</body>
+<script>
+  sessionStorage.setItem("pay_state", "pay-error");
+</script>
+
 </html>

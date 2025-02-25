@@ -130,6 +130,8 @@
       };
 
       const iniliteFun = async () => {
+        const payState = sessionStorage.getItem("pay_state");
+
         const href = window.location.href;
         const url = new URL(href);
         const regex = /^(.*\/)/;
@@ -138,14 +140,13 @@
         const code = url.searchParams.get("code");
         const wx_openid = url.searchParams.get("wx_openid");
         const appid = allParams?.appid;
-        const data = await fetchOpenid({
-          ...allParams,
-          wx_openid: wx_openid ?? "",
-          code: code ?? "",
-        });
         const pathname = window.location.pathname;
         // 使用正则表达式判断路径的第一个目录是否为 'web'
         const isFirstSegmentWeb = /^\/web\//.test(pathname);
+
+        if (payState && ![null, "null", undefined, "undefined", "", " "].includes(payState)) {
+          window.location.href = match?.[1] + `${payState}.html`;
+        }
 
         if (isFirstSegmentWeb) {
           window.wx_authorization_api = "https://api.wincare365.com"
@@ -153,6 +154,12 @@
           window.wx_authorization_api = "https://api-test.wincare365.com"
         }
 
+        const data = await fetchOpenid({
+          ...allParams,
+          wx_openid: wx_openid ?? "",
+          code: code ?? "",
+        });
+        
         localStorage.removeItem("pay-search-params");
 
         if (data?.error === 0 && data?.data?.prepay_id) {
