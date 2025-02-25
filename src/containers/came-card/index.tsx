@@ -564,7 +564,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         );
       }
 
-      localStorage.setItem("StartKey", id);
+      localStorage.setItem("StartKey", js_key);
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
       console.log(option?.is_check_process_signature, publisher);
@@ -691,6 +691,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速key保活接口
   const keepAliveHeartbeat = async () => {
     try {
+      console.log("保活请求进行中");
       // 立即发送一次请求
       await playSuitApi.speedHeartbeat({ platform: 3 });
     } catch (error) {
@@ -706,7 +707,6 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
       // 设置定时器，每 10 分钟（600000 毫秒）发送一次请求
       const intervalId = setInterval(() => {
-        console.log("保活请求进行中");
         keepAliveHeartbeat();
       }, 600000);
 
