@@ -677,7 +677,11 @@ const GameCard: React.FC<GameCardProps> = (props) => {
       });
     } catch (error) {
       console.log("实际加速函数错误", error);
-      return false;
+      return {
+        state: false,
+        // code: responseObj?.status,
+        // message: responseObj?.error_log ?? "",
+      };
     }
   };
 
@@ -795,8 +799,8 @@ const GameCard: React.FC<GameCardProps> = (props) => {
               )};version=${clientVersion + "," + webVersion}`
             );
             isPre = false;
-            console.log(state?.code);
-            const state_str = state?.message.toUpperCase();
+            console.log(state);
+            const state_str = (state?.message || "").toUpperCase();
 
             if ([2, 3, 6].includes(Number(state?.code))) {
               const failed_map: any = {
