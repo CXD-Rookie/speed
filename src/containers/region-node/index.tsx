@@ -145,6 +145,10 @@ const CustomRegionNode: React.FC<RegionNodeSelectorProps> = forwardRef(
             (window as any).stopDelayTimer();
           }
 
+          if ((window as any).stopkeepAliveTimer) {
+            (window as any).stopkeepAliveTimer();
+          }
+          
           historyContext?.accelerateTime?.stopTimer();
           const data = removeGameList("initialize"); // 更新我的游戏
           

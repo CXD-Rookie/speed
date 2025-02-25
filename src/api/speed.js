@@ -11,6 +11,12 @@ import { get } from "./api";
 class PlaySuit {
   url = process.env.REACT_APP_API_URL + "api/v1";
 
+  // 加速心跳 用于加速key保活
+  speedHeartbeat (params) {
+    const queryString = new URLSearchParams(params).toString();
+    return get(`${this.url}/game/speed/heartbeat?${queryString}`);
+  }
+
   pcPlatform (params) {
     const queryString = new URLSearchParams(params).toString();
     return get(`${this.url}/game/pc_platform/list?${queryString}`);

@@ -458,7 +458,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           }); // 请求失败，返回错误信息
         }
       }
-    })
+    });
   };
 
   // 通知客户端进行游戏加速
@@ -564,7 +564,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         );
       }
 
-      localStorage.setItem("StartKey", id);
+      localStorage.setItem("StartKey", js_key);
       localStorage.setItem("speedIp", addr);
       localStorage.setItem("speedGid", option?.id);
       console.log(option?.is_check_process_signature, publisher);
@@ -607,7 +607,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             const restfulObj = responseObj?.restful
               ? JSON.parse(responseObj?.restful)
               : {}; // 解析内部 restful
-            
+
             // 检查是否有 restful 字段，并解析为 JSON
             if (responseObj?.status === 0) {
               // 检查解析后的 restfulData 是否包含 port
@@ -651,7 +651,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
                   message: responseObj?.error_log ?? "",
                 });
               }
-            } else if ([4, 5].includes(Number(responseObj?.status)) && retryCount < 3) {
+            } else if (
+              [4, 5].includes(Number(responseObj?.status)) &&
+              retryCount < 3
+            ) {
               // 如果status为4且重试次数小于3,则重试
               setTimeout(async () => {
                 console.log(`重试第${retryCount + 1}次`);
@@ -683,6 +686,39 @@ const GameCard: React.FC<GameCardProps> = (props) => {
     setIsAllowAcceleration(true); // 启用立即加速
     setIsAllowShowAccelerating(true); // 启用显示加速中
     setIsStartAnimate(false); // 结束加速动画
+  };
+
+  // 加速key保活接口
+  const keepAliveHeartbeat = async () => {
+    try {
+      console.log("保活请求进行中");
+      // 立即发送一次请求
+      await playSuitApi.speedHeartbeat({ platform: 3 });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 加速key保活接口
+  const keepAlivePollingHeartbeat = async () => {
+    try {
+      // 立即发送一次请求
+      keepAliveHeartbeat();
+
+      // 设置定时器，每 10 分钟（600000 毫秒）发送一次请求
+      const intervalId = setInterval(() => {
+        keepAliveHeartbeat();
+      }, 600000);
+
+      // 返回一个清除定时器的函数
+      return function stopPolling() {
+        // 清除定时器
+        clearInterval(intervalId);
+        console.log("轮询已停止");
+      };
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // 加速实际操作
@@ -746,6 +782,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           const state: any = await handleSuitDomList(option); // 通知客户端进行加速
 
           if (state?.state) {
+            // 启动定时器
+            const stopkeepAliveTimer = await keepAlivePollingHeartbeat();
+            (window as any).stopkeepAliveTimer = stopkeepAliveTimer;
+
             accelerateGameToList(option, {
               acc_platform: state?.platform,
             }); // 加速完后更新我的游戏
@@ -760,7 +800,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
             isPre = false;
             console.log(state?.code);
             const state_str = state?.message.toUpperCase();
-            
+
             if ([2, 3, 6].includes(Number(state?.code))) {
               const failed_map: any = {
                 2: "infectedRepair",
