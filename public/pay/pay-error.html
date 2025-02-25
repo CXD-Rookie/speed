@@ -55,14 +55,6 @@
             window.close()
           }
         }, false)
-      } else {
-        // 非微信环境兜底方案
-        try {
-          window.open('', '_self', '')
-          window.close()
-        } catch (e) {
-          location.href = 'https://your-domain.com/exit' // 替换为实际退出页
-        }
       }
     }
 
