@@ -20,26 +20,9 @@
       }
     </style>
     <script>
-      // 获取下单信息
-      const fetchOpenid = async (query) => {
-        const response = await fetch(
-          wx_authorization_api + "/api/v1/pay/weixin/place_order",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...query,
-              platform: Number(query?.platform),
-              key: query?.qrcode_key,
-            }),
-          }
-        );
-
-        return (await response?.json());
-      };
-
+      window.wx_appid = "wx203b43bc34560cf1"; // 微信appid
+    </script>
+    <script>
       // 轮询订单状态
       const fetchPoliing = async (query) => {
         const response = await fetch(
@@ -116,7 +99,7 @@
               const url = new URL(href);
               const regex = /^(.*\/)/;
               const match = href.match(regex);
-        
+
               // 清除定时器
               if (window.wxPollingTimer) {
                 clearInterval(window.wxPollingTimer);
@@ -131,39 +114,55 @@
 
       const iniliteFun = async () => {
         const payState = sessionStorage.getItem("pay_state");
-
         const href = window.location.href;
+        const pathname = window.location.pathname;
         const url = new URL(href);
+
         const regex = /^(.*\/)/;
         const match = href.match(regex);
-        const allParams = JSON.parse(localStorage.getItem("pay-search-params"));
-        const code = url.searchParams.get("code");
-        const wx_openid = url.searchParams.get("wx_openid");
-        const appid = allParams?.appid;
-        const pathname = window.location.pathname;
+
+        const openid = url.searchParams.get("openid");
+        const prepay_id = url.searchParams.get("prepay_id");
+        const pay_sign = url.searchParams.get("pay_sign");
+        const timestamp = url.searchParams.get("timestamp");
+        const nonce_str = url.searchParams.get("nonce_str");
+        const package = url.searchParams.get("package");
+        const qrcode_key = url.searchParams.get("qrcode_key");
+
         // 使用正则表达式判断路径的第一个目录是否为 'web'
         const isFirstSegmentWeb = /^\/web\//.test(pathname);
 
-        if (payState && ![null, "null", undefined, "undefined", "", " "].includes(payState)) {
+        if (
+          payState &&
+          ![null, "null", undefined, "undefined", "", " "].includes(payState)
+        ) {
           window.location.href = match?.[1] + `${payState}.html`;
         }
 
         if (isFirstSegmentWeb) {
-          window.wx_authorization_api = "https://api.wincare365.com"
+          window.wx_authorization_api = "https://api.wincare365.com";
         } else {
-          window.wx_authorization_api = "https://api-test.wincare365.com"
+          window.wx_authorization_api = "https://api-test.wincare365.com";
         }
 
-        const data = await fetchOpenid({
-          ...allParams,
-          wx_openid: wx_openid ?? "",
-          code: code ?? "",
-        });
-        
-        localStorage.removeItem("pay-search-params");
-
-        if (data?.error === 0 && data?.data?.prepay_id) {
-          const params = { ...allParams, ...data?.data, appid };
+        if (
+          openid &&
+          prepay_id &&
+          pay_sign &&
+          timestamp &&
+          nonce_str &&
+          qrcode_key &&
+          window.wx_appid
+        ) {
+          const params = {
+            openid,
+            prepay_id,
+            pay_sign,
+            timestamp,
+            nonce_str,
+            qrcode_key,
+            appid: window.wx_appid,
+          };
 
           if (typeof WeixinJSBridge == "undefined") {
             if (document.addEventListener) {
@@ -184,13 +183,7 @@
             onBridgeReady(params);
           }
         } else {
-          if (data?.error === 210203) {
-            window.location.href = match?.[1] + "pay-real-error.html";
-          } else if (data?.error === 210204) {
-            window.location.href = match?.[1] + "pay-underage-error.html";
-          } else if (data?.error === 250001) {
-            window.location.href = match?.[1] + "pay-unfinish-order-error.html";
-          } 
+          window.location.href = match?.[1] + "pay-error.html";
         }
       };
 
