@@ -20,15 +20,12 @@
       }
     </style>
     <script>
-      window.wx_appid = "wx203b43bc34560cf1"; // 微信appid
-    </script>
-    <script>
       // 轮询订单状态
       const fetchPoliing = async (query) => {
         const response = await fetch(
           wx_authorization_api +
             `/api/v1/pay/order/qrcode_key/polling?key=${String(
-              query?.key
+              query?.qrcode_key
             )}`,
           {
             method: "GET",
@@ -42,17 +39,21 @@
           if ([2, 3, 4, 5].includes(status)) {
             const href = window.location.href;
             const url = new URL(href);
-            const regex = /^(.*\/)/;
-            const match = href.match(regex);
+
+            let hrefMap = href.split('?')?.[0]?.split('/');
+
+            hrefMap.pop();
+
+            const newHrefStr = hrefMap.join('/');
 
             if (status === 2) {
-              window.location.href = match?.[1] + "pay-success.html";
+              window.location.href = newHrefStr + "/pay-success.html";
             } else if (status === 3) {
-              window.location.href = match?.[1] + "pay-error.html";
+              window.location.href = newHrefStr + "/pay-error.html";
             } else if (status === 4) {
-              window.location.href = match?.[1] + "pay-cancel.html";
+              window.location.href = newHrefStr + "/pay-cancel.html";
             } else if (status === 5) {
-              window.location.href = match?.[1] + "pay-timeout.html";
+              window.location.href = newHrefStr + "/pay-timeout.html";
             }
 
             // 清除定时器
@@ -95,10 +96,11 @@
                 "get_brand_wcpay_request:fail",
               ].includes(res?.err_msg)
             ) {
-              const href = window.location.href;
-              const url = new URL(href);
-              const regex = /^(.*\/)/;
-              const match = href.match(regex);
+              let href = window.location.href;
+              let url = new URL(href);
+              let hrefMap = href.split('?')?.[0]?.split('/');
+
+              hrefMap.pop();
 
               // 清除定时器
               if (window.wxPollingTimer) {
@@ -106,7 +108,7 @@
                 delete window.wxPollingTimer;
               }
 
-              window.location.href = match?.[1] + "pay-error.html";
+              window.location.href = hrefMap.join('/') +'/pay-error.html';
             }
           }
         );
@@ -127,7 +129,8 @@
         const timestamp = url.searchParams.get("timestamp");
         const nonce_str = url.searchParams.get("nonce_str");
         const package = url.searchParams.get("package");
-        const key = url.searchParams.get("key");
+        const qrcode_key = url.searchParams.get("qrcode_key");
+        const appid = url.searchParams.get("appid");
 
         // 使用正则表达式判断路径的第一个目录是否为 'web'
         const isFirstSegmentWeb = /^\/web\//.test(pathname);
@@ -152,7 +155,8 @@
           timestamp &&
           nonce_str &&
           qrcode_key &&
-          window.wx_appid
+          package &&
+          appid
         ) {
           const params = {
             openid,
@@ -161,7 +165,8 @@
             timestamp,
             nonce_str,
             qrcode_key,
-            appid: window.wx_appid,
+            package,
+            appid,
           };
 
           if (typeof WeixinJSBridge == "undefined") {
@@ -182,9 +187,10 @@
           } else {
             onBridgeReady(params);
           }
-        } else {
-          window.location.href = match?.[1] + "pay-error.html";
-        }
+        } 
+        // else {
+        //   window.location.href = match?.[1] + "pay-error.html";
+        // }
       };
 
       iniliteFun();
