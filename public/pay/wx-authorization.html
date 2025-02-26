@@ -28,7 +28,7 @@
         const response = await fetch(
           wx_authorization_api +
             `/api/v1/pay/order/qrcode_key/polling?key=${String(
-              query?.qrcode_key
+              query?.key
             )}`,
           {
             method: "GET",
@@ -127,7 +127,7 @@
         const timestamp = url.searchParams.get("timestamp");
         const nonce_str = url.searchParams.get("nonce_str");
         const package = url.searchParams.get("package");
-        const qrcode_key = url.searchParams.get("qrcode_key");
+        const key = url.searchParams.get("key");
 
         // 使用正则表达式判断路径的第一个目录是否为 'web'
         const isFirstSegmentWeb = /^\/web\//.test(pathname);
