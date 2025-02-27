@@ -130,8 +130,6 @@ const Login: React.FC = () => {
         } else {
           tracking.trackLoginSuccess("phone", isTrue ? 1 : 0);
         }
-
-        tracking.trackaUserIDActivity();
         
         localStorage.setItem("userId", res?.data?.user_info?.id); // 存储user_id
         localStorage.setItem("loginMethod", "phone");
@@ -142,6 +140,8 @@ const Login: React.FC = () => {
           JSON.stringify(res.data.vip_experience_time)
         );
         localStorage.removeItem("isClosed");
+
+        tracking.trackaUserIDActivity();
 
         if (
           res.data.user_info.user_ext === null ||

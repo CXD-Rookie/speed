@@ -211,7 +211,7 @@ const BindPhoneMode: React.FC = (props) => {
       }
 
       let res = await loginApi.unbindPhone({
-        tid: process.env.REACT_APP_TID,
+        tid: Number(process.env.REACT_APP_TID),
       });
 
       return res;
