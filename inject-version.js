@@ -23,6 +23,8 @@ if (cooked.includes('build:dev')) {
   envFile = '.env.production';
 } else if (cooked.includes('build:oem')) {
   envFile = '.env.oem';
+} else if (cooked.includes('build:wincare')) {
+  envFile = '.env.wincare365';
 } else {
   console.error('Unknown build command. Please use one of the following: build:dev, build:pro, build:oem.');
   process.exit(1); // 退出脚本，状态码为1表示有错误

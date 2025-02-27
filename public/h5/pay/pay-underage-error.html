@@ -10,14 +10,14 @@
         margin: 0;
       }
 
-      .pay-order-error img {
+      .pay-underage-error img {
         position: absolute;
         top: 27%;
         left: 50%;
         transform: translateX(-50%);
       }
 
-      .pay-order-error .pay-order-error-text1 {
+      .pay-underage-error .pay-underage-error-text1 {
         position: absolute;
         top: calc(41%);
         left: 50%;
@@ -26,7 +26,7 @@
         transform: translateX(-50%);
       }
 
-      .pay-order-error .pay-order-error-text2 {
+      .pay-underage-error .pay-underage-error-text2 {
         position: absolute;
         top: calc(41% + 22px);
         left: 50%;
@@ -36,14 +36,14 @@
       }
     </style>
     <script>
-      sessionStorage.setItem("pay_state", "pay-unfinish-order-error");
+      sessionStorage.setItem("pay_state", "pay-underage-error");
     </script>
   </head>
   <body>
-    <div class="pay-order-error">
-      <img src="./image/error.png" width="80" height="80" alt=""/>
-      <div class="pay-order-error-text1">当前有订单正在待支付处理中</div>
-      <div class="pay-order-error-text2">请等待约15分钟该订单自动关闭后重试</div>
+    <div class="pay-underage-error">
+      <img src="../images/error.png" width="80" height="80" alt=""/>
+      <div class="pay-underage-error-text1">支付已取消</div>
+      <div class="pay-underage-error-text2">未成年不允许进行充值操作</div>
     </div>
   </body>
 </html>

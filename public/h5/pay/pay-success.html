@@ -10,14 +10,14 @@
         margin: 0;
       }
 
-      .pay-cancel img {
+      .pay-success img {
         position: absolute;
         top: 27%;
         left: 50%;
         transform: translateX(-50%);
       }
 
-      .pay-cancel .pay-cancel-text1 {
+      .pay-success .pay-success-text1 {
         position: absolute;
         top: calc(41%);
         left: 50%;
@@ -26,7 +26,7 @@
         transform: translateX(-50%);
       }
 
-      .pay-cancel .pay-cancel-text2 {
+      .pay-success .pay-success-text2 {
         position: absolute;
         top: calc(41% + 22px);
         left: 50%;
@@ -36,14 +36,14 @@
       }
     </style>
     <script>
-  sessionStorage.setItem("pay_state", "pay-cancel");
-</script>
+      sessionStorage.setItem("pay_state", "pay-success");
+    </script>
   </head>
   <body>
-    <div class="pay-cancel">
-      <img src="./image/error.png" width="80" height="80" alt=""/>
-      <div class="pay-cancel-text1">支付已取消</div>
-      <div class="pay-cancel-text2">请重新扫码支付</div>
+    <div class="pay-success">
+      <img src="../images/success.png" width="80" height="80" alt=""/>
+      <div class="pay-success-text1">恭喜您</div>
+      <div class="pay-success-text2">本次交易支付成功</div>
     </div>
   </body>
 </html>
