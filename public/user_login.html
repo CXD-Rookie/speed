@@ -18,7 +18,8 @@
       // 根据环境设置不同的 URL 指向cdn地址下的三方登录页面路由 hash路由 thirdPartyLogin
       const url = new URL(window.location.href);
       const cdn_url = url.searchParams.get("cdn_url");
-      const redirectUrl = `${cdn_url}#/thirdPartyLogin`;
+      const time = new Date().getTime();
+      const redirectUrl = `${cdn_url}?v=${time}#/thirdPartyLogin`;
       
       // 添加查询参数
       window.location.href = `${redirectUrl}${window.location.search}`;
