@@ -4,8 +4,12 @@ class Tracking {
   constructor() {
     this.otherMchannel = (value = "befter") => {
       const signChannel = JSON.parse(process.env.REACT_APP_PARTNER_CHANNEL || JSON.stringify([]));
+      const dynamicChannel = JSON.parse(process.env.REACT_APP_PARTNER_DYNAMIC_CHANNEL || JSON.stringify([]));
+
       const localMchannel = localStorage.getItem("mchannel");
-      const mchannel = signChannel.includes(localMchannel) ? localMchannel : "other";
+      const isDynamic = dynamicChannel.some((channel) => channel === localMchannel.slice(0, 5));
+
+      const mchannel = signChannel.includes(localMchannel) || isDynamic ? localMchannel : "other";
       const channelId = mchannel === "other" ? `${value === "befter" ? ";" : ""}editedChannelID=${localMchannel}` : "";
 
       return {
