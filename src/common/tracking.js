@@ -124,6 +124,7 @@ class Tracking {
     this.trackEvent(this.otherMchannel()?.mchannel, "boost_disconnect_passive", reason + this.otherMchannel()?.channelId);
   }
 
+  // 支付页展示埋点
   trackPurchasePageShow(value) {
     this.trackEvent(this.otherMchannel()?.mchannel, "purchase_page_show", `entrance=${value}${this.otherMchannel()?.channelId}`);
   }
@@ -132,22 +133,27 @@ class Tracking {
     this.trackEvent(this.otherMchannel()?.mchannel, "purchase_failure", `errorCode=${buyCount}${this.otherMchannel()?.channelId}` );
   }
   
+  // 充值成功埋点
   trackPurchaseSuccess (buyCount) {
     this.trackEvent(this.otherMchannel()?.mchannel, "purchase_success", buyCount + this.otherMchannel()?.channelId);
   }
   
+  // 首充展示
   trackPurchaseFirstBuy() {
     this.trackEvent(this.otherMchannel()?.mchannel, "banner_firstBuy_show", this.otherMchannel("after")?.channelId, null);
   }
 
+  // 续费展示
   trackPurchaseFirstShow() {
     this.trackEvent(this.otherMchannel()?.mchannel, "banner_firstReneWal_show", this.otherMchannel("after")?.channelId, null);
   }
 
+  // 首充充值
   trackPurchaseFirstBuySuccess() {
     this.trackEvent(this.otherMchannel()?.mchannel, "banner_firstBuy_success", this.otherMchannel("after")?.channelId);
   }
 
+  // 首充续费
   trackPurchaseFirstShowSuccess() {
     this.trackEvent(this.otherMchannel()?.mchannel, "banner_firstReneWal_success", this.otherMchannel("after")?.channelId);
   }
