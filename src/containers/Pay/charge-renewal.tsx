@@ -279,6 +279,10 @@ const ChargeRenewal: React.FC = (props) => {
             tracking.trackPurchaseSuccess(
               `buy=${buy};firstDay=${firstVisit};goods=${goods}`
             );
+            buy === 1
+              ? tracking.trackPurchaseFirstBuySuccess()
+              : tracking.trackPurchaseFirstShowSuccess();
+
             localStorage.setItem("isBuyFirstVisit", "1");
             setShowPopup("支付成功");
           }
@@ -379,6 +383,20 @@ const ChargeRenewal: React.FC = (props) => {
       clearInterval(intervalIdRef?.current);
     }
   }, [paymentStatus, QRCodeState, refresh]);
+
+  useEffect(() => {
+    if (open) {
+      const isFirst = firstAuth?.firstAuth?.first_purchase;
+
+      if (isFirst) {
+        // 首次购买埋点
+        tracking.trackPurchaseFirstBuy();
+      } else {
+        // 首次续费埋点
+        tracking.trackPurchaseFirstShow();
+      }
+    }
+  }, [open]);
 
   return open ? (
     <Fragment>
