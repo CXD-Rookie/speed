@@ -42,6 +42,8 @@ const Home: React.FC = () => {
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
 
+  const isOpenRealname = process.env.REACT_APP_REALNAME;
+
   const [images, setImages] = useState<ImageItem[]>([]);
 
   const [isImagesLoaded, setIsImagesLoaded] = useState(false);
@@ -56,16 +58,18 @@ const Home: React.FC = () => {
     const latestAccountInfo = store.getState().accountInfo;
 
     if (accountInfo?.isLogin) {
-      if (isRealNamel === "1") {
-        dispatch(openRealNameModal());
-        return;
-      } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
-        dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
-        return;
-      } else {
-        tracking.trackPurchasePageShow("home");
-        dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
+      if (isOpenRealname === "1") {
+        if (isRealNamel === "1") {
+          dispatch(openRealNameModal());
+          return;
+        } else if (!latestAccountInfo?.userInfo?.user_ext?.is_adult) {
+          dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
+          return;
+        }
       }
+      
+      tracking.trackPurchasePageShow("home");
+      dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
     } else {
       // 3个参数 用户信息 是否登录 是否显示登录
       dispatch(setAccountInfo(undefined, undefined, true));

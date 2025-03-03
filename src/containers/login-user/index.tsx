@@ -43,6 +43,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
+  const isOpenRealname = process.env.REACT_APP_REALNAME; // 是否打开实名认证校验
 
   const [open, setOpen] = useState(false);
 
@@ -58,9 +59,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
   const [makePagination, setMakePagination] = useState(inilitePagination); // 可使用优惠券请求分页
 
   const [isFirst, setIsFirst] = useState(1);
-  
+
   const [isShowUserT, setIsShowUserT] = useState(false); // 是否展示用户信息在是否优惠券到期文案
-  
+
   const hide = () => {
     setOpen(false);
   };
@@ -100,7 +101,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
       if (search?.status === 1) {
         setTableTotal(total);
-        setCurrencyTable(default_pagination?.page > 1 ? [...currencyTable, ...data]: data);
+        setCurrencyTable(
+          default_pagination?.page > 1 ? [...currencyTable, ...data] : data
+        );
       }
 
       return {
@@ -120,15 +123,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         (item: any) =>
           item?.redeem_code?.goods_expire_time - timestamp <= 432000
       ); // 判断优惠券中是否包含到期时间在5天以内的
-      
+
       if (isHave) {
         setIsShowUserT(true);
       }
-    }
+    };
 
     if (isFirst === 1 || open) {
       setIsFirst(isFirst + 1);
-      
+
       if (open) {
         iniliteFun();
       }
@@ -150,7 +153,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
         localStorage.setItem("isCouponExpiry", "1"); // 是否距离优惠券过期小于5天
         setCouponTooltip(true); // 判断是否到期提醒弹窗
       }
-      
+
       if (!isHave) {
         localStorage.removeItem("isCouponExpiry");
       }
@@ -161,7 +164,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
     if (isCouponRefresh > 0) {
       iniliteFun();
     }
-    
   }, [isCouponRefresh]);
 
   const popoverContent = (isVip: boolean) => (
@@ -209,16 +211,18 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
 
           hide();
 
-          if (isRealNamel === "1") {
-            dispatch(openRealNameModal());
-            return;
-          } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
-            dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
-            return;
-          } else {
-            tracking.trackPurchasePageShow("profile");
-            dispatch(setPayState({ open: true, couponValue: {} })); // 关闭会员充值页面
+          if (isOpenRealname === "1") {
+            if (isRealNamel === "1") {
+              dispatch(openRealNameModal());
+              return;
+            } else if (!accountInfo?.userInfo?.user_ext?.is_adult) {
+              dispatch(setMinorState({ open: true, type: "recharge" })); // 关闭实名认证提示
+              return;
+            }
           }
+
+          tracking.trackPurchasePageShow("profile");
+          dispatch(setPayState({ open: true, couponValue: {} })); // 打开会员充值页面
         }}
       />
       <div className="login-user-line" />
@@ -294,7 +298,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
           <span className="user-text"></span>
         </Tooltip>
       )}
-      
+
       {isRealOpen ? <RealNameModal /> : null}
       <CustonCoupon
         open={couponOpen}

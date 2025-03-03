@@ -83,6 +83,7 @@ const GameCard: React.FC<GameCardProps> = (props) => {
 
   const webVersion = process.env.REACT_APP_VERSION; // 前端版本号
   const clientVersion = (window as any).versionNowRef; // 客户端版本号
+  const isOpenRealname = process.env.REACT_APP_REALNAME; // 是否打开实名认证校验
 
   const {
     identifyAccelerationData,
@@ -903,16 +904,18 @@ const GameCard: React.FC<GameCardProps> = (props) => {
           const userInfo = latestAccountInfo?.userInfo; // 用户信息
           const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
-          // 是否实名认证 isRealNamel === "1" 是
-          // 是否是未成年 is_adult
-          if (isRealNamel === "1") {
-            stopAnimation();
-            dispatch(openRealNameModal());
-            return;
-          } else if (!userInfo?.user_ext?.is_adult) {
-            stopAnimation();
-            dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
-            return;
+          if (isOpenRealname === "1") {
+            if (isRealNamel === "1") {
+              // 是否实名认证 isRealNamel === "1" 是
+              // 是否是未成年 is_adult
+              stopAnimation();
+              dispatch(openRealNameModal());
+              return;
+            } else if (!userInfo?.user_ext?.is_adult) {
+              stopAnimation();
+              dispatch(setMinorState({ open: true, type: "acceleration" })); // 实名认证提示
+              return;
+            }
           }
 
           // 应用存储的版本信息 and window挂载的当前客户端版本

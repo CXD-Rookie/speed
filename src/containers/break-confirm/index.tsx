@@ -201,8 +201,9 @@ const BreakConfirmModal: React.FC<SettingsModalProps> = (props) => {
         break;
       case "renewalReminder":
         const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
-
-        if (isRealNamel === "1") {
+        
+        // 是否打开实名认证校验
+        if (process.env.REACT_APP_REALNAME === "1" && isRealNamel === "1") {
           dispatch(openRealNameModal());
           return;
         }

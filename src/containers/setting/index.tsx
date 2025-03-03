@@ -40,7 +40,9 @@ const { TabPane } = Tabs;
 const signChannel = JSON.parse(process.env.REACT_APP_PARTNER_CHANNEL || JSON.stringify([]));
 
 const SettingsModal: React.FC = (props) => {
-  const { settingOpen = false, type = "default" } = useSelector((state: any) => state?.modalOpen?.setting);
+  const { settingOpen = false, type = "default" } = useSelector(
+    (state: any) => state?.modalOpen?.setting
+  );
   const accountInfo = useSelector((state: any) => state.accountInfo);
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
   const payOpen = useSelector((state: any) => state?.modalOpen?.payState?.open);
@@ -49,6 +51,7 @@ const SettingsModal: React.FC = (props) => {
     ? localMchannel
     : "other";
   const user_id = localStorage.getItem("userId");
+  const isOpenRealname = process.env.REACT_APP_REALNAME; // 是否打开实名认证校验
 
   const historyContext: any = useHistoryContext();
   const { removeGameList } = useGamesInitialize();
@@ -86,12 +89,12 @@ const SettingsModal: React.FC = (props) => {
 
   const onClose = () => {
     dispatch(setSetting({ settingOpen: false, type: "default" }));
-  }
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
     const dataTitle = target.dataset.title;
-    
+
     (window as any).NativeApi_OpenBrowser(dataTitle);
   };
 
@@ -179,7 +182,7 @@ const SettingsModal: React.FC = (props) => {
         if ((window as any).stopkeepAliveTimer) {
           (window as any).stopkeepAliveTimer();
         }
-        
+
         if (list?.length >= 0) {
           // 关闭客户端上报埋点上报
           tracking.trackBoostActiveCloseClient();
@@ -187,7 +190,7 @@ const SettingsModal: React.FC = (props) => {
         }
       }
     );
-    
+
     // 调用重启方法
     (window as any).native_restart();
   };
@@ -373,7 +376,7 @@ const SettingsModal: React.FC = (props) => {
     let isRealName = localStorage.getItem("isRealName");
     isRealName = isRealName ? isRealName : "";
     const closeButtonAction = sign?.close_button_action;
-    
+
     setCloseWindow(
       String(
         closeButtonAction !== undefined ? (closeButtonAction === 1 ? 2 : 1) : 2
@@ -691,22 +694,27 @@ const SettingsModal: React.FC = (props) => {
                           const isRealNamel =
                             localStorage.getItem("isRealName");
 
-                          if (isRealNamel === "1") {
-                            dispatch(openRealNameModal());
-                            return;
-                          } else if (
-                            !accountInfo?.userInfo?.user_ext?.is_adult
-                          ) {
-                            dispatch(
-                              setMinorState({ open: true, type: "recharge" })
-                            ); // 认证提示
-                            return;
-                          } else {
-                            tracking.trackPurchasePageShow("settings");
-                            dispatch(
-                              setPayState({ open: true, couponValue: {} })
-                            ); // 会员充值页面
+                          if (isOpenRealname === "1") {
+                            if (isRealNamel === "1") {
+                              dispatch(openRealNameModal());
+                              return;
+                            } else if (
+                              !accountInfo?.userInfo?.user_ext?.is_adult
+                            ) {
+                              dispatch(
+                                setMinorState({
+                                  open: true,
+                                  type: "recharge",
+                                })
+                              ); // 认证提示
+                              return;
+                            }
                           }
+
+                          tracking.trackPurchasePageShow("settings");
+                          dispatch(
+                            setPayState({ open: true, couponValue: {} })
+                          ); // 会员充值页面
                         }}
                         className="real-name-btn"
                       >
@@ -718,22 +726,24 @@ const SettingsModal: React.FC = (props) => {
                           const isRealNamel =
                             localStorage.getItem("isRealName");
 
-                          if (isRealNamel === "1") {
-                            dispatch(openRealNameModal());
-                            return;
-                          } else if (
-                            !accountInfo?.userInfo?.user_ext?.is_adult
-                          ) {
-                            dispatch(
-                              setMinorState({ open: true, type: "recharge" })
-                            ); // 认证提示
-                            return;
-                          } else {
-                            tracking.trackPurchasePageShow("settings");
-                            dispatch(
-                              setPayState({ open: true, couponValue: {} })
-                            ); // 会员充值页面
+                          if (isOpenRealname === "1") {
+                            if (isRealNamel === "1") {
+                              dispatch(openRealNameModal());
+                              return;
+                            } else if (
+                              !accountInfo?.userInfo?.user_ext?.is_adult
+                            ) {
+                              dispatch(
+                                setMinorState({ open: true, type: "recharge" })
+                              ); // 认证提示
+                              return;
+                            }
                           }
+
+                          tracking.trackPurchasePageShow("settings");
+                          dispatch(
+                            setPayState({ open: true, couponValue: {} })
+                          ); // 会员充值页面
                         }}
                         className="real-name-btn"
                       >
