@@ -11,6 +11,12 @@ import { get, post, put } from "./api";
 class LoginApi {
   url = process.env.REACT_APP_API_URL + "api/v1"
 
+  getUserInfo (parmas) {
+    return get(
+      `${this.url}/user/info?platform=3`
+    );
+  }
+
   getPhoneCode (parmas) {
     return get(
       `${this.url}/send_sms/${parmas?.phone}?ticket=${parmas.ticket}&randstr=${parmas.randstr}`

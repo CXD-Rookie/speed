@@ -10,8 +10,9 @@
 import React, { Fragment, useState } from "react";
 import { Button, Input, Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { closeRealNameModal } from "@/redux/actions/auth";
+import { closeRealNameModal, } from "@/redux/actions/auth";
 import { setMinorState } from "@/redux/actions/modal-open";
+import { setAccountInfo } from "@/redux/actions/account-info";
 
 import "./index.scss";
 import loginApi from "@/api/login";
@@ -36,7 +37,7 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
   const [iniliteLoading, setIniliteLoading] = useState(false); // 全局加载动画判断值
 
   const isRealOpen = useSelector((state: any) => state.auth.isRealOpen);
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   const handleClose = () => {
     dispatch(closeRealNameModal());
@@ -130,6 +131,11 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           id: true,
         });
         dispatch(setMinorState({ open: true, type: "success" })); // 实名认证提示
+
+        const user_res = await loginApi.getUserInfo();
+        console.log(user_res);
+        
+        dispatch(setAccountInfo(res.data.user_info, true, false));
         localStorage.setItem("isRealName", "0"); //已经实名
       } else if (res?.error === 1) {
         // 认证失败
