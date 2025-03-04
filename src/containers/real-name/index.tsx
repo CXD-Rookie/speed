@@ -130,13 +130,12 @@ const RealNameModal: React.FC<SettingsModalProps> = ({ isAdult }) => {
           name: true,
           id: true,
         });
-        dispatch(setMinorState({ open: true, type: "success" })); // 实名认证提示
-
         const user_res = await loginApi.getUserInfo();
-        console.log(user_res);
-        
-        dispatch(setAccountInfo(res.data.user_info, true, false));
+
         localStorage.setItem("isRealName", "0"); //已经实名
+
+        await dispatch(setAccountInfo(user_res?.data?.user_info, true, false));
+        await dispatch(setMinorState({ open: true, type: "success" })); // 实名认证提示
       } else if (res?.error === 1) {
         // 认证失败
         setIsRankVerify({

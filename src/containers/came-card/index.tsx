@@ -899,9 +899,9 @@ const GameCard: React.FC<GameCardProps> = (props) => {
         }
 
         localStorage.setItem("isAccelLoading", "1"); // 存储临时的加速中状态
-
+        
         if (latestAccountInfo) {
-          const userInfo = latestAccountInfo?.userInfo; // 用户信息
+          const userInfo = store.getState().accountInfo?.userInfo; // 用户信息
           const isRealNamel = localStorage.getItem("isRealName"); // 实名认证信息
 
           if (isOpenRealname === "1") {
