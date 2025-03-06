@@ -58,14 +58,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch: any = useDispatch();
-  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
-  // 动态导入图片
-  const logoUrl =
-    is_local && process.env.REACT_APP_IMAGE_LOGO
-      ? typeof require(process.env.REACT_APP_IMAGE_LOGO as string) === "string"
-        ? require(process.env.REACT_APP_IMAGE_LOGO as string)
-        : require(process.env.REACT_APP_IMAGE_LOGO as string).default
-      : process.env.REACT_APP_IMAGE_LOGO || "";
+  const logoIcon = process.env.REACT_APP_IMAGE_LOGO;
 
   const accountInfo: any = useSelector((state: any) => state.accountInfo); // 用户信息
   const { type: versionType = "" } = useSelector(
@@ -201,7 +194,7 @@ const LayoutHeader: React.FC<HeaderProps> = (props) => {
       {/* LOGO */}
       <img
         className="header-icon"
-        src={logoUrl}
+        src={logoIcon}
         width={40}
         height={40}
         alt=""

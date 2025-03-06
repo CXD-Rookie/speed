@@ -45,7 +45,6 @@ import galaxyIcon from "@/assets/images/common/GOG Galaxy@2x.png";
 import primeGamIcon from "@/assets/images/common/Prime Gaming@2x.png";
 import toggleIcon from "@/assets/images/home/toggle.png";
 import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
-import defaultLogo from "@/assets/images/common/default-details-logo.png";
 import appliancesGit from "@/assets/images/common/appliances.gif";
 
 const iniliteDelay = { 
@@ -82,6 +81,7 @@ const GameDetail: React.FC = () => {
 
   // 使用 useMemo 确保只有 data 变化时才会重新计算
   const memoizedData = useMemo(() => chartData, [chartData]);
+  const gameErroricon = process.env.REACT_APP_IMAGE_GAME_ERROR;
 
   // 初始化展示区服节点函数
   const iniliteDomName = (data: any = {}) => {
@@ -507,12 +507,12 @@ const GameDetail: React.FC = () => {
                 src={`${
                   detailData?.logo
                     ? process.env.REACT_APP_SHEER_API_URL + detailData?.logo
-                    : defaultLogo
+                    : gameErroricon
                 }`}
                 alt=""
                 onError={(e: any) => {
                   e.target.onerror = null; // 防止错误循环
-                  e.target.src = defaultLogo;
+                  e.target.src = gameErroricon;
                 }}
               />
             </div>

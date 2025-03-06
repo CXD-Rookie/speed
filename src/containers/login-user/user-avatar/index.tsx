@@ -11,6 +11,7 @@ import { Avatar } from "antd";
 import "./index.scss";
 
 import avatarVipIcon from "@/assets/images/common/avatar-vip.svg";
+import noAvatarVipIcon from "@/assets/images/common/no-login-avatar.svg";
 
 interface UserAvatarComProps {
   isVip?: boolean;
@@ -23,21 +24,8 @@ interface UserAvatarComProps {
 
 const UserAvatarCom: React.FC<UserAvatarComProps> = (props) => {
   const { isVip = false, isLogin = false, type = "default" } = props;
-  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
-  const defaultAvatarUrl =
-    is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
-      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string) ===
-        "string"
-        ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string)
-        : require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
-      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT || "";
-  const empryUrl =
-    is_local && process.env.REACT_APP_IMAGE_AVATAR_EMPTY
-      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string) ===
-        "string"
-        ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string)
-        : require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
-      : process.env.REACT_APP_IMAGE_AVATAR_EMPTY || "";
+
+  const defaultlogoIcon = process.env.REACT_APP_IMAGE_AVATAR_DEFAULT;
   
   const styleTypeObj: any = {
     default: {
@@ -58,7 +46,7 @@ const UserAvatarCom: React.FC<UserAvatarComProps> = (props) => {
     <div className={`user-avatar-com-module ${styleTypeObj?.[type]?.class}`}>
       <Avatar
         style={styleTypeObj?.[type]?.style}
-        src={isLogin ? defaultAvatarUrl : empryUrl}
+        src={isLogin ? defaultlogoIcon : noAvatarVipIcon}
       />
       {type === "edit" && isVip && (
         <img className="vip-icon" src={avatarVipIcon} alt="" />

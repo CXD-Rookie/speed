@@ -76,38 +76,19 @@ import toggleIcon from "@/assets/images/home/toggle.png";
 import networkIcon from "@/assets/images/common/network.png";
 import iniliteBackGIcon from "@/assets/images/common/inilite-img.jpg";
 import iniliteCardIcon from "@/assets/images/common/inilite-card.jpg";
-import defaultLogo from "@/assets/images/common/default-details-logo.png";
 import laptopsIcon from "@/assets/images/common/laptops.svg";
 import appliancesGit from "@/assets/images/common/appliances.gif";
+import noAvatarVipIcon from "@/assets/images/common/no-login-avatar.svg";
 
 const ResourceCache: React.FC = () => {
   const [carouselImage, setCarouselImage] = useState<any>([]);
 
   const cdn_url = process.env.REACT_APP_SHEER_API_URL;
+  
+  const logoIcon = process.env.REACT_APP_IMAGE_LOGO;
+  const defaultlogoIcon = process.env.REACT_APP_IMAGE_AVATAR_DEFAULT;
+  const gameErroricon = process.env.REACT_APP_IMAGE_GAME_ERROR;
 
-  // 是否是本地图片地址
-  const is_local = process.env.REACT_APP_LOACL_IMAGE === "0";
-  // 动态导入图片
-  const defaultAvatarUrl =
-    is_local && process.env.REACT_APP_IMAGE_AVATAR_DEFAULT
-      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string) ===
-        "string"
-        ? require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string)
-        : require(process.env.REACT_APP_IMAGE_AVATAR_DEFAULT as string).default
-      : process.env.REACT_APP_IMAGE_AVATAR_DEFAULT || "";
-  const empryUrl =
-    is_local && process.env.REACT_APP_IMAGE_AVATAR_EMPTY
-      ? typeof require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string) ===
-        "string"
-        ? require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string)
-        : require(process.env.REACT_APP_IMAGE_AVATAR_EMPTY as string).default
-      : process.env.REACT_APP_IMAGE_AVATAR_EMPTY || "";
-  const logoUrl =
-    is_local && process.env.REACT_APP_IMAGE_LOGO
-      ? typeof require(process.env.REACT_APP_IMAGE_LOGO as string) === "string"
-        ? require(process.env.REACT_APP_IMAGE_LOGO as string)
-        : require(process.env.REACT_APP_IMAGE_LOGO as string).default
-      : process.env.REACT_APP_IMAGE_LOGO || "";
   useEffect(() => {
     // 初始化时从 localStorage 读取banner数据
     let storedData = localStorage.getItem("all_data")
@@ -128,7 +109,7 @@ const ResourceCache: React.FC = () => {
       {/* 游戏详情平台icon */}
       <img src={uplayIcon} alt="" />
       {/* 游戏详情默认icon */}
-      <img src={defaultLogo} alt="" />
+      <img src={gameErroricon} alt="" />
       {/* 默认断网卡片图片 */}
       <img src={iniliteCardIcon} alt="" />
       {/* 默认断网图片 */}
@@ -214,9 +195,9 @@ const ResourceCache: React.FC = () => {
       {/* 实名认证失败icon */}
       <img src={exclErrorIcon} alt="" />
       {/* 用户头像默认icon */}
-      <img src={defaultAvatarUrl} alt="" />
+      <img src={defaultlogoIcon} alt="" />
       {/* 用户头像未登录icon */}
-      <img src={empryUrl} alt="" />
+      <img src={noAvatarVipIcon} alt="" />
       {/* 用户头像vipicon */}
       <img src={avatarVipIcon} alt="" />
       {/* 优惠券页面已过期icon */}
@@ -262,7 +243,7 @@ const ResourceCache: React.FC = () => {
       {/* 新用户弹窗 */}
       <img src={newUserIcon} alt="" />
       {/* 登录logo */}
-      <img src={logoUrl} alt="" />
+      <img src={logoIcon} alt="" />
       {/* 用户信息充值图片 */}
       <img src={bannerRenewalIcon} alt="" />
       {/* 用户信息续费图片 */}
