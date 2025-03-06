@@ -49,6 +49,7 @@
     "build:pro": "yarn node inject-version.js && yarn dotenv -e .env.production react-app-rewired build",
     "build:oem": "yarn node inject-version.js && yarn dotenv -e .env.oem react-app-rewired build",
     "build:wincare": "yarn node inject-version.js && yarn dotenv -e .env.wincare365 react-app-rewired build",
+    "build:flyy-dev": "yarn node inject-version.js && yarn dotenv -e .env.flyy-dev react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
