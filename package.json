@@ -45,10 +45,10 @@
     "start": "react-app-rewired start",
     "generate-env": "node generate-env.js",
     "build": "react-app-rewired build",
-    "build:dev": "yarn node inject-version.js && yarn dotenv -e .env.development react-app-rewired build",
+    "build:dev": "yarn node inject-version.js && yarn dotenv -e .env.alpha react-app-rewired build",
     "build:pro": "yarn node inject-version.js && yarn dotenv -e .env.production react-app-rewired build",
     "build:oem": "yarn node inject-version.js && yarn dotenv -e .env.oem react-app-rewired build",
-    "build:wincare": "yarn node inject-version.js && yarn dotenv -e .env.wincare365 react-app-rewired build",
+    "build:withplay-dev": "yarn node inject-version.js && yarn dotenv -e .env.withplay-dev react-app-rewired build",
     "build:flyy-dev": "yarn node inject-version.js && yarn dotenv -e .env.flyy-dev react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
