@@ -141,6 +141,10 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         imagesArr.push(filteredSrc);
       });
 
+      const clientVersion = (window as any).versionNowRef; // 客户端版本号
+      const speed_name =
+        process.env.REACT_APP_SPEED_NAME + " - " + clientVersion; // 加速器名称
+
       const params = {
         feedback_type: String(selectedType),
         content: description,
@@ -148,6 +152,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         contact_way: contact, // 你的联系方式
         ticket: captcha_verify_param.ticket,
         randstr: captcha_verify_param.randstr,
+        speed_name,
       };
 
       const reqire = await validateRequiredParams({
