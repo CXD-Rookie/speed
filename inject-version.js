@@ -18,13 +18,15 @@ const { cooked } = argv;
 let envFile;
 // 检查 cooked 数组中的值
 if (cooked.includes('build:dev')) {
-  envFile = '.env.development';
+  envFile = '.env.alpha';
 } else if (cooked.includes('build:pro')) {
   envFile = '.env.production';
 } else if (cooked.includes('build:oem')) {
   envFile = '.env.oem';
-} else if (cooked.includes('build:wincare')) {
-  envFile = '.env.wincare365';
+} else if (cooked.includes('build:withplay-dev')) {
+  envFile = '.env.withplay-dev';
+} else if (cooked.includes('build:flyy-dev')) {
+  envFile = '.env.flyy-dev';
 } else {
   console.error('Unknown build command. Please use one of the following: build:dev, build:pro, build:oem.');
   process.exit(1); // 退出脚本，状态码为1表示有错误
