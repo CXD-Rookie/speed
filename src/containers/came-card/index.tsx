@@ -1,11 +1,11 @@
 /*
  * @Author: zhangda
  * @Date: 2024-06-08 13:30:02
- * @LastEditors: steven libo@rongma.com
- * @LastEditTime: 2024-09-20 19:17:08
+ * @LastEditors: zhangda
+ * @LastEditTime: 2025-03-12 21:03:59
  * @important: 重要提醒
  * @Description: 备注内容
- * @FilePath: \speed\src\pages\Home\GameCard\index.tsx
+ * @FilePath: \speed\src\containers\came-card\index.tsx
  */
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -707,10 +707,10 @@ const GameCard: React.FC<GameCardProps> = (props) => {
   // 加速key保活接口
   const keepAlivePollingHeartbeat = async () => {
     try {
-      // 设置定时器，每 10 分钟（600000 毫秒）发送一次请求
+      // 设置定时器，每 60 分钟（3600000 毫秒）发送一次请求
       const intervalId = setInterval(() => {
         keepAliveHeartbeat();
-      }, 600000);
+      }, 3600000);
 
       // 返回一个清除定时器的函数
       return function stopPolling() {
